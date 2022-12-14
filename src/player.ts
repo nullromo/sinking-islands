@@ -1,11 +1,18 @@
 import { Card } from './card';
 
+/**
+ * Unique IDs for each player.
+ */
 export enum PlayerDesignator {
     PLAYER_A = 'A',
     PLAYER_B = 'B',
 }
 
-export class PlayerGamePiece {
+/**
+ * Base class for game pieces that are owned by a player.
+ */
+export abstract class PlayerGamePiece {
+    // the player who owns this piece
     public readonly playerDesignator: PlayerDesignator;
 
     public constructor(playerDesignator: PlayerDesignator) {
@@ -13,9 +20,14 @@ export class PlayerGamePiece {
     }
 }
 
+/**
+ * Represents a player.
+ */
 export class Player {
+    // the player ID
     public readonly playerDesignator: PlayerDesignator;
 
+    // the player's cards, separated into their appropriate zones
     private readonly deck: Card[] = [];
     private readonly hand: Card[] = [];
     private readonly discardPile: Card[] = [];

@@ -4,19 +4,27 @@ import { Island, IslandType } from './island';
 import { shuffleArray } from './util';
 import { Card } from './card';
 
+/**
+ * Represents a game of Sinking Islands
+ */
 class Game {
+    // the island with the Rising Waters marker on it
     private nextIslandToSink: number = 1;
 
+    // the player that plays first this turn
     private initiative: PlayerDesignator = PlayerDesignator.PLAYER_A;
 
+    // specifiers for which islands have which player tokens on them
     private playerANetIsland: number = NaN;
     private playerAPilingsIsland: number = NaN;
     private playerBNetIsland: number = NaN;
     private playerBPilingsIsland: number = NaN;
 
+    // representations of the 2 players
     private playerA = new Player(PlayerDesignator.PLAYER_A);
     private playerB = new Player(PlayerDesignator.PLAYER_B);
 
+    // representations of card slots on the Action Order Track
     private cardSlot1: Card | null = null;
     private cardSlot2: Card | null = null;
     private cardSlot3: Card | null = null;
@@ -24,6 +32,7 @@ class Game {
     private cardSlot5: Card | null = null;
     private cardSlot6: Card | null = null;
 
+    // representation of all the islands in the archipelago
     private readonly islands: Island[] = shuffleArray([
         new Island(1, IslandType.NORMAL, false),
         new Island(2, IslandType.NORMAL, true),
@@ -44,6 +53,7 @@ class Game {
     ]);
 
     public constructor() {
+        // create and randomize all the characters
         const characters = shuffleArray([
             new Character(PlayerDesignator.PLAYER_A, 20),
             new Character(PlayerDesignator.PLAYER_A, 20),
@@ -63,16 +73,64 @@ class Game {
             new Character(PlayerDesignator.PLAYER_B, 40),
         ]);
 
-        // TODO: remove these
-        characters[0].tortoise = true;
-        this.playerANetIsland = 1;
-        this.playerBPilingsIsland = 1;
-
+        // add one character to each island
         characters.forEach((character, index) => {
             this.islands[index].addCharacter(character);
         });
     }
 
+    /**
+     * Returns the player that has lost, or undefined if no player has lost.
+     */
+    private readonly getLoser = () => {
+        return [PlayerDesignator.PLAYER_A, PlayerDesignator.PLAYER_B].find(
+            (player) => {
+                return !this.islands.some((island) => {
+                    return island.getCharacters().some((character) => {
+                        return character.playerDesignator === player;
+                    });
+                });
+            },
+        );
+    };
+
+    /**
+     * Executes the main game loop.
+     */
+    public readonly play = () => {
+        let loser: PlayerDesignator | undefined = undefined;
+        while (true) {
+            // check if there is a loser and break if there is
+            loser = this.getLoser();
+            if (loser) {
+                break;
+            }
+
+            ////
+            const island = this.islands.find((island) => {
+                return island.getCharacters().length > 0;
+            });
+            if (island) {
+                console.log('rem');
+                island.removeCharacter(island.getCharacters()[0]);
+            }
+            ////
+
+            // print out the game state
+            console.log(this.dump());
+        }
+
+        // the winner is the player that didn't lose
+        const winner =
+            loser === PlayerDesignator.PLAYER_A
+                ? PlayerDesignator.PLAYER_B
+                : PlayerDesignator.PLAYER_A;
+        console.log('Game over. The winner is', winner);
+    };
+
+    /**
+     * Returns a string representation of the game.
+     */
     public readonly dump = () => {
         return `${this.initiative}\n${this.islands
             .map((island) => {
@@ -94,4 +152,4 @@ class Game {
     };
 }
 
-console.log(new Game().dump());
+new Game().play();

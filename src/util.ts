@@ -1,3 +1,6 @@
+/**
+ * Shuffles an array in place.
+ */
 export const shuffleArray = <T>(array: T[]) => {
     let currentIndex = array.length;
     let randomIndex;
