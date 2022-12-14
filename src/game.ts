@@ -283,7 +283,33 @@ class Game {
                     )?.addCharacter(flyingFishMovement.character);
                     break;
                 case CardType.FOG:
-                    // TODO
+                    // if the fog was the last card (for some reason), then it
+                    // has no effect
+                    if (slot === 5) {
+                        break;
+                    }
+
+                    // try to get a fog target until a valid one is given
+                    let fogTarget: number | null = null;
+                    while (
+                        !fogTarget ||
+                        !this.actionOrderTrack.checkFogTargetLegal(
+                            slot,
+                            fogTarget,
+                        )
+                    ) {
+                        fogTarget = player.getFogTarget();
+                    }
+
+                    // fog the target
+                    console.log('Fogging slot', fogTarget);
+                    const foggedCard =
+                        this.actionOrderTrack.resetSlot(fogTarget);
+                    if (foggedCard) {
+                        this.getPlayer(foggedCard.playerDesignator).discardCard(
+                            foggedCard,
+                        );
+                    }
                     break;
                 case CardType.HARPOON:
                     // TODO

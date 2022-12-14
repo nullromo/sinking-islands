@@ -108,6 +108,13 @@ export class Player {
     };
 
     /**
+     * Returns a fog target.
+     */
+    public readonly getFogTarget = () => {
+        return Math.floor(Math.random() * 6);
+    };
+
+    /**
      * Adds a card to this player's discard pile.
      */
     public readonly discardCard = (card: Card) => {

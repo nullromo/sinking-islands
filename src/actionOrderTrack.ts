@@ -27,11 +27,16 @@ export class ActionOrderTrack {
         return this.cardSlots;
     };
 
+    /**
+     * Clears a slot and returns the card that used to be in it.
+     */
     public readonly resetSlot = (slot: number) => {
         if (slot < 0 || slot > 5) {
             throw new Error('Invalid slot number to reset.');
         }
+        const oldCard = this.cardSlots[slot];
         this.cardSlots[slot] = null;
+        return oldCard;
     };
 
     /**
@@ -47,7 +52,7 @@ export class ActionOrderTrack {
     };
 
     /**
-     * Returns true if the card placement is legal.
+     * Returns true if the given card placement is legal.
      */
     public readonly checkCardPlacementLegal = (
         playerDesignator: PlayerDesignator,
@@ -101,6 +106,23 @@ export class ActionOrderTrack {
         }
 
         // all checks passed
+        return true;
+    };
+
+    /**
+     * Returns true if the given fog target is legal.
+     */
+    public readonly checkFogTargetLegal = (slot: number, fogTarget: number) => {
+        // if there is no card, that card cannot be fogged
+        if (this.cardSlots[fogTarget] === null) {
+            return false;
+        }
+
+        // a fog cannot fog itself
+        if (slot === fogTarget) {
+            return false;
+        }
+
         return true;
     };
 
