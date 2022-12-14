@@ -1,7 +1,14 @@
-import { Card, CardType } from './card';
-import { CardPlacement } from './player';
-import { assertUnreachable } from './util';
+import { Card } from './card';
+import { PlayerDesignator } from './player';
 
+/**
+ * Represents a player's choice on where to put their cards.
+ */
+export type CardPlacement = Record<number, Card>;
+
+/**
+ * Represents the action order track.
+ */
 export class ActionOrderTrack {
     // representation of the card track
     private cardSlots: Array<Card | null> = [
@@ -37,6 +44,64 @@ export class ActionOrderTrack {
             }
             return indices;
         }, [] as number[]);
+    };
+
+    /**
+     * Returns true if the card placement is legal.
+     */
+    public readonly checkCardPlacementLegal = (
+        playerDesignator: PlayerDesignator,
+        cardPlacement: CardPlacement,
+    ) => {
+        // player must not already have cards on the track
+        if (
+            this.cardSlots.some((card) => {
+                return card && card.playerDesignator === playerDesignator;
+            })
+        ) {
+            return false;
+        }
+
+        // all cards must be owned by the player placing them
+        if (
+            Object.values(cardPlacement).some((card) => {
+                return card.playerDesignator !== playerDesignator;
+            })
+        ) {
+            return false;
+        }
+
+        // they must place 3 cards
+        if (Object.entries(cardPlacement).length !== 3) {
+            return false;
+        }
+
+        // find which slots the player wants to place in
+        const slots = Object.keys(cardPlacement).map((slot) => {
+            return Number(slot);
+        });
+
+        // they can't put 2 cards in the same area
+        if (
+            (slots.includes(0) && slots.includes(1)) ||
+            (slots.includes(2) && slots.includes(3)) ||
+            (slots.includes(4) && slots.includes(5))
+        ) {
+            return false;
+        }
+
+        // all slots used must be available
+        const availableSlots = this.getAvailableSlots();
+        if (
+            slots.some((slot) => {
+                return !availableSlots.includes(slot);
+            })
+        ) {
+            return false;
+        }
+
+        // all checks passed
+        return true;
     };
 
     /**

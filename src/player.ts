@@ -1,4 +1,6 @@
+import { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
+import { Character } from './character';
 import { sampleArray, shuffleArray } from './util';
 
 /**
@@ -9,7 +11,11 @@ export enum PlayerDesignator {
     PLAYER_B = 'B',
 }
 
-export type CardPlacement = Record<number, Card>;
+export type FlyingFishMovement = {
+    character: Character;
+    fromIslandNumber: number;
+    toIslandNumber: number;
+};
 
 /**
  * Represents a player.
@@ -61,27 +67,43 @@ export class Player {
     }
 
     /**
+     * Removes the given card from the player's hand.
+     */
+    public readonly removeCardFromHand = (cardToRemove: Card) => {
+        const index = this.hand.findIndex((card) => {
+            return card.cardType === cardToRemove.cardType;
+        });
+        if (index >= 0) {
+            this.hand.splice(index, 1);
+        } else {
+            throw new Error(
+                `There is no card matching ${cardToRemove} in this player's hand (${this.dump()}).`,
+            );
+        }
+    };
+
+    /**
      * Returns a card placement choice given the available slots.
      */
-    public readonly getCardPlacement = (
-        availableSlots: number[],
-    ): CardPlacement => {
+    public readonly getCardPlacement = (): CardPlacement => {
         return {
-            [sampleArray(
-                availableSlots.filter((slot) => {
-                    return slot < 2;
-                }),
-            )]: this.hand.pop() as Card,
-            [sampleArray(
-                availableSlots.filter((slot) => {
-                    return slot > 1 && slot < 4;
-                }),
-            )]: this.hand.pop() as Card,
-            [sampleArray(
-                availableSlots.filter((slot) => {
-                    return slot > 3 && slot < 6;
-                }),
-            )]: this.hand.pop() as Card,
+            [sampleArray([0, 1])]: this.hand[0],
+            [sampleArray([2, 3])]: this.hand[1],
+            [sampleArray([4, 5])]: this.hand[2],
+        };
+    };
+
+    /**
+     * Returns a flying fish movement.
+     */
+    public readonly getFlyingFishMovement = (): FlyingFishMovement => {
+        return {
+            fromIslandNumber: Math.floor(Math.random() * 16) + 1,
+            toIslandNumber: Math.floor(Math.random() * 16) + 1,
+            character: new Character(
+                this.playerDesignator,
+                sampleArray([20, 30, 40]),
+            ),
         };
     };
 

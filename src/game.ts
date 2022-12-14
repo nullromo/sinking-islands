@@ -1,5 +1,5 @@
-import { ActionOrderTrack } from './actionOrderTrack';
-import { Card, CardType } from './card';
+import { ActionOrderTrack, CardPlacement } from './actionOrderTrack';
+import { CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
 import { Player, PlayerDesignator } from './player';
@@ -118,21 +118,35 @@ class Game {
             const otherPlayer =
                 initiativePlayer === this.playerA ? this.playerB : this.playerA;
 
-            // get card placement from initiative player
-            const firstCardPlacement = initiativePlayer.getCardPlacement(
-                this.actionOrderTrack.getAvailableSlots(),
-            );
+            // function that takes a turn for 1 player
+            const takeTurn = (player: Player) => {
+                // get card placement from player
+                const cardPlacement = (() => {
+                    let cardPlacement: CardPlacement | null = null;
+                    while (
+                        !cardPlacement ||
+                        !this.actionOrderTrack.checkCardPlacementLegal(
+                            player.playerDesignator,
+                            cardPlacement,
+                        )
+                    ) {
+                        cardPlacement = player.getCardPlacement();
+                    }
+                    return cardPlacement;
+                })();
 
-            // assign cards to action track
-            this.actionOrderTrack.assignPlacement(firstCardPlacement);
+                // assign cards to action track
+                this.actionOrderTrack.assignPlacement(cardPlacement);
 
-            // get card placement from initiative player
-            const secondCardPlacement = otherPlayer.getCardPlacement(
-                this.actionOrderTrack.getAvailableSlots(),
-            );
+                // remove the cards from the player's hand
+                Object.values(cardPlacement).forEach((card) => {
+                    player.removeCardFromHand(card);
+                });
+            };
 
-            // assign cards to action track
-            this.actionOrderTrack.assignPlacement(secondCardPlacement);
+            // players take their turns
+            takeTurn(initiativePlayer);
+            takeTurn(otherPlayer);
 
             // print out the game state
             console.log(this.dump());
@@ -176,16 +190,13 @@ class Game {
      * Resolves the played cards in order.
      */
     private readonly resolve = () => {
-        if (
-            this.actionOrderTrack.getCardSlots().some((card) => {
-                return card === null;
-            })
-        ) {
-            throw new Error('A card is missing from the action track.');
-        }
-        for (const [slot, card] of (
-            this.actionOrderTrack.getCardSlots() as Card[]
-        ).entries()) {
+        for (const [slot, card] of this.actionOrderTrack
+            .getCardSlots()
+            .entries()) {
+            if (card === null) {
+                console.log('The card in slot', slot, 'was fogged.');
+                continue;
+            }
             // find the player that played the card
             const player = this.getPlayer(card.playerDesignator);
             const opponent =
