@@ -11,10 +11,24 @@ export enum PlayerDesignator {
     PLAYER_B = 'B',
 }
 
+/**
+ * Given a player designator, returns the other one.
+ */
+export const otherPlayerDesignator = (playerDesignator: PlayerDesignator) => {
+    return playerDesignator === PlayerDesignator.PLAYER_A
+        ? PlayerDesignator.PLAYER_B
+        : PlayerDesignator.PLAYER_A;
+};
+
 export type FlyingFishMovement = {
     character: Character;
     fromIslandNumber: number;
     toIslandNumber: number;
+};
+
+export type HarpoonTarget = {
+    character: Character;
+    islandNumber: number;
 };
 
 /**
@@ -112,6 +126,19 @@ export class Player {
      */
     public readonly getFogTarget = () => {
         return Math.floor(Math.random() * 6);
+    };
+
+    /**
+     * Returns a harpoon target.
+     */
+    public readonly getHarpoonTarget = (): HarpoonTarget => {
+        return {
+            islandNumber: Math.floor(Math.random() * 16) + 1,
+            character: new Character(
+                otherPlayerDesignator(this.playerDesignator),
+                sampleArray([20, 30, 40]),
+            ),
+        };
     };
 
     /**

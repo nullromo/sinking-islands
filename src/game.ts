@@ -2,7 +2,13 @@ import { ActionOrderTrack, CardPlacement } from './actionOrderTrack';
 import { CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
-import { FlyingFishMovement, Player, PlayerDesignator } from './player';
+import {
+    FlyingFishMovement,
+    HarpoonTarget,
+    otherPlayerDesignator,
+    Player,
+    PlayerDesignator,
+} from './player';
 import { assertUnreachable, shuffleArray } from './util';
 
 /**
@@ -156,10 +162,7 @@ class Game {
             this.resolve();
 
             // swap the initiative
-            this.initiative =
-                this.initiative === PlayerDesignator.PLAYER_A
-                    ? PlayerDesignator.PLAYER_B
-                    : PlayerDesignator.PLAYER_A;
+            this.initiative = otherPlayerDesignator(this.initiative);
 
             // players draw new cards
             this.playerA.draw(3);
@@ -169,11 +172,11 @@ class Game {
             console.log(this.dump());
         }
 
+        if (!loser) {
+            throw new Error('Could not determine a winner.');
+        }
         // the winner is the player that didn't lose
-        const winner =
-            loser === PlayerDesignator.PLAYER_A
-                ? PlayerDesignator.PLAYER_B
-                : PlayerDesignator.PLAYER_A;
+        const winner = otherPlayerDesignator(loser);
         console.log('Game over. The winner is', winner);
     };
 
@@ -197,6 +200,48 @@ class Game {
     };
 
     /**
+     * Returns true if the given flying fish movement is legal.
+     */
+    private readonly checkFlyingFishMovementLegal = (
+        flyingFishMovement: FlyingFishMovement,
+    ) => {
+        // the flying fish can't move to a netted island
+        if (
+            flyingFishMovement.toIslandNumber === this.playerANetIsland ||
+            flyingFishMovement.toIslandNumber === this.playerBNetIsland
+        ) {
+            return false;
+        }
+
+        // can't move to an island that already sank
+        if (!this.findIsland(flyingFishMovement?.toIslandNumber)) {
+            return false;
+        }
+
+        // can't move a character that is not there
+        if (
+            !this.findIsland(
+                flyingFishMovement?.fromIslandNumber,
+            )?.findCharacter(flyingFishMovement.character)
+        ) {
+            return false;
+        }
+
+        return true;
+    };
+
+    /**
+     * Returns true if the given harpoon target is legal.
+     */
+    private readonly checkHarpoonTargetLegal = (
+        playerDesignator: PlayerDesignator,
+        harpoonTarget: HarpoonTarget,
+    ) => {
+        //TODO
+        return true;
+    };
+
+    /**
      * Resolves the played cards in order.
      */
     private readonly resolve = () => {
@@ -209,10 +254,7 @@ class Game {
             }
             // find the player that played the card
             const player = this.getPlayer(card.playerDesignator);
-            const opponent =
-                player.playerDesignator === PlayerDesignator.PLAYER_A
-                    ? PlayerDesignator.PLAYER_B
-                    : PlayerDesignator.PLAYER_A;
+            const opponent = otherPlayerDesignator(player.playerDesignator);
 
             console.log('Executing', card);
 
@@ -251,18 +293,25 @@ class Game {
                     });
                     break;
                 case CardType.FLYING_FISH:
+                    // if there are no legal islands to move to, the flying
+                    // fish has no effect. This can only occur if all islands
+                    // are netted
+                    if (
+                        (this.islands.length === 2 &&
+                            this.playerANetIsland &&
+                            this.playerBNetIsland &&
+                            this.playerANetIsland !== this.playerBNetIsland) ||
+                        (this.islands.length === 1 &&
+                            (this.playerANetIsland || this.playerBNetIsland))
+                    ) {
+                        break;
+                    }
+
                     // try to get a movement until a valid one is given
                     let flyingFishMovement: FlyingFishMovement | null = null;
                     while (
                         !flyingFishMovement ||
-                        flyingFishMovement.toIslandNumber ===
-                            this.playerANetIsland ||
-                        flyingFishMovement.toIslandNumber ===
-                            this.playerBNetIsland ||
-                        !this.findIsland(flyingFishMovement?.toIslandNumber) ||
-                        !this.findIsland(
-                            flyingFishMovement?.fromIslandNumber,
-                        )?.findCharacter(flyingFishMovement.character)
+                        !this.checkFlyingFishMovementLegal(flyingFishMovement)
                     ) {
                         flyingFishMovement = player.getFlyingFishMovement();
                     }
@@ -285,7 +334,7 @@ class Game {
                 case CardType.FOG:
                     // if the fog was the last card (for some reason), then it
                     // has no effect
-                    if (slot === 5) {
+                    if (slot >= 5) {
                         break;
                     }
 
@@ -312,7 +361,23 @@ class Game {
                     }
                     break;
                 case CardType.HARPOON:
-                    // TODO
+                    // if there are no legal harpoon targets, then the harpoon
+                    // has no effect
+                    if (false) {
+                        // TODO
+                    }
+
+                    let harpoonTarget: HarpoonTarget | null = null;
+                    while (
+                        !harpoonTarget ||
+                        !this.checkHarpoonTargetLegal(
+                            player.playerDesignator,
+                            harpoonTarget,
+                        )
+                    ) {
+                        harpoonTarget = player.getHarpoonTarget();
+                    }
+                    //TODO
                     break;
                 case CardType.INDESCRETION:
                     // TODO
