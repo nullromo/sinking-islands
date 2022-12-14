@@ -53,6 +53,7 @@ class Game {
     ]);
 
     public constructor() {
+        console.log('Creating game');
         // create and randomize all the characters
         const characters = shuffleArray([
             new Character(PlayerDesignator.PLAYER_A, 20),
@@ -98,6 +99,7 @@ class Game {
      * Executes the main game loop.
      */
     public readonly play = () => {
+        console.log('Starting game');
         let loser: PlayerDesignator | undefined = undefined;
         while (true) {
             // check if there is a loser and break if there is
@@ -148,7 +150,7 @@ class Game {
                         : ''
                 }\n`;
             })
-            .join('')}`;
+            .join('')}\n${this.playerA.dump()}\n${this.playerB.dump()}`;
     };
 }
 

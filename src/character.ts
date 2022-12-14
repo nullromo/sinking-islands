@@ -1,4 +1,5 @@
-import { PlayerGamePiece, PlayerDesignator } from './player';
+import { PlayerDesignator } from './player';
+import { PlayerGamePiece } from './playerGamePiece';
 
 /**
  * Represents a character.
