@@ -72,7 +72,7 @@ class Game {
 
         // add one character to each island
         characters.forEach((character, index) => {
-            this.islands[index].addCharacter(character);
+            this.islands[index % 4].addCharacter(character);
         });
     }
 
@@ -100,7 +100,7 @@ class Game {
         let iterations = 0;
         while (true) {
             iterations += 1;
-            if (iterations > 200) {
+            if (iterations > 1) {
                 console.log('breaking infinite loop');
                 break;
             }
@@ -188,13 +188,46 @@ class Game {
         ).entries()) {
             // find the player that played the card
             const player = this.getPlayer(card.playerDesignator);
+            const opponent =
+                player.playerDesignator === PlayerDesignator.PLAYER_A
+                    ? PlayerDesignator.PLAYER_B
+                    : PlayerDesignator.PLAYER_A;
 
             console.log('Executing', card);
 
             // execute the card's actions
             switch (card.cardType) {
                 case CardType.CRAB:
-                    // TODO
+                    // handle fights on all the islands
+                    this.islands.forEach((island) => {
+                        // compute the strength of each player
+                        const { playerStrength, opponentStrength } = island
+                            .getCharacters()
+                            .reduce(
+                                (totals, character) => {
+                                    return {
+                                        playerStrength:
+                                            totals.playerStrength +
+                                            (character.playerDesignator ===
+                                            card.playerDesignator
+                                                ? character.strength
+                                                : 0),
+                                        opponentStrength:
+                                            totals.opponentStrength +
+                                            (character.playerDesignator ===
+                                            card.playerDesignator
+                                                ? 0
+                                                : character.strength),
+                                    };
+                                },
+                                { playerStrength: 0, opponentStrength: 0 },
+                            );
+
+                        // kill necessary characters
+                        if (playerStrength > opponentStrength) {
+                            island.removeCharactersOfPlayer(opponent);
+                        }
+                    });
                     break;
                 case CardType.FLYING_FISH:
                     // TODO

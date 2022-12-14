@@ -1,4 +1,5 @@
 import { Character } from './character';
+import { PlayerDesignator } from './player';
 
 /**
  * Unique IDs for each type of island.
@@ -19,7 +20,7 @@ export class Island {
     public readonly largeCapacity: boolean;
 
     // list of characters present on the island
-    private readonly characters: Character[] = [];
+    private characters: Character[] = [];
 
     public constructor(
         islandNumber: number,
@@ -59,6 +60,17 @@ export class Island {
                 `There is no character matching ${characterToRemove.dump()} on this island (${this.dump()}).`,
             );
         }
+    };
+
+    /**
+     * Removes all the characters of the given player.
+     */
+    public readonly removeCharactersOfPlayer = (
+        playerDesignator: PlayerDesignator,
+    ) => {
+        this.characters = this.characters.filter((character) => {
+            return character.playerDesignator !== playerDesignator;
+        });
     };
 
     /**
