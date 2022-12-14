@@ -47,6 +47,15 @@ export class Island {
     };
 
     /**
+     * Attempts to find a character on this island.
+     */
+    public readonly findCharacter = (characterToFind: Character) => {
+        return this.characters.find((character) => {
+            return character.dump() === characterToFind.dump();
+        });
+    };
+
+    /**
      * Removes a character matching the given character from the island.
      */
     public readonly removeCharacter = (characterToRemove: Character) => {

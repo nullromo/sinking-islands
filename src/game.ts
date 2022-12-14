@@ -2,7 +2,7 @@ import { ActionOrderTrack, CardPlacement } from './actionOrderTrack';
 import { CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
-import { Player, PlayerDesignator } from './player';
+import { FlyingFishMovement, Player, PlayerDesignator } from './player';
 import { assertUnreachable, shuffleArray } from './util';
 
 /**
@@ -122,6 +122,7 @@ class Game {
             const takeTurn = (player: Player) => {
                 // get card placement from player
                 const cardPlacement = (() => {
+                    // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
                     while (
                         !cardPlacement ||
@@ -187,6 +188,15 @@ class Game {
     };
 
     /**
+     * Attempts to find an island matching the given island number.
+     */
+    private readonly findIsland = (islandNumber: number) => {
+        return this.islands.find((island) => {
+            return island.islandNumber === islandNumber;
+        });
+    };
+
+    /**
      * Resolves the played cards in order.
      */
     private readonly resolve = () => {
@@ -241,7 +251,36 @@ class Game {
                     });
                     break;
                 case CardType.FLYING_FISH:
-                    // TODO
+                    // try to get a movement until a valid one is given
+                    let flyingFishMovement: FlyingFishMovement | null = null;
+                    while (
+                        !flyingFishMovement ||
+                        flyingFishMovement.toIslandNumber ===
+                            this.playerANetIsland ||
+                        flyingFishMovement.toIslandNumber ===
+                            this.playerBNetIsland ||
+                        !this.findIsland(flyingFishMovement?.toIslandNumber) ||
+                        !this.findIsland(
+                            flyingFishMovement?.fromIslandNumber,
+                        )?.findCharacter(flyingFishMovement.character)
+                    ) {
+                        flyingFishMovement = player.getFlyingFishMovement();
+                    }
+
+                    // move the character
+                    console.log(
+                        flyingFishMovement.character.dump(),
+                        'flies from island',
+                        flyingFishMovement.fromIslandNumber,
+                        'to island',
+                        flyingFishMovement.toIslandNumber,
+                    );
+                    this.findIsland(
+                        flyingFishMovement.fromIslandNumber,
+                    )?.removeCharacter(flyingFishMovement.character);
+                    this.findIsland(
+                        flyingFishMovement.toIslandNumber,
+                    )?.addCharacter(flyingFishMovement.character);
                     break;
                 case CardType.FOG:
                     // TODO
