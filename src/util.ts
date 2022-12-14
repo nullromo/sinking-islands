@@ -1,3 +1,5 @@
+import util from 'util';
+
 /**
  * Shuffles an array in place and returns it.
  */
@@ -33,4 +35,11 @@ export const sampleArray = <T>(array: T[]) => {
  */
 export const assertUnreachable = (thing: never): never => {
     throw new Error(`Impossible value: ${thing}`);
+};
+
+/**
+ * Deeply converts an object to a string.
+ */
+export const fullObject = (obj: unknown) => {
+    return util.inspect(obj, false, null, true);
 };
