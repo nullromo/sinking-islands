@@ -1,5 +1,5 @@
 /**
- * Shuffles an array in place.
+ * Shuffles an array in place and returns it.
  */
 export const shuffleArray = <T>(array: T[]) => {
     let currentIndex = array.length;
@@ -19,4 +19,18 @@ export const shuffleArray = <T>(array: T[]) => {
     }
 
     return array;
+};
+
+/**
+ * Returns a random element from the given array.
+ */
+export const sampleArray = <T>(array: T[]) => {
+    return array[Math.floor(Math.random() * array.length)];
+};
+
+/**
+ * Utility for switch statement completeness.
+ */
+export const assertUnreachable = (thing: never): never => {
+    throw new Error(`Impossible value: ${thing}`);
 };

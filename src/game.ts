@@ -1,8 +1,9 @@
+import { ActionOrderTrack } from './actionOrderTrack';
+import { Card, CardType } from './card';
 import { Character } from './character';
-import { Player, PlayerDesignator } from './player';
 import { Island, IslandType } from './island';
-import { shuffleArray } from './util';
-import { Card } from './card';
+import { Player, PlayerDesignator } from './player';
+import { assertUnreachable, shuffleArray } from './util';
 
 /**
  * Represents a game of Sinking Islands
@@ -24,13 +25,8 @@ class Game {
     private playerA = new Player(PlayerDesignator.PLAYER_A);
     private playerB = new Player(PlayerDesignator.PLAYER_B);
 
-    // representations of card slots on the Action Order Track
-    private cardSlot1: Card | null = null;
-    private cardSlot2: Card | null = null;
-    private cardSlot3: Card | null = null;
-    private cardSlot4: Card | null = null;
-    private cardSlot5: Card | null = null;
-    private cardSlot6: Card | null = null;
+    // representation of the Action Order Track
+    private actionOrderTrack = new ActionOrderTrack();
 
     // representation of all the islands in the archipelago
     private readonly islands: Island[] = shuffleArray([
@@ -101,22 +97,58 @@ class Game {
     public readonly play = () => {
         console.log('Starting game');
         let loser: PlayerDesignator | undefined = undefined;
+        let iterations = 0;
         while (true) {
+            iterations += 1;
+            if (iterations > 200) {
+                console.log('breaking infinite loop');
+                break;
+            }
             // check if there is a loser and break if there is
             loser = this.getLoser();
             if (loser) {
                 break;
             }
 
-            ////
-            const island = this.islands.find((island) => {
-                return island.getCharacters().length > 0;
-            });
-            if (island) {
-                console.log('rem');
-                island.removeCharacter(island.getCharacters()[0]);
-            }
-            ////
+            // print out the game state
+            console.log(this.dump());
+
+            // determine player order
+            const initiativePlayer = this.getPlayer(this.initiative);
+            const otherPlayer =
+                initiativePlayer === this.playerA ? this.playerB : this.playerA;
+
+            // get card placement from initiative player
+            const firstCardPlacement = initiativePlayer.getCardPlacement(
+                this.actionOrderTrack.getAvailableSlots(),
+            );
+
+            // assign cards to action track
+            this.actionOrderTrack.assignPlacement(firstCardPlacement);
+
+            // get card placement from initiative player
+            const secondCardPlacement = otherPlayer.getCardPlacement(
+                this.actionOrderTrack.getAvailableSlots(),
+            );
+
+            // assign cards to action track
+            this.actionOrderTrack.assignPlacement(secondCardPlacement);
+
+            // print out the game state
+            console.log(this.dump());
+
+            // resolve the actions
+            this.resolve();
+
+            // swap the initiative
+            this.initiative =
+                this.initiative === PlayerDesignator.PLAYER_A
+                    ? PlayerDesignator.PLAYER_B
+                    : PlayerDesignator.PLAYER_A;
+
+            // players draw new cards
+            this.playerA.draw(3);
+            this.playerB.draw(3);
 
             // print out the game state
             console.log(this.dump());
@@ -128,6 +160,100 @@ class Game {
                 ? PlayerDesignator.PLAYER_B
                 : PlayerDesignator.PLAYER_A;
         console.log('Game over. The winner is', winner);
+    };
+
+    /**
+     * Given a player designator, returns the corresponding player.
+     */
+    private readonly getPlayer = (playerDesignator: PlayerDesignator) => {
+        if (playerDesignator === PlayerDesignator.PLAYER_A) {
+            return this.playerA;
+        }
+        return this.playerB;
+    };
+
+    /**
+     * Resolves the played cards in order.
+     */
+    private readonly resolve = () => {
+        if (
+            this.actionOrderTrack.getCardSlots().some((card) => {
+                return card === null;
+            })
+        ) {
+            throw new Error('A card is missing from the action track.');
+        }
+        for (const [slot, card] of (
+            this.actionOrderTrack.getCardSlots() as Card[]
+        ).entries()) {
+            // find the player that played the card
+            const player = this.getPlayer(card.playerDesignator);
+
+            console.log('Executing', card);
+
+            // execute the card's actions
+            switch (card.cardType) {
+                case CardType.CRAB:
+                    // TODO
+                    break;
+                case CardType.FLYING_FISH:
+                    // TODO
+                    break;
+                case CardType.FOG:
+                    // TODO
+                    break;
+                case CardType.HARPOON:
+                    // TODO
+                    break;
+                case CardType.INDESCRETION:
+                    // TODO
+                    break;
+                case CardType.MEDITATION:
+                    // TODO
+                    break;
+                case CardType.MOVEMENT:
+                    // TODO
+                    break;
+                case CardType.NET:
+                    // TODO
+                    break;
+                case CardType.PILINGS:
+                    // TODO
+                    break;
+                case CardType.PRAYER:
+                    // TODO
+                    break;
+                case CardType.TIDAL_SURGE:
+                    // TODO
+                    break;
+                case CardType.TIDAL_WAVE:
+                    // TODO
+                    break;
+                case CardType.TORTOISE:
+                    // TODO
+                    break;
+                case CardType.VOLCANIC_ERUPTION:
+                    // TODO
+                    break;
+                case CardType.WEAKNESS:
+                    // TODO
+                    break;
+                default:
+                    assertUnreachable(card.cardType);
+            }
+
+            // move the card to the appropriate zone
+            this.actionOrderTrack.resetSlot(slot);
+            if (
+                card.cardType === CardType.PILINGS ||
+                card.cardType === CardType.NET ||
+                card.cardType === CardType.TORTOISE
+            ) {
+                player.setAside(card);
+            } else {
+                player.discardCard(card);
+            }
+        }
     };
 
     /**
@@ -150,7 +276,9 @@ class Game {
                         : ''
                 }\n`;
             })
-            .join('')}\n${this.playerA.dump()}\n${this.playerB.dump()}`;
+            .join(
+                '',
+            )}\n${this.playerA.dump()}\n${this.playerB.dump()}\n${this.actionOrderTrack.dump()}`;
     };
 }
 
