@@ -279,7 +279,12 @@ class Game {
         }
 
         // can't move to an island that is at full capacity
-        if (toIsland.smallCapacity && toIsland.getCharacters().length > 0) {
+        if (
+            toIsland.smallCapacity &&
+            toIsland.islandNumber !== this.playerA.pilingsIsland &&
+            toIsland.islandNumber !== this.playerB.pilingsIsland &&
+            toIsland.getCharacters().length > 0
+        ) {
             return false;
         }
 
@@ -487,6 +492,10 @@ class Game {
                     !this.islands.some((island) => {
                         return (
                             !island.smallCapacity ||
+                            island.islandNumber ===
+                                this.playerA.pilingsIsland ||
+                            island.islandNumber ===
+                                this.playerB.pilingsIsland ||
                             island.getCharacters().length <= 0
                         );
                     })
@@ -637,7 +646,11 @@ class Game {
                 // nothing
                 if (
                     !this.islands.some((island) => {
-                        return island.smallCapacity;
+                        return (
+                            island.smallCapacity &&
+                            island.islandNumber !==
+                                this.getPlayer(opponent).pilingsIsland
+                        );
                     })
                 ) {
                     console.log(
@@ -650,7 +663,8 @@ class Game {
                 let pilingsTarget: number | null = null;
                 while (
                     !pilingsTarget ||
-                    !this.findIsland(pilingsTarget)?.smallCapacity
+                    !this.findIsland(pilingsTarget)?.smallCapacity ||
+                    pilingsTarget === this.getPlayer(opponent).pilingsIsland
                 ) {
                     pilingsTarget = player.getPilingsTarget();
                 }
