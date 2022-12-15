@@ -357,6 +357,9 @@ class Game {
 
                         // kill necessary characters
                         if (playerStrength > opponentStrength) {
+                            console.log(
+                                `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
+                            );
                             island.removeCharactersOfPlayer(opponent);
                         }
                     });
