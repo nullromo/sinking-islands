@@ -208,10 +208,20 @@ export class Player {
      */
     public readonly draw = (cards: number) => {
         let toDraw = cards;
+
+        // draw cards while cards still need to be drawn
         while (toDraw > 0) {
+            // if the deck is empty, reshuffle
             if (this.deck.length <= 0) {
-                this.reshuffle();
+                if (this.discardCard.length > 0) {
+                    this.reshuffle();
+                } else {
+                    // if the discard pile is also empty, just be done with it
+                    return;
+                }
             }
+
+            // draw one card
             toDraw -= 1;
             this.hand.push(this.deck.pop() as Card);
         }
