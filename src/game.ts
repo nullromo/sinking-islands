@@ -183,7 +183,7 @@ class Game {
 
             // advance the rising waters marker
             while (!this.findIsland(this.nextIslandToSink)) {
-                this.nextIslandToSink = (this.nextIslandToSink + 1) % 16;
+                this.nextIslandToSink = (this.nextIslandToSink % 16) + 1;
             }
 
             // swap the initiative
@@ -430,9 +430,15 @@ class Game {
                     )?.addCharacter(flyingFishMovement.character);
                     break;
                 case CardType.FOG:
-                    // if the fog was the last card (for some reason), then it
-                    // has no effect
-                    if (slot >= 5) {
+                    // if the fog has no targets then it has no effect
+                    if (
+                        !this.actionOrderTrack
+                            .getCardSlots()
+                            .some((otherCard, otherSlot) => {
+                                return otherCard !== null && otherSlot !== slot;
+                            })
+                    ) {
+                        console.log('There is no card to fog.');
                         break;
                     }
 
