@@ -31,6 +31,8 @@ export type HarpoonTarget = {
     islandNumber: number;
 };
 
+export type TortoiseTarget = HarpoonTarget;
+
 /**
  * Represents a player.
  */
@@ -173,7 +175,14 @@ export class Player {
      * Returns a tidal wave target.
      */
     public readonly getTidalWaveTarget = () => {
-        return Math.floor(Math.random() * 16) + 1;
+        return randomIslandNumber();
+    };
+
+    /**
+     * Returns a tortoise target.
+     */
+    public readonly getTortoiseTarget = (): TortoiseTarget => {
+        return this.getHarpoonTarget();
     };
 
     /**

@@ -8,6 +8,7 @@ import {
     otherPlayerDesignator,
     Player,
     PlayerDesignator,
+    TortoiseTarget,
 } from './player';
 import { assertUnreachable, shuffleArray } from './util';
 
@@ -174,19 +175,38 @@ class Game {
             // reset the face up card list
             this.actionOrderTrack.resetFaceUpCards();
 
-            // sink the lowest island
-            this.islands = this.islands.filter((island) => {
-                return island.islandNumber !== this.nextIslandToSink;
-            });
-
-            // players reclaim their set aside cards due to sunken tokens
+            // players reclaim their set aside cards due to sunken tokens or
+            // characters
             [this.playerA, this.playerB].forEach((player) => {
+                // reclaim net card
                 if (player.netIsland === this.nextIslandToSink) {
                     player.reclaim(CardType.NET);
                 }
+
+                // reclaim pilings card
                 if (player.pilingsIsland === this.nextIslandToSink) {
                     player.reclaim(CardType.PILINGS);
                 }
+
+                // reclaim tortoise card
+                if (
+                    this.findIsland(this.nextIslandToSink)
+                        ?.getCharacters()
+                        .some((character) => {
+                            return (
+                                character.playerDesignator ===
+                                    player.playerDesignator &&
+                                character.tortoise
+                            );
+                        })
+                ) {
+                    player.reclaim(CardType.TORTOISE);
+                }
+            });
+
+            // sink the lowest island
+            this.islands = this.islands.filter((island) => {
+                return island.islandNumber !== this.nextIslandToSink;
             });
 
             // if there are no islands left, then the game is a draw
@@ -435,6 +455,20 @@ class Game {
                         console.log(
                             `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
                         );
+
+                        // if a tortoise died, reclaim the appropriate card
+                        if (
+                            island.getCharacters().some((character) => {
+                                return (
+                                    character.playerDesignator === opponent &&
+                                    character.tortoise
+                                );
+                            })
+                        ) {
+                            this.getPlayer(opponent).reclaim(CardType.TORTOISE);
+                        }
+
+                        // remove the dead characters
                         island.removeCharactersOfPlayer(opponent);
                     }
                 });
@@ -686,10 +720,39 @@ class Game {
                 this.nextIslandToSink = tidalWaveTarget;
                 break;
             case CardType.TORTOISE:
-                // TODO
+                // try to get a tortoise target until a valid one is given
+                let tortoiseTarget: TortoiseTarget | null = null;
+                while (
+                    !tortoiseTarget ||
+                    tortoiseTarget.character.playerDesignator !==
+                        player.playerDesignator ||
+                    !this.findIsland(tortoiseTarget.islandNumber)
+                        ?.getCharacters()
+                        .some((character) => {
+                            return (
+                                character.dump() ===
+                                tortoiseTarget?.character.dump()
+                            );
+                        })
+                ) {
+                    tortoiseTarget = player.getTortoiseTarget();
+                }
+
+                // make the target a tortoise
+                console.log(
+                    `Character ${tortoiseTarget.character.dump()} on island ${
+                        tortoiseTarget.islandNumber
+                    } turns into a tortoise.`,
+                );
+                (
+                    (
+                        this.findIsland(tortoiseTarget.islandNumber) as Island
+                    ).findCharacter(tortoiseTarget.character) as Character
+                ).tortoise = true;
                 break;
             case CardType.VOLCANIC_ERUPTION:
                 // TODO
+                // (remember to reclaim tortoise cards)
                 break;
             case CardType.WEAKNESS:
                 // TODO
