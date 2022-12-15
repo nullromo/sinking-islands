@@ -44,6 +44,9 @@ export class Player {
     private discardPile: Card[] = [];
     private readonly setAsideCards: Card[] = [];
 
+    // specifier for whether or not the player is under indescretion
+    public indescretion = false;
+
     public constructor(playerDesignator: PlayerDesignator) {
         this.playerDesignator = playerDesignator;
 

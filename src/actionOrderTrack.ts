@@ -20,6 +20,9 @@ export class ActionOrderTrack {
         null,
     ];
 
+    // list of slot numbers with cards that were played face up
+    private faceUpCards: number[] = [];
+
     /**
      * Returns the list of card slots.
      */
@@ -137,10 +140,23 @@ export class ActionOrderTrack {
     /**
      * Given a card placement, fills in the card slots accordingly.
      */
-    public readonly assignPlacement = (cardPlacement: CardPlacement) => {
+    public readonly assignPlacement = (
+        cardPlacement: CardPlacement,
+        indescretion: boolean,
+    ) => {
         Object.entries(cardPlacement).forEach(([slot, card]) => {
             this.placeCard(Number(slot), card);
+            if (indescretion) {
+                this.faceUpCards.push(Number(slot));
+            }
         });
+    };
+
+    /**
+     * Resets the list of face up cards.
+     */
+    public readonly resetFaceUpCards = () => {
+        this.faceUpCards = [];
     };
 
     /**
@@ -149,6 +165,6 @@ export class ActionOrderTrack {
     public readonly dump = () => {
         return `[${this.cardSlots.map((card) => {
             return card ? `${card.cardType}_${card.playerDesignator}` : '_';
-        })}]`;
+        })}]fu[${this.faceUpCards}]`;
     };
 }

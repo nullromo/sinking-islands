@@ -139,12 +139,18 @@ class Game {
                 })();
 
                 // assign cards to action track
-                this.actionOrderTrack.assignPlacement(cardPlacement);
+                this.actionOrderTrack.assignPlacement(
+                    cardPlacement,
+                    player.indescretion,
+                );
 
                 // remove the cards from the player's hand
                 Object.values(cardPlacement).forEach((card) => {
                     player.removeCardFromHand(card);
                 });
+
+                // remove indescretion's effect from the player
+                player.indescretion = false;
             };
 
             // players take their turns
@@ -170,6 +176,9 @@ class Game {
                 // otherwise, it's a real error
                 throw error;
             }
+
+            // reset the face up card list
+            this.actionOrderTrack.resetFaceUpCards();
 
             // sink the lowest island
             this.islands = this.islands.filter((island) => {
@@ -520,7 +529,14 @@ class Game {
                     )?.removeCharacter(harpoonTarget.character);
                     break;
                 case CardType.INDESCRETION:
-                    // TODO
+                    console.log(
+                        `Player ${otherPlayerDesignator(
+                            player.playerDesignator,
+                        )} is put under the effects of indescretion.`,
+                    );
+                    this.getPlayer(
+                        otherPlayerDesignator(player.playerDesignator),
+                    ).indescretion = true;
                     break;
                 case CardType.MEDITATION:
                     // TODO
