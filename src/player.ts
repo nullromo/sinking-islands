@@ -190,6 +190,27 @@ export class Player {
     };
 
     /**
+     * Returns a volcanic eruption target.
+     */
+    public readonly getVolcanicEruptionTarget = () => {
+        return randomIslandNumber();
+    };
+
+    /**
+     * Returns the strength of a character that should flee.
+     */
+    public readonly getFleeChoice = () => {
+        const character = new Character(
+            this.playerDesignator,
+            sampleArray([20, 30, 40]),
+        );
+        if (Math.random() > 0.5) {
+            character.tortoise = true;
+        }
+        return character;
+    };
+
+    /**
      * Adds a card to this player's discard pile.
      */
     public readonly discardCard = (card: Card) => {

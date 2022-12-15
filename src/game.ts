@@ -771,11 +771,183 @@ class Game {
                 ).tortoise = true;
                 break;
             case CardType.VOLCANIC_ERUPTION:
-                // TODO
-                // (remember to reclaim tortoise cards)
+                // if there are no volcanoes, the card does nothing
+                if (
+                    !this.islands.some((island) => {
+                        return island.islandType === IslandType.VOLCANO;
+                    })
+                ) {
+                    console.log('There are no volcanoes left.');
+                    break;
+                }
+
+                // try to get a volcanic eruption target until a valid one is
+                // given
+                let volcanicEruptionTarget: number | null = null;
+                while (
+                    !volcanicEruptionTarget ||
+                    this.findIsland(volcanicEruptionTarget)?.islandType !==
+                        IslandType.VOLCANO
+                ) {
+                    volcanicEruptionTarget = player.getVolcanicEruptionTarget();
+                }
+
+                // erupt the volcano
+                console.log(`Island ${volcanicEruptionTarget} erupts.`);
+
+                // find islands affected by lava flows
+                const lavaFlowIslands = this.getAdjacentIslands(
+                    volcanicEruptionTarget,
+                );
+
+                // handle lava flow fleeing
+                lavaFlowIslands.forEach((lavaFlowIsland) => {
+                    // find the safe island to flee to
+                    const safeIsland = (() => {
+                        const safeIslandList = this.getAdjacentIslands(
+                            lavaFlowIsland.islandNumber,
+                        ).filter((island) => {
+                            return (
+                                island.islandNumber !== volcanicEruptionTarget
+                            );
+                        });
+                        if (safeIslandList.length <= 0) {
+                            return null;
+                        }
+                        if (safeIslandList.length > 1) {
+                            throw new Error(
+                                'There cannot be two safe islands for characters to flee to.',
+                            );
+                        }
+                        return safeIslandList[0];
+                    })();
+
+                    // if there is no safe island, no fleeing occurs
+                    if (!safeIsland) {
+                        return;
+                    }
+
+                    // if the safe island is small and unoccupied and not
+                    // netted and does not have pilines and the volcano
+                    // erupter has a character on the lava flow island, let
+                    // them choose a character to flee
+                    if (
+                        safeIsland.smallCapacity &&
+                        safeIsland.getCharacters().length <= 0 &&
+                        this.playerA.netIsland !== safeIsland.islandNumber &&
+                        this.playerB.netIsland !== safeIsland.islandNumber &&
+                        safeIsland.islandNumber !==
+                            this.playerA.pilingsIsland &&
+                        safeIsland.islandNumber !==
+                            this.playerB.pilingsIsland &&
+                        lavaFlowIsland.getCharacters().some((character) => {
+                            return (
+                                character.playerDesignator ===
+                                player.playerDesignator
+                            );
+                        })
+                    ) {
+                        // try to get a flee choice until a valid one is
+                        // given
+                        let characterToFlee: Character | null = null;
+                        while (
+                            !characterToFlee ||
+                            characterToFlee.playerDesignator !==
+                                player.playerDesignator ||
+                            !lavaFlowIsland
+                                .getCharacters()
+                                .some((character) => {
+                                    return (
+                                        character.dump() ===
+                                        characterToFlee?.dump()
+                                    );
+                                })
+                        ) {
+                            characterToFlee = player.getFleeChoice();
+                        }
+
+                        // move the chosen character
+                        console.log(
+                            `Player ${
+                                player.playerDesignator
+                            }'s character ${characterToFlee.dump()} flees first.`,
+                        );
+
+                        // reset tortoise and reclaim card if necessary
+                        if (characterToFlee.tortoise) {
+                            characterToFlee.tortoise = false;
+                            player.reclaim(CardType.TORTOISE);
+                        }
+
+                        // move the character
+                        console.log(
+                            `Character ${characterToFlee.dump()} flees from the lava flow.`,
+                        );
+                        lavaFlowIsland.removeCharacter(characterToFlee);
+                        safeIsland.addCharacter(characterToFlee);
+                    }
+
+                    // everyone else gets a chance to flee
+                    if (
+                        (!safeIsland.smallCapacity ||
+                            safeIsland.islandNumber ===
+                                this.playerA.pilingsIsland ||
+                            safeIsland.islandNumber ===
+                                this.playerB.pilingsIsland) &&
+                        safeIsland.islandNumber !== this.playerA.netIsland &&
+                        safeIsland.islandNumber !== this.playerB.netIsland
+                    ) {
+                        // move all characters
+                        lavaFlowIsland.getCharacters().forEach((character) => {
+                            // reset tortoise and reclaim card if necessary
+                            if (character.tortoise) {
+                                character.tortoise = false;
+                                this.getPlayer(
+                                    character.playerDesignator,
+                                ).reclaim(CardType.TORTOISE);
+                            }
+
+                            // move the character
+                            console.log(
+                                `Character ${character.dump()} flees from the lava flow.`,
+                            );
+                            lavaFlowIsland.removeCharacter(character);
+                            safeIsland.addCharacter(character);
+                        });
+                    }
+                });
+
+                // now that everyone has fled, burn anyone who didn't flee
+                lavaFlowIslands.forEach((lavaFlowIsland) => {
+                    lavaFlowIsland.getCharacters().forEach((character) => {
+                        // reset tortoise and reclaim card if necessary
+                        if (character.tortoise) {
+                            this.getPlayer(character.playerDesignator).reclaim(
+                                CardType.TORTOISE,
+                            );
+                        }
+
+                        // remove the character
+                        console.log(
+                            `Character ${character.dump()} burns to death in the lava flow.`,
+                        );
+                        lavaFlowIsland.removeCharacter(character);
+                    });
+                });
+
+                // remove the volcano itself
+                console.log(
+                    `Island ${volcanicEruptionTarget} erupts and sinks.`,
+                );
+                this.islands = this.islands.filter((island) => {
+                    return island.islandNumber !== volcanicEruptionTarget;
+                });
                 break;
             case CardType.WEAKNESS:
                 // TODO
+                console.log(
+                    `Player ${player.playerDesignator}'s characters are afflicted with weakness.`,
+                );
                 break;
             default:
                 assertUnreachable(card.cardType);
