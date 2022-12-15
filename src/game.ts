@@ -673,7 +673,17 @@ class Game {
                 this.nextIslandToSink = tidalSurgeTarget;
                 break;
             case CardType.TIDAL_WAVE:
-                // TODO
+                // try to get a tidal wave target until a valid one is given
+                let tidalWaveTarget: number | null = null;
+                while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
+                    tidalWaveTarget = player.getTidalWaveTarget();
+                }
+
+                // move the rising waters marker
+                console.log(
+                    `A tidal wave moves upon island ${tidalWaveTarget}.`,
+                );
+                this.nextIslandToSink = tidalWaveTarget;
                 break;
             case CardType.TORTOISE:
                 // TODO
