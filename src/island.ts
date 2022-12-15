@@ -86,7 +86,13 @@ export class Island {
      * Returns a string representation of the island.
      */
     public readonly dump = () => {
-        return `${this.islandNumber}:${this.characters
+        return `${this.islandNumber}${this.smallCapacity ? '-' : '+'}${
+            this.islandType === IslandType.SACRED
+                ? '$'
+                : this.islandType === IslandType.VOLCANO
+                ? 'V'
+                : ''
+        }:${this.characters
             .map((character) => {
                 return character.dump();
             })
