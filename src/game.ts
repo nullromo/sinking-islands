@@ -551,7 +551,17 @@ class Game {
                     // TODO
                     break;
                 case CardType.NET:
-                    // TODO
+                    // try to get a net target until a valid one is given
+                    let netTarget: number | null = null;
+                    while (!netTarget || !this.findIsland(netTarget)) {
+                        netTarget = player.getNetTarget();
+                    }
+
+                    // place the net
+                    console.log(
+                        `Player ${player.playerDesignator} casts a net over island ${netTarget}.`,
+                    );
+                    player.netIsland = netTarget;
                     break;
                 case CardType.PILINGS:
                     // TODO
