@@ -413,7 +413,7 @@ class Game {
                 case CardType.FLYING_FISH:
                     // if there are no legal islands to move to, the flying
                     // fish has no effect. This can only occur if all islands
-                    // are netted
+                    // are netted or are at full capacity
                     if (
                         (this.islands.length === 2 &&
                             this.playerA.netIsland &&
@@ -421,8 +421,18 @@ class Game {
                             this.playerA.netIsland !==
                                 this.playerB.netIsland) ||
                         (this.islands.length === 1 &&
-                            (this.playerA.netIsland || this.playerB.netIsland))
+                            (this.playerA.netIsland ||
+                                this.playerB.netIsland)) ||
+                        !this.islands.some((island) => {
+                            return (
+                                !island.smallCapacity ||
+                                island.getCharacters().length <= 0
+                            );
+                        })
                     ) {
+                        console.log(
+                            'There is nowhere for a flying fish to fly.',
+                        );
                         break;
                     }
 
