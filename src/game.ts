@@ -527,6 +527,12 @@ class Game {
                 this.findIsland(
                     flyingFishMovement.toIslandNumber,
                 )?.addCharacter(flyingFishMovement.character);
+
+                // remove tortoise and reclaim card if necessary
+                if (flyingFishMovement.character.tortoise) {
+                    flyingFishMovement.character.tortoise = false;
+                    player.reclaim(CardType.TORTOISE);
+                }
                 break;
             case CardType.FOG:
                 // if the fog has no targets then it has no effect
