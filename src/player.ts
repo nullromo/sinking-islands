@@ -3,6 +3,10 @@ import { Card, CardType } from './card';
 import { Character } from './character';
 import { sampleArray, shuffleArray } from './util';
 
+const randomIslandNumber = () => {
+    return Math.floor(Math.random() * 16) + 1;
+};
+
 /**
  * Unique IDs for each player.
  */
@@ -121,8 +125,8 @@ export class Player {
      */
     public readonly getFlyingFishMovement = (): FlyingFishMovement => {
         return {
-            fromIslandNumber: Math.floor(Math.random() * 16) + 1,
-            toIslandNumber: Math.floor(Math.random() * 16) + 1,
+            fromIslandNumber: randomIslandNumber(),
+            toIslandNumber: randomIslandNumber(),
             character: new Character(
                 this.playerDesignator,
                 sampleArray([20, 30, 40]),
@@ -142,7 +146,7 @@ export class Player {
      */
     public readonly getHarpoonTarget = (): HarpoonTarget => {
         return {
-            islandNumber: Math.floor(Math.random() * 16) + 1,
+            islandNumber: randomIslandNumber(),
             character: new Character(
                 otherPlayerDesignator(this.playerDesignator),
                 sampleArray([20, 30, 40]),
@@ -154,21 +158,21 @@ export class Player {
      * Returns a net target.
      */
     public readonly getNetTarget = () => {
-        return Math.floor(Math.random() * 16) + 1;
+        return randomIslandNumber();
     };
 
     /**
      * Returns a pilings target.
      */
     public readonly getPilingsTarget = () => {
-        return Math.floor(Math.random() * 16) + 1;
+        return randomIslandNumber();
     };
 
     /**
      * Returns a tidal surge target.
      */
     public readonly getTidalSurgeTarget = () => {
-        return Math.floor(Math.random() * 16) + 1;
+        return randomIslandNumber();
     };
 
     /**
