@@ -172,6 +172,10 @@ class Game {
                 throw error;
             }
 
+            // weakness wears off
+            this.playerA.weakness = false;
+            this.playerB.weakness = false;
+
             // reset the face up card list
             this.actionOrderTrack.resetFaceUpCards();
 
@@ -442,13 +446,17 @@ class Game {
                                         totals.playerStrength +
                                         (character.playerDesignator ===
                                         card.playerDesignator
-                                            ? character.strength
+                                            ? player.weakness
+                                                ? 10
+                                                : character.strength
                                             : 0),
                                     opponentStrength:
                                         totals.opponentStrength +
                                         (character.playerDesignator ===
                                         card.playerDesignator
                                             ? 0
+                                            : this.getPlayer(opponent).weakness
+                                            ? 10
                                             : character.strength),
                                 };
                             },
@@ -944,10 +952,10 @@ class Game {
                 });
                 break;
             case CardType.WEAKNESS:
-                // TODO
                 console.log(
                     `Player ${player.playerDesignator}'s characters are afflicted with weakness.`,
                 );
+                this.getPlayer(opponent).weakness = true;
                 break;
             default:
                 assertUnreachable(card.cardType);

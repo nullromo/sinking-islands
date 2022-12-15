@@ -57,6 +57,9 @@ export class Player {
     // specifier for whether or not the player is under indescretion
     public indescretion = false;
 
+    // specifier for whether or not the player is afflicted with weakness
+    public weakness = false;
+
     public constructor(playerDesignator: PlayerDesignator) {
         this.playerDesignator = playerDesignator;
 
