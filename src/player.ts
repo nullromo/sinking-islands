@@ -163,6 +163,13 @@ export class Player {
     };
 
     /**
+     * Returns a tidal surge target.
+     */
+    public readonly getTidalSurgeTarget = () => {
+        return Math.floor(Math.random() * 16) + 1;
+    };
+
+    /**
      * Adds a card to this player's discard pile.
      */
     public readonly discardCard = (card: Card) => {

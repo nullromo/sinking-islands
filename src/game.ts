@@ -599,7 +599,8 @@ class Game {
                 player.netIsland = netTarget;
                 break;
             case CardType.PILINGS:
-                // if there are no legal pilings targets, then the card does nothing
+                // if there are no legal pilings targets, then the card does
+                // nothing
                 if (
                     !this.islands.some((island) => {
                         return island.smallCapacity;
@@ -647,7 +648,29 @@ class Game {
                 );
                 break;
             case CardType.TIDAL_SURGE:
-                // TODO
+                // if there are no legal tidal surge targets, then the card
+                // does nothing
+                if (this.islands.length <= 1) {
+                    console.log('The tide cannot surge.');
+                    break;
+                }
+
+                // try to get a tidal surge target until a valid one is given
+                let tidalSurgeTarget: number | null = null;
+                while (
+                    !tidalSurgeTarget ||
+                    !this.getAdjacentIslands(this.nextIslandToSink).some(
+                        (island) => {
+                            return island.islandNumber === tidalSurgeTarget;
+                        },
+                    )
+                ) {
+                    tidalSurgeTarget = player.getTidalSurgeTarget();
+                }
+
+                // move the rising waters marker
+                console.log(`The tide surges to island ${tidalSurgeTarget}.`);
+                this.nextIslandToSink = tidalSurgeTarget;
                 break;
             case CardType.TIDAL_WAVE:
                 // TODO
