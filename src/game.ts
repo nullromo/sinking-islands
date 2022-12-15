@@ -227,7 +227,34 @@ class Game {
             return false;
         }
 
+        // all checks passed
         return true;
+    };
+
+    /**
+     * Returns the two islands next to this island in an array. If there are
+     * only 2 islands in the game, returns only 1 item. If there is only 1
+     * island, returns an empty array.
+     */
+    private readonly getAdjacentIslands = (islandNumber: number) => {
+        if (this.islands.length <= 1) {
+            return [];
+        }
+        const islandIndex = this.islands.findIndex((island) => {
+            return island.islandNumber === islandNumber;
+        });
+        if (islandIndex < 0) {
+            throw new Error(`Invalid island number: ${islandNumber}.`);
+        }
+        if (this.islands.length < 3) {
+            return [this.islands[(islandIndex + 1) % 2]];
+        }
+        return [
+            this.islands[
+                (islandIndex + this.islands.length - 1) % this.islands.length
+            ],
+            this.islands[(islandIndex + 1) % this.islands.length],
+        ];
     };
 
     /**
@@ -237,7 +264,49 @@ class Game {
         playerDesignator: PlayerDesignator,
         harpoonTarget: HarpoonTarget,
     ) => {
-        //TODO
+        // if the target is a tortoise, it's not valid
+        if (harpoonTarget.character.tortoise) {
+            return false;
+        }
+
+        // the player cannot shoot their own characters
+        if (playerDesignator === harpoonTarget.character.playerDesignator) {
+            return false;
+        }
+
+        // find the island being targeted
+        const targetIsland = this.findIsland(harpoonTarget.islandNumber);
+
+        // if the island does not exist, the target is not valid
+        if (!targetIsland) {
+            return false;
+        }
+
+        // if there are no characters matching the target on the target island,
+        // then it is not valid
+        if (
+            !targetIsland.getCharacters().some((character) => {
+                return character.dump() === harpoonTarget.character.dump();
+            })
+        ) {
+            return false;
+        }
+
+        // find the adjacent islands and make sure there is an enemy of the
+        // target in range
+        if (
+            !this.getAdjacentIslands(harpoonTarget.islandNumber).some(
+                (island) => {
+                    return island.getCharacters().some((character) => {
+                        return character.playerDesignator === playerDesignator;
+                    });
+                },
+            )
+        ) {
+            return false;
+        }
+
+        // all checks passed
         return true;
     };
 
@@ -362,9 +431,36 @@ class Game {
                     break;
                 case CardType.HARPOON:
                     // if there are no legal harpoon targets, then the harpoon
-                    // has no effect
-                    if (false) {
-                        // TODO
+                    // has no effect. NOTE: there may be a better way to do
+                    // this, but brute force here isn't really that much
+                    // computation
+                    if (
+                        !this.islands
+                            .reduce((allCharacters, island) => {
+                                return [
+                                    ...allCharacters,
+                                    ...island
+                                        .getCharacters()
+                                        .map((character) => {
+                                            return {
+                                                character,
+                                                islandNumber:
+                                                    island.islandNumber,
+                                            };
+                                        }),
+                                ];
+                            }, [] as HarpoonTarget[])
+                            .some((harpoonTarget) => {
+                                return this.checkHarpoonTargetLegal(
+                                    player.playerDesignator,
+                                    harpoonTarget,
+                                );
+                            })
+                    ) {
+                        console.log(
+                            `There are no valid harpoon targets for player ${player.playerDesignator}.`,
+                        );
+                        break;
                     }
 
                     let harpoonTarget: HarpoonTarget | null = null;
@@ -377,7 +473,16 @@ class Game {
                     ) {
                         harpoonTarget = player.getHarpoonTarget();
                     }
-                    //TODO
+
+                    // kill the target
+                    console.log(
+                        `Character ${harpoonTarget.character.dump()} on island ${
+                            harpoonTarget.islandNumber
+                        } is harpooned.`,
+                    );
+                    this.findIsland(
+                        harpoonTarget.islandNumber,
+                    )?.removeCharacter(harpoonTarget.character);
                     break;
                 case CardType.INDESCRETION:
                     // TODO
