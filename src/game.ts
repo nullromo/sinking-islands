@@ -790,7 +790,11 @@ class Game {
                 // make the moves
                 movementSet.forEach((movement) => {
                     console.log(
-                        `Player ${player.playerDesignator} moves character ${movement.character} from island ${movement.fromIslandNumber} to island ${movement.toIslandNumber}.`,
+                        `Player ${
+                            player.playerDesignator
+                        } moves character ${movement.character.dump()} from island ${
+                            movement.fromIslandNumber
+                        } to island ${movement.toIslandNumber}.`,
                     );
                     this.findIsland(movement.fromIslandNumber)?.removeCharacter(
                         movement.character,
@@ -848,24 +852,32 @@ class Game {
                 player.pilingsIsland = pilingsTarget;
                 break;
             case CardType.PRAYER:
-                console.log(`Player ${player.playerDesignator} prays.`);
-                player.draw(
-                    this.islands
-                        .filter((island) => {
-                            return island.islandType === IslandType.SACRED;
-                        })
-                        .reduce((total, island) => {
-                            return (
-                                total +
-                                island.getCharacters().filter((character) => {
-                                    return (
-                                        character.playerDesignator ===
-                                        player.playerDesignator
-                                    );
-                                }).length
-                            );
-                        }, 0),
+                // determine the prayer value
+                const cardsToDraw = this.islands
+                    .filter((island) => {
+                        return island.islandType === IslandType.SACRED;
+                    })
+                    .reduce((total, island) => {
+                        return (
+                            total +
+                            island.getCharacters().filter((character) => {
+                                return (
+                                    character.playerDesignator ===
+                                    player.playerDesignator
+                                );
+                            }).length
+                        );
+                    }, 0);
+
+                // draw the cards
+                console.log(
+                    `Player ${
+                        player.playerDesignator
+                    } prays for ${cardsToDraw} card${
+                        cardsToDraw === 1 ? '' : 's'
+                    }.`,
                 );
+                player.draw(cardsToDraw);
                 break;
             case CardType.TIDAL_SURGE:
                 // if there are no legal tidal surge targets, then the card
