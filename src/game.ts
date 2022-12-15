@@ -179,6 +179,16 @@ class Game {
                 return island.islandNumber !== this.nextIslandToSink;
             });
 
+            // players reclaim their set aside cards due to sunken tokens
+            [this.playerA, this.playerB].forEach((player) => {
+                if (player.netIsland === this.nextIslandToSink) {
+                    player.reclaim(CardType.NET);
+                }
+                if (player.pilingsIsland === this.nextIslandToSink) {
+                    player.reclaim(CardType.PILINGS);
+                }
+            });
+
             // if there are no islands left, then the game is a draw
             if (this.islands.length < 1) {
                 break;

@@ -42,7 +42,7 @@ export class Player {
     private deck: Card[];
     private readonly hand: Card[];
     private discardPile: Card[] = [];
-    private readonly setAsideCards: Card[] = [];
+    private setAsideCards: Card[] = [];
 
     // specifiers for which islands have which player tokens on them
     public netIsland: number = NaN;
@@ -166,6 +166,19 @@ export class Player {
             throw new Error('Tried to set aside a card into the wrong pile.');
         }
         this.setAsideCards.push(card);
+    };
+
+    /**
+     * Reclaims a set aside card.
+     */
+    public readonly reclaim = (cardType: CardType) => {
+        // remove the matching card from the set aside cards list
+        this.setAsideCards = this.setAsideCards.filter((card) => {
+            return card.cardType !== cardType;
+        });
+
+        // add the card to the discard pile
+        this.discardPile.push(new Card(this.playerDesignator, cardType));
     };
 
     /**
