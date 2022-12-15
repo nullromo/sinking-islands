@@ -251,8 +251,15 @@ class Game {
             return false;
         }
 
+        const toIsland = this.findIsland(flyingFishMovement.toIslandNumber);
+
         // can't move to an island that already sank
-        if (!this.findIsland(flyingFishMovement?.toIslandNumber)) {
+        if (!toIsland) {
+            return false;
+        }
+
+        // can't move to an island that is at full capacity
+        if (toIsland.smallCapacity && toIsland.getCharacters().length > 0) {
             return false;
         }
 
@@ -564,7 +571,32 @@ class Game {
                     player.netIsland = netTarget;
                     break;
                 case CardType.PILINGS:
-                    // TODO
+                    // if there are no legal pilings targets, then the card does nothing
+                    if (
+                        !this.islands.some((island) => {
+                            return island.smallCapacity;
+                        })
+                    ) {
+                        console.log(
+                            'There are no islands that can support pilings.',
+                        );
+                        break;
+                    }
+
+                    // try to get a pilngs target until a valid one is given
+                    let pilingsTarget: number | null = null;
+                    while (
+                        !pilingsTarget ||
+                        !this.findIsland(pilingsTarget)?.smallCapacity
+                    ) {
+                        pilingsTarget = player.getPilingsTarget();
+                    }
+
+                    // place the net
+                    console.log(
+                        `Player ${player.playerDesignator} constructs pilings on island ${pilingsTarget}.`,
+                    );
+                    player.pilingsIsland = pilingsTarget;
                     break;
                 case CardType.PRAYER:
                     // TODO

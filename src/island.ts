@@ -17,7 +17,7 @@ export class Island {
     // the island's number, type, and capacity
     public readonly islandNumber: number;
     public readonly islandType: IslandType;
-    public readonly largeCapacity: boolean;
+    public readonly smallCapacity: boolean;
 
     // list of characters present on the island
     private characters: Character[] = [];
@@ -25,11 +25,11 @@ export class Island {
     public constructor(
         islandNumber: number,
         islandType: IslandType,
-        largeCapacity: boolean,
+        smallCapacity: boolean,
     ) {
         this.islandNumber = islandNumber;
         this.islandType = islandType;
-        this.largeCapacity = largeCapacity;
+        this.smallCapacity = smallCapacity;
     }
 
     /**

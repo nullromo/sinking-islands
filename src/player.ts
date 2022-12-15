@@ -156,6 +156,13 @@ export class Player {
     };
 
     /**
+     * Returns a pilings target.
+     */
+    public readonly getPilingsTarget = () => {
+        return Math.floor(Math.random() * 16) + 1;
+    };
+
+    /**
      * Adds a card to this player's discard pile.
      */
     public readonly discardCard = (card: Card) => {
