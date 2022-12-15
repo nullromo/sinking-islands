@@ -189,7 +189,13 @@ export class Player {
      * Returns a tortoise target.
      */
     public readonly getTortoiseTarget = (): TortoiseTarget => {
-        return this.getHarpoonTarget();
+        return {
+            islandNumber: randomIslandNumber(),
+            character: new Character(
+                this.playerDesignator,
+                sampleArray([20, 30, 40]),
+            ),
+        };
     };
 
     /**
