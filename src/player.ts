@@ -169,14 +169,21 @@ export class Player {
     };
 
     /**
+     * Shuffles the player's discard pile into their deck.
+     */
+    public readonly reshuffle = () => {
+        this.deck = shuffleArray([...this.deck, ...this.discardPile]);
+        this.discardPile = [];
+    };
+
+    /**
      * Causes this player to draw the given number of cards.
      */
     public readonly draw = (cards: number) => {
         let toDraw = cards;
         while (toDraw > 0) {
             if (this.deck.length <= 0) {
-                this.deck = shuffleArray(this.discardPile);
-                this.discardPile = [];
+                this.reshuffle();
             }
             toDraw -= 1;
             this.hand.push(this.deck.pop() as Card);

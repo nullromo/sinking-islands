@@ -534,7 +534,8 @@ class Game {
                     ).indescretion = true;
                     break;
                 case CardType.MEDITATION:
-                    // TODO
+                    console.log(`Player ${player.playerDesignator} meditates.`);
+                    player.reshuffle();
                     break;
                 case CardType.MOVEMENT:
                     // TODO
