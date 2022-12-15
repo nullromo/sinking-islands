@@ -21,12 +21,6 @@ class Game {
     // the player that plays first this turn
     private initiative: PlayerDesignator = PlayerDesignator.PLAYER_A;
 
-    // specifiers for which islands have which player tokens on them
-    private playerANetIsland: number = NaN;
-    private playerAPilingsIsland: number = NaN;
-    private playerBNetIsland: number = NaN;
-    private playerBPilingsIsland: number = NaN;
-
     // representations of the 2 players
     private playerA = new Player(PlayerDesignator.PLAYER_A);
     private playerB = new Player(PlayerDesignator.PLAYER_B);
@@ -241,8 +235,8 @@ class Game {
     ) => {
         // the flying fish can't move to a netted island
         if (
-            flyingFishMovement.toIslandNumber === this.playerANetIsland ||
-            flyingFishMovement.toIslandNumber === this.playerBNetIsland
+            flyingFishMovement.toIslandNumber === this.playerA.netIsland ||
+            flyingFishMovement.toIslandNumber === this.playerB.netIsland
         ) {
             return false;
         }
@@ -405,11 +399,12 @@ class Game {
                     // are netted
                     if (
                         (this.islands.length === 2 &&
-                            this.playerANetIsland &&
-                            this.playerBNetIsland &&
-                            this.playerANetIsland !== this.playerBNetIsland) ||
+                            this.playerA.netIsland &&
+                            this.playerB.netIsland &&
+                            this.playerA.netIsland !==
+                                this.playerB.netIsland) ||
                         (this.islands.length === 1 &&
-                            (this.playerANetIsland || this.playerBNetIsland))
+                            (this.playerA.netIsland || this.playerB.netIsland))
                     ) {
                         break;
                     }
@@ -600,14 +595,14 @@ class Game {
             .map((island) => {
                 return `${island.dump()}${
                     island.islandNumber === this.nextIslandToSink ? '*' : ''
-                }${island.islandNumber === this.playerANetIsland ? 'A#' : ''}${
-                    island.islandNumber === this.playerBNetIsland ? 'B#' : ''
+                }${island.islandNumber === this.playerA.netIsland ? 'A#' : ''}${
+                    island.islandNumber === this.playerB.netIsland ? 'B#' : ''
                 }${
-                    island.islandNumber === this.playerAPilingsIsland
+                    island.islandNumber === this.playerA.pilingsIsland
                         ? 'A_'
                         : ''
                 }${
-                    island.islandNumber === this.playerBPilingsIsland
+                    island.islandNumber === this.playerB.pilingsIsland
                         ? 'B_'
                         : ''
                 }\n`;

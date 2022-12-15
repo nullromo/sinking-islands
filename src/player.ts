@@ -44,6 +44,10 @@ export class Player {
     private discardPile: Card[] = [];
     private readonly setAsideCards: Card[] = [];
 
+    // specifiers for which islands have which player tokens on them
+    public netIsland: number = NaN;
+    public pilingsIsland: number = NaN;
+
     // specifier for whether or not the player is under indescretion
     public indescretion = false;
 
