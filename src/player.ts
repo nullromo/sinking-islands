@@ -35,6 +35,12 @@ export type HarpoonTarget = {
     islandNumber: number;
 };
 
+export type MovementSet = Array<{
+    character: Character;
+    fromIslandNumber: number;
+    toIslandNumber: number;
+}>;
+
 export type TortoiseTarget = HarpoonTarget;
 
 /**
@@ -155,6 +161,24 @@ export class Player {
                 sampleArray([20, 30, 40]),
             ),
         };
+    };
+
+    /**
+     * Returns a movement set.
+     */
+    public readonly getMovementSet = (): MovementSet => {
+        const movementSet: MovementSet = [];
+        [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
+            movementSet.push({
+                character: new Character(
+                    this.playerDesignator,
+                    sampleArray([20, 30, 40]),
+                ),
+                fromIslandNumber: randomIslandNumber(),
+                toIslandNumber: randomIslandNumber(),
+            });
+        });
+        return movementSet;
     };
 
     /**

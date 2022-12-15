@@ -5,6 +5,7 @@ import { Island, IslandType } from './island';
 import {
     FlyingFishMovement,
     HarpoonTarget,
+    MovementSet,
     otherPlayerDesignator,
     Player,
     PlayerDesignator,
@@ -306,6 +307,76 @@ class Game {
     };
 
     /**
+     * Returns the number of movement points that it takes to get from one
+     * island to another.
+     */
+    private readonly countSpacesBetweenIslands = (
+        fromIslandNumber: number,
+        toIslandNumber: number,
+    ) => {
+        const fromIndex = this.islands.findIndex((island) => {
+            return island.islandNumber === fromIslandNumber;
+        });
+        const toIndex = this.islands.findIndex((island) => {
+            return island.islandNumber === toIslandNumber;
+        });
+        return Math.min(
+            Math.abs(fromIndex - toIndex + this.islands.length) %
+                this.islands.length,
+            Math.abs(fromIndex - toIndex - this.islands.length) %
+                this.islands.length,
+        );
+    };
+
+    /**
+     * Returns true if the given movement set is legal.
+     */
+    private readonly checkMovementSetLegal = (
+        playerDesignator: PlayerDesignator,
+        movementSet: MovementSet,
+    ) => {
+        // there must be at least one movement
+        if (movementSet.length < 1) {
+            return false;
+        }
+
+        // check all movements
+        for (const movement of movementSet) {
+            // the player must move their own character
+            if (movement.character.playerDesignator !== playerDesignator) {
+                return false;
+            }
+
+            // the movement must be a legal flying fish movement
+            if (!this.checkFlyingFishMovementLegal(movement)) {
+                return false;
+            }
+
+            // movements cannot start and end on the same island
+            if (movement.fromIslandNumber === movement.toIslandNumber) {
+                return false;
+            }
+        }
+
+        // the total movement must be at least 1 and no more than 3
+        const totalMovement = movementSet.reduce((total, movement) => {
+            return (
+                total +
+                this.countSpacesBetweenIslands(
+                    movement.fromIslandNumber,
+                    movement.toIslandNumber,
+                )
+            );
+        }, 0);
+        if (totalMovement < 1 || totalMovement > 3) {
+            return false;
+        }
+
+        // all checks passed
+        return true;
+    };
+
+    /**
      * Returns the two islands next to this island in an array. If there are
      * only 2 islands in the game, returns only 1 item. If there is only 1
      * island, returns an empty array.
@@ -328,6 +399,33 @@ class Game {
                 (islandIndex + this.islands.length - 1) % this.islands.length
             ],
             this.islands[(islandIndex + 1) % this.islands.length],
+        ];
+    };
+
+    /**
+     * Returns the set of islands that are within a range of 3 from the given
+     * island number.
+     */
+    private readonly getIslandsWithinMovementRange = (island: Island) => {
+        const withinOne = this.getAdjacentIslands(island.islandNumber);
+        const withinTwo = withinOne.reduce((islands, thisIsland) => {
+            return [
+                ...islands,
+                ...this.getAdjacentIslands(thisIsland.islandNumber),
+            ];
+        }, withinOne);
+        const withinThree = withinTwo.reduce((islands, thisIsland) => {
+            return [
+                ...islands,
+                ...this.getAdjacentIslands(thisIsland.islandNumber),
+            ];
+        }, withinTwo);
+        return [
+            ...new Set(
+                withinThree.filter((otherIsland) => {
+                    return otherIsland.islandNumber !== island.islandNumber;
+                }),
+            ),
         ];
     };
 
@@ -640,7 +738,67 @@ class Game {
                 player.reshuffle();
                 break;
             case CardType.MOVEMENT:
-                // TODO
+                // if there are no valid moves to make, then the movement does
+                // nothing
+                if (
+                    !this.islands.some((island) => {
+                        return (
+                            island.getCharacters().some((character) => {
+                                return (
+                                    character.playerDesignator ===
+                                    player.playerDesignator
+                                );
+                            }) &&
+                            this.getIslandsWithinMovementRange(island).some(
+                                (otherIsland) => {
+                                    return (
+                                        (!otherIsland.smallCapacity ||
+                                            otherIsland.getCharacters()
+                                                .length <= 0 ||
+                                            otherIsland.islandNumber ===
+                                                this.playerA.pilingsIsland ||
+                                            otherIsland.islandNumber ===
+                                                this.playerB.pilingsIsland) &&
+                                        otherIsland.islandNumber !==
+                                            this.playerA.netIsland &&
+                                        otherIsland.islandNumber !==
+                                            this.playerB.netIsland
+                                    );
+                                },
+                            )
+                        );
+                    })
+                ) {
+                    console.log(
+                        `No movements are possible for player ${player.playerDesignator}.`,
+                    );
+                    break;
+                }
+
+                // try to get a movement set until a valid one is given
+                let movementSet: MovementSet | null = null;
+                while (
+                    !movementSet ||
+                    !this.checkMovementSetLegal(
+                        player.playerDesignator,
+                        movementSet,
+                    )
+                ) {
+                    movementSet = player.getMovementSet();
+                }
+
+                // make the moves
+                movementSet.forEach((movement) => {
+                    console.log(
+                        `Player ${player.playerDesignator} moves character ${movement.character} from island ${movement.fromIslandNumber} to island ${movement.toIslandNumber}.`,
+                    );
+                    this.findIsland(movement.fromIslandNumber)?.removeCharacter(
+                        movement.character,
+                    );
+                    this.findIsland(movement.toIslandNumber)?.addCharacter(
+                        movement.character,
+                    );
+                });
                 break;
             case CardType.NET:
                 // try to get a net target until a valid one is given
