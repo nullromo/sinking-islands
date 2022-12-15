@@ -35,7 +35,7 @@ class Game {
     private actionOrderTrack = new ActionOrderTrack();
 
     // representation of all the islands in the archipelago
-    private readonly islands: Island[] = shuffleArray([
+    private islands: Island[] = shuffleArray([
         new Island(1, IslandType.NORMAL, false),
         new Island(2, IslandType.NORMAL, true),
         new Island(3, IslandType.NORMAL, true),
@@ -103,13 +103,9 @@ class Game {
     public readonly play = () => {
         console.log('Starting game');
         let loser: PlayerDesignator | undefined = undefined;
-        let iterations = 0;
+        let roundCounter = 1;
         while (true) {
-            iterations += 1;
-            if (iterations > 1) {
-                console.log('breaking infinite loop');
-                break;
-            }
+            console.log('Begin round number', roundCounter++);
             // check if there is a loser and break if there is
             loser = this.getLoser();
             if (loser) {
@@ -173,6 +169,21 @@ class Game {
 
                 // otherwise, it's a real error
                 throw error;
+            }
+
+            // sink the lowest island
+            this.islands = this.islands.filter((island) => {
+                return island.islandNumber !== this.nextIslandToSink;
+            });
+
+            // if there are no islands left, then the game is a draw
+            if (this.islands.length < 1) {
+                break;
+            }
+
+            // advance the rising waters marker
+            while (!this.findIsland(this.nextIslandToSink)) {
+                this.nextIslandToSink = (this.nextIslandToSink + 1) % 16;
             }
 
             // swap the initiative
