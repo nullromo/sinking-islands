@@ -1,5 +1,5 @@
 import { ActionOrderTrack, CardPlacement } from './actionOrderTrack';
-import { CardType } from './card';
+import { Card, CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
 import {
@@ -156,7 +156,7 @@ class Game {
 
             // resolve the actions, catching any thrown PlayerDesignators
             try {
-                this.resolve();
+                this.resolveActionTrack();
             } catch (error: unknown) {
                 // if a PlayerDesignator was thrown, then that's the loser
                 if (
@@ -359,7 +359,7 @@ class Game {
      * Resolves the played cards in order. Throws the PlayerDesignator of the
      * player that lost if a player loses during resolution.
      */
-    private readonly resolve = () => {
+    private readonly resolveActionTrack = () => {
         for (const [slot, card] of this.actionOrderTrack
             .getCardSlots()
             .entries()) {
@@ -369,266 +369,9 @@ class Game {
             }
             // find the player that played the card
             const player = this.getPlayer(card.playerDesignator);
-            const opponent = otherPlayerDesignator(player.playerDesignator);
-
-            console.log('Executing', card);
 
             // execute the card's actions
-            switch (card.cardType) {
-                case CardType.CRAB:
-                    // handle fights on all the islands
-                    this.islands.forEach((island) => {
-                        // compute the strength of each player
-                        const { playerStrength, opponentStrength } = island
-                            .getCharacters()
-                            .reduce(
-                                (totals, character) => {
-                                    return {
-                                        playerStrength:
-                                            totals.playerStrength +
-                                            (character.playerDesignator ===
-                                            card.playerDesignator
-                                                ? character.strength
-                                                : 0),
-                                        opponentStrength:
-                                            totals.opponentStrength +
-                                            (character.playerDesignator ===
-                                            card.playerDesignator
-                                                ? 0
-                                                : character.strength),
-                                    };
-                                },
-                                { playerStrength: 0, opponentStrength: 0 },
-                            );
-
-                        // kill necessary characters
-                        if (playerStrength > opponentStrength) {
-                            console.log(
-                                `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
-                            );
-                            island.removeCharactersOfPlayer(opponent);
-                        }
-                    });
-                    break;
-                case CardType.FLYING_FISH:
-                    // if there are no legal islands to move to, the flying
-                    // fish has no effect. This can only occur if all islands
-                    // are netted or are at full capacity
-                    if (
-                        (this.islands.length === 2 &&
-                            this.playerA.netIsland &&
-                            this.playerB.netIsland &&
-                            this.playerA.netIsland !==
-                                this.playerB.netIsland) ||
-                        (this.islands.length === 1 &&
-                            (this.playerA.netIsland ||
-                                this.playerB.netIsland)) ||
-                        !this.islands.some((island) => {
-                            return (
-                                !island.smallCapacity ||
-                                island.getCharacters().length <= 0
-                            );
-                        })
-                    ) {
-                        console.log(
-                            'There is nowhere for a flying fish to fly.',
-                        );
-                        break;
-                    }
-
-                    // try to get a movement until a valid one is given
-                    let flyingFishMovement: FlyingFishMovement | null = null;
-                    while (
-                        !flyingFishMovement ||
-                        !this.checkFlyingFishMovementLegal(flyingFishMovement)
-                    ) {
-                        flyingFishMovement = player.getFlyingFishMovement();
-                    }
-
-                    // move the character
-                    console.log(
-                        flyingFishMovement.character.dump(),
-                        'flies from island',
-                        flyingFishMovement.fromIslandNumber,
-                        'to island',
-                        flyingFishMovement.toIslandNumber,
-                    );
-                    this.findIsland(
-                        flyingFishMovement.fromIslandNumber,
-                    )?.removeCharacter(flyingFishMovement.character);
-                    this.findIsland(
-                        flyingFishMovement.toIslandNumber,
-                    )?.addCharacter(flyingFishMovement.character);
-                    break;
-                case CardType.FOG:
-                    // if the fog has no targets then it has no effect
-                    if (
-                        !this.actionOrderTrack
-                            .getCardSlots()
-                            .some((otherCard, otherSlot) => {
-                                return otherCard !== null && otherSlot !== slot;
-                            })
-                    ) {
-                        console.log('There is no card to fog.');
-                        break;
-                    }
-
-                    // try to get a fog target until a valid one is given
-                    let fogTarget: number | null = null;
-                    while (
-                        !fogTarget ||
-                        !this.actionOrderTrack.checkFogTargetLegal(
-                            slot,
-                            fogTarget,
-                        )
-                    ) {
-                        fogTarget = player.getFogTarget();
-                    }
-
-                    // fog the target
-                    console.log('Fogging slot', fogTarget);
-                    const foggedCard =
-                        this.actionOrderTrack.resetSlot(fogTarget);
-                    if (foggedCard) {
-                        this.getPlayer(foggedCard.playerDesignator).discardCard(
-                            foggedCard,
-                        );
-                    }
-                    break;
-                case CardType.HARPOON:
-                    // if there are no legal harpoon targets, then the harpoon
-                    // has no effect. NOTE: there may be a better way to do
-                    // this, but brute force here isn't really that much
-                    // computation
-                    if (
-                        !this.islands
-                            .reduce((allCharacters, island) => {
-                                return [
-                                    ...allCharacters,
-                                    ...island
-                                        .getCharacters()
-                                        .map((character) => {
-                                            return {
-                                                character,
-                                                islandNumber:
-                                                    island.islandNumber,
-                                            };
-                                        }),
-                                ];
-                            }, [] as HarpoonTarget[])
-                            .some((harpoonTarget) => {
-                                return this.checkHarpoonTargetLegal(
-                                    player.playerDesignator,
-                                    harpoonTarget,
-                                );
-                            })
-                    ) {
-                        console.log(
-                            `There are no valid harpoon targets for player ${player.playerDesignator}.`,
-                        );
-                        break;
-                    }
-
-                    let harpoonTarget: HarpoonTarget | null = null;
-                    while (
-                        !harpoonTarget ||
-                        !this.checkHarpoonTargetLegal(
-                            player.playerDesignator,
-                            harpoonTarget,
-                        )
-                    ) {
-                        harpoonTarget = player.getHarpoonTarget();
-                    }
-
-                    // kill the target
-                    console.log(
-                        `Character ${harpoonTarget.character.dump()} on island ${
-                            harpoonTarget.islandNumber
-                        } is harpooned.`,
-                    );
-                    this.findIsland(
-                        harpoonTarget.islandNumber,
-                    )?.removeCharacter(harpoonTarget.character);
-                    break;
-                case CardType.INDESCRETION:
-                    console.log(
-                        `Player ${otherPlayerDesignator(
-                            player.playerDesignator,
-                        )} is put under the effects of indescretion.`,
-                    );
-                    this.getPlayer(
-                        otherPlayerDesignator(player.playerDesignator),
-                    ).indescretion = true;
-                    break;
-                case CardType.MEDITATION:
-                    console.log(`Player ${player.playerDesignator} meditates.`);
-                    player.reshuffle();
-                    break;
-                case CardType.MOVEMENT:
-                    // TODO
-                    break;
-                case CardType.NET:
-                    // try to get a net target until a valid one is given
-                    let netTarget: number | null = null;
-                    while (!netTarget || !this.findIsland(netTarget)) {
-                        netTarget = player.getNetTarget();
-                    }
-
-                    // place the net
-                    console.log(
-                        `Player ${player.playerDesignator} casts a net over island ${netTarget}.`,
-                    );
-                    player.netIsland = netTarget;
-                    break;
-                case CardType.PILINGS:
-                    // if there are no legal pilings targets, then the card does nothing
-                    if (
-                        !this.islands.some((island) => {
-                            return island.smallCapacity;
-                        })
-                    ) {
-                        console.log(
-                            'There are no islands that can support pilings.',
-                        );
-                        break;
-                    }
-
-                    // try to get a pilngs target until a valid one is given
-                    let pilingsTarget: number | null = null;
-                    while (
-                        !pilingsTarget ||
-                        !this.findIsland(pilingsTarget)?.smallCapacity
-                    ) {
-                        pilingsTarget = player.getPilingsTarget();
-                    }
-
-                    // place the net
-                    console.log(
-                        `Player ${player.playerDesignator} constructs pilings on island ${pilingsTarget}.`,
-                    );
-                    player.pilingsIsland = pilingsTarget;
-                    break;
-                case CardType.PRAYER:
-                    // TODO
-                    break;
-                case CardType.TIDAL_SURGE:
-                    // TODO
-                    break;
-                case CardType.TIDAL_WAVE:
-                    // TODO
-                    break;
-                case CardType.TORTOISE:
-                    // TODO
-                    break;
-                case CardType.VOLCANIC_ERUPTION:
-                    // TODO
-                    break;
-                case CardType.WEAKNESS:
-                    // TODO
-                    break;
-                default:
-                    assertUnreachable(card.cardType);
-            }
+            this.resolveCardEffect(card, player, slot);
 
             // move the card to the appropriate zone
             this.actionOrderTrack.resetSlot(slot);
@@ -647,6 +390,279 @@ class Game {
             if (loser) {
                 throw loser;
             }
+        }
+    };
+
+    /**
+     * Resolves the effects of a card played by a player in a slot.
+     */
+    private readonly resolveCardEffect = (
+        card: Card,
+        player: Player,
+        slot: number,
+    ) => {
+        console.log('Executing', card);
+        const opponent = otherPlayerDesignator(player.playerDesignator);
+        switch (card.cardType) {
+            case CardType.CRAB:
+                // handle fights on all the islands
+                this.islands.forEach((island) => {
+                    // compute the strength of each player
+                    const { playerStrength, opponentStrength } = island
+                        .getCharacters()
+                        .reduce(
+                            (totals, character) => {
+                                return {
+                                    playerStrength:
+                                        totals.playerStrength +
+                                        (character.playerDesignator ===
+                                        card.playerDesignator
+                                            ? character.strength
+                                            : 0),
+                                    opponentStrength:
+                                        totals.opponentStrength +
+                                        (character.playerDesignator ===
+                                        card.playerDesignator
+                                            ? 0
+                                            : character.strength),
+                                };
+                            },
+                            { playerStrength: 0, opponentStrength: 0 },
+                        );
+
+                    // kill necessary characters
+                    if (playerStrength > opponentStrength) {
+                        console.log(
+                            `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
+                        );
+                        island.removeCharactersOfPlayer(opponent);
+                    }
+                });
+                break;
+            case CardType.FLYING_FISH:
+                // if there are no legal islands to move to, the flying
+                // fish has no effect. This can only occur if all islands
+                // are netted or are at full capacity
+                if (
+                    (this.islands.length === 2 &&
+                        this.playerA.netIsland &&
+                        this.playerB.netIsland &&
+                        this.playerA.netIsland !== this.playerB.netIsland) ||
+                    (this.islands.length === 1 &&
+                        (this.playerA.netIsland || this.playerB.netIsland)) ||
+                    !this.islands.some((island) => {
+                        return (
+                            !island.smallCapacity ||
+                            island.getCharacters().length <= 0
+                        );
+                    })
+                ) {
+                    console.log('There is nowhere for a flying fish to fly.');
+                    break;
+                }
+
+                // try to get a movement until a valid one is given
+                let flyingFishMovement: FlyingFishMovement | null = null;
+                while (
+                    !flyingFishMovement ||
+                    !this.checkFlyingFishMovementLegal(flyingFishMovement)
+                ) {
+                    flyingFishMovement = player.getFlyingFishMovement();
+                }
+
+                // move the character
+                console.log(
+                    flyingFishMovement.character.dump(),
+                    'flies from island',
+                    flyingFishMovement.fromIslandNumber,
+                    'to island',
+                    flyingFishMovement.toIslandNumber,
+                );
+                this.findIsland(
+                    flyingFishMovement.fromIslandNumber,
+                )?.removeCharacter(flyingFishMovement.character);
+                this.findIsland(
+                    flyingFishMovement.toIslandNumber,
+                )?.addCharacter(flyingFishMovement.character);
+                break;
+            case CardType.FOG:
+                // if the fog has no targets then it has no effect
+                if (
+                    !this.actionOrderTrack
+                        .getCardSlots()
+                        .some((otherCard, otherSlot) => {
+                            return otherCard !== null && otherSlot !== slot;
+                        })
+                ) {
+                    console.log('There is no card to fog.');
+                    break;
+                }
+
+                // try to get a fog target until a valid one is given
+                let fogTarget: number | null = null;
+                while (
+                    !fogTarget ||
+                    !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
+                ) {
+                    fogTarget = player.getFogTarget();
+                }
+
+                // fog the target
+                console.log('Fogging slot', fogTarget);
+                const foggedCard = this.actionOrderTrack.resetSlot(fogTarget);
+                if (foggedCard) {
+                    this.getPlayer(foggedCard.playerDesignator).discardCard(
+                        foggedCard,
+                    );
+                }
+                break;
+            case CardType.HARPOON:
+                // if there are no legal harpoon targets, then the harpoon
+                // has no effect. NOTE: there may be a better way to do
+                // this, but brute force here isn't really that much
+                // computation
+                if (
+                    !this.islands
+                        .reduce((allCharacters, island) => {
+                            return [
+                                ...allCharacters,
+                                ...island.getCharacters().map((character) => {
+                                    return {
+                                        character,
+                                        islandNumber: island.islandNumber,
+                                    };
+                                }),
+                            ];
+                        }, [] as HarpoonTarget[])
+                        .some((harpoonTarget) => {
+                            return this.checkHarpoonTargetLegal(
+                                player.playerDesignator,
+                                harpoonTarget,
+                            );
+                        })
+                ) {
+                    console.log(
+                        `There are no valid harpoon targets for player ${player.playerDesignator}.`,
+                    );
+                    break;
+                }
+
+                let harpoonTarget: HarpoonTarget | null = null;
+                while (
+                    !harpoonTarget ||
+                    !this.checkHarpoonTargetLegal(
+                        player.playerDesignator,
+                        harpoonTarget,
+                    )
+                ) {
+                    harpoonTarget = player.getHarpoonTarget();
+                }
+
+                // kill the target
+                console.log(
+                    `Character ${harpoonTarget.character.dump()} on island ${
+                        harpoonTarget.islandNumber
+                    } is harpooned.`,
+                );
+                this.findIsland(harpoonTarget.islandNumber)?.removeCharacter(
+                    harpoonTarget.character,
+                );
+                break;
+            case CardType.INDESCRETION:
+                console.log(
+                    `Player ${otherPlayerDesignator(
+                        player.playerDesignator,
+                    )} is put under the effects of indescretion.`,
+                );
+                this.getPlayer(
+                    otherPlayerDesignator(player.playerDesignator),
+                ).indescretion = true;
+                break;
+            case CardType.MEDITATION:
+                console.log(`Player ${player.playerDesignator} meditates.`);
+                player.reshuffle();
+                break;
+            case CardType.MOVEMENT:
+                // TODO
+                break;
+            case CardType.NET:
+                // try to get a net target until a valid one is given
+                let netTarget: number | null = null;
+                while (!netTarget || !this.findIsland(netTarget)) {
+                    netTarget = player.getNetTarget();
+                }
+
+                // place the net
+                console.log(
+                    `Player ${player.playerDesignator} casts a net over island ${netTarget}.`,
+                );
+                player.netIsland = netTarget;
+                break;
+            case CardType.PILINGS:
+                // if there are no legal pilings targets, then the card does nothing
+                if (
+                    !this.islands.some((island) => {
+                        return island.smallCapacity;
+                    })
+                ) {
+                    console.log(
+                        'There are no islands that can support pilings.',
+                    );
+                    break;
+                }
+
+                // try to get a pilngs target until a valid one is given
+                let pilingsTarget: number | null = null;
+                while (
+                    !pilingsTarget ||
+                    !this.findIsland(pilingsTarget)?.smallCapacity
+                ) {
+                    pilingsTarget = player.getPilingsTarget();
+                }
+
+                // place the net
+                console.log(
+                    `Player ${player.playerDesignator} constructs pilings on island ${pilingsTarget}.`,
+                );
+                player.pilingsIsland = pilingsTarget;
+                break;
+            case CardType.PRAYER:
+                console.log(`Player ${player.playerDesignator} prays.`);
+                player.draw(
+                    this.islands
+                        .filter((island) => {
+                            return island.islandType === IslandType.SACRED;
+                        })
+                        .reduce((total, island) => {
+                            return (
+                                total +
+                                island.getCharacters().filter((character) => {
+                                    return (
+                                        character.playerDesignator ===
+                                        player.playerDesignator
+                                    );
+                                }).length
+                            );
+                        }, 0),
+                );
+                break;
+            case CardType.TIDAL_SURGE:
+                // TODO
+                break;
+            case CardType.TIDAL_WAVE:
+                // TODO
+                break;
+            case CardType.TORTOISE:
+                // TODO
+                break;
+            case CardType.VOLCANIC_ERUPTION:
+                // TODO
+                break;
+            case CardType.WEAKNESS:
+                // TODO
+                break;
+            default:
+                assertUnreachable(card.cardType);
         }
     };
 
