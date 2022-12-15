@@ -158,8 +158,22 @@ class Game {
             // print out the game state
             console.log(this.dump());
 
-            // resolve the actions
-            this.resolve();
+            // resolve the actions, catching any thrown PlayerDesignators
+            try {
+                this.resolve();
+            } catch (error: unknown) {
+                // if a PlayerDesignator was thrown, then that's the loser
+                if (
+                    error === PlayerDesignator.PLAYER_A ||
+                    error === PlayerDesignator.PLAYER_B
+                ) {
+                    loser = error;
+                    break;
+                }
+
+                // otherwise, it's a real error
+                throw error;
+            }
 
             // swap the initiative
             this.initiative = otherPlayerDesignator(this.initiative);
@@ -311,7 +325,8 @@ class Game {
     };
 
     /**
-     * Resolves the played cards in order.
+     * Resolves the played cards in order. Throws the PlayerDesignator of the
+     * player that lost if a player loses during resolution.
      */
     private readonly resolve = () => {
         for (const [slot, card] of this.actionOrderTrack
@@ -534,6 +549,12 @@ class Game {
                 player.setAside(card);
             } else {
                 player.discardCard(card);
+            }
+
+            // check to see if the game is over
+            const loser = this.getLoser();
+            if (loser) {
+                throw loser;
             }
         }
     };
