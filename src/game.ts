@@ -236,11 +236,13 @@ class Game {
         }
 
         if (!loser) {
-            throw new Error('Could not determine a winner.');
+            // if there is no loser, then the game is a draw
+            console.log('Could not determine a winner. The game is a draw.');
+        } else {
+            // the winner is the player that didn't lose
+            const winner = otherPlayerDesignator(loser);
+            console.log(`Game over. The winner is ${winner}.`);
         }
-        // the winner is the player that didn't lose
-        const winner = otherPlayerDesignator(loser);
-        console.log('Game over. The winner is', winner);
     };
 
     /**
@@ -357,6 +359,9 @@ class Game {
                 return false;
             }
         }
+
+        // each movement must be for a different character
+        // TODO
 
         // the total movement must be at least 1 and no more than 3
         const totalMovement = movementSet.reduce((total, movement) => {
@@ -1174,4 +1179,6 @@ class Game {
     };
 }
 
+//[...Array(100).keys()].forEach(() => {
 new Game().play();
+//});
