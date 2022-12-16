@@ -361,7 +361,40 @@ class Game {
         }
 
         // each movement must be for a different character
-        // TODO
+        for (const movement of movementSet) {
+            // find the number of potential characters on the from island that
+            // this movement could refer to
+            const numberOfMatchingCharacters = (
+                this.findIsland(movement.fromIslandNumber) as Island
+            )
+                .getCharacters()
+                .filter((character) => {
+                    return character.dump() === movement.character.dump();
+                }).length;
+
+            // find the number of movements in the movement set that refer to
+            // this type of character on this from island
+            const numberOfMovesUsingThisTypeOfCharacter = movementSet.filter(
+                (otherMovement) => {
+                    return (
+                        otherMovement.character.dump() ===
+                            movement.character.dump() &&
+                        otherMovement.fromIslandNumber ===
+                            movement.fromIslandNumber
+                    );
+                },
+            ).length;
+
+            // if there are not enough of the type of character in question on
+            // the from island in question, then at least two of the movements
+            // in the movement set are trying to refer to the same character
+            if (
+                numberOfMovesUsingThisTypeOfCharacter >
+                numberOfMatchingCharacters
+            ) {
+                return false;
+            }
+        }
 
         // the total movement must be at least 1 and no more than 3
         const totalMovement = movementSet.reduce((total, movement) => {
