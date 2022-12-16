@@ -100,6 +100,7 @@ class Game {
         console.log('Starting game');
         let loser: PlayerDesignator | undefined = undefined;
         let roundCounter = 1;
+        console.log('Starting game loop');
         while (true) {
             console.log('Begin round number', roundCounter++);
             // check if there is a loser and break if there is
@@ -122,6 +123,7 @@ class Game {
                 const cardPlacement = (() => {
                     // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
+                    console.log('Starting card placement loop');
                     while (
                         !cardPlacement ||
                         !this.actionOrderTrack.checkCardPlacementLegal(
@@ -220,6 +222,7 @@ class Game {
             }
 
             // advance the rising waters marker
+            console.log('Starting rising water loop');
             while (!this.findIsland(this.nextIslandToSink)) {
                 this.nextIslandToSink = (this.nextIslandToSink % 16) + 1;
             }
@@ -650,6 +653,7 @@ class Game {
 
                 // try to get a movement until a valid one is given
                 let flyingFishMovement: FlyingFishMovement | null = null;
+                console.log('Starting flying fish loop');
                 while (
                     !flyingFishMovement ||
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
@@ -693,6 +697,7 @@ class Game {
 
                 // try to get a fog target until a valid one is given
                 let fogTarget: number | null = null;
+                console.log('Starting fog loop');
                 while (
                     !fogTarget ||
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
@@ -741,6 +746,7 @@ class Game {
                 }
 
                 let harpoonTarget: HarpoonTarget | null = null;
+                console.log('Starting harpoon loop');
                 while (
                     !harpoonTarget ||
                     !this.checkHarpoonTargetLegal(
@@ -815,6 +821,7 @@ class Game {
 
                 // try to get a movement set until a valid one is given
                 let movementSet: MovementSet | null = null;
+                console.log('Starting movement loop');
                 while (
                     !movementSet ||
                     !this.checkMovementSetLegal(
@@ -845,6 +852,7 @@ class Game {
             case CardType.NET:
                 // try to get a net target until a valid one is given
                 let netTarget: number | null = null;
+                console.log('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
                     netTarget = player.getNetTarget();
                 }
@@ -875,6 +883,7 @@ class Game {
 
                 // try to get a pilngs target until a valid one is given
                 let pilingsTarget: number | null = null;
+                console.log('Starting pilings loop');
                 while (
                     !pilingsTarget ||
                     !this.findIsland(pilingsTarget)?.smallCapacity ||
@@ -927,6 +936,7 @@ class Game {
 
                 // try to get a tidal surge target until a valid one is given
                 let tidalSurgeTarget: number | null = null;
+                console.log('Starting tidal surge loop');
                 while (
                     !tidalSurgeTarget ||
                     !this.getAdjacentIslands(this.nextIslandToSink).some(
@@ -945,6 +955,7 @@ class Game {
             case CardType.TIDAL_WAVE:
                 // try to get a tidal wave target until a valid one is given
                 let tidalWaveTarget: number | null = null;
+                console.log('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
                     tidalWaveTarget = player.getTidalWaveTarget();
                 }
@@ -958,6 +969,7 @@ class Game {
             case CardType.TORTOISE:
                 // try to get a tortoise target until a valid one is given
                 let tortoiseTarget: TortoiseTarget | null = null;
+                console.log('Starting tortoise loop');
                 while (
                     !tortoiseTarget ||
                     tortoiseTarget.character.playerDesignator !==
@@ -1000,6 +1012,7 @@ class Game {
                 // try to get a volcanic eruption target until a valid one is
                 // given
                 let volcanicEruptionTarget: number | null = null;
+                console.log('Starting volcanic eruption loop');
                 while (
                     !volcanicEruptionTarget ||
                     this.findIsland(volcanicEruptionTarget)?.islandType !==
@@ -1066,6 +1079,7 @@ class Game {
                         // try to get a flee choice until a valid one is
                         // given
                         let characterToFlee: Character | null = null;
+                        console.log('Starting flee loop');
                         while (
                             !characterToFlee ||
                             characterToFlee.playerDesignator !==
@@ -1169,6 +1183,7 @@ class Game {
                 // if the rising waters marker was on the volcano, move it to
                 // the next island
                 if (this.nextIslandToSink === volcanicEruptionTarget) {
+                    console.log('Starting sink loop');
                     while (!this.findIsland(this.nextIslandToSink)) {
                         this.nextIslandToSink =
                             (this.nextIslandToSink % 16) + 1;

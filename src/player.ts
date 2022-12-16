@@ -299,6 +299,7 @@ export class Player {
         let toDraw = cards;
 
         // draw cards while cards still need to be drawn
+        console.log('Starting card draw loop');
         while (toDraw > 0) {
             // if the deck is empty, reshuffle
             if (this.deck.length <= 0) {
