@@ -133,7 +133,7 @@ export class Player {
      * Returns a flying fish movement.
      */
     public readonly getFlyingFishMovement = (): FlyingFishMovement => {
-        return {
+        const movement = {
             fromIslandNumber: randomIslandNumber(),
             toIslandNumber: randomIslandNumber(),
             character: new Character(
@@ -141,6 +141,10 @@ export class Player {
                 sampleArray([20, 30, 40]),
             ),
         };
+        if (Math.random() > 0.5) {
+            movement.character.tortoise = true;
+        }
+        return movement;
     };
 
     /**
@@ -169,14 +173,18 @@ export class Player {
     public readonly getMovementSet = (): MovementSet => {
         const movementSet: MovementSet = [];
         [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
-            movementSet.push({
+            const movement = {
                 character: new Character(
                     this.playerDesignator,
                     sampleArray([20, 30, 40]),
                 ),
                 fromIslandNumber: randomIslandNumber(),
                 toIslandNumber: randomIslandNumber(),
-            });
+            };
+            if (Math.random() > 0.5) {
+                movement.character.tortoise = true;
+            }
+            movementSet.push(movement);
         });
         return movementSet;
     };
