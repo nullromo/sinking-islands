@@ -99,14 +99,35 @@ class Game {
     public readonly play = () => {
         console.log('Starting game');
         let loser: PlayerDesignator | undefined = undefined;
+
+        try {
+            loser = this.runMainGameLoop();
+        } catch (error: unknown) {
+            console.error(error);
+        }
+
+        if (!loser) {
+            // if there is no loser, then the game is a draw
+            console.log('Could not determine a winner. The game is a draw.');
+        } else {
+            // the winner is the player that didn't lose
+            const winner = otherPlayerDesignator(loser);
+            console.log(`Game over. The winner is ${winner}.`);
+        }
+    };
+
+    /**
+     * Runs the loop that constitutes the main game flow.
+     */
+    private readonly runMainGameLoop = () => {
         let roundCounter = 1;
         console.log('Starting game loop');
         while (true) {
             console.log('Begin round number', roundCounter++);
             // check if there is a loser and break if there is
-            loser = this.getLoser();
+            const loser = this.getLoser();
             if (loser) {
-                break;
+                return loser;
             }
 
             // print out the game state
@@ -167,8 +188,7 @@ class Game {
                     error === PlayerDesignator.PLAYER_A ||
                     error === PlayerDesignator.PLAYER_B
                 ) {
-                    loser = error;
-                    break;
+                    return error;
                 }
 
                 // otherwise, it's a real error
@@ -218,7 +238,7 @@ class Game {
 
             // if there are no islands left, then the game is a draw
             if (this.islands.length < 1) {
-                break;
+                return;
             }
 
             // advance the rising waters marker
@@ -236,15 +256,6 @@ class Game {
 
             // print out the game state
             console.log(this.dump());
-        }
-
-        if (!loser) {
-            // if there is no loser, then the game is a draw
-            console.log('Could not determine a winner. The game is a draw.');
-        } else {
-            // the winner is the player that didn't lose
-            const winner = otherPlayerDesignator(loser);
-            console.log(`Game over. The winner is ${winner}.`);
         }
     };
 

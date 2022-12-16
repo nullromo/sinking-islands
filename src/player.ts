@@ -288,6 +288,7 @@ export class Player {
      * Shuffles the player's discard pile into their deck.
      */
     public readonly reshuffle = () => {
+        console.log(`Reshuffling player ${this.playerDesignator}'s deck.`);
         this.deck = shuffleArray([...this.deck, ...this.discardPile]);
         this.discardPile = [];
     };
