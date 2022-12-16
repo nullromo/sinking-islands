@@ -1120,6 +1120,22 @@ class Game {
                 this.islands = this.islands.filter((island) => {
                     return island.islandNumber !== volcanicEruptionTarget;
                 });
+
+                // if there are no islands left, then the game is a draw
+                if (this.islands.length < 1) {
+                    throw new Error(
+                        'The last remaining island erupted and sank.',
+                    );
+                }
+
+                // if the rising waters marker was on the volcano, move it to
+                // the next island
+                if (this.nextIslandToSink === volcanicEruptionTarget) {
+                    while (!this.findIsland(this.nextIslandToSink)) {
+                        this.nextIslandToSink =
+                            (this.nextIslandToSink % 16) + 1;
+                    }
+                }
                 break;
             case CardType.WEAKNESS:
                 console.log(
