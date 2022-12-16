@@ -131,7 +131,7 @@ class Game {
             }
 
             // print out the game state
-            console.log(this.dump());
+            //console.log(this.dump());
 
             // determine player order
             const initiativePlayer = this.getPlayer(this.initiative);
@@ -177,7 +177,7 @@ class Game {
             takeTurn(otherPlayer);
 
             // print out the game state
-            console.log(this.dump());
+            //console.log(this.dump());
 
             // resolve the actions, catching any thrown PlayerDesignators
             try {
@@ -255,7 +255,7 @@ class Game {
             this.playerB.draw(3);
 
             // print out the game state
-            console.log(this.dump());
+            //console.log(this.dump());
         }
     };
 
@@ -1238,6 +1238,13 @@ class Game {
     };
 }
 
-//[...Array(100).keys()].forEach(() => {
-new Game().play();
-//});
+(async () => {
+    for (const g of [...Array(1000).keys()]) {
+        await new Promise<void>((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 100);
+            new Game().play();
+        });
+    }
+})();
