@@ -1051,18 +1051,18 @@ class Game {
                             }'s character ${characterToFlee.dump()} flees first.`,
                         );
 
-                        // reset tortoise and reclaim card if necessary
-                        if (characterToFlee.tortoise) {
-                            characterToFlee.tortoise = false;
-                            player.reclaim(CardType.TORTOISE);
-                        }
-
                         // move the character
                         console.log(
                             `Character ${characterToFlee.dump()} flees from the lava flow.`,
                         );
                         lavaFlowIsland.removeCharacter(characterToFlee);
                         safeIsland.addCharacter(characterToFlee);
+
+                        // reset tortoise and reclaim card if necessary
+                        if (characterToFlee.tortoise) {
+                            characterToFlee.tortoise = false;
+                            player.reclaim(CardType.TORTOISE);
+                        }
                     }
 
                     // everyone else gets a chance to flee
@@ -1077,6 +1077,13 @@ class Game {
                     ) {
                         // move all characters
                         lavaFlowIsland.getCharacters().forEach((character) => {
+                            // move the character
+                            console.log(
+                                `Character ${character.dump()} flees from the lava flow.`,
+                            );
+                            lavaFlowIsland.removeCharacter(character);
+                            safeIsland.addCharacter(character);
+
                             // reset tortoise and reclaim card if necessary
                             if (character.tortoise) {
                                 character.tortoise = false;
@@ -1084,13 +1091,6 @@ class Game {
                                     character.playerDesignator,
                                 ).reclaim(CardType.TORTOISE);
                             }
-
-                            // move the character
-                            console.log(
-                                `Character ${character.dump()} flees from the lava flow.`,
-                            );
-                            lavaFlowIsland.removeCharacter(character);
-                            safeIsland.addCharacter(character);
                         });
                     }
                 });
