@@ -1,34 +1,40 @@
-import { ActionOrderTrack, CardPlacement } from './actionOrderTrack';
-import { Card, CardType } from './card';
+import { Socket } from 'socket.io';
+import type { GameStateGame } from '../commonTypes';
+import { ClientToServerEvents, ServerToClientEvents } from '../socketEvents';
+import { assertUnreachable, shuffleArray } from '../util';
+import type { CardPlacement } from './actionOrderTrack';
+import { ActionOrderTrack } from './actionOrderTrack';
+import type { Card } from './card';
+import { CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
-import {
+import type {
     FlyingFishMovement,
     HarpoonTarget,
     MovementSet,
-    otherPlayerDesignator,
-    Player,
-    PlayerDesignator,
     TortoiseTarget,
 } from './player';
-import { assertUnreachable, shuffleArray } from './util';
+import { otherPlayerDesignator, Player, PlayerDesignator } from './player';
 
 /**
  * Represents a game of Sinking Islands
  */
-class Game {
+export class Game {
+    // the id or name of the game
+    private readonly id: string;
+
     // the island with the Rising Waters marker on it
-    private nextIslandToSink: number = 1;
+    private nextIslandToSink = 1;
 
     // the player that plays first this turn
     private initiative: PlayerDesignator = PlayerDesignator.PLAYER_A;
 
     // representations of the 2 players
-    private playerA = new Player(PlayerDesignator.PLAYER_A);
-    private playerB = new Player(PlayerDesignator.PLAYER_B);
+    private readonly playerA = new Player(PlayerDesignator.PLAYER_A);
+    private readonly playerB = new Player(PlayerDesignator.PLAYER_B);
 
     // representation of the Action Order Track
-    private actionOrderTrack = new ActionOrderTrack();
+    private readonly actionOrderTrack = new ActionOrderTrack();
 
     // representation of all the islands in the archipelago
     private islands: Island[] = shuffleArray([
@@ -50,8 +56,10 @@ class Game {
         new Island(16, IslandType.NORMAL, false),
     ]);
 
-    public constructor() {
+    public constructor(id: string) {
         console.log('Creating game');
+        this.id = id;
+
         // create and randomize all the characters
         const characters = shuffleArray([
             new Character(PlayerDesignator.PLAYER_A, 20),
@@ -79,6 +87,26 @@ class Game {
     }
 
     /**
+     * Connects the given socket to the given player.
+     */
+    public readonly connectSocket = (
+        playerDesignator: PlayerDesignator,
+        socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+    ) => {
+        this.getPlayer(playerDesignator).connectSocket(socket);
+    };
+
+    /**
+     * Returns true if the game is still waiting for a player to connect over a socket.
+     */
+    public readonly isWaitingForPlayers = () => {
+        return (
+            this.playerA.isWaitingForSocket() ||
+            this.playerB.isWaitingForSocket()
+        );
+    };
+
+    /**
      * Returns the player that has lost, or undefined if no player has lost.
      */
     private readonly getLoser = () => {
@@ -98,7 +126,7 @@ class Game {
      */
     public readonly play = () => {
         console.log('Starting game');
-        let loser: PlayerDesignator | undefined = undefined;
+        let loser: PlayerDesignator | null = null;
 
         try {
             loser = this.runMainGameLoop();
@@ -123,7 +151,8 @@ class Game {
         let roundCounter = 1;
         console.log('Starting game loop');
         while (true) {
-            console.log('Begin round number', roundCounter++);
+            roundCounter += 1;
+            console.log('Begin round number', roundCounter);
             // check if there is a loser and break if there is
             const loser = this.getLoser();
             if (loser) {
@@ -152,7 +181,7 @@ class Game {
                             cardPlacement,
                         )
                     ) {
-                        cardPlacement = player.getCardPlacement();
+                        cardPlacement = player.requestCardPlacement();
                     }
                     return cardPlacement;
                 })();
@@ -238,7 +267,7 @@ class Game {
 
             // if there are no islands left, then the game is a draw
             if (this.islands.length < 1) {
-                return;
+                return null;
             }
 
             // advance the rising waters marker
@@ -312,7 +341,7 @@ class Game {
         // can't move a character that is not there
         if (
             !this.findIsland(
-                flyingFishMovement?.fromIslandNumber,
+                flyingFishMovement.fromIslandNumber,
             )?.findCharacter(flyingFishMovement.character)
         ) {
             return false;
@@ -567,6 +596,7 @@ class Game {
             // check to see if the game is over
             const loser = this.getLoser();
             if (loser) {
+                // eslint-disable-next-line @typescript-eslint/no-throw-literal
                 throw loser;
             }
         }
@@ -592,14 +622,6 @@ class Game {
                         .reduce(
                             (totals, character) => {
                                 return {
-                                    playerStrength:
-                                        totals.playerStrength +
-                                        (character.playerDesignator ===
-                                        card.playerDesignator
-                                            ? player.weakness
-                                                ? 10
-                                                : character.strength
-                                            : 0),
                                     opponentStrength:
                                         totals.opponentStrength +
                                         (character.playerDesignator ===
@@ -608,9 +630,17 @@ class Game {
                                             : this.getPlayer(opponent).weakness
                                             ? 10
                                             : character.strength),
+                                    playerStrength:
+                                        totals.playerStrength +
+                                        (character.playerDesignator ===
+                                        card.playerDesignator
+                                            ? player.weakness
+                                                ? 10
+                                                : character.strength
+                                            : 0),
                                 };
                             },
-                            { playerStrength: 0, opponentStrength: 0 },
+                            { opponentStrength: 0, playerStrength: 0 },
                         );
 
                     // kill necessary characters
@@ -669,7 +699,7 @@ class Game {
                     !flyingFishMovement ||
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
                 ) {
-                    flyingFishMovement = player.getFlyingFishMovement();
+                    flyingFishMovement = player.requestFlyingFishMovement();
                 }
 
                 // move the character
@@ -713,7 +743,7 @@ class Game {
                     !fogTarget ||
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
                 ) {
-                    fogTarget = player.getFogTarget();
+                    fogTarget = player.requestFogTarget();
                 }
 
                 // fog the target
@@ -732,7 +762,7 @@ class Game {
                 // computation
                 if (
                     !this.islands
-                        .reduce((allCharacters, island) => {
+                        .reduce<HarpoonTarget[]>((allCharacters, island) => {
                             return [
                                 ...allCharacters,
                                 ...island.getCharacters().map((character) => {
@@ -742,7 +772,7 @@ class Game {
                                     };
                                 }),
                             ];
-                        }, [] as HarpoonTarget[])
+                        }, [])
                         .some((harpoonTarget) => {
                             return this.checkHarpoonTargetLegal(
                                 player.playerDesignator,
@@ -765,7 +795,7 @@ class Game {
                         harpoonTarget,
                     )
                 ) {
-                    harpoonTarget = player.getHarpoonTarget();
+                    harpoonTarget = player.requestHarpoonTarget();
                 }
 
                 // kill the target
@@ -840,7 +870,7 @@ class Game {
                         movementSet,
                     )
                 ) {
-                    movementSet = player.getMovementSet();
+                    movementSet = player.requestMovementSet();
                 }
 
                 // make the moves
@@ -865,7 +895,7 @@ class Game {
                 let netTarget: number | null = null;
                 console.log('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
-                    netTarget = player.getNetTarget();
+                    netTarget = player.requestNetTarget();
                 }
 
                 // place the net
@@ -900,7 +930,7 @@ class Game {
                     !this.findIsland(pilingsTarget)?.smallCapacity ||
                     pilingsTarget === this.getPlayer(opponent).pilingsIsland
                 ) {
-                    pilingsTarget = player.getPilingsTarget();
+                    pilingsTarget = player.requestPilingsTarget();
                 }
 
                 // place the net
@@ -956,7 +986,7 @@ class Game {
                         },
                     )
                 ) {
-                    tidalSurgeTarget = player.getTidalSurgeTarget();
+                    tidalSurgeTarget = player.requestTidalSurgeTarget();
                 }
 
                 // move the rising waters marker
@@ -968,7 +998,7 @@ class Game {
                 let tidalWaveTarget: number | null = null;
                 console.log('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
-                    tidalWaveTarget = player.getTidalWaveTarget();
+                    tidalWaveTarget = player.requestTidalWaveTarget();
                 }
 
                 // move the rising waters marker
@@ -994,7 +1024,7 @@ class Game {
                             );
                         })
                 ) {
-                    tortoiseTarget = player.getTortoiseTarget();
+                    tortoiseTarget = player.requestTortoiseTarget();
                 }
 
                 // make the target a tortoise
@@ -1029,7 +1059,8 @@ class Game {
                     this.findIsland(volcanicEruptionTarget)?.islandType !==
                         IslandType.VOLCANO
                 ) {
-                    volcanicEruptionTarget = player.getVolcanicEruptionTarget();
+                    volcanicEruptionTarget =
+                        player.requestVolcanicEruptionTarget();
                 }
 
                 // erupt the volcano
@@ -1104,7 +1135,7 @@ class Game {
                                     );
                                 })
                         ) {
-                            characterToFlee = player.getFleeChoice();
+                            characterToFlee = player.requestFleeChoice();
                         }
 
                         // move the chosen character
@@ -1236,15 +1267,16 @@ class Game {
                 '',
             )}\n${this.playerA.dump()}\n${this.playerB.dump()}\n${this.actionOrderTrack.dump()}`;
     };
-}
 
-(async () => {
-    for (const g of [...Array(1000).keys()]) {
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 100);
-            new Game().play();
-        });
-    }
-})();
+    public readonly toGameState = (): GameStateGame => {
+        return {
+            actionOrderTrack: this.actionOrderTrack.toGameState(),
+            id: this.id,
+            initiative: this.initiative,
+            islands: this.islands.map((island) => {
+                return island.toGameState();
+            }),
+            nextIslandToSink: this.nextIslandToSink,
+        };
+    };
+}

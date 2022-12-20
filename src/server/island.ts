@@ -1,5 +1,6 @@
-import { Character } from './character';
-import { PlayerDesignator } from './player';
+import type { GameStateIsland } from '../commonTypes';
+import type { Character } from './character';
+import type { PlayerDesignator } from './player';
 
 /**
  * Unique IDs for each type of island.
@@ -97,5 +98,16 @@ export class Island {
                 return character.dump();
             })
             .join(',')}`;
+    };
+
+    public readonly toGameState = (): GameStateIsland => {
+        return {
+            characters: this.characters.map((character) => {
+                return character.toGameState();
+            }),
+            islandNumber: this.islandNumber,
+            islandType: this.islandType,
+            smallCapacity: this.smallCapacity,
+        };
     };
 }

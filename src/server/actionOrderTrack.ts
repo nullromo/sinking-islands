@@ -1,5 +1,6 @@
-import { Card } from './card';
-import { PlayerDesignator } from './player';
+import type { GameStateActionOrderTrack } from '../commonTypes';
+import type { Card } from './card';
+import type { PlayerDesignator } from './player';
 
 /**
  * Represents a player's choice on where to put their cards.
@@ -46,12 +47,12 @@ export class ActionOrderTrack {
      * Returns a list of the unused indices in the card track.
      */
     public readonly getAvailableSlots = () => {
-        return this.cardSlots.reduce((indices, card, index) => {
+        return this.cardSlots.reduce<number[]>((indices, card, index) => {
             if (card === null) {
                 return [...indices, index];
             }
             return indices;
-        }, [] as number[]);
+        }, []);
     };
 
     /**
@@ -166,5 +167,14 @@ export class ActionOrderTrack {
         return `[${this.cardSlots.map((card) => {
             return card ? `${card.cardType}_${card.playerDesignator}` : '_';
         })}]fu[${this.faceUpCards}]`;
+    };
+
+    public readonly toGameState = (): GameStateActionOrderTrack => {
+        return {
+            cardSlots: this.cardSlots.map((card) => {
+                return card ? card.toGameState() : null;
+            }),
+            faceUpCards: this.faceUpCards,
+        };
     };
 }

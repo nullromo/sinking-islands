@@ -1,7 +1,13 @@
-import { CardPlacement } from './actionOrderTrack';
+import type { Socket } from 'socket.io';
+import type {
+    ClientToServerEvents,
+    ServerToClientEvents,
+} from '../socketEvents';
+import { sampleArray, shuffleArray } from '../util';
+import type { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
-import { sampleArray, shuffleArray } from './util';
+import { fullObject } from './util';
 
 const randomIslandNumber = () => {
     return Math.floor(Math.random() * 16) + 1;
@@ -57,14 +63,17 @@ export class Player {
     private setAsideCards: Card[] = [];
 
     // specifiers for which islands have which player tokens on them
-    public netIsland: number = NaN;
-    public pilingsIsland: number = NaN;
+    public netIsland = NaN;
+    public pilingsIsland = NaN;
 
     // specifier for whether or not the player is under indescretion
     public indescretion = false;
 
     // specifier for whether or not the player is afflicted with weakness
     public weakness = false;
+
+    private socket: Socket<ClientToServerEvents, ServerToClientEvents> | null =
+        null;
 
     public constructor(playerDesignator: PlayerDesignator) {
         this.playerDesignator = playerDesignator;
@@ -103,6 +112,26 @@ export class Player {
     }
 
     /**
+     * Connects the given socket to this player.
+     */
+    public readonly connectSocket = (
+        socket: Socket<ClientToServerEvents, ServerToClientEvents>,
+    ) => {
+        if (this.socket === null) {
+            this.socket = socket;
+        } else {
+            throw new Error('Socket already connected to this player.');
+        }
+    };
+
+    /**
+     * Returns true if a socket has not been connected yet.
+     */
+    public readonly isWaitingForSocket = () => {
+        return !this.socket;
+    };
+
+    /**
      * Removes the given card from the player's hand.
      */
     public readonly removeCardFromHand = (cardToRemove: Card) => {
@@ -113,7 +142,9 @@ export class Player {
             this.hand.splice(index, 1);
         } else {
             throw new Error(
-                `There is no card matching ${cardToRemove} in this player's hand (${this.dump()}).`,
+                `There is no card matching ${fullObject(
+                    cardToRemove,
+                )} in this player's hand (${this.dump()}).`,
             );
         }
     };
@@ -121,7 +152,7 @@ export class Player {
     /**
      * Returns a card placement choice given the available slots.
      */
-    public readonly getCardPlacement = (): CardPlacement => {
+    public readonly requestCardPlacement = (): CardPlacement => {
         return {
             [sampleArray([0, 1])]: this.hand[0],
             [sampleArray([2, 3])]: this.hand[1],
@@ -132,14 +163,14 @@ export class Player {
     /**
      * Returns a flying fish movement.
      */
-    public readonly getFlyingFishMovement = (): FlyingFishMovement => {
+    public readonly requestFlyingFishMovement = (): FlyingFishMovement => {
         const movement = {
-            fromIslandNumber: randomIslandNumber(),
-            toIslandNumber: randomIslandNumber(),
             character: new Character(
                 this.playerDesignator,
                 sampleArray([20, 30, 40]),
             ),
+            fromIslandNumber: randomIslandNumber(),
+            toIslandNumber: randomIslandNumber(),
         };
         if (Math.random() > 0.5) {
             movement.character.tortoise = true;
@@ -150,27 +181,27 @@ export class Player {
     /**
      * Returns a fog target.
      */
-    public readonly getFogTarget = () => {
+    public readonly requestFogTarget = () => {
         return Math.floor(Math.random() * 6);
     };
 
     /**
      * Returns a harpoon target.
      */
-    public readonly getHarpoonTarget = (): HarpoonTarget => {
+    public readonly requestHarpoonTarget = (): HarpoonTarget => {
         return {
-            islandNumber: randomIslandNumber(),
             character: new Character(
                 otherPlayerDesignator(this.playerDesignator),
                 sampleArray([20, 30, 40]),
             ),
+            islandNumber: randomIslandNumber(),
         };
     };
 
     /**
      * Returns a movement set.
      */
-    public readonly getMovementSet = (): MovementSet => {
+    public readonly requestMovementSet = (): MovementSet => {
         const movementSet: MovementSet = [];
         [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
             const movement = {
@@ -192,55 +223,55 @@ export class Player {
     /**
      * Returns a net target.
      */
-    public readonly getNetTarget = () => {
+    public readonly requestNetTarget = () => {
         return randomIslandNumber();
     };
 
     /**
      * Returns a pilings target.
      */
-    public readonly getPilingsTarget = () => {
+    public readonly requestPilingsTarget = () => {
         return randomIslandNumber();
     };
 
     /**
      * Returns a tidal surge target.
      */
-    public readonly getTidalSurgeTarget = () => {
+    public readonly requestTidalSurgeTarget = () => {
         return randomIslandNumber();
     };
 
     /**
      * Returns a tidal wave target.
      */
-    public readonly getTidalWaveTarget = () => {
+    public readonly requestTidalWaveTarget = () => {
         return randomIslandNumber();
     };
 
     /**
      * Returns a tortoise target.
      */
-    public readonly getTortoiseTarget = (): TortoiseTarget => {
+    public readonly requestTortoiseTarget = (): TortoiseTarget => {
         return {
-            islandNumber: randomIslandNumber(),
             character: new Character(
                 this.playerDesignator,
                 sampleArray([20, 30, 40]),
             ),
+            islandNumber: randomIslandNumber(),
         };
     };
 
     /**
      * Returns a volcanic eruption target.
      */
-    public readonly getVolcanicEruptionTarget = () => {
+    public readonly requestVolcanicEruptionTarget = () => {
         return randomIslandNumber();
     };
 
     /**
      * Returns the strength of a character that should flee.
      */
-    public readonly getFleeChoice = () => {
+    public readonly requestFleeChoice = () => {
         const character = new Character(
             this.playerDesignator,
             sampleArray([20, 30, 40]),

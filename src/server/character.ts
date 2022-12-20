@@ -1,4 +1,5 @@
-import { PlayerDesignator } from './player';
+import type { GameStateCharacter } from '../commonTypes';
+import type { PlayerDesignator } from './player';
 import { PlayerGamePiece } from './playerGamePiece';
 
 /**
@@ -23,5 +24,13 @@ export class Character extends PlayerGamePiece {
         return `[${this.playerDesignator}${this.strength}${
             this.tortoise ? '@' : ''
         }]`;
+    };
+
+    public readonly toGameState = (): GameStateCharacter => {
+        return {
+            playerDesignator: this.playerDesignator,
+            strength: this.strength,
+            tortoise: this.tortoise,
+        };
     };
 }

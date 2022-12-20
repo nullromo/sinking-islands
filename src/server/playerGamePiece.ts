@@ -1,4 +1,4 @@
-import { PlayerDesignator } from './player';
+import type { PlayerDesignator } from './player';
 
 /**
  * Base class for game pieces that are owned by a player.
