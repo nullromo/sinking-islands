@@ -8,3 +8,4 @@ TODO list:
     -   plater.ts special handling code for generic thingy... might go away
         after refactor. See TODO in that file
 -   handle page refresh re-connect
+-   determine starting player properly
