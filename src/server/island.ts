@@ -1,6 +1,10 @@
-import type { GameStateIsland } from '../commonTypes';
-import type { Character } from './character';
-import type { PlayerDesignator } from './player';
+import type {
+    CharacterSerialized,
+    IslandSerialized,
+    PlayerDesignator,
+} from '../commonTypes';
+import { Character } from './character';
+import { fullObject } from './util';
 
 /**
  * Unique IDs for each type of island.
@@ -43,31 +47,35 @@ export class Island {
     /**
      * Adds the given character to the island.
      */
-    public readonly addCharacter = (character: Character) => {
-        this.characters.push(character);
+    public readonly addCharacter = (character: CharacterSerialized) => {
+        this.characters.push(Character.deserialize(character));
     };
 
     /**
      * Attempts to find a character on this island.
      */
-    public readonly findCharacter = (characterToFind: Character) => {
+    public readonly findCharacter = (characterToFind: CharacterSerialized) => {
         return this.characters.find((character) => {
-            return character.dump() === characterToFind.dump();
+            return character.equals(characterToFind);
         });
     };
 
     /**
      * Removes a character matching the given character from the island.
      */
-    public readonly removeCharacter = (characterToRemove: Character) => {
+    public readonly removeCharacter = (
+        characterToRemove: CharacterSerialized,
+    ) => {
         const index = this.characters.findIndex((character) => {
-            return character.dump() === characterToRemove.dump();
+            return character.equals(characterToRemove);
         });
         if (index >= 0) {
             this.characters.splice(index, 1);
         } else {
             throw new Error(
-                `There is no character matching ${characterToRemove.dump()} on this island (${this.dump()}).`,
+                `There is no character matching ${fullObject(
+                    characterToRemove,
+                )} on this island (${fullObject(this)}).`,
             );
         }
     };
@@ -83,27 +91,10 @@ export class Island {
         });
     };
 
-    /**
-     * Returns a string representation of the island.
-     */
-    public readonly dump = () => {
-        return `${this.islandNumber}${this.smallCapacity ? '-' : '+'}${
-            this.islandType === IslandType.SACRED
-                ? '$'
-                : this.islandType === IslandType.VOLCANO
-                ? 'V'
-                : ''
-        }:${this.characters
-            .map((character) => {
-                return character.dump();
-            })
-            .join(',')}`;
-    };
-
-    public readonly toGameState = (): GameStateIsland => {
+    public readonly serialize = (): IslandSerialized => {
         return {
             characters: this.characters.map((character) => {
-                return character.toGameState();
+                return character.serialize();
             }),
             islandNumber: this.islandNumber,
             islandType: this.islandType,

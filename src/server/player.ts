@@ -1,5 +1,12 @@
 import type { Socket } from 'socket.io';
 import type {
+    CardSerialized,
+    CharacterSerialized,
+    GameSerialized,
+    PlayerDesignator,
+} from '../commonTypes';
+import { otherPlayerDesignator } from '../commonTypes';
+import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
@@ -13,39 +20,20 @@ const randomIslandNumber = () => {
     return Math.floor(Math.random() * 16) + 1;
 };
 
-/**
- * Unique IDs for each player.
- */
-export enum PlayerDesignator {
-    PLAYER_A = 'A',
-    PLAYER_B = 'B',
-}
-
-/**
- * Given a player designator, returns the other one.
- */
-export const otherPlayerDesignator = (playerDesignator: PlayerDesignator) => {
-    return playerDesignator === PlayerDesignator.PLAYER_A
-        ? PlayerDesignator.PLAYER_B
-        : PlayerDesignator.PLAYER_A;
-};
-
 export type FlyingFishMovement = {
-    character: Character;
+    character: CharacterSerialized;
     fromIslandNumber: number;
     toIslandNumber: number;
 };
 
 export type HarpoonTarget = {
-    character: Character;
+    character: CharacterSerialized;
     islandNumber: number;
 };
 
-export type MovementSet = Array<{
-    character: Character;
-    fromIslandNumber: number;
-    toIslandNumber: number;
-}>;
+type NormalMovement = FlyingFishMovement;
+
+export type MovementSet = NormalMovement[];
 
 export type TortoiseTarget = HarpoonTarget;
 
@@ -132,6 +120,65 @@ export class Player {
     };
 
     /**
+     * Sends the given game state to this player.
+     */
+    public readonly sendGameState = (gameState: GameSerialized) => {
+        this.socket?.emit('gameState', gameState);
+    };
+
+    /**
+     * Returns a list of cards in this player's hand.
+     */
+    public readonly getHand = () => {
+        return this.hand.map((card) => {
+            return card.serialize();
+        });
+    };
+
+    /**
+     * Returns true if this player has a card matching the given card in their
+     * hand.
+     */
+    public readonly checkCardsInHand = (cards: CardSerialized[]) => {
+        // all the cards in the list must be in the player's hand
+        for (const card of cards) {
+            // find the number of cards in the hand that match this card
+            const numberOfMatchingCardsInHand = this.hand.filter((handCard) => {
+                return (
+                    handCard.cardType === card.cardType &&
+                    handCard.playerDesignator === card.playerDesignator
+                );
+            }).length;
+
+            // if there were no matching cards, then this card choice is not in
+            // the player's hand
+            if (numberOfMatchingCardsInHand === 0) {
+                return false;
+            }
+
+            // find the number of cards in the card set that refer to this type
+            // of card
+            const numberOfMatchingGivenCards = cards.filter((chosenCard) => {
+                return (
+                    chosenCard.cardType === card.cardType &&
+                    chosenCard.playerDesignator === card.playerDesignator
+                );
+            }).length;
+
+            // if there are not enough cards in the player's hand for all the
+            // times the card was selected, then the given cards are not in the
+            // player's hand
+            if (numberOfMatchingGivenCards > numberOfMatchingCardsInHand) {
+                return false;
+            }
+        }
+
+        // none of the cards returned false, so they are all in the player's
+        // hand
+        return true;
+    };
+
+    /**
      * Removes the given card from the player's hand.
      */
     public readonly removeCardFromHand = (cardToRemove: Card) => {
@@ -144,142 +191,288 @@ export class Player {
             throw new Error(
                 `There is no card matching ${fullObject(
                     cardToRemove,
-                )} in this player's hand (${this.dump()}).`,
+                )} in this player's hand (${fullObject(this)}).`,
             );
         }
     };
 
+    //TODO figure something like this out to shorten the code
+    //private readonly x = async <
+    //E extends Exclude<keyof ClientToServerEvents, 'createGame'>,
+    //R extends Parameters<ClientToServerEvents[E]>[0],
+    //>(
+    //requestEvent: keyof ServerToClientEvents,
+    //responseEvent: E,
+    //rand: () => R,
+    //) => {
+    //return new Promise<R>((resolve) => {
+    //if (this.socket) {
+    //this.socket.once(responseEvent, (value: R) => {
+    //resolve(value);
+    //});
+    //this.socket.emit(requestEvent);
+    //} else {
+    //resolve(rand());
+    //}
+    //});
+    //};
+
     /**
      * Returns a card placement choice given the available slots.
      */
-    public readonly requestCardPlacement = (): CardPlacement => {
-        return {
-            [sampleArray([0, 1])]: this.hand[0],
-            [sampleArray([2, 3])]: this.hand[1],
-            [sampleArray([4, 5])]: this.hand[2],
-        };
+    public readonly requestCardPlacement = async (): Promise<CardPlacement> => {
+        return new Promise<CardPlacement>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseCardPlacement', (cardPlacement) => {
+                    resolve(cardPlacement);
+                });
+                this.socket.emit('requestCardPlacement');
+            } else {
+                resolve({
+                    [sampleArray([0, 1])]: this.hand[0],
+                    [sampleArray([2, 3])]: this.hand[1],
+                    [sampleArray([4, 5])]: this.hand[2],
+                });
+            }
+        });
     };
 
     /**
      * Returns a flying fish movement.
      */
-    public readonly requestFlyingFishMovement = (): FlyingFishMovement => {
-        const movement = {
-            character: new Character(
-                this.playerDesignator,
-                sampleArray([20, 30, 40]),
-            ),
-            fromIslandNumber: randomIslandNumber(),
-            toIslandNumber: randomIslandNumber(),
+    public readonly requestFlyingFishMovement =
+        async (): Promise<FlyingFishMovement> => {
+            return new Promise<FlyingFishMovement>((resolve) => {
+                if (this.socket) {
+                    this.socket.once(
+                        'responseFlyingFishMovement',
+                        (flyingFishMovement) => {
+                            resolve(flyingFishMovement);
+                        },
+                    );
+                    this.socket.emit('requestFlyingFishMovement');
+                } else {
+                    const movement = {
+                        character: new Character(
+                            this.playerDesignator,
+                            sampleArray([20, 30, 40]),
+                        ),
+                        fromIslandNumber: randomIslandNumber(),
+                        toIslandNumber: randomIslandNumber(),
+                    };
+                    if (Math.random() > 0.5) {
+                        movement.character.tortoise = true;
+                    }
+                    resolve(movement);
+                }
+            });
         };
-        if (Math.random() > 0.5) {
-            movement.character.tortoise = true;
-        }
-        return movement;
-    };
 
     /**
      * Returns a fog target.
      */
-    public readonly requestFogTarget = () => {
-        return Math.floor(Math.random() * 6);
+    public readonly requestFogTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseFogTarget', (fogTarget) => {
+                    resolve(fogTarget);
+                });
+                this.socket.emit('requestFogTarget');
+            } else {
+                resolve(Math.floor(Math.random() * 6));
+            }
+        });
     };
 
     /**
      * Returns a harpoon target.
      */
-    public readonly requestHarpoonTarget = (): HarpoonTarget => {
-        return {
-            character: new Character(
-                otherPlayerDesignator(this.playerDesignator),
-                sampleArray([20, 30, 40]),
-            ),
-            islandNumber: randomIslandNumber(),
-        };
+    public readonly requestHarpoonTarget = async (): Promise<HarpoonTarget> => {
+        return new Promise<HarpoonTarget>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseHarpoonTarget', (harpoonTarget) => {
+                    resolve(harpoonTarget);
+                });
+                this.socket.emit('requestHarpoonTarget');
+            } else {
+                resolve({
+                    character: new Character(
+                        otherPlayerDesignator(this.playerDesignator),
+                        sampleArray([20, 30, 40]),
+                    ),
+                    islandNumber: randomIslandNumber(),
+                });
+            }
+        });
     };
 
     /**
      * Returns a movement set.
      */
-    public readonly requestMovementSet = (): MovementSet => {
-        const movementSet: MovementSet = [];
-        [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
-            const movement = {
-                character: new Character(
-                    this.playerDesignator,
-                    sampleArray([20, 30, 40]),
-                ),
-                fromIslandNumber: randomIslandNumber(),
-                toIslandNumber: randomIslandNumber(),
-            };
-            if (Math.random() > 0.5) {
-                movement.character.tortoise = true;
+    public readonly requestMovementSet = async (): Promise<MovementSet> => {
+        return new Promise<MovementSet>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseMovementSet', (movementSet) => {
+                    resolve(movementSet);
+                });
+                this.socket.emit('requestMovementSet');
+            } else {
+                const movementSet: MovementSet = [];
+                [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
+                    const movement = {
+                        character: new Character(
+                            this.playerDesignator,
+                            sampleArray([20, 30, 40]),
+                        ),
+                        fromIslandNumber: randomIslandNumber(),
+                        toIslandNumber: randomIslandNumber(),
+                    };
+                    if (Math.random() > 0.5) {
+                        movement.character.tortoise = true;
+                    }
+                    movementSet.push(movement);
+                });
+                resolve(movementSet);
             }
-            movementSet.push(movement);
         });
-        return movementSet;
     };
 
     /**
      * Returns a net target.
      */
-    public readonly requestNetTarget = () => {
-        return randomIslandNumber();
+    public readonly requestNetTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseNetTarget', (netTarget) => {
+                    resolve(netTarget);
+                });
+                this.socket.emit('requestNetTarget');
+            } else {
+                resolve(randomIslandNumber());
+            }
+        });
     };
 
     /**
      * Returns a pilings target.
      */
-    public readonly requestPilingsTarget = () => {
-        return randomIslandNumber();
+    public readonly requestPilingsTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responsePilingsTarget', (pilingsTarget) => {
+                    resolve(pilingsTarget);
+                });
+                this.socket.emit('requestPilingsTarget');
+            } else {
+                resolve(randomIslandNumber());
+            }
+        });
     };
 
     /**
      * Returns a tidal surge target.
      */
-    public readonly requestTidalSurgeTarget = () => {
-        return randomIslandNumber();
+    public readonly requestTidalSurgeTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once(
+                    'responseTidalSurgeTarget',
+                    (tidalSurgeTarget) => {
+                        resolve(tidalSurgeTarget);
+                    },
+                );
+                this.socket.emit('requestTidalSurgeTarget');
+            } else {
+                resolve(randomIslandNumber());
+            }
+        });
     };
 
     /**
      * Returns a tidal wave target.
      */
-    public readonly requestTidalWaveTarget = () => {
-        return randomIslandNumber();
+    public readonly requestTidalWaveTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once(
+                    'responseTidalWaveTarget',
+                    (tidalWaveTarget) => {
+                        resolve(tidalWaveTarget);
+                    },
+                );
+                this.socket.emit('requestTidalWaveTarget');
+            } else {
+                resolve(randomIslandNumber());
+            }
+        });
     };
 
     /**
      * Returns a tortoise target.
      */
-    public readonly requestTortoiseTarget = (): TortoiseTarget => {
-        return {
-            character: new Character(
-                this.playerDesignator,
-                sampleArray([20, 30, 40]),
-            ),
-            islandNumber: randomIslandNumber(),
+    public readonly requestTortoiseTarget =
+        async (): Promise<TortoiseTarget> => {
+            return new Promise<TortoiseTarget>((resolve) => {
+                if (this.socket) {
+                    this.socket.once(
+                        'responseTortoiseTarget',
+                        (tortoiseTarget) => {
+                            resolve(tortoiseTarget);
+                        },
+                    );
+                    this.socket.emit('requestTortoiseTarget');
+                } else {
+                    resolve({
+                        character: new Character(
+                            this.playerDesignator,
+                            sampleArray([20, 30, 40]),
+                        ),
+                        islandNumber: randomIslandNumber(),
+                    });
+                }
+            });
         };
-    };
 
     /**
      * Returns a volcanic eruption target.
      */
-    public readonly requestVolcanicEruptionTarget = () => {
-        return randomIslandNumber();
+    public readonly requestVolcanicEruptionTarget = async () => {
+        return new Promise<number>((resolve) => {
+            if (this.socket) {
+                this.socket.once(
+                    'responseVolcanicEruptionTarget',
+                    (volcanicEruptionTarget) => {
+                        resolve(volcanicEruptionTarget);
+                    },
+                );
+                this.socket.emit('requestVolcanicEruptionTarget');
+            } else {
+                resolve(randomIslandNumber());
+            }
+        });
     };
 
     /**
      * Returns the strength of a character that should flee.
      */
-    public readonly requestFleeChoice = () => {
-        const character = new Character(
-            this.playerDesignator,
-            sampleArray([20, 30, 40]),
-        );
-        if (Math.random() > 0.5) {
-            character.tortoise = true;
-        }
-        return character;
+    public readonly requestFleeChoice = async () => {
+        return new Promise<CharacterSerialized>((resolve) => {
+            if (this.socket) {
+                this.socket.once('responseFleeChoice', (fleeChoice) => {
+                    resolve(fleeChoice);
+                });
+                this.socket.emit('requestFleeChoice');
+            } else {
+                const character = new Character(
+                    this.playerDesignator,
+                    sampleArray([20, 30, 40]),
+                );
+                if (Math.random() > 0.5) {
+                    character.tortoise = true;
+                }
+                resolve(character);
+            }
+        });
     };
 
     /**
@@ -347,22 +540,5 @@ export class Player {
             toDraw -= 1;
             this.hand.push(this.deck.pop() as Card);
         }
-    };
-
-    /**
-     * Returns a string representation of the player.
-     */
-    public readonly dump = () => {
-        return `${this.playerDesignator}:k${this.deck.length}[${this.deck.map(
-            (card) => {
-                return card.cardType;
-            },
-        )}]h${this.hand.length}[${this.hand.map((card) => {
-            return card.cardType;
-        })}]d${this.discardPile.length}[${this.discardPile.map((card) => {
-            return card.cardType;
-        })}]s${this.setAsideCards.length}[${this.setAsideCards.map((card) => {
-            return card.cardType;
-        })}]`;
     };
 }

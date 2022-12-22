@@ -1,36 +1,54 @@
 import type { CardType } from './server/card';
 import type { IslandType } from './server/island';
-import type { PlayerDesignator } from './server/player';
 
-export type GameStatePlayerGamePiece = {
+/**
+ * Unique IDs for each player.
+ */
+export enum PlayerDesignator {
+    PLAYER_A = 'A',
+    PLAYER_B = 'B',
+}
+
+/**
+ * Given a player designator, returns the other one.
+ */
+export const otherPlayerDesignator = (playerDesignator: PlayerDesignator) => {
+    return playerDesignator === PlayerDesignator.PLAYER_A
+        ? PlayerDesignator.PLAYER_B
+        : PlayerDesignator.PLAYER_A;
+};
+
+export type PlayerGamePieceSerialized = {
     playerDesignator: PlayerDesignator;
 };
 
-export interface GameStateCharacter extends GameStatePlayerGamePiece {
+export interface CharacterSerialized extends PlayerGamePieceSerialized {
     strength: number;
     tortoise: boolean;
 }
 
-export type GameStateIsland = {
+export type IslandSerialized = {
     islandNumber: number;
     islandType: IslandType;
     smallCapacity: boolean;
-    characters: GameStateCharacter[];
+    characters: CharacterSerialized[];
 };
 
-export interface GameStateCard extends GameStatePlayerGamePiece {
+export interface CardSerialized extends PlayerGamePieceSerialized {
     cardType: CardType;
 }
 
-export type GameStateActionOrderTrack = {
-    cardSlots: Array<GameStateCard | null>;
+export type ActionOrderTrackSerialized = {
+    cardSlots: Array<CardSerialized | null>;
     faceUpCards: number[];
 };
 
-export type GameStateGame = {
-    actionOrderTrack: GameStateActionOrderTrack;
+export type GameSerialized = {
+    actionOrderTrack: ActionOrderTrackSerialized;
     id: string;
     initiative: PlayerDesignator;
-    islands: GameStateIsland[];
+    islands: IslandSerialized[];
     nextIslandToSink: number;
+    you: PlayerDesignator;
+    yourHand: CardSerialized[];
 };

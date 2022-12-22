@@ -1,11 +1,14 @@
-import { Socket } from 'socket.io';
-import type { GameStateGame } from '../commonTypes';
-import { ClientToServerEvents, ServerToClientEvents } from '../socketEvents';
+import type { Socket } from 'socket.io';
+import type { CharacterSerialized, GameSerialized } from '../commonTypes';
+import { otherPlayerDesignator, PlayerDesignator } from '../commonTypes';
+import type {
+    ClientToServerEvents,
+    ServerToClientEvents,
+} from '../socketEvents';
 import { assertUnreachable, shuffleArray } from '../util';
 import type { CardPlacement } from './actionOrderTrack';
 import { ActionOrderTrack } from './actionOrderTrack';
-import type { Card } from './card';
-import { CardType } from './card';
+import { Card, CardType } from './card';
 import { Character } from './character';
 import { Island, IslandType } from './island';
 import type {
@@ -14,7 +17,8 @@ import type {
     MovementSet,
     TortoiseTarget,
 } from './player';
-import { otherPlayerDesignator, Player, PlayerDesignator } from './player';
+import { Player } from './player';
+import { fullObject } from './util';
 
 /**
  * Represents a game of Sinking Islands
@@ -107,6 +111,14 @@ export class Game {
     };
 
     /**
+     * Sends the current game state to both players.
+     */
+    private readonly broadcastGameState = () => {
+        this.playerA.sendGameState(this.serialize(PlayerDesignator.PLAYER_A));
+        this.playerB.sendGameState(this.serialize(PlayerDesignator.PLAYER_B));
+    };
+
+    /**
      * Returns the player that has lost, or undefined if no player has lost.
      */
     private readonly getLoser = () => {
@@ -124,12 +136,14 @@ export class Game {
     /**
      * Executes the main game loop.
      */
-    public readonly play = () => {
+    public readonly play = async () => {
         console.log('Starting game');
         let loser: PlayerDesignator | null = null;
 
+        this.broadcastGameState();
+
         try {
-            loser = this.runMainGameLoop();
+            loser = await this.runMainGameLoop();
         } catch (error: unknown) {
             console.error(error);
         }
@@ -142,25 +156,26 @@ export class Game {
             const winner = otherPlayerDesignator(loser);
             console.log(`Game over. The winner is ${winner}.`);
         }
+        this.broadcastGameState();
     };
 
     /**
      * Runs the loop that constitutes the main game flow.
      */
-    private readonly runMainGameLoop = () => {
+    private readonly runMainGameLoop = async () => {
         let roundCounter = 1;
         console.log('Starting game loop');
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
         while (true) {
             roundCounter += 1;
             console.log('Begin round number', roundCounter);
+            this.broadcastGameState();
+
             // check if there is a loser and break if there is
             const loser = this.getLoser();
             if (loser) {
                 return loser;
             }
-
-            // print out the game state
-            //console.log(this.dump());
 
             // determine player order
             const initiativePlayer = this.getPlayer(this.initiative);
@@ -168,20 +183,23 @@ export class Game {
                 initiativePlayer === this.playerA ? this.playerB : this.playerA;
 
             // function that takes a turn for 1 player
-            const takeTurn = (player: Player) => {
+            const takeTurn = async (player: Player) => {
                 // get card placement from player
-                const cardPlacement = (() => {
+                const cardPlacement = await (async () => {
                     // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
                     console.log('Starting card placement loop');
                     while (
                         !cardPlacement ||
-                        !this.actionOrderTrack.checkCardPlacementLegal(
+                        !this.checkCardPlacementLegal(
                             player.playerDesignator,
                             cardPlacement,
                         )
                     ) {
-                        cardPlacement = player.requestCardPlacement();
+                        console.log('Requesting card placement');
+                        // eslint-disable-next-line no-await-in-loop
+                        cardPlacement = await player.requestCardPlacement();
+                        console.log('Got', cardPlacement);
                     }
                     return cardPlacement;
                 })();
@@ -194,23 +212,25 @@ export class Game {
 
                 // remove the cards from the player's hand
                 Object.values(cardPlacement).forEach((card) => {
-                    player.removeCardFromHand(card);
+                    player.removeCardFromHand(Card.deserialize(card));
                 });
 
                 // remove indescretion's effect from the player
                 player.indescretion = false;
+
+                this.broadcastGameState();
             };
 
             // players take their turns
-            takeTurn(initiativePlayer);
-            takeTurn(otherPlayer);
-
-            // print out the game state
-            //console.log(this.dump());
+            // eslint-disable-next-line no-await-in-loop
+            await takeTurn(initiativePlayer);
+            // eslint-disable-next-line no-await-in-loop
+            await takeTurn(otherPlayer);
 
             // resolve the actions, catching any thrown PlayerDesignators
             try {
-                this.resolveActionTrack();
+                // eslint-disable-next-line no-await-in-loop
+                await this.resolveActionTrack();
             } catch (error: unknown) {
                 // if a PlayerDesignator was thrown, then that's the loser
                 if (
@@ -283,8 +303,7 @@ export class Game {
             this.playerA.draw(3);
             this.playerB.draw(3);
 
-            // print out the game state
-            //console.log(this.dump());
+            this.broadcastGameState();
         }
     };
 
@@ -412,7 +431,7 @@ export class Game {
             )
                 .getCharacters()
                 .filter((character) => {
-                    return character.dump() === movement.character.dump();
+                    return character.equals(movement.character);
                 }).length;
 
             // find the number of movements in the movement set that refer to
@@ -420,8 +439,9 @@ export class Game {
             const numberOfMovesUsingThisTypeOfCharacter = movementSet.filter(
                 (otherMovement) => {
                     return (
-                        otherMovement.character.dump() ===
-                            movement.character.dump() &&
+                        Character.deserialize(otherMovement.character).equals(
+                            movement.character,
+                        ) &&
                         otherMovement.fromIslandNumber ===
                             movement.fromIslandNumber
                     );
@@ -511,6 +531,69 @@ export class Game {
     };
 
     /**
+     * Returns true if the given card placement is legal.
+     */
+    public readonly checkCardPlacementLegal = (
+        playerDesignator: PlayerDesignator,
+        cardPlacement: CardPlacement,
+    ) => {
+        // player must not already have cards on the track
+        if (this.actionOrderTrack.playerHasPlayed(playerDesignator)) {
+            return false;
+        }
+
+        // all cards must be owned by the player placing them
+        if (
+            Object.values(cardPlacement).some((card) => {
+                return card.playerDesignator !== playerDesignator;
+            })
+        ) {
+            return false;
+        }
+
+        // they must place 3 cards
+        if (Object.entries(cardPlacement).length !== 3) {
+            return false;
+        }
+
+        // all chosen cards must be in the player's hand
+        if (
+            !this.getPlayer(playerDesignator).checkCardsInHand(
+                Object.values(cardPlacement),
+            )
+        ) {
+            return false;
+        }
+
+        // find which slots the player wants to place in
+        const slots = Object.keys(cardPlacement).map((slot) => {
+            return Number(slot);
+        });
+
+        // they can't put 2 cards in the same area
+        if (
+            (slots.includes(0) && slots.includes(1)) ||
+            (slots.includes(2) && slots.includes(3)) ||
+            (slots.includes(4) && slots.includes(5))
+        ) {
+            return false;
+        }
+
+        // all slots used must be available
+        const availableSlots = this.actionOrderTrack.getAvailableSlots();
+        if (
+            slots.some((slot) => {
+                return !availableSlots.includes(slot);
+            })
+        ) {
+            return false;
+        }
+
+        // all checks passed
+        return true;
+    };
+
+    /**
      * Returns true if the given harpoon target is legal.
      */
     private readonly checkHarpoonTargetLegal = (
@@ -539,7 +622,7 @@ export class Game {
         // then it is not valid
         if (
             !targetIsland.getCharacters().some((character) => {
-                return character.dump() === harpoonTarget.character.dump();
+                return character.equals(harpoonTarget.character);
             })
         ) {
             return false;
@@ -567,7 +650,7 @@ export class Game {
      * Resolves the played cards in order. Throws the PlayerDesignator of the
      * player that lost if a player loses during resolution.
      */
-    private readonly resolveActionTrack = () => {
+    private readonly resolveActionTrack = async () => {
         for (const [slot, card] of this.actionOrderTrack
             .getCardSlots()
             .entries()) {
@@ -579,7 +662,8 @@ export class Game {
             const player = this.getPlayer(card.playerDesignator);
 
             // execute the card's actions
-            this.resolveCardEffect(card, player, slot);
+            // eslint-disable-next-line no-await-in-loop
+            await this.resolveCardEffect(card, player, slot);
 
             // move the card to the appropriate zone
             this.actionOrderTrack.resetSlot(slot);
@@ -593,6 +677,8 @@ export class Game {
                 player.discardCard(card);
             }
 
+            this.broadcastGameState();
+
             // check to see if the game is over
             const loser = this.getLoser();
             if (loser) {
@@ -605,7 +691,7 @@ export class Game {
     /**
      * Resolves the effects of a card played by a player in a slot.
      */
-    private readonly resolveCardEffect = (
+    private readonly resolveCardEffect = async (
         card: Card,
         player: Player,
         slot: number,
@@ -699,12 +785,16 @@ export class Game {
                     !flyingFishMovement ||
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
                 ) {
-                    flyingFishMovement = player.requestFlyingFishMovement();
+                    console.log('Requesting flying fish movement');
+                    flyingFishMovement =
+                        // eslint-disable-next-line no-await-in-loop
+                        await player.requestFlyingFishMovement();
+                    console.log('Got', flyingFishMovement);
                 }
 
                 // move the character
                 console.log(
-                    flyingFishMovement.character.dump(),
+                    fullObject(flyingFishMovement.character),
                     'flies from island',
                     flyingFishMovement.fromIslandNumber,
                     'to island',
@@ -743,7 +833,10 @@ export class Game {
                     !fogTarget ||
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
                 ) {
-                    fogTarget = player.requestFogTarget();
+                    console.log('Requesting fog target');
+                    // eslint-disable-next-line no-await-in-loop
+                    fogTarget = await player.requestFogTarget();
+                    console.log('Got', fogTarget);
                 }
 
                 // fog the target
@@ -795,14 +888,17 @@ export class Game {
                         harpoonTarget,
                     )
                 ) {
-                    harpoonTarget = player.requestHarpoonTarget();
+                    console.log('Requesting harpoon target');
+                    // eslint-disable-next-line no-await-in-loop
+                    harpoonTarget = await player.requestHarpoonTarget();
+                    console.log('Got', harpoonTarget);
                 }
 
                 // kill the target
                 console.log(
-                    `Character ${harpoonTarget.character.dump()} on island ${
-                        harpoonTarget.islandNumber
-                    } is harpooned.`,
+                    `Character ${fullObject(
+                        harpoonTarget.character,
+                    )} on island ${harpoonTarget.islandNumber} is harpooned.`,
                 );
                 this.findIsland(harpoonTarget.islandNumber)?.removeCharacter(
                     harpoonTarget.character,
@@ -870,7 +966,10 @@ export class Game {
                         movementSet,
                     )
                 ) {
-                    movementSet = player.requestMovementSet();
+                    console.log('Requesting movement set');
+                    // eslint-disable-next-line no-await-in-loop
+                    movementSet = await player.requestMovementSet();
+                    console.log('Got', movementSet);
                 }
 
                 // make the moves
@@ -878,9 +977,11 @@ export class Game {
                     console.log(
                         `Player ${
                             player.playerDesignator
-                        } moves character ${movement.character.dump()} from island ${
-                            movement.fromIslandNumber
-                        } to island ${movement.toIslandNumber}.`,
+                        } moves character ${fullObject(
+                            movement.character,
+                        )} from island ${movement.fromIslandNumber} to island ${
+                            movement.toIslandNumber
+                        }.`,
                     );
                     this.findIsland(movement.fromIslandNumber)?.removeCharacter(
                         movement.character,
@@ -895,7 +996,10 @@ export class Game {
                 let netTarget: number | null = null;
                 console.log('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
-                    netTarget = player.requestNetTarget();
+                    console.log('Requesting net target');
+                    // eslint-disable-next-line no-await-in-loop
+                    netTarget = await player.requestNetTarget();
+                    console.log('Got', netTarget);
                 }
 
                 // place the net
@@ -930,7 +1034,10 @@ export class Game {
                     !this.findIsland(pilingsTarget)?.smallCapacity ||
                     pilingsTarget === this.getPlayer(opponent).pilingsIsland
                 ) {
-                    pilingsTarget = player.requestPilingsTarget();
+                    console.log('Requesting pilings target');
+                    // eslint-disable-next-line no-await-in-loop
+                    pilingsTarget = await player.requestPilingsTarget();
+                    console.log('Got', pilingsTarget);
                 }
 
                 // place the net
@@ -981,12 +1088,16 @@ export class Game {
                 while (
                     !tidalSurgeTarget ||
                     !this.getAdjacentIslands(this.nextIslandToSink).some(
+                        // eslint-disable-next-line @typescript-eslint/no-loop-func
                         (island) => {
                             return island.islandNumber === tidalSurgeTarget;
                         },
                     )
                 ) {
-                    tidalSurgeTarget = player.requestTidalSurgeTarget();
+                    console.log('Requesting tidal surge target');
+                    // eslint-disable-next-line no-await-in-loop, require-atomic-updates
+                    tidalSurgeTarget = await player.requestTidalSurgeTarget();
+                    console.log('Got', tidalSurgeTarget);
                 }
 
                 // move the rising waters marker
@@ -998,7 +1109,10 @@ export class Game {
                 let tidalWaveTarget: number | null = null;
                 console.log('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
-                    tidalWaveTarget = player.requestTidalWaveTarget();
+                    console.log('Requesting tidal wave target');
+                    // eslint-disable-next-line no-await-in-loop
+                    tidalWaveTarget = await player.requestTidalWaveTarget();
+                    console.log('Got', tidalWaveTarget);
                 }
 
                 // move the rising waters marker
@@ -1017,26 +1131,31 @@ export class Game {
                         player.playerDesignator ||
                     !this.findIsland(tortoiseTarget.islandNumber)
                         ?.getCharacters()
+                        // eslint-disable-next-line @typescript-eslint/no-loop-func
                         .some((character) => {
-                            return (
-                                character.dump() ===
-                                tortoiseTarget?.character.dump()
-                            );
+                            return character.equals(tortoiseTarget?.character);
                         })
                 ) {
-                    tortoiseTarget = player.requestTortoiseTarget();
+                    console.log('Requesting tortoise target');
+                    // eslint-disable-next-line no-await-in-loop, require-atomic-updates
+                    tortoiseTarget = await player.requestTortoiseTarget();
+                    console.log('Got', tortoiseTarget);
                 }
 
                 // make the target a tortoise
                 console.log(
-                    `Character ${tortoiseTarget.character.dump()} on island ${
+                    `Character ${fullObject(
+                        tortoiseTarget.character,
+                    )} on island ${
                         tortoiseTarget.islandNumber
                     } turns into a tortoise.`,
                 );
                 (
                     (
                         this.findIsland(tortoiseTarget.islandNumber) as Island
-                    ).findCharacter(tortoiseTarget.character) as Character
+                    ).findCharacter(
+                        tortoiseTarget.character,
+                    ) as CharacterSerialized
                 ).tortoise = true;
                 break;
             case CardType.VOLCANIC_ERUPTION:
@@ -1059,8 +1178,12 @@ export class Game {
                     this.findIsland(volcanicEruptionTarget)?.islandType !==
                         IslandType.VOLCANO
                 ) {
+                    console.log('Requesting volcanic eruption target');
+                    // eslint-disable-next-line require-atomic-updates
                     volcanicEruptionTarget =
-                        player.requestVolcanicEruptionTarget();
+                        // eslint-disable-next-line no-await-in-loop
+                        await player.requestVolcanicEruptionTarget();
+                    console.log('Got', volcanicEruptionTarget);
                 }
 
                 // erupt the volcano
@@ -1072,7 +1195,7 @@ export class Game {
                 );
 
                 // handle lava flow fleeing
-                lavaFlowIslands.forEach((lavaFlowIsland) => {
+                for (const lavaFlowIsland of lavaFlowIslands) {
                     // find the safe island to flee to
                     const safeIsland = (() => {
                         const safeIslandList = this.getAdjacentIslands(
@@ -1120,7 +1243,7 @@ export class Game {
                     ) {
                         // try to get a flee choice until a valid one is
                         // given
-                        let characterToFlee: Character | null = null;
+                        let characterToFlee: CharacterSerialized | null = null;
                         console.log('Starting flee loop');
                         while (
                             !characterToFlee ||
@@ -1128,26 +1251,31 @@ export class Game {
                                 player.playerDesignator ||
                             !lavaFlowIsland
                                 .getCharacters()
+                                // eslint-disable-next-line @typescript-eslint/no-loop-func
                                 .some((character) => {
-                                    return (
-                                        character.dump() ===
-                                        characterToFlee?.dump()
-                                    );
+                                    return character.equals(characterToFlee);
                                 })
                         ) {
-                            characterToFlee = player.requestFleeChoice();
+                            console.log('Requesting flee choice');
+                            // eslint-disable-next-line no-await-in-loop, require-atomic-updates
+                            characterToFlee = await player.requestFleeChoice();
+                            console.log('Got', characterToFlee);
                         }
 
                         // move the chosen character
                         console.log(
                             `Player ${
                                 player.playerDesignator
-                            }'s character ${characterToFlee.dump()} flees first.`,
+                            }'s character ${fullObject(
+                                characterToFlee,
+                            )} flees first.`,
                         );
 
                         // move the character
                         console.log(
-                            `Character ${characterToFlee.dump()} flees from the lava flow.`,
+                            `Character ${fullObject(
+                                characterToFlee,
+                            )} flees from the lava flow.`,
                         );
                         lavaFlowIsland.removeCharacter(characterToFlee);
                         safeIsland.addCharacter(characterToFlee);
@@ -1173,7 +1301,9 @@ export class Game {
                         lavaFlowIsland.getCharacters().forEach((character) => {
                             // move the character
                             console.log(
-                                `Character ${character.dump()} flees from the lava flow.`,
+                                `Character ${fullObject(
+                                    character.serialize(),
+                                )} flees from the lava flow.`,
                             );
                             lavaFlowIsland.removeCharacter(character);
                             safeIsland.addCharacter(character);
@@ -1187,7 +1317,7 @@ export class Game {
                             }
                         });
                     }
-                });
+                }
 
                 // now that everyone has fled, burn anyone who didn't flee
                 lavaFlowIslands.forEach((lavaFlowIsland) => {
@@ -1201,7 +1331,9 @@ export class Game {
 
                         // remove the character
                         console.log(
-                            `Character ${character.dump()} burns to death in the lava flow.`,
+                            `Character ${fullObject(
+                                character.serialize(),
+                            )} burns to death in the lava flow.`,
                         );
                         lavaFlowIsland.removeCharacter(character);
                     });
@@ -1243,40 +1375,19 @@ export class Game {
         }
     };
 
-    /**
-     * Returns a string representation of the game.
-     */
-    public readonly dump = () => {
-        return `${this.initiative}\n${this.islands
-            .map((island) => {
-                return `${island.dump()}${
-                    island.islandNumber === this.nextIslandToSink ? '*' : ''
-                }${island.islandNumber === this.playerA.netIsland ? 'A#' : ''}${
-                    island.islandNumber === this.playerB.netIsland ? 'B#' : ''
-                }${
-                    island.islandNumber === this.playerA.pilingsIsland
-                        ? 'A_'
-                        : ''
-                }${
-                    island.islandNumber === this.playerB.pilingsIsland
-                        ? 'B_'
-                        : ''
-                }\n`;
-            })
-            .join(
-                '',
-            )}\n${this.playerA.dump()}\n${this.playerB.dump()}\n${this.actionOrderTrack.dump()}`;
-    };
-
-    public readonly toGameState = (): GameStateGame => {
+    public readonly serialize = (
+        playerDesignator: PlayerDesignator,
+    ): GameSerialized => {
         return {
-            actionOrderTrack: this.actionOrderTrack.toGameState(),
+            actionOrderTrack: this.actionOrderTrack.serialize(),
             id: this.id,
             initiative: this.initiative,
             islands: this.islands.map((island) => {
-                return island.toGameState();
+                return island.serialize();
             }),
             nextIslandToSink: this.nextIslandToSink,
+            you: playerDesignator,
+            yourHand: this.getPlayer(playerDesignator).getHand(),
         };
     };
 }

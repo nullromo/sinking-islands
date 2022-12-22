@@ -1,6 +1,5 @@
-import type { GameStateGame } from './commonTypes';
+import type { CharacterSerialized, GameSerialized } from './commonTypes';
 import type { CardPlacement } from './server/actionOrderTrack';
-import type { Character } from './server/character';
 import type {
     FlyingFishMovement,
     HarpoonTarget,
@@ -24,11 +23,11 @@ export interface ClientToServerEvents {
     responseTidalWaveTarget: (tidalWaveTarget: number) => void;
     responseTortoiseTarget: (tortoiseTarget: TortoiseTarget) => void;
     responseVolcanicEruptionTarget: (volcanicEruptionTarget: number) => void;
-    responseFleeChoice: (fleeChoice: Character) => void;
+    responseFleeChoice: (fleeChoice: CharacterSerialized) => void;
 }
 
 export interface ServerToClientEvents {
-    gameState: (gameState: GameStateGame) => void;
+    gameState: (gameState: GameSerialized) => void;
     joinFail: () => void;
     requestCardPlacement: () => void;
     requestFlyingFishMovement: () => void;

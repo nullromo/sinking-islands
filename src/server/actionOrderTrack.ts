@@ -1,11 +1,14 @@
-import type { GameStateActionOrderTrack } from '../commonTypes';
-import type { Card } from './card';
-import type { PlayerDesignator } from './player';
+import type {
+    ActionOrderTrackSerialized,
+    CardSerialized,
+    PlayerDesignator,
+} from '../commonTypes';
+import { Card } from './card';
 
 /**
  * Represents a player's choice on where to put their cards.
  */
-export type CardPlacement = Record<number, Card>;
+export type CardPlacement = Record<number, CardSerialized>;
 
 /**
  * Represents the action order track.
@@ -56,61 +59,12 @@ export class ActionOrderTrack {
     };
 
     /**
-     * Returns true if the given card placement is legal.
+     * Returns true if the given player has cards on the track.
      */
-    public readonly checkCardPlacementLegal = (
-        playerDesignator: PlayerDesignator,
-        cardPlacement: CardPlacement,
-    ) => {
-        // player must not already have cards on the track
-        if (
-            this.cardSlots.some((card) => {
-                return card && card.playerDesignator === playerDesignator;
-            })
-        ) {
-            return false;
-        }
-
-        // all cards must be owned by the player placing them
-        if (
-            Object.values(cardPlacement).some((card) => {
-                return card.playerDesignator !== playerDesignator;
-            })
-        ) {
-            return false;
-        }
-
-        // they must place 3 cards
-        if (Object.entries(cardPlacement).length !== 3) {
-            return false;
-        }
-
-        // find which slots the player wants to place in
-        const slots = Object.keys(cardPlacement).map((slot) => {
-            return Number(slot);
+    public readonly playerHasPlayed = (playerDesignator: PlayerDesignator) => {
+        return this.cardSlots.some((card) => {
+            return card && card.playerDesignator === playerDesignator;
         });
-
-        // they can't put 2 cards in the same area
-        if (
-            (slots.includes(0) && slots.includes(1)) ||
-            (slots.includes(2) && slots.includes(3)) ||
-            (slots.includes(4) && slots.includes(5))
-        ) {
-            return false;
-        }
-
-        // all slots used must be available
-        const availableSlots = this.getAvailableSlots();
-        if (
-            slots.some((slot) => {
-                return !availableSlots.includes(slot);
-            })
-        ) {
-            return false;
-        }
-
-        // all checks passed
-        return true;
     };
 
     /**
@@ -146,7 +100,7 @@ export class ActionOrderTrack {
         indescretion: boolean,
     ) => {
         Object.entries(cardPlacement).forEach(([slot, card]) => {
-            this.placeCard(Number(slot), card);
+            this.placeCard(Number(slot), Card.deserialize(card));
             if (indescretion) {
                 this.faceUpCards.push(Number(slot));
             }
@@ -160,19 +114,10 @@ export class ActionOrderTrack {
         this.faceUpCards = [];
     };
 
-    /**
-     * Returns a string representation of the track.
-     */
-    public readonly dump = () => {
-        return `[${this.cardSlots.map((card) => {
-            return card ? `${card.cardType}_${card.playerDesignator}` : '_';
-        })}]fu[${this.faceUpCards}]`;
-    };
-
-    public readonly toGameState = (): GameStateActionOrderTrack => {
+    public readonly serialize = (): ActionOrderTrackSerialized => {
         return {
             cardSlots: this.cardSlots.map((card) => {
-                return card ? card.toGameState() : null;
+                return card ? card.serialize() : null;
             }),
             faceUpCards: this.faceUpCards,
         };

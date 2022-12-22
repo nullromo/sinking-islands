@@ -6,8 +6,8 @@ import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
+import { PlayerDesignator } from '../commonTypes';
 import { Game } from './game';
-import { PlayerDesignator } from './player';
 
 const app = express();
 const server = http.createServer(app);
@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         const game = new Game(socket.id);
         games[socket.id] = game;
         game.connectSocket(PlayerDesignator.PLAYER_A, socket);
-        socket.emit('gameState', game.toGameState());
+        socket.emit('gameState', game.serialize(PlayerDesignator.PLAYER_A));
     });
 
     socket.on('joinGame', (id) => {
@@ -76,9 +76,9 @@ io.on('connection', (socket) => {
         }
         game.connectSocket(PlayerDesignator.PLAYER_B, socket);
         games[socket.id] = game;
-        socket.emit('gameState', game.toGameState());
+        socket.emit('gameState', game.serialize(PlayerDesignator.PLAYER_B));
 
-        game.play();
+        game.play().catch(console.error);
     });
 
     // log disconnects

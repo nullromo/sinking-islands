@@ -1,5 +1,4 @@
-import type { GameStateCard } from '../commonTypes';
-import type { PlayerDesignator } from './player';
+import type { CardSerialized, PlayerDesignator } from '../commonTypes';
 import { PlayerGamePiece } from './playerGamePiece';
 
 /**
@@ -35,10 +34,17 @@ export class Card extends PlayerGamePiece {
         this.cardType = cardType;
     }
 
-    public readonly toGameState = (): GameStateCard => {
+    public readonly serialize = (): CardSerialized => {
         return {
             cardType: this.cardType,
             playerDesignator: this.playerDesignator,
         };
+    };
+
+    public static readonly deserialize = (cardSerialized: CardSerialized) => {
+        return new Card(
+            cardSerialized.playerDesignator,
+            cardSerialized.cardType,
+        );
     };
 }
