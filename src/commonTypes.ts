@@ -1,5 +1,13 @@
 import type { CardType } from './server/card';
-import type { IslandType } from './server/island';
+
+/**
+ * Unique IDs for each type of island.
+ */
+export enum IslandType {
+    NORMAL = 'Normal',
+    SACRED = 'Sacred',
+    VOLCANO = 'Volcano',
+}
 
 /**
  * Unique IDs for each player.

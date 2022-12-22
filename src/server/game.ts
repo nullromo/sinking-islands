@@ -1,6 +1,10 @@
 import type { Socket } from 'socket.io';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
-import { otherPlayerDesignator, PlayerDesignator } from '../commonTypes';
+import {
+    IslandType,
+    otherPlayerDesignator,
+    PlayerDesignator,
+} from '../commonTypes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -10,7 +14,7 @@ import type { CardPlacement } from './actionOrderTrack';
 import { ActionOrderTrack } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
-import { Island, IslandType } from './island';
+import { Island } from './island';
 import type {
     FlyingFishMovement,
     HarpoonTarget,

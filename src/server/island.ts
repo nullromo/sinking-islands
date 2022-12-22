@@ -1,19 +1,11 @@
 import type {
     CharacterSerialized,
     IslandSerialized,
+    IslandType,
     PlayerDesignator,
 } from '../commonTypes';
 import { Character } from './character';
 import { fullObject } from './util';
-
-/**
- * Unique IDs for each type of island.
- */
-export enum IslandType {
-    NORMAL = 'NORMAL',
-    SACRED = 'SACRED',
-    VOLCANO = 'VOLCANO',
-}
 
 /**
  * Represents an island.

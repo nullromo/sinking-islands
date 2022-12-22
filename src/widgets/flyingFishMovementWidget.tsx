@@ -1,8 +1,6 @@
 import React from 'react';
 import type { CharacterSerialized, PlayerDesignator } from '../commonTypes';
 import type { FlyingFishMovement } from '../server/player';
-import { CharacterSelector } from './characterSelector';
-import { IslandSelector } from './islandSelector';
 import { NormalMovementSelector } from './normalMovementSelector';
 
 interface FlyingFishMovementWidgetProps {

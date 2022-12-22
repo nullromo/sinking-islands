@@ -1,8 +1,13 @@
 import React from 'react';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
+import { CircularContainer } from './circularContainer';
 import type { GameSerialized } from './commonTypes';
-import { otherPlayerDesignator } from './commonTypes';
+import {
+    PlayerDesignator,
+    IslandType,
+    otherPlayerDesignator,
+} from './commonTypes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
