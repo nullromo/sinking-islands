@@ -1,0 +1,23 @@
+.circular-container {
+    --radius: calc(0.5 * (1 + var(--spacing)) * var(--diameter) / var(--tan));
+    --size: calc(2 * var(--radius) + var(--diameter)); /* container size */
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+}
+
+.circular-container a {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: calc(-0.5 * var(--diameter));
+    width: var(--diameter);
+    height: var(--diameter);
+    --rotation-amount: calc(var(--i) * 1turn / var(--m));
+    transform: rotate(var(--rotation-amount)) translate(var(--radius))
+        rotate(calc(-1 * var(--rotation-amount)));
+}
+
+img {
+    max-width: 100%;
+}
