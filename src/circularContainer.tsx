@@ -2,46 +2,46 @@ import './gamePage.css';
 
 type CSSWithVariables = React.CSSProperties & Record<string, number | string>;
 
-const imgs = [
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_14.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_15.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_16.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_17.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_18.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_19.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_20.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_21.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_22.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_23.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_24.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_25.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_26.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_27.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_28.jpg',
-    'https://assets.codepen.io/2017/17_05_a_amur_leopard_29.jpg',
-];
-const m = imgs.length;
-const containerStyle: CSSWithVariables = {
-    '--diameter': '100px',
-    '--m': m,
-    '--spacing': 0.3,
-    '--tan': Math.tan(Math.PI / m),
-};
-
 interface CircularContainerProps {
-    //items: React.ReactElement[];
+    items: React.ReactNode[];
 }
 
 export const CircularContainer = (props: CircularContainerProps) => {
+    const numberOfItems = props.items.length;
+    const spacing = 0.3;
+    const tangent = Math.tan(Math.PI / numberOfItems);
+    const containerStyle: CSSWithVariables = {
+        '--diameter': '100px',
+        '--radius': `calc(${
+            0.5 * (1 + spacing)
+        } * var(--diameter) / ${tangent})`,
+        '--size': 'calc(2 * var(--radius) + var(--diameter))',
+        '--spacing': spacing,
+        height: 'var(--size)',
+        position: 'relative',
+        width: 'var(--size)',
+    };
+
     return (
         <div className='circular-container' style={containerStyle}>
-            {[...Array(m).keys()].map((index) => {
-                const style: CSSWithVariables = { '--i': index };
+            {props.items.map((item, index) => {
+                const style: CSSWithVariables = {
+                    '--itemNumber': index,
+                    '--rotation-amount': `calc(var(--itemNumber) * 1turn / ${numberOfItems})`,
+                    height: 'var(--diameter)',
+                    left: '50%',
+                    margin: 'calc(-0.5 * var(--diameter))',
+                    position: 'absolute',
+                    top: '50%',
+                    transform:
+                        'rotate(var(--rotation-amount)) translate(var(--radius)) rotate(calc(-1 * var(--rotation-amount)))',
+                    width: 'var(--diameter)',
+                };
                 return (
-                    <a key={index} style={style}>
-                        <img src={imgs[index]} />
-                        <div style={{ background: 'skyblue' }}>asdf</div>
-                    </a>
+                    // eslint-disable-next-line react/no-array-index-key
+                    <span key={index} style={style}>
+                        {item}
+                    </span>
                 );
             })}
         </div>
