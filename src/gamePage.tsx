@@ -130,6 +130,38 @@ export const GamePage = () => {
 
     return (
         <div>
+            <CircularContainer
+                items={gameState.islands.map((island) => {
+                    return (
+                        <div key={island.islandNumber}>
+                            <div style={{ border: '1px solid' }}>
+                                <b>{`${island.islandNumber}`}</b>
+                                {island.islandType !== IslandType.NORMAL
+                                    ? ` ${island.islandType}`
+                                    : ''}
+                                {island.smallCapacity ? ' (s)' : ''}
+                            </div>
+                            {island.characters.map((character, index) => {
+                                return (
+                                    <div
+                                        // eslint-disable-next-line react/no-array-index-key
+                                        key={index}
+                                        style={{
+                                            background:
+                                                character.playerDesignator ===
+                                                PlayerDesignator.PLAYER_A
+                                                    ? 'skyblue'
+                                                    : 'lightpink',
+                                        }}
+                                    >
+                                        {character.strength}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
+            />
             <textarea
                 style={{ height: '1000px', width: '700px' }}
                 value={JSON.stringify(gameState, null, 4)}
