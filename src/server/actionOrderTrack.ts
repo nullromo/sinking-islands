@@ -116,8 +116,12 @@ export class ActionOrderTrack {
 
     public readonly serialize = (): ActionOrderTrackSerialized => {
         return {
-            cardSlots: this.cardSlots.map((card) => {
-                return card ? card.serialize() : null;
+            cardSlots: this.cardSlots.map((card, slot) => {
+                return card
+                    ? this.faceUpCards.includes(slot)
+                        ? card.serialize()
+                        : { playerDesignator: card.playerDesignator }
+                    : null;
             }),
             faceUpCards: this.faceUpCards,
         };
