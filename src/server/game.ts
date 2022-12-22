@@ -46,22 +46,22 @@ export class Game {
 
     // representation of all the islands in the archipelago
     private islands: Island[] = shuffleArray([
-        new Island(1, IslandType.NORMAL, false),
-        new Island(2, IslandType.NORMAL, true),
-        new Island(3, IslandType.NORMAL, true),
-        new Island(4, IslandType.NORMAL, false),
-        new Island(5, IslandType.NORMAL, true),
-        new Island(6, IslandType.VOLCANO, true),
-        new Island(7, IslandType.NORMAL, false),
-        new Island(8, IslandType.NORMAL, true),
-        new Island(9, IslandType.VOLCANO, true),
-        new Island(10, IslandType.NORMAL, false),
-        new Island(11, IslandType.SACRED, true),
-        new Island(12, IslandType.VOLCANO, true),
-        new Island(13, IslandType.NORMAL, false),
-        new Island(14, IslandType.SACRED, true),
-        new Island(15, IslandType.VOLCANO, true),
-        new Island(16, IslandType.NORMAL, false),
+        new Island(1, IslandType.NORMAL, true),
+        new Island(2, IslandType.NORMAL, false),
+        new Island(3, IslandType.NORMAL, false),
+        new Island(4, IslandType.NORMAL, true),
+        new Island(5, IslandType.NORMAL, false),
+        new Island(6, IslandType.VOLCANO, false),
+        new Island(7, IslandType.NORMAL, true),
+        new Island(8, IslandType.NORMAL, false),
+        new Island(9, IslandType.VOLCANO, false),
+        new Island(10, IslandType.NORMAL, true),
+        new Island(11, IslandType.SACRED, false),
+        new Island(12, IslandType.VOLCANO, false),
+        new Island(13, IslandType.NORMAL, true),
+        new Island(14, IslandType.SACRED, false),
+        new Island(15, IslandType.VOLCANO, false),
+        new Island(16, IslandType.NORMAL, true),
     ]);
 
     public constructor(id: string) {
