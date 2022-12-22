@@ -26,8 +26,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
         <div className='circular-container' style={containerStyle}>
             {props.items.map((item, index) => {
                 const style: CSSWithVariables = {
-                    '--itemNumber': index,
-                    '--rotation-amount': `calc(var(--itemNumber) * 1turn / ${numberOfItems})`,
+                    '--rotation-amount': `calc(${index} * 1turn / ${numberOfItems})`,
                     height: 'var(--diameter)',
                     left: '50%',
                     margin: 'calc(-0.5 * var(--diameter))',

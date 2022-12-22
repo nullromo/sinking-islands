@@ -10,3 +10,4 @@ TODO list:
 -   determine starting player properly
 -   players should know when they are about to play if they are under the
     effects of indescretion
+-   show nets and pilings to the players

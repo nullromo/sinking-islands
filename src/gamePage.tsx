@@ -134,7 +134,16 @@ export const GamePage = () => {
                 items={gameState.islands.map((island) => {
                     return (
                         <div key={island.islandNumber}>
-                            <div style={{ border: '1px solid' }}>
+                            <div
+                                style={{
+                                    background:
+                                        gameState.nextIslandToSink ===
+                                        island.islandNumber
+                                            ? 'gold'
+                                            : 'white',
+                                    border: '1px solid',
+                                }}
+                            >
                                 <b>{`${island.islandNumber}`}</b>
                                 {island.islandType !== IslandType.NORMAL
                                     ? ` ${island.islandType}`
@@ -154,7 +163,9 @@ export const GamePage = () => {
                                                     : 'lightpink',
                                         }}
                                     >
-                                        {character.strength}
+                                        {`${character.strength}${
+                                            character.tortoise ? 'T' : ''
+                                        }`}
                                     </div>
                                 );
                             })}
