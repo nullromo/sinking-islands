@@ -90,7 +90,7 @@ export class Game {
 
         // add one character to each island
         characters.forEach((character, index) => {
-            this.islands[index % 4].addCharacter(character);
+            this.islands[index].addCharacter(character);
         });
     }
 
