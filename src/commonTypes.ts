@@ -13,8 +13,8 @@ export enum IslandType {
  * Unique IDs for each player.
  */
 export enum PlayerDesignator {
-    PLAYER_A = 'A',
-    PLAYER_B = 'B',
+    PLAYER_A = 'Blue',
+    PLAYER_B = 'Red',
 }
 
 /**
