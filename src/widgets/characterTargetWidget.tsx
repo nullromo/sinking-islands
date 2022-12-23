@@ -20,6 +20,7 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
 
     return (
         <>
+            {'Target a character'}
             <CharacterSelector
                 character={characterChoice}
                 setCharacter={setCharacterChoice}

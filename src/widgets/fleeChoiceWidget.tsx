@@ -17,6 +17,7 @@ export const FleeChoiceWidget = (props: FleeChoiceWidgetProps) => {
 
     return (
         <>
+            {'Choose a character to flee'}
             <CharacterSelector
                 character={characterChoice}
                 setCharacter={setCharacterChoice}

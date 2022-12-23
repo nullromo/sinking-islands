@@ -9,6 +9,7 @@ export const FogTargetWidget = (props: FogTargetWidgetProps) => {
 
     return (
         <>
+            {'Choose card slot'}
             <select
                 value={slotChoice}
                 onChange={(event) => {

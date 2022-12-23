@@ -8,6 +8,7 @@ interface CharacterSelectorProps {
 export const CharacterSelector = (props: CharacterSelectorProps) => {
     return (
         <>
+            {'Choose a character'}
             <select
                 value={props.character.strength}
                 onChange={(event) => {

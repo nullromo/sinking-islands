@@ -21,6 +21,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
 
     return (
         <>
+            {'Choose cards'}
             {[...Array(3).keys()].map((cardKey) => {
                 return (
                     <div key={cardKey}>

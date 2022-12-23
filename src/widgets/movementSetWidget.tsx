@@ -43,6 +43,7 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
 
     return (
         <>
+            {'Choose movement'}
             <select
                 value={numberOfMovements}
                 onChange={(event) => {

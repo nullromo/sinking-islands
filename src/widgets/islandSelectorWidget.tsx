@@ -10,6 +10,7 @@ export const IslandSelectorWidget = (props: IslandSelectorWidgetProps) => {
 
     return (
         <>
+            {'Choose island'}
             <IslandSelector
                 islandNumber={islandChoice}
                 setIslandNumber={setIslandChoice}

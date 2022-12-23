@@ -1,12 +1,23 @@
 import { CircularContainer } from './circularContainer';
-import type { GameSerialized } from './commonTypes';
+import type {
+    CharacterSerialized,
+    GameSerialized,
+    IslandSerialized,
+} from './commonTypes';
 import { IslandType, PlayerDesignator } from './commonTypes';
 
 interface BoardProps {
     gameState: GameSerialized;
+    onCharacterClicked?: (
+        island: IslandSerialized,
+        character: CharacterSerialized,
+    ) => void;
+    onIslandClicked?: (island: IslandSerialized) => void;
 }
 
 export const Board = (props: BoardProps) => {
+    const fontSize = '18px';
+
     return (
         <CircularContainer
             items={props.gameState.islands.map((island) => {
@@ -22,6 +33,13 @@ export const Board = (props: BoardProps) => {
                                         ? 'sandybrown'
                                         : 'mediumseagreen',
                                 border: '1px solid',
+                                cursor: 'pointer',
+                                fontSize,
+                            }}
+                            onClick={() => {
+                                if (props.onIslandClicked) {
+                                    props.onIslandClicked(island);
+                                }
                             }}
                         >
                             <b>{`${island.islandNumber}`}</b>
@@ -60,13 +78,16 @@ export const Board = (props: BoardProps) => {
                                             PlayerDesignator.PLAYER_A
                                                 ? 'skyblue'
                                                 : 'indianred',
+                                        cursor: 'pointer',
+                                        fontSize,
                                     }}
                                     onClick={() => {
-                                        console.log(
-                                            'Clicked',
-                                            island,
-                                            character,
-                                        );
+                                        if (props.onCharacterClicked) {
+                                            props.onCharacterClicked(
+                                                island,
+                                                character,
+                                            );
+                                        }
                                     }}
                                 >
                                     {character.tortoise ? '🐢' : '🧍'}

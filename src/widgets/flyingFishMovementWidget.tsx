@@ -1,11 +1,12 @@
 import React from 'react';
-import type { CharacterSerialized, PlayerDesignator } from '../commonTypes';
+import { Board } from '../board';
+import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import type { FlyingFishMovement } from '../server/player';
 import { NormalMovementSelector } from './normalMovementSelector';
 
 interface FlyingFishMovementWidgetProps {
     submit: (flyingFishMovement: FlyingFishMovement) => void;
-    you: PlayerDesignator;
+    gameState: GameSerialized;
 }
 
 export const FlyingFishMovementWidget = (
@@ -15,13 +16,23 @@ export const FlyingFishMovementWidget = (
     const [toIslandChoice, setToIslandChoice] = React.useState(1);
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: props.you,
+            playerDesignator: props.gameState.you,
             strength: 20,
             tortoise: false,
         });
 
     return (
         <>
+            <Board
+                gameState={props.gameState}
+                onCharacterClicked={(character) => {
+                    //
+                }}
+                onIslandClicked={(island, character) => {
+                    //
+                }}
+            />
+            {'Choose character'}
             <NormalMovementSelector
                 character={characterChoice}
                 fromIsland={fromIslandChoice}

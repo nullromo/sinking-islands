@@ -2,13 +2,9 @@ import React from 'react';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import { Board } from './board';
-import { CircularContainer } from './circularContainer';
 import type { GameSerialized } from './commonTypes';
-import {
-    PlayerDesignator,
-    IslandType,
-    otherPlayerDesignator,
-} from './commonTypes';
+import { otherPlayerDesignator } from './commonTypes';
+import { CreateOrJoinPage } from './createOrJoinPage';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -21,41 +17,6 @@ import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
 import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
-
-const CreateOrJoinPage = (props: {
-    emitCreate: () => void;
-    emitJoin: (id: string) => void;
-}) => {
-    const [joinID, setJoinID] = React.useState('');
-
-    return (
-        <div>
-            <button
-                type='button'
-                onClick={() => {
-                    props.emitCreate();
-                }}
-            >
-                Create Game
-            </button>
-            <input
-                type='text'
-                value={joinID}
-                onChange={(event) => {
-                    setJoinID(event.target.value);
-                }}
-            />
-            <button
-                type='button'
-                onClick={() => {
-                    props.emitJoin(joinID);
-                }}
-            >
-                Join Game
-            </button>
-        </div>
-    );
-};
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 const connectSocket = () => {
@@ -131,27 +92,32 @@ export const GamePage = () => {
 
     return (
         <div>
-            <Board gameState={gameState} />
+            <br />
+            {interfaceState}
             <br />
             {(() => {
                 switch (interfaceState) {
                     case 'requestCardPlacement':
                         return (
-                            <CardPlacementWidget
-                                submit={(cardPlacement) => {
-                                    socket.emit(
-                                        'responseCardPlacement',
-                                        cardPlacement,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                                you={gameState.you}
-                                yourHand={gameState.yourHand}
-                            />
+                            <>
+                                <Board gameState={gameState} />
+                                <CardPlacementWidget
+                                    submit={(cardPlacement) => {
+                                        socket.emit(
+                                            'responseCardPlacement',
+                                            cardPlacement,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                    you={gameState.you}
+                                    yourHand={gameState.yourHand}
+                                />
+                            </>
                         );
                     case 'requestFlyingFishMovement':
                         return (
                             <FlyingFishMovementWidget
+                                gameState={gameState}
                                 submit={(flyingFishMovement) => {
                                     socket.emit(
                                         'responseFlyingFishMovement',
@@ -159,7 +125,6 @@ export const GamePage = () => {
                                     );
                                     setInterfaceState(null);
                                 }}
-                                you={gameState.you}
                             />
                         );
                     case 'requestFogTarget':

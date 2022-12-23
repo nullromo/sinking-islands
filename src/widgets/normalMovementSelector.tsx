@@ -14,6 +14,7 @@ interface NormalMovementSelectorProps {
 export const NormalMovementSelector = (props: NormalMovementSelectorProps) => {
     return (
         <>
+            {'Choose normal movement'}
             <IslandSelector
                 islandNumber={props.fromIsland}
                 setIslandNumber={props.setFromIsland}
