@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
+import { Board } from './board';
 import { CircularContainer } from './circularContainer';
 import type { GameSerialized } from './commonTypes';
 import {
@@ -130,53 +131,7 @@ export const GamePage = () => {
 
     return (
         <div>
-            <CircularContainer
-                items={gameState.islands.map((island) => {
-                    return (
-                        <div key={island.islandNumber}>
-                            <div
-                                style={{
-                                    background:
-                                        gameState.nextIslandToSink ===
-                                        island.islandNumber
-                                            ? 'gold'
-                                            : 'white',
-                                    border: '1px solid',
-                                }}
-                            >
-                                <b>{`${island.islandNumber}`}</b>
-                                {island.islandType !== IslandType.NORMAL
-                                    ? ` ${island.islandType}`
-                                    : ''}
-                                {island.smallCapacity ? ' (s)' : ''}
-                            </div>
-                            {island.characters.map((character, index) => {
-                                return (
-                                    <div
-                                        // eslint-disable-next-line react/no-array-index-key
-                                        key={index}
-                                        style={{
-                                            background:
-                                                character.playerDesignator ===
-                                                PlayerDesignator.PLAYER_A
-                                                    ? 'skyblue'
-                                                    : 'lightpink',
-                                        }}
-                                    >
-                                        {`${character.strength}${
-                                            character.tortoise ? 'T' : ''
-                                        }`}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    );
-                })}
-            />
-            <textarea
-                style={{ height: '1000px', width: '700px' }}
-                value={JSON.stringify(gameState, null, 4)}
-            />
+            <Board gameState={gameState} />
             <br />
             {(() => {
                 switch (interfaceState) {
