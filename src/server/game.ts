@@ -1386,6 +1386,12 @@ export class Game {
             actionOrderTrack: this.actionOrderTrack.serialize(),
             id: this.id,
             initiative: this.initiative,
+            islandModifiers: {
+                playerANet: this.playerA.netIsland,
+                playerAPilings: this.playerA.pilingsIsland,
+                playerBNet: this.playerB.netIsland,
+                playerBPilings: this.playerB.pilingsIsland,
+            },
             islands: this.islands.map((island) => {
                 return island.serialize();
             }),

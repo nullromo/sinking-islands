@@ -55,6 +55,12 @@ export type GameSerialized = {
     actionOrderTrack: ActionOrderTrackSerialized;
     id: string;
     initiative: PlayerDesignator;
+    islandModifiers: {
+        playerANet: number;
+        playerAPilings: number;
+        playerBNet: number;
+        playerBPilings: number;
+    };
     islands: IslandSerialized[];
     nextIslandToSink: number;
     you: PlayerDesignator;
