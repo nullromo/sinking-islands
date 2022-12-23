@@ -268,6 +268,11 @@ export const GamePage = () => {
                         return assertUnreachable(interfaceState);
                 }
             })()}
+            <textarea
+                readOnly={true}
+                style={{ height: '1000px', width: '700px' }}
+                value={JSON.stringify(gameState, null, 4)}
+            />
         </div>
     );
 };
