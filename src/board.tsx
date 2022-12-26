@@ -75,7 +75,7 @@ export const Board = (props: BoardProps) => {
                                     style={{
                                         background:
                                             character.playerDesignator ===
-                                            PlayerDesignator.PLAYER_A
+                                            props.gameState.you
                                                 ? 'skyblue'
                                                 : 'indianred',
                                         cursor: 'pointer',
