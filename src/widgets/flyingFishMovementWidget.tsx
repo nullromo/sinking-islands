@@ -2,7 +2,6 @@ import React from 'react';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import type { FlyingFishMovement } from '../server/player';
-import { NormalMovementSelector } from './normalMovementSelector';
 
 interface FlyingFishMovementWidgetProps {
     submit: (flyingFishMovement: FlyingFishMovement) => void;
@@ -12,8 +11,8 @@ interface FlyingFishMovementWidgetProps {
 export const FlyingFishMovementWidget = (
     props: FlyingFishMovementWidgetProps,
 ) => {
-    const [fromIslandChoice, setFromIslandChoice] = React.useState(1);
-    const [toIslandChoice, setToIslandChoice] = React.useState(1);
+    const [fromIslandChoice, setFromIslandChoice] = React.useState(0);
+    const [toIslandChoice, setToIslandChoice] = React.useState(0);
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
             playerDesignator: props.gameState.you,
@@ -25,22 +24,25 @@ export const FlyingFishMovementWidget = (
         <>
             <Board
                 gameState={props.gameState}
-                onCharacterClicked={(character) => {
-                    //
+                onCharacterClicked={(island, character) => {
+                    if (character.playerDesignator !== props.gameState.you) {
+                        setCharacterChoice(character);
+                        setFromIslandChoice(island.islandNumber);
+                    }
                 }}
-                onIslandClicked={(island, character) => {
-                    //
+                onIslandClicked={(island) => {
+                    setToIslandChoice(island.islandNumber);
                 }}
             />
-            {'Choose character'}
-            <NormalMovementSelector
-                character={characterChoice}
-                fromIsland={fromIslandChoice}
-                setCharacter={setCharacterChoice}
-                setFromIsland={setFromIslandChoice}
-                setToIsland={setToIslandChoice}
-                toIsland={toIslandChoice}
-            />
+            <br />
+            {`Character: ${characterChoice.tortoise ? '🐢' : '🧍'}${
+                characterChoice.strength
+            }`}
+            <br />
+            {`from ${fromIslandChoice}`}
+            <br />
+            {`to ${toIslandChoice}`}
+            <br />
             <button
                 type='button'
                 onClick={() => {

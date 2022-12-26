@@ -1,28 +1,36 @@
 import React from 'react';
-import type { CharacterSerialized, PlayerDesignator } from '../commonTypes';
-import { CharacterSelector } from './characterSelector';
+import { Board } from '../board';
+import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 
 interface FleeChoiceWidgetProps {
     submit: (character: CharacterSerialized) => void;
-    you: PlayerDesignator;
+    gameState: GameSerialized;
 }
 
 export const FleeChoiceWidget = (props: FleeChoiceWidgetProps) => {
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: props.you,
+            playerDesignator: props.gameState.you,
             strength: 20,
             tortoise: false,
         });
 
     return (
         <>
-            {'Choose a character to flee'}
-            <CharacterSelector
-                character={characterChoice}
-                setCharacter={setCharacterChoice}
+            <Board
+                gameState={props.gameState}
+                onCharacterClicked={(_, character) => {
+                    setCharacterChoice(character);
+                }}
+                onIslandClicked={(_) => {
+                    //
+                }}
             />
-
+            <br />
+            {`Character: ${characterChoice.tortoise ? '🐢' : '🧍'}${
+                characterChoice.strength
+            }`}
+            <br />
             <button
                 type='button'
                 onClick={() => {

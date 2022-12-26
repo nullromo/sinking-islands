@@ -1,8 +1,10 @@
 import React from 'react';
-import { IslandSelector } from './islandSelector';
+import { Board } from '../board';
+import type { GameSerialized } from '../commonTypes';
 
 interface IslandSelectorWidgetProps {
     submit: (islandNumber: number) => void;
+    gameState: GameSerialized;
 }
 
 export const IslandSelectorWidget = (props: IslandSelectorWidgetProps) => {
@@ -10,11 +12,18 @@ export const IslandSelectorWidget = (props: IslandSelectorWidgetProps) => {
 
     return (
         <>
-            {'Choose island'}
-            <IslandSelector
-                islandNumber={islandChoice}
-                setIslandNumber={setIslandChoice}
+            <Board
+                gameState={props.gameState}
+                onCharacterClicked={(island, _) => {
+                    setIslandChoice(island.islandNumber);
+                }}
+                onIslandClicked={(island) => {
+                    setIslandChoice(island.islandNumber);
+                }}
             />
+            <br />
+            {`Island: ${islandChoice}`}
+            <br />
             <button
                 type='button'
                 onClick={() => {

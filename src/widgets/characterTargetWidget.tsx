@@ -1,18 +1,18 @@
 import React from 'react';
-import type { CharacterSerialized, PlayerDesignator } from '../commonTypes';
+import { Board } from '../board';
+import type { CharacterSerialized, GameSerialized } from '../commonTypes';
+import { otherPlayerDesignator } from '../commonTypes';
 import type { HarpoonTarget, TortoiseTarget } from '../server/player';
-import { CharacterSelector } from './characterSelector';
-import { IslandSelector } from './islandSelector';
 
 interface CharacterTargetWidgetProps {
     submit: (target: HarpoonTarget | TortoiseTarget) => void;
-    player: PlayerDesignator;
+    gameState: GameSerialized;
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: props.player,
+            playerDesignator: otherPlayerDesignator(props.gameState.you),
             strength: 20,
             tortoise: false,
         });
@@ -20,15 +20,24 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
 
     return (
         <>
-            {'Target a character'}
-            <CharacterSelector
-                character={characterChoice}
-                setCharacter={setCharacterChoice}
+            <Board
+                gameState={props.gameState}
+                onCharacterClicked={(island, character) => {
+                    if (character.playerDesignator !== props.gameState.you) {
+                        setCharacterChoice(character);
+                        setIslandNumberChoice(island.islandNumber);
+                    }
+                }}
+                onIslandClicked={(_) => {
+                    //
+                }}
             />
-            <IslandSelector
-                islandNumber={islandNumberChoice}
-                setIslandNumber={setIslandNumberChoice}
-            />
+            {`Character: ${characterChoice.tortoise ? '🐢' : '🧍'}${
+                characterChoice.strength
+            }`}
+            <br />
+            {`Island: ${islandNumberChoice}`}
+            <br />
             <button
                 type='button'
                 onClick={() => {

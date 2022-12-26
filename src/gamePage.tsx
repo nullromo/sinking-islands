@@ -3,7 +3,6 @@ import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import { Board } from './board';
 import type { GameSerialized } from './commonTypes';
-import { otherPlayerDesignator } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
 import type {
     ClientToServerEvents,
@@ -129,22 +128,24 @@ export const GamePage = () => {
                         );
                     case 'requestFogTarget':
                         return (
-                            <FogTargetWidget
-                                submit={(fogTarget) => {
-                                    socket.emit('responseFogTarget', fogTarget);
-                                    setInterfaceState(null);
-                                }}
-                            />
+                            <>
+                                <Board gameState={gameState} />
+                                <FogTargetWidget
+                                    submit={(fogTarget) => {
+                                        socket.emit(
+                                            'responseFogTarget',
+                                            fogTarget,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                />
+                            </>
                         );
                     case 'requestHarpoonTarget':
                     case 'requestTortoiseTarget':
                         return (
                             <CharacterTargetWidget
-                                player={
-                                    interfaceState === 'requestHarpoonTarget'
-                                        ? otherPlayerDesignator(gameState.you)
-                                        : gameState.you
-                                }
+                                gameState={gameState}
                                 submit={(target) => {
                                     socket.emit(
                                         (() => {
@@ -172,6 +173,7 @@ export const GamePage = () => {
                     case 'requestVolcanicEruptionTarget':
                         return (
                             <IslandSelectorWidget
+                                gameState={gameState}
                                 submit={(islandNumber) => {
                                     socket.emit(
                                         (() => {
@@ -201,6 +203,7 @@ export const GamePage = () => {
                     case 'requestFleeChoice':
                         return (
                             <FleeChoiceWidget
+                                gameState={gameState}
                                 submit={(character) => {
                                     socket.emit(
                                         'responseFleeChoice',
@@ -208,31 +211,36 @@ export const GamePage = () => {
                                     );
                                     setInterfaceState(null);
                                 }}
-                                you={gameState.you}
                             />
                         );
                     case 'requestMovementSet':
                         return (
-                            <MovementSetWidget
-                                submit={(movementSet) => {
-                                    socket.emit(
-                                        'responseMovementSet',
-                                        movementSet,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                                you={gameState.you}
-                            />
+                            <>
+                                <Board gameState={gameState} />
+                                <MovementSetWidget
+                                    submit={(movementSet) => {
+                                        socket.emit(
+                                            'responseMovementSet',
+                                            movementSet,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                    you={gameState.you}
+                                />
+                            </>
                         );
                     case 'joinFail':
                         return 'j f';
                     case 'gameState':
                     case null:
-                        return null;
+                        return <Board gameState={gameState} />;
                     default:
                         return assertUnreachable(interfaceState);
                 }
             })()}
+            <br />
+            <br />
+            <br />
             <textarea
                 readOnly={true}
                 style={{ height: '1000px', width: '700px' }}
