@@ -1,89 +1,92 @@
 import _ from 'lodash';
 import React from 'react';
-import type { PlayerDesignator } from '../commonTypes';
+import { Board } from '../board';
+import type { GameSerialized } from '../commonTypes';
 import type { MovementSet } from '../server/player';
-import { NormalMovementSelector } from './normalMovementSelector';
 
 interface MovementSetWidgetProps {
     submit: (movementSet: MovementSet) => void;
-    you: PlayerDesignator;
+    gameState: GameSerialized;
 }
 
 export const MovementSetWidget = (props: MovementSetWidgetProps) => {
-    const [numberOfMovements, setNumberOfMovements] = React.useState(1);
-    const [movementSet, setMovementSet] = React.useState<MovementSet>([
-        {
-            character: {
-                playerDesignator: props.you,
-                strength: 20,
-                tortoise: false,
-            },
-            fromIslandNumber: 1,
-            toIslandNumber: 1,
-        },
-        {
-            character: {
-                playerDesignator: props.you,
-                strength: 20,
-                tortoise: false,
-            },
-            fromIslandNumber: 1,
-            toIslandNumber: 1,
-        },
-        {
-            character: {
-                playerDesignator: props.you,
-                strength: 20,
-                tortoise: false,
-            },
-            fromIslandNumber: 1,
-            toIslandNumber: 1,
-        },
-    ]);
+    const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
     return (
         <>
-            {'Choose movement'}
-            <select
-                value={numberOfMovements}
-                onChange={(event) => {
-                    setNumberOfMovements(Number(event.target.value));
+            <Board
+                gameState={props.gameState}
+                onCharacterClicked={(island, character) => {
+                    if (movementSet.length === 0) {
+                        setMovementSet([
+                            {
+                                character,
+                                fromIslandNumber: island.islandNumber,
+                                toIslandNumber: 0,
+                            },
+                        ]);
+                    } else if (
+                        movementSet[movementSet.length - 1].toIslandNumber === 0
+                    ) {
+                        setMovementSet([
+                            ...movementSet.slice(0, movementSet.length - 2),
+                            {
+                                character,
+                                fromIslandNumber: island.islandNumber,
+                                toIslandNumber: 0,
+                            },
+                        ]);
+                    } else {
+                        setMovementSet([
+                            ...movementSet,
+                            {
+                                character,
+                                fromIslandNumber: island.islandNumber,
+                                toIslandNumber: 0,
+                            },
+                        ]);
+                    }
+                }}
+                onIslandClicked={(island) => {
+                    if (
+                        movementSet.length > 0 &&
+                        movementSet[movementSet.length - 1].toIslandNumber === 0
+                    ) {
+                        const newSet = _.cloneDeep(movementSet);
+                        newSet[newSet.length - 1].toIslandNumber =
+                            island.islandNumber;
+                        setMovementSet(newSet);
+                    }
+                }}
+            />
+            <button
+                type='button'
+                onClick={() => {
+                    setMovementSet([]);
                 }}
             >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-            </select>
-            {[...Array(numberOfMovements).keys()].map((index) => {
+                Reset
+            </button>
+            {movementSet.map((movement, index) => {
                 return (
-                    <NormalMovementSelector
-                        key={index}
-                        character={movementSet[index].character}
-                        fromIsland={movementSet[index].fromIslandNumber}
-                        setCharacter={(character) => {
-                            const newMovementSet = _.cloneDeep(movementSet);
-                            newMovementSet[index].character = character;
-                            setMovementSet(newMovementSet);
-                        }}
-                        setFromIsland={(islandNumber) => {
-                            const newMovementSet = _.cloneDeep(movementSet);
-                            newMovementSet[index].fromIslandNumber =
-                                islandNumber;
-                            setMovementSet(newMovementSet);
-                        }}
-                        setToIsland={(islandNumber) => {
-                            const newMovementSet = _.cloneDeep(movementSet);
-                            newMovementSet[index].toIslandNumber = islandNumber;
-                            setMovementSet(newMovementSet);
-                        }}
-                        toIsland={movementSet[index].toIslandNumber}
-                    />
+                    // eslint-disable-next-line react/no-array-index-key
+                    <React.Fragment key={index}>
+                        <br />
+                        {`Character: ${
+                            movement.character.tortoise ? '🐢' : '🧍'
+                        }${movement.character.strength}`}
+                        <br />
+                        {`from ${movement.fromIslandNumber}`}
+                        <br />
+                        {`to ${movement.toIslandNumber}`}
+                        <br />
+                    </React.Fragment>
                 );
             })}
             <button
                 type='button'
                 onClick={() => {
-                    props.submit(movementSet.slice(0, numberOfMovements));
+                    props.submit(movementSet);
                 }}
             >
                 Submit

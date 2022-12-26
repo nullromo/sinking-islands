@@ -215,19 +215,16 @@ export const GamePage = () => {
                         );
                     case 'requestMovementSet':
                         return (
-                            <>
-                                <Board gameState={gameState} />
-                                <MovementSetWidget
-                                    submit={(movementSet) => {
-                                        socket.emit(
-                                            'responseMovementSet',
-                                            movementSet,
-                                        );
-                                        setInterfaceState(null);
-                                    }}
-                                    you={gameState.you}
-                                />
-                            </>
+                            <MovementSetWidget
+                                gameState={gameState}
+                                submit={(movementSet) => {
+                                    socket.emit(
+                                        'responseMovementSet',
+                                        movementSet,
+                                    );
+                                    setInterfaceState(null);
+                                }}
+                            />
                         );
                     case 'joinFail':
                         return 'j f';
