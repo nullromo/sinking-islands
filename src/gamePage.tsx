@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
+import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
 import type { GameSerialized } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
@@ -91,6 +92,7 @@ export const GamePage = () => {
 
     return (
         <div>
+            <ActionOrderTrack gameState={gameState} />
             <br />
             {interfaceState}
             <br />
