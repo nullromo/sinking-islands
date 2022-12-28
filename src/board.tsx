@@ -4,7 +4,7 @@ import type {
     GameSerialized,
     IslandSerialized,
 } from './commonTypes';
-import { IslandType, PlayerDesignator } from './commonTypes';
+import { IslandType } from './commonTypes';
 
 interface BoardProps {
     gameState: GameSerialized;

@@ -2,6 +2,7 @@ import type { GameSerialized } from './commonTypes';
 
 interface ActionOrderTrackProps {
     gameState: GameSerialized;
+    onSlotClicked: (slotIndex: number) => void;
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
@@ -22,6 +23,9 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                         ? 'indianred'
                                         : 'lightgray',
                                 width: '100px',
+                            }}
+                            onClick={() => {
+                                props.onSlotClicked(slotIndex);
                             }}
                         >
                             {slot ? `${slot.cardType ?? 'Face Down'}` : 'Empty'}

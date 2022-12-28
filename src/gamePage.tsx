@@ -92,7 +92,12 @@ export const GamePage = () => {
 
     return (
         <div>
-            <ActionOrderTrack gameState={gameState} />
+            <ActionOrderTrack
+                gameState={gameState}
+                onSlotClicked={(slotIndex) => {
+                    console.log(slotIndex);
+                }}
+            />
             <br />
             {interfaceState}
             <br />
