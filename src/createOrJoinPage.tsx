@@ -6,6 +6,15 @@ export const CreateOrJoinPage = (props: {
 }) => {
     const [joinID, setJoinID] = React.useState('');
 
+    React.useEffect(() => {
+        navigator.clipboard
+            .readText()
+            .then((text) => {
+                setJoinID(text);
+            })
+            .catch(console.error);
+    }, []);
+
     return (
         <div>
             <button
@@ -21,6 +30,11 @@ export const CreateOrJoinPage = (props: {
                 value={joinID}
                 onChange={(event) => {
                     setJoinID(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        props.emitJoin(joinID);
+                    }
                 }}
             />
             <button
