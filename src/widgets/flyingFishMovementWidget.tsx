@@ -32,7 +32,7 @@ export const FlyingFishMovementWidget = (
                 }}
                 highlightIslandNumber={toIslandChoice}
                 onCharacterClicked={(island, character) => {
-                    if (character.playerDesignator !== props.gameState.you) {
+                    if (character.playerDesignator === props.gameState.you) {
                         setCharacterChoice(character);
                         setFromIslandChoice(island.islandNumber);
                     }
