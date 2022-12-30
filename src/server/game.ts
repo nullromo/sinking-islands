@@ -183,7 +183,7 @@ export class Game {
      */
     private readonly runMainGameLoop = async () => {
         let roundCounter = 1;
-        this.writeMessage('Starting game loop');
+        console.log('Starting game loop');
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
         while (true) {
             this.writeMessage('Begin round number', roundCounter);
@@ -207,7 +207,7 @@ export class Game {
                 const cardPlacement = await (async () => {
                     // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
-                    this.writeMessage('Starting card placement loop');
+                    console.log('Starting card placement loop');
                     while (
                         !cardPlacement ||
                         !this.checkCardPlacementLegal(
@@ -218,7 +218,7 @@ export class Game {
                         this.writeMessage('Requesting card placement');
                         // eslint-disable-next-line no-await-in-loop
                         cardPlacement = await player.requestCardPlacement();
-                        this.writeMessage('Got', cardPlacement);
+                        console.log('Got', cardPlacement);
                     }
                     return cardPlacement;
                 })();
@@ -310,7 +310,7 @@ export class Game {
             }
 
             // advance the rising waters marker
-            this.writeMessage('Starting rising water loop');
+            console.log('Starting rising water loop');
             while (!this.findIsland(this.nextIslandToSink)) {
                 this.nextIslandToSink = (this.nextIslandToSink % 16) + 1;
             }
@@ -801,7 +801,7 @@ export class Game {
 
                 // try to get a movement until a valid one is given
                 let flyingFishMovement: FlyingFishMovement | null = null;
-                this.writeMessage('Starting flying fish loop');
+                console.log('Starting flying fish loop');
                 while (
                     !flyingFishMovement ||
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
@@ -810,7 +810,7 @@ export class Game {
                     flyingFishMovement =
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestFlyingFishMovement();
-                    this.writeMessage('Got', flyingFishMovement);
+                    console.log('Got', flyingFishMovement);
                 }
 
                 // move the character
@@ -849,7 +849,7 @@ export class Game {
 
                 // try to get a fog target until a valid one is given
                 let fogTarget: number | null = null;
-                this.writeMessage('Starting fog loop');
+                console.log('Starting fog loop');
                 while (
                     !fogTarget ||
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
@@ -857,7 +857,7 @@ export class Game {
                     this.writeMessage('Requesting fog target');
                     // eslint-disable-next-line no-await-in-loop
                     fogTarget = await player.requestFogTarget();
-                    this.writeMessage('Got', fogTarget);
+                    console.log('Got', fogTarget);
                 }
 
                 // fog the target
@@ -901,7 +901,7 @@ export class Game {
                 }
 
                 let harpoonTarget: HarpoonTarget | null = null;
-                this.writeMessage('Starting harpoon loop');
+                console.log('Starting harpoon loop');
                 while (
                     !harpoonTarget ||
                     !this.checkHarpoonTargetLegal(
@@ -912,7 +912,7 @@ export class Game {
                     this.writeMessage('Requesting harpoon target');
                     // eslint-disable-next-line no-await-in-loop
                     harpoonTarget = await player.requestHarpoonTarget();
-                    this.writeMessage('Got', harpoonTarget);
+                    console.log('Got', harpoonTarget);
                 }
 
                 // kill the target
@@ -981,7 +981,7 @@ export class Game {
 
                 // try to get a movement set until a valid one is given
                 let movementSet: MovementSet | null = null;
-                this.writeMessage('Starting movement loop');
+                console.log('Starting movement loop');
                 while (
                     !movementSet ||
                     !this.checkMovementSetLegal(
@@ -992,7 +992,7 @@ export class Game {
                     this.writeMessage('Requesting movement set');
                     // eslint-disable-next-line no-await-in-loop
                     movementSet = await player.requestMovementSet();
-                    this.writeMessage('Got', movementSet);
+                    console.log('Got', movementSet);
                 }
 
                 // make the moves
@@ -1017,12 +1017,12 @@ export class Game {
             case CardType.NET:
                 // try to get a net target until a valid one is given
                 let netTarget: number | null = null;
-                this.writeMessage('Starting net loop');
+                console.log('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
                     this.writeMessage('Requesting net target');
                     // eslint-disable-next-line no-await-in-loop
                     netTarget = await player.requestNetTarget();
-                    this.writeMessage('Got', netTarget);
+                    console.log('Got', netTarget);
                 }
 
                 // place the net
@@ -1051,7 +1051,7 @@ export class Game {
 
                 // try to get a pilngs target until a valid one is given
                 let pilingsTarget: number | null = null;
-                this.writeMessage('Starting pilings loop');
+                console.log('Starting pilings loop');
                 while (
                     !pilingsTarget ||
                     !this.findIsland(pilingsTarget)?.smallCapacity ||
@@ -1060,7 +1060,7 @@ export class Game {
                     this.writeMessage('Requesting pilings target');
                     // eslint-disable-next-line no-await-in-loop
                     pilingsTarget = await player.requestPilingsTarget();
-                    this.writeMessage('Got', pilingsTarget);
+                    console.log('Got', pilingsTarget);
                 }
 
                 // place the net
@@ -1107,7 +1107,7 @@ export class Game {
 
                 // try to get a tidal surge target until a valid one is given
                 let tidalSurgeTarget: number | null = null;
-                this.writeMessage('Starting tidal surge loop');
+                console.log('Starting tidal surge loop');
                 while (
                     !tidalSurgeTarget ||
                     !this.getAdjacentIslands(this.nextIslandToSink).some(
@@ -1120,7 +1120,7 @@ export class Game {
                     this.writeMessage('Requesting tidal surge target');
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tidalSurgeTarget = await player.requestTidalSurgeTarget();
-                    this.writeMessage('Got', tidalSurgeTarget);
+                    console.log('Got', tidalSurgeTarget);
                 }
 
                 // move the rising waters marker
@@ -1132,12 +1132,12 @@ export class Game {
             case CardType.TIDAL_WAVE:
                 // try to get a tidal wave target until a valid one is given
                 let tidalWaveTarget: number | null = null;
-                this.writeMessage('Starting tidal wave loop');
+                console.log('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
                     this.writeMessage('Requesting tidal wave target');
                     // eslint-disable-next-line no-await-in-loop
                     tidalWaveTarget = await player.requestTidalWaveTarget();
-                    this.writeMessage('Got', tidalWaveTarget);
+                    console.log('Got', tidalWaveTarget);
                 }
 
                 // move the rising waters marker
@@ -1149,7 +1149,7 @@ export class Game {
             case CardType.TORTOISE:
                 // try to get a tortoise target until a valid one is given
                 let tortoiseTarget: TortoiseTarget | null = null;
-                this.writeMessage('Starting tortoise loop');
+                console.log('Starting tortoise loop');
                 while (
                     !tortoiseTarget ||
                     tortoiseTarget.character.playerDesignator !==
@@ -1164,7 +1164,7 @@ export class Game {
                     this.writeMessage('Requesting tortoise target');
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tortoiseTarget = await player.requestTortoiseTarget();
-                    this.writeMessage('Got', tortoiseTarget);
+                    console.log('Got', tortoiseTarget);
                 }
 
                 // make the target a tortoise
@@ -1197,7 +1197,7 @@ export class Game {
                 // try to get a volcanic eruption target until a valid one is
                 // given
                 let volcanicEruptionTarget: number | null = null;
-                this.writeMessage('Starting volcanic eruption loop');
+                console.log('Starting volcanic eruption loop');
                 while (
                     !volcanicEruptionTarget ||
                     this.findIsland(volcanicEruptionTarget)?.islandType !==
@@ -1208,7 +1208,7 @@ export class Game {
                     volcanicEruptionTarget =
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestVolcanicEruptionTarget();
-                    this.writeMessage('Got', volcanicEruptionTarget);
+                    console.log('Got', volcanicEruptionTarget);
                 }
 
                 // erupt the volcano
@@ -1269,7 +1269,7 @@ export class Game {
                         // try to get a flee choice until a valid one is
                         // given
                         let characterToFlee: CharacterSerialized | null = null;
-                        this.writeMessage('Starting flee loop');
+                        console.log('Starting flee loop');
                         while (
                             !characterToFlee ||
                             characterToFlee.playerDesignator !==
@@ -1284,7 +1284,7 @@ export class Game {
                             this.writeMessage('Requesting flee choice');
                             // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                             characterToFlee = await player.requestFleeChoice();
-                            this.writeMessage('Got', characterToFlee);
+                            console.log('Got', characterToFlee);
                         }
 
                         // move the chosen character
@@ -1382,7 +1382,7 @@ export class Game {
                 // if the rising waters marker was on the volcano, move it to
                 // the next island
                 if (this.nextIslandToSink === volcanicEruptionTarget) {
-                    this.writeMessage('Starting sink loop');
+                    console.log('Starting sink loop');
                     while (!this.findIsland(this.nextIslandToSink)) {
                         this.nextIslandToSink =
                             (this.nextIslandToSink % 16) + 1;
