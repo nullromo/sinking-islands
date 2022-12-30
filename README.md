@@ -12,3 +12,7 @@ TODO list:
     effects of indescretion
 -   player should know how many card are in their opponent's hand
 -   Figure out how to make `tsc --noEmit` actually work
+-   fix bug where placing 2 cards on the same slot makes your hand not look
+    right
+-   display remaining movement points while choosing normal movement
+-   highlight selected card for fog target

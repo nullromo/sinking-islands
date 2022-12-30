@@ -1,7 +1,11 @@
 import React from 'react';
+import { ActionOrderTrack } from '../actionOrderTrack';
+import type { GameSerialized } from '../commonTypes';
+import { Hand } from '../hand';
 
 interface FogTargetWidgetProps {
     submit: (fogTarget: number) => void;
+    gameState: GameSerialized;
 }
 
 export const FogTargetWidget = (props: FogTargetWidgetProps) => {
@@ -9,21 +13,18 @@ export const FogTargetWidget = (props: FogTargetWidgetProps) => {
 
     return (
         <>
-            {'Choose card slot'}
-            <select
-                value={slotChoice}
-                onChange={(event) => {
-                    setSlotChoice(Number(event.target.value));
+            <ActionOrderTrack
+                gameState={props.gameState}
+                highlightIndex={slotChoice}
+                onSlotClicked={(slotIndex) => {
+                    setSlotChoice(slotIndex);
                 }}
-            >
-                {[...Array(6).keys()].map((index) => {
-                    return (
-                        <option key={index} value={index}>
-                            {index + 1}
-                        </option>
-                    );
-                })}
-            </select>
+            />
+            <Hand gameState={props.gameState} />
+            <div style={{ width: '600px' }}>
+                Choose a Fog target. Click on a card in the Action Order Track
+                to select it. Click Submit when ready.
+            </div>
             <button
                 type='button'
                 onClick={() => {

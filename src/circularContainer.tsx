@@ -18,6 +18,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
         '--size': 'calc(2 * var(--radius) + var(--diameter))',
         '--spacing': spacing,
         height: 'var(--size)',
+        marginBottom: '-30px',
         position: 'relative',
         width: 'var(--size)',
     };

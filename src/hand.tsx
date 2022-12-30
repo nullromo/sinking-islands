@@ -17,6 +17,7 @@ export const Hand = (props: HandProps) => {
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '10px',
+                    marginBottom: '20px',
                     textAlign: 'center',
                 }}
             >

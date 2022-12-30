@@ -56,47 +56,56 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                     setClickedCardIndex(index);
                 }}
             />
-            <button
-                type='button'
-                onClick={() => {
-                    setCardChoices(Array(6).fill(null));
-                    setClickedCardIndex(null);
-                    setGhostSlots([]);
-                }}
-            >
-                Reset
-            </button>
-            <button
-                type='button'
-                onClick={() => {
-                    props.submit(
-                        Object.fromEntries(
-                            (
-                                cardChoices
-                                    .map((cardType, index) => {
-                                        return { cardType, index };
-                                    })
-                                    .filter((item) => {
-                                        return item.cardType !== null;
-                                    }) as Array<{
-                                    cardType: CardType;
-                                    index: number;
-                                }>
-                            ).map<[number, CardSerialized]>((item) => {
-                                return [
-                                    item.index,
-                                    {
-                                        cardType: item.cardType,
-                                        playerDesignator: props.gameState.you,
-                                    },
-                                ];
-                            }),
-                        ) as Record<number, CardSerialized>,
-                    );
-                }}
-            >
-                Submit
-            </button>
+            <div style={{ width: '600px' }}>
+                Place Cards. Click a card in your hand to select it, then click
+                on a slot in the Action Order Track to place the card. Click
+                Submit when finished, or click Reset to start over.
+            </div>
+            <br />
+            <div>
+                <button
+                    type='button'
+                    onClick={() => {
+                        setCardChoices(Array(6).fill(null));
+                        setClickedCardIndex(null);
+                        setGhostSlots([]);
+                    }}
+                >
+                    Reset
+                </button>
+                <button
+                    type='button'
+                    onClick={() => {
+                        props.submit(
+                            Object.fromEntries(
+                                (
+                                    cardChoices
+                                        .map((cardType, index) => {
+                                            return { cardType, index };
+                                        })
+                                        .filter((item) => {
+                                            return item.cardType !== null;
+                                        }) as Array<{
+                                        cardType: CardType;
+                                        index: number;
+                                    }>
+                                ).map<[number, CardSerialized]>((item) => {
+                                    return [
+                                        item.index,
+                                        {
+                                            cardType: item.cardType,
+                                            playerDesignator:
+                                                props.gameState.you,
+                                        },
+                                    ];
+                                }),
+                            ) as Record<number, CardSerialized>,
+                        );
+                    }}
+                >
+                    Submit
+                </button>
+            </div>
         </>
     );
 };

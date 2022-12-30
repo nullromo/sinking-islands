@@ -3,15 +3,25 @@ import { upperSnakeToTitle } from './util';
 
 interface ActionOrderTrackProps {
     gameState: GameSerialized;
-    onSlotClicked: (slotIndex: number) => void;
+    onSlotClicked?: (slotIndex: number) => void;
     overrideCards?: Array<CardSerialized | null>;
+    highlightIndex?: number;
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
     return (
-        <div style={{ display: 'flex', textAlign: 'center' }}>
+        <div
+            style={{
+                display: 'flex',
+                marginBottom: '20px',
+                textAlign: 'center',
+            }}
+        >
             <table>
                 <thead>
+                    <tr>
+                        <th colSpan={6}>Action Order Track</th>
+                    </tr>
                     <tr>
                         <th style={{ background: 'khaki' }}>1</th>
                         <th style={{ background: 'khaki' }}>2</th>
@@ -42,11 +52,19 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                     : overrideCard || card
                                                     ? 'indianred'
                                                     : 'lightgray',
+                                            border:
+                                                props.highlightIndex ===
+                                                slotIndex
+                                                    ? '3px solid'
+                                                    : '',
+                                            boxSizing: 'border-box',
                                             height: '60px',
                                             width: '100px',
                                         }}
                                         onClick={() => {
-                                            props.onSlotClicked(slotIndex);
+                                            if (props.onSlotClicked) {
+                                                props.onSlotClicked(slotIndex);
+                                            }
                                         }}
                                     >
                                         {overrideCard

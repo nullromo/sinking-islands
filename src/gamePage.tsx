@@ -1,9 +1,11 @@
 import React from 'react';
 import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
+import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
 import type { GameSerialized } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
+import { Hand } from './hand';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -90,11 +92,14 @@ export const GamePage = () => {
     }
 
     return (
-        <div>
-            {interfaceState}
-            <br />
-            {gameState.id}
-            <br />
+        <div
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            {interfaceState === null ? gameState.id : ''}
             {(() => {
                 switch (interfaceState) {
                     case 'requestCardPlacement':
@@ -131,6 +136,7 @@ export const GamePage = () => {
                             <>
                                 <Board gameState={gameState} />
                                 <FogTargetWidget
+                                    gameState={gameState}
                                     submit={(fogTarget) => {
                                         socket.emit(
                                             'responseFogTarget',
@@ -164,6 +170,11 @@ export const GamePage = () => {
                                     );
                                     setInterfaceState(null);
                                 }}
+                                title={
+                                    interfaceState === 'requestHarpoonTarget'
+                                        ? 'Choose Harpoon target.'
+                                        : 'Choose Tortoise target.'
+                                }
                             />
                         );
                     case 'requestNetTarget':
@@ -230,7 +241,14 @@ export const GamePage = () => {
                         return 'j f';
                     case 'gameState':
                     case null:
-                        return <Board gameState={gameState} />;
+                        return (
+                            <>
+                                <Board gameState={gameState} />
+                                <ActionOrderTrack gameState={gameState} />
+                                <Hand gameState={gameState} />
+                                Waiting for opponent
+                            </>
+                        );
                     default:
                         return assertUnreachable(interfaceState);
                 }
@@ -238,11 +256,13 @@ export const GamePage = () => {
             <br />
             <br />
             <br />
+            {/*
             <textarea
                 readOnly={true}
                 style={{ height: '1000px', width: '700px' }}
                 value={JSON.stringify(gameState, null, 4)}
             />
+            */}
         </div>
     );
 };

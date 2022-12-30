@@ -1,12 +1,15 @@
 import React from 'react';
+import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import { otherPlayerDesignator } from '../commonTypes';
+import { Hand } from '../hand';
 import type { HarpoonTarget, TortoiseTarget } from '../server/player';
 
 interface CharacterTargetWidgetProps {
-    submit: (target: HarpoonTarget | TortoiseTarget) => void;
     gameState: GameSerialized;
+    submit: (target: HarpoonTarget | TortoiseTarget) => void;
+    title: string;
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
@@ -28,10 +31,12 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
                         setIslandNumberChoice(island.islandNumber);
                     }
                 }}
-                onIslandClicked={(_) => {
-                    //
-                }}
             />
+            <ActionOrderTrack gameState={props.gameState} />
+            <Hand gameState={props.gameState} />
+            <div
+                style={{ width: '600px' }}
+            >{`${props.title} Click on a character on the baord to select that character. Click Submit when ready.`}</div>
             {`Character: ${characterChoice.tortoise ? '🐢' : '🧍'}${
                 characterChoice.strength
             }`}

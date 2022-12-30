@@ -33,7 +33,7 @@ export const Board = (props: BoardProps) => {
                                         ? 'sandybrown'
                                         : 'mediumseagreen',
                                 border: '1px solid',
-                                cursor: 'pointer',
+                                cursor: props.onIslandClicked ? 'pointer' : '',
                                 fontSize,
                             }}
                             onClick={() => {
@@ -78,7 +78,9 @@ export const Board = (props: BoardProps) => {
                                             props.gameState.you
                                                 ? 'skyblue'
                                                 : 'indianred',
-                                        cursor: 'pointer',
+                                        cursor: props.onCharacterClicked
+                                            ? 'pointer'
+                                            : '',
                                         fontSize,
                                     }}
                                     onClick={() => {

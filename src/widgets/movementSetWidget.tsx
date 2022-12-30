@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
+import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { GameSerialized } from '../commonTypes';
+import { Hand } from '../hand';
 import type { MovementSet } from '../server/player';
 
 interface MovementSetWidgetProps {
@@ -59,14 +61,13 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                     }
                 }}
             />
-            <button
-                type='button'
-                onClick={() => {
-                    setMovementSet([]);
-                }}
-            >
-                Reset
-            </button>
+            <ActionOrderTrack gameState={props.gameState} />
+            <Hand gameState={props.gameState} />
+            <div style={{ width: '600px' }}>
+                Click on a character, then click on an island to choose where to
+                move that character. Click Submit when finished, or click Reset
+                to start over.
+            </div>
             {movementSet.map((movement, index) => {
                 return (
                     // eslint-disable-next-line react/no-array-index-key
@@ -83,14 +84,24 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                     </React.Fragment>
                 );
             })}
-            <button
-                type='button'
-                onClick={() => {
-                    props.submit(movementSet);
-                }}
-            >
-                Submit
-            </button>
+            <div>
+                <button
+                    type='button'
+                    onClick={() => {
+                        setMovementSet([]);
+                    }}
+                >
+                    Reset
+                </button>
+                <button
+                    type='button'
+                    onClick={() => {
+                        props.submit(movementSet);
+                    }}
+                >
+                    Submit
+                </button>
+            </div>
         </>
     );
 };
