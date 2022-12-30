@@ -102,7 +102,8 @@ export const GamePage = () => {
                 style={{
                     border: '1px solid',
                     height: '950px',
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
+                    padding: '4px',
                 }}
             >
                 {gameState.messages.map((message, index) => {
@@ -132,6 +133,7 @@ export const GamePage = () => {
                 >
                     <div>Game ID:</div>
                     <div>{gameState.id}</div>
+                    <div>{`You are ${gameState.you}`}</div>
                 </div>
                 {(() => {
                     switch (interfaceState) {
