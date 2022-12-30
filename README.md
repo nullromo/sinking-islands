@@ -12,8 +12,6 @@ TODO list:
 -   player should know how many card are in their opponent's hand and in their
     deck, discard, etc.
 -   Figure out how to make `tsc --noEmit` actually work
--   fix bug where placing 2 cards on the same slot makes your hand not look
-    right
 -   display remaining movement points while choosing normal movement
 -   confirm that characters cannot move off of netted islands
 -   make sure cursors are correct for islands/characters/cards for all

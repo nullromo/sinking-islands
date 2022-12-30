@@ -33,7 +33,13 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                     };
                 })}
                 onSlotClicked={(slotIndex) => {
-                    if (clickedCardIndex !== null) {
+                    if (
+                        clickedCardIndex !== null &&
+                        props.gameState.actionOrderTrack.cardSlots[
+                            slotIndex
+                        ] === null &&
+                        cardChoices[slotIndex] === null
+                    ) {
                         setCardChoices((oldCardChoices) => {
                             oldCardChoices[slotIndex] =
                                 props.gameState.yourHand[
