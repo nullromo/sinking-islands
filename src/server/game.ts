@@ -67,7 +67,7 @@ export class Game {
     ]);
 
     public constructor(id: string) {
-        this.writeMessage('Creating game');
+        this.writeMessage('Creating game.');
         this.id = id;
 
         // create and randomize all the characters
@@ -153,7 +153,7 @@ export class Game {
      * Executes the main game loop.
      */
     public readonly play = async () => {
-        this.writeMessage('Starting game');
+        this.writeMessage('Starting game.');
         let loser: PlayerDesignator | null = null;
 
         this.broadcastGameState();
@@ -185,7 +185,7 @@ export class Game {
         console.log('Starting game loop');
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
         while (true) {
-            this.writeMessage('Begin round number', roundCounter);
+            this.writeMessage(`Begin round number ${roundCounter}.`);
             roundCounter += 1;
             this.broadcastGameState();
 
@@ -215,8 +215,7 @@ export class Game {
                         )
                     ) {
                         this.writeMessage(
-                            'Requesting card placement from',
-                            player.playerDesignator,
+                            `Requesting card placement from ${player.playerDesignator}.`,
                         );
                         // eslint-disable-next-line no-await-in-loop
                         cardPlacement = await player.requestCardPlacement();
@@ -720,7 +719,7 @@ export class Game {
         this.writeMessage(
             `Executing slot ${slot + 1}: ${
                 player.playerDesignator
-            }'s ${upperSnakeToTitle(card.cardType)}`,
+            }'s ${upperSnakeToTitle(card.cardType)}.`,
         );
         const opponent = otherPlayerDesignator(player.playerDesignator);
         switch (card.cardType) {
@@ -813,8 +812,7 @@ export class Game {
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
                 ) {
                     this.writeMessage(
-                        'Requesting flying fish movement from',
-                        player.playerDesignator,
+                        `Requesting flying fish movement from ${player.playerDesignator}.`,
                     );
                     flyingFishMovement =
                         // eslint-disable-next-line no-await-in-loop
@@ -830,11 +828,9 @@ export class Game {
                         flyingFishMovement.character.tortoise
                             ? 'tortoise'
                             : 'character'
-                    }`,
-                    'flies from island',
-                    flyingFishMovement.fromIslandNumber,
-                    'to island',
-                    flyingFishMovement.toIslandNumber,
+                    } flies from island ${
+                        flyingFishMovement.fromIslandNumber
+                    } to island ${flyingFishMovement.toIslandNumber}.`,
                 );
                 this.findIsland(
                     flyingFishMovement.fromIslandNumber,
@@ -870,8 +866,7 @@ export class Game {
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
                 ) {
                     this.writeMessage(
-                        'Requesting fog target from',
-                        player.playerDesignator,
+                        `Requesting fog target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     fogTarget = await player.requestFogTarget();
@@ -879,7 +874,7 @@ export class Game {
                 }
 
                 // fog the target
-                this.writeMessage('Fogging slot', fogTarget);
+                this.writeMessage(`Fogging slot ${fogTarget}.`);
                 const foggedCard = this.actionOrderTrack.resetSlot(fogTarget);
                 if (foggedCard) {
                     this.getPlayer(foggedCard.playerDesignator).discardCard(
@@ -928,8 +923,7 @@ export class Game {
                     )
                 ) {
                     this.writeMessage(
-                        'Requesting harpoon target from',
-                        player.playerDesignator,
+                        `Requesting harpoon target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     harpoonTarget = await player.requestHarpoonTarget();
@@ -1009,8 +1003,7 @@ export class Game {
                     )
                 ) {
                     this.writeMessage(
-                        'Requesting movement set from',
-                        player.playerDesignator,
+                        `Requesting movement set from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     movementSet = await player.requestMovementSet();
@@ -1044,8 +1037,7 @@ export class Game {
                 console.log('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
                     this.writeMessage(
-                        'Requesting net target from',
-                        player.playerDesignator,
+                        `Requesting net target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     netTarget = await player.requestNetTarget();
@@ -1085,8 +1077,7 @@ export class Game {
                     pilingsTarget === this.getPlayer(opponent).pilingsIsland
                 ) {
                     this.writeMessage(
-                        'Requesting pilings target from',
-                        player.playerDesignator,
+                        `Requesting pilings target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     pilingsTarget = await player.requestPilingsTarget();
@@ -1148,8 +1139,7 @@ export class Game {
                     )
                 ) {
                     this.writeMessage(
-                        'Requesting tidal surge target from',
-                        player.playerDesignator,
+                        `Requesting tidal surge target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tidalSurgeTarget = await player.requestTidalSurgeTarget();
@@ -1168,8 +1158,7 @@ export class Game {
                 console.log('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
                     this.writeMessage(
-                        'Requesting tidal wave target from',
-                        player.playerDesignator,
+                        `Requesting tidal wave target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop
                     tidalWaveTarget = await player.requestTidalWaveTarget();
@@ -1198,8 +1187,7 @@ export class Game {
                         })
                 ) {
                     this.writeMessage(
-                        'Requesting tortoise target from',
-                        player.playerDesignator,
+                        `Requesting tortoise target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tortoiseTarget = await player.requestTortoiseTarget();
@@ -1239,8 +1227,7 @@ export class Game {
                         IslandType.VOLCANO
                 ) {
                     this.writeMessage(
-                        'Requesting volcanic eruption target from',
-                        player.playerDesignator,
+                        `Requesting volcanic eruption target from ${player.playerDesignator}.`,
                     );
                     // eslint-disable-next-line require-atomic-updates
                     volcanicEruptionTarget =
@@ -1320,8 +1307,7 @@ export class Game {
                                 })
                         ) {
                             this.writeMessage(
-                                'Requesting flee choice from',
-                                player.playerDesignator,
+                                `Requesting flee choice from ${player.playerDesignator}.`,
                             );
                             // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                             characterToFlee = await player.requestFleeChoice();
