@@ -34,3 +34,16 @@ export const sampleArray = <T>(array: T[]) => {
 export const assertUnreachable = (thing: never): never => {
     throw new Error(`Impossible value: ${thing}`);
 };
+
+/**
+ * Utility for making things readable.
+ */
+export const upperSnakeToTitle = (message: string) => {
+    return message
+        .toLowerCase()
+        .split('_')
+        .map((word) => {
+            return `${word[0].toUpperCase()}${word.slice(1)}`;
+        })
+        .join(' ');
+};

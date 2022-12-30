@@ -1,8 +1,10 @@
-import type { GameSerialized } from './commonTypes';
+import type { CardSerialized, GameSerialized } from './commonTypes';
+import { upperSnakeToTitle } from './util';
 
 interface ActionOrderTrackProps {
     gameState: GameSerialized;
     onSlotClicked: (slotIndex: number) => void;
+    overrideCards?: Array<CardSerialized | null>;
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
@@ -22,17 +24,22 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                 <tbody>
                     <tr>
                         {props.gameState.actionOrderTrack.cardSlots.map(
-                            (slot, slotIndex) => {
+                            (card, slotIndex) => {
+                                const overrideCard = props.overrideCards
+                                    ? props.overrideCards[slotIndex]
+                                    : null;
                                 return (
                                     <td
                                         // eslint-disable-next-line react/no-array-index-key
                                         key={slotIndex}
                                         style={{
                                             background:
-                                                slot?.playerDesignator ===
-                                                props.gameState.you
+                                                overrideCard?.playerDesignator ===
+                                                    props.gameState.you ||
+                                                card?.playerDesignator ===
+                                                    props.gameState.you
                                                     ? 'skyblue'
-                                                    : slot
+                                                    : overrideCard || card
                                                     ? 'indianred'
                                                     : 'lightgray',
                                             height: '60px',
@@ -42,8 +49,14 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                             props.onSlotClicked(slotIndex);
                                         }}
                                     >
-                                        {slot
-                                            ? `${slot.cardType ?? 'Face Down'}`
+                                        {overrideCard
+                                            ? upperSnakeToTitle(
+                                                  overrideCard.cardType,
+                                              )
+                                            : card
+                                            ? upperSnakeToTitle(
+                                                  card.cardType ?? 'Face Down',
+                                              )
                                             : 'Empty'}
                                     </td>
                                 );

@@ -48,7 +48,6 @@ export interface CardSerialized extends PlayerGamePieceSerialized {
 
 export type ActionOrderTrackSerialized = {
     cardSlots: Array<Partial<CardSerialized> | null>;
-    faceUpCards: number[];
 };
 
 export type GameSerialized = {
