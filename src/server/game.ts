@@ -94,6 +94,13 @@ export class Game {
         characters.forEach((character, index) => {
             this.islands[index].addCharacter(character);
         });
+
+        // determine starting player
+        this.initiative = (
+            this.islands.find((island) => {
+                return island.islandNumber === 1;
+            }) as Island
+        ).getCharacters()[0].playerDesignator;
     }
 
     /**
@@ -160,6 +167,7 @@ export class Game {
      */
     public readonly play = async () => {
         this.writeMessage('Starting game.');
+        this.writeMessage(`The starting player is ${this.initiative}.`);
         let loser: PlayerDesignator | null = null;
 
         this.broadcastGameState();
