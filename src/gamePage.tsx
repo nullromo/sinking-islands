@@ -78,6 +78,11 @@ export const GamePage = () => {
         };
     }, []);
 
+    const messageLog = React.useRef<HTMLDivElement>(null);
+    React.useEffect(() => {
+        messageLog.current?.scrollIntoView();
+    });
+
     if (gameState === null) {
         return (
             <CreateOrJoinPage
@@ -92,199 +97,215 @@ export const GamePage = () => {
     }
 
     return (
-        <div
-            style={{
-                alignItems: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-            }}
-        >
+        <div style={{ display: 'flex' }}>
             <div
                 style={{
-                    alignItems: 'flex-end',
-                    background: 'lightgray',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    fontSize: '10pt',
-                    position: 'absolute',
-                    right: '10px',
-                    top: '10px',
+                    border: '1px solid',
+                    height: '950px',
+                    overflowY: 'scroll',
                 }}
             >
-                <div>Game ID:</div>
-                <div>{gameState.id}</div>
+                {gameState.messages.map((message, index) => {
+                    // eslint-disable-next-line react/no-array-index-key
+                    return <div key={index}>{message}</div>;
+                })}
+                <div ref={messageLog} />
             </div>
-            {(() => {
-                switch (interfaceState) {
-                    case 'requestCardPlacement':
-                        return (
-                            <>
-                                <Board gameState={gameState} />
-                                <CardPlacementWidget
+            <div
+                style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <div
+                    style={{
+                        alignItems: 'flex-end',
+                        background: 'lightgray',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        fontSize: '10pt',
+                        position: 'absolute',
+                        right: '10px',
+                        top: '10px',
+                    }}
+                >
+                    <div>Game ID:</div>
+                    <div>{gameState.id}</div>
+                </div>
+                {(() => {
+                    switch (interfaceState) {
+                        case 'requestCardPlacement':
+                            return (
+                                <>
+                                    <Board gameState={gameState} />
+                                    <CardPlacementWidget
+                                        gameState={gameState}
+                                        submit={(cardPlacement) => {
+                                            socket.emit(
+                                                'responseCardPlacement',
+                                                cardPlacement,
+                                            );
+                                            setInterfaceState(null);
+                                        }}
+                                    />
+                                </>
+                            );
+                        case 'requestFlyingFishMovement':
+                            return (
+                                <FlyingFishMovementWidget
                                     gameState={gameState}
-                                    submit={(cardPlacement) => {
+                                    submit={(flyingFishMovement) => {
                                         socket.emit(
-                                            'responseCardPlacement',
-                                            cardPlacement,
+                                            'responseFlyingFishMovement',
+                                            flyingFishMovement,
                                         );
                                         setInterfaceState(null);
                                     }}
                                 />
-                            </>
-                        );
-                    case 'requestFlyingFishMovement':
-                        return (
-                            <FlyingFishMovementWidget
-                                gameState={gameState}
-                                submit={(flyingFishMovement) => {
-                                    socket.emit(
-                                        'responseFlyingFishMovement',
-                                        flyingFishMovement,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                            />
-                        );
-                    case 'requestFogTarget':
-                        return (
-                            <>
-                                <Board gameState={gameState} />
-                                <FogTargetWidget
+                            );
+                        case 'requestFogTarget':
+                            return (
+                                <>
+                                    <Board gameState={gameState} />
+                                    <FogTargetWidget
+                                        gameState={gameState}
+                                        submit={(fogTarget) => {
+                                            socket.emit(
+                                                'responseFogTarget',
+                                                fogTarget,
+                                            );
+                                            setInterfaceState(null);
+                                        }}
+                                    />
+                                </>
+                            );
+                        case 'requestHarpoonTarget':
+                        case 'requestTortoiseTarget':
+                            return (
+                                <CharacterTargetWidget
+                                    enemy={
+                                        interfaceState ===
+                                        'requestHarpoonTarget'
+                                    }
                                     gameState={gameState}
-                                    submit={(fogTarget) => {
+                                    submit={(target) => {
                                         socket.emit(
-                                            'responseFogTarget',
-                                            fogTarget,
+                                            (() => {
+                                                switch (interfaceState) {
+                                                    case 'requestHarpoonTarget':
+                                                        return 'responseHarpoonTarget';
+                                                    case 'requestTortoiseTarget':
+                                                        return 'responseTortoiseTarget';
+                                                    default:
+                                                        return assertUnreachable(
+                                                            interfaceState,
+                                                        );
+                                                }
+                                            })(),
+                                            target,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                    title={
+                                        interfaceState ===
+                                        'requestHarpoonTarget'
+                                            ? 'Choose Harpoon target.'
+                                            : 'Choose Tortoise target.'
+                                    }
+                                />
+                            );
+                        case 'requestNetTarget':
+                        case 'requestPilingsTarget':
+                        case 'requestTidalSurgeTarget':
+                        case 'requestTidalWaveTarget':
+                        case 'requestVolcanicEruptionTarget':
+                            return (
+                                <IslandSelectorWidget
+                                    gameState={gameState}
+                                    submit={(islandNumber) => {
+                                        socket.emit(
+                                            (() => {
+                                                switch (interfaceState) {
+                                                    case 'requestNetTarget':
+                                                        return 'responseNetTarget';
+                                                    case 'requestPilingsTarget':
+                                                        return 'responsePilingsTarget';
+                                                    case 'requestTidalSurgeTarget':
+                                                        return 'responseTidalSurgeTarget';
+                                                    case 'requestTidalWaveTarget':
+                                                        return 'responseTidalWaveTarget';
+                                                    case 'requestVolcanicEruptionTarget':
+                                                        return 'responseVolcanicEruptionTarget';
+                                                    default:
+                                                        return assertUnreachable(
+                                                            interfaceState,
+                                                        );
+                                                }
+                                            })(),
+                                            islandNumber,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                    title={
+                                        interfaceState === 'requestNetTarget'
+                                            ? 'Choose Net target.'
+                                            : interfaceState ===
+                                              'requestPilingsTarget'
+                                            ? 'Choose Pilings target.'
+                                            : interfaceState ===
+                                              'requestTidalSurgeTarget'
+                                            ? 'Choose Tidal Surge target.'
+                                            : interfaceState ===
+                                              'requestTidalWaveTarget'
+                                            ? 'Choose Tidal Wave target.'
+                                            : 'Choose Volcanic Eruption target.'
+                                    }
+                                />
+                            );
+                        case 'requestFleeChoice':
+                            return (
+                                <FleeChoiceWidget
+                                    gameState={gameState}
+                                    submit={(character) => {
+                                        socket.emit(
+                                            'responseFleeChoice',
+                                            character,
                                         );
                                         setInterfaceState(null);
                                     }}
                                 />
-                            </>
-                        );
-                    case 'requestHarpoonTarget':
-                    case 'requestTortoiseTarget':
-                        return (
-                            <CharacterTargetWidget
-                                enemy={
-                                    interfaceState === 'requestHarpoonTarget'
-                                }
-                                gameState={gameState}
-                                submit={(target) => {
-                                    socket.emit(
-                                        (() => {
-                                            switch (interfaceState) {
-                                                case 'requestHarpoonTarget':
-                                                    return 'responseHarpoonTarget';
-                                                case 'requestTortoiseTarget':
-                                                    return 'responseTortoiseTarget';
-                                                default:
-                                                    return assertUnreachable(
-                                                        interfaceState,
-                                                    );
-                                            }
-                                        })(),
-                                        target,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                                title={
-                                    interfaceState === 'requestHarpoonTarget'
-                                        ? 'Choose Harpoon target.'
-                                        : 'Choose Tortoise target.'
-                                }
-                            />
-                        );
-                    case 'requestNetTarget':
-                    case 'requestPilingsTarget':
-                    case 'requestTidalSurgeTarget':
-                    case 'requestTidalWaveTarget':
-                    case 'requestVolcanicEruptionTarget':
-                        return (
-                            <IslandSelectorWidget
-                                gameState={gameState}
-                                submit={(islandNumber) => {
-                                    socket.emit(
-                                        (() => {
-                                            switch (interfaceState) {
-                                                case 'requestNetTarget':
-                                                    return 'responseNetTarget';
-                                                case 'requestPilingsTarget':
-                                                    return 'responsePilingsTarget';
-                                                case 'requestTidalSurgeTarget':
-                                                    return 'responseTidalSurgeTarget';
-                                                case 'requestTidalWaveTarget':
-                                                    return 'responseTidalWaveTarget';
-                                                case 'requestVolcanicEruptionTarget':
-                                                    return 'responseVolcanicEruptionTarget';
-                                                default:
-                                                    return assertUnreachable(
-                                                        interfaceState,
-                                                    );
-                                            }
-                                        })(),
-                                        islandNumber,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                                title={
-                                    interfaceState === 'requestNetTarget'
-                                        ? 'Choose Net target.'
-                                        : interfaceState ===
-                                          'requestPilingsTarget'
-                                        ? 'Choose Pilings target.'
-                                        : interfaceState ===
-                                          'requestTidalSurgeTarget'
-                                        ? 'Choose Tidal Surge target.'
-                                        : interfaceState ===
-                                          'requestTidalWaveTarget'
-                                        ? 'Choose Tidal Wave target.'
-                                        : 'Choose Volcanic Eruption target.'
-                                }
-                            />
-                        );
-                    case 'requestFleeChoice':
-                        return (
-                            <FleeChoiceWidget
-                                gameState={gameState}
-                                submit={(character) => {
-                                    socket.emit(
-                                        'responseFleeChoice',
-                                        character,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                            />
-                        );
-                    case 'requestMovementSet':
-                        return (
-                            <MovementSetWidget
-                                gameState={gameState}
-                                submit={(movementSet) => {
-                                    socket.emit(
-                                        'responseMovementSet',
-                                        movementSet,
-                                    );
-                                    setInterfaceState(null);
-                                }}
-                            />
-                        );
-                    case 'joinFail':
-                        return 'j f';
-                    case 'gameState':
-                    case null:
-                        return (
-                            <>
-                                <Board gameState={gameState} />
-                                <ActionOrderTrack gameState={gameState} />
-                                <Hand gameState={gameState} />
-                                Waiting for opponent
-                            </>
-                        );
-                    default:
-                        return assertUnreachable(interfaceState);
-                }
-            })()}
-            {/*
+                            );
+                        case 'requestMovementSet':
+                            return (
+                                <MovementSetWidget
+                                    gameState={gameState}
+                                    submit={(movementSet) => {
+                                        socket.emit(
+                                            'responseMovementSet',
+                                            movementSet,
+                                        );
+                                        setInterfaceState(null);
+                                    }}
+                                />
+                            );
+                        case 'joinFail':
+                            return 'j f';
+                        case 'gameState':
+                        case null:
+                            return (
+                                <>
+                                    <Board gameState={gameState} />
+                                    <ActionOrderTrack gameState={gameState} />
+                                    <Hand gameState={gameState} />
+                                    Waiting for opponent
+                                </>
+                            );
+                        default:
+                            return assertUnreachable(interfaceState);
+                    }
+                })()}
+                {/*
             <br />
             <br />
             <br />
@@ -294,6 +315,7 @@ export const GamePage = () => {
                 value={JSON.stringify(gameState, null, 4)}
             />
             */}
+            </div>
         </div>
     );
 };

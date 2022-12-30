@@ -61,6 +61,7 @@ export type GameSerialized = {
         playerBPilings: number;
     };
     islands: IslandSerialized[];
+    messages: string[];
     nextIslandToSink: number;
     you: PlayerDesignator;
     yourHand: CardSerialized[];

@@ -44,6 +44,9 @@ export class Game {
     // representation of the Action Order Track
     private readonly actionOrderTrack = new ActionOrderTrack();
 
+    // message history for players to read
+    private readonly messages: string[] = [];
+
     // representation of all the islands in the archipelago
     private islands: Island[] = shuffleArray([
         new Island(1, IslandType.NORMAL, true),
@@ -65,7 +68,7 @@ export class Game {
     ]);
 
     public constructor(id: string) {
-        console.log('Creating game');
+        this.writeMessage('Creating game');
         this.id = id;
 
         // create and randomize all the characters
@@ -93,6 +96,16 @@ export class Game {
             this.islands[index].addCharacter(character);
         });
     }
+
+    /**
+     * Adds a message to the game's message log.
+     */
+    private readonly writeMessage = (...messages: unknown[]) => {
+        const message = messages.join(' ');
+        this.messages.push(`${message}`);
+        console.log(message);
+        this.broadcastGameState();
+    };
 
     /**
      * Connects the given socket to the given player.
@@ -141,7 +154,7 @@ export class Game {
      * Executes the main game loop.
      */
     public readonly play = async () => {
-        console.log('Starting game');
+        this.writeMessage('Starting game');
         let loser: PlayerDesignator | null = null;
 
         this.broadcastGameState();
@@ -154,11 +167,13 @@ export class Game {
 
         if (!loser) {
             // if there is no loser, then the game is a draw
-            console.log('Could not determine a winner. The game is a draw.');
+            this.writeMessage(
+                'Could not determine a winner. The game is a draw.',
+            );
         } else {
             // the winner is the player that didn't lose
             const winner = otherPlayerDesignator(loser);
-            console.log(`Game over. The winner is ${winner}.`);
+            this.writeMessage(`Game over. The winner is ${winner}.`);
         }
         this.broadcastGameState();
     };
@@ -168,11 +183,11 @@ export class Game {
      */
     private readonly runMainGameLoop = async () => {
         let roundCounter = 1;
-        console.log('Starting game loop');
+        this.writeMessage('Starting game loop');
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
         while (true) {
+            this.writeMessage('Begin round number', roundCounter);
             roundCounter += 1;
-            console.log('Begin round number', roundCounter);
             this.broadcastGameState();
 
             // check if there is a loser and break if there is
@@ -192,7 +207,7 @@ export class Game {
                 const cardPlacement = await (async () => {
                     // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
-                    console.log('Starting card placement loop');
+                    this.writeMessage('Starting card placement loop');
                     while (
                         !cardPlacement ||
                         !this.checkCardPlacementLegal(
@@ -200,10 +215,10 @@ export class Game {
                             cardPlacement,
                         )
                     ) {
-                        console.log('Requesting card placement');
+                        this.writeMessage('Requesting card placement');
                         // eslint-disable-next-line no-await-in-loop
                         cardPlacement = await player.requestCardPlacement();
-                        console.log('Got', cardPlacement);
+                        this.writeMessage('Got', cardPlacement);
                     }
                     return cardPlacement;
                 })();
@@ -295,7 +310,7 @@ export class Game {
             }
 
             // advance the rising waters marker
-            console.log('Starting rising water loop');
+            this.writeMessage('Starting rising water loop');
             while (!this.findIsland(this.nextIslandToSink)) {
                 this.nextIslandToSink = (this.nextIslandToSink % 16) + 1;
             }
@@ -659,7 +674,7 @@ export class Game {
             .getCardSlots()
             .entries()) {
             if (card === null) {
-                console.log('The card in slot', slot, 'was fogged.');
+                this.writeMessage('The card in slot', slot, 'was fogged.');
                 continue;
             }
             // find the player that played the card
@@ -700,7 +715,7 @@ export class Game {
         player: Player,
         slot: number,
     ) => {
-        console.log('Executing', card);
+        this.writeMessage('Executing', card);
         const opponent = otherPlayerDesignator(player.playerDesignator);
         switch (card.cardType) {
             case CardType.CRAB:
@@ -735,7 +750,7 @@ export class Game {
 
                     // kill necessary characters
                     if (playerStrength > opponentStrength) {
-                        console.log(
+                        this.writeMessage(
                             `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
                         );
 
@@ -778,26 +793,28 @@ export class Game {
                         );
                     })
                 ) {
-                    console.log('There is nowhere for a flying fish to fly.');
+                    this.writeMessage(
+                        'There is nowhere for a flying fish to fly.',
+                    );
                     break;
                 }
 
                 // try to get a movement until a valid one is given
                 let flyingFishMovement: FlyingFishMovement | null = null;
-                console.log('Starting flying fish loop');
+                this.writeMessage('Starting flying fish loop');
                 while (
                     !flyingFishMovement ||
                     !this.checkFlyingFishMovementLegal(flyingFishMovement)
                 ) {
-                    console.log('Requesting flying fish movement');
+                    this.writeMessage('Requesting flying fish movement');
                     flyingFishMovement =
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestFlyingFishMovement();
-                    console.log('Got', flyingFishMovement);
+                    this.writeMessage('Got', flyingFishMovement);
                 }
 
                 // move the character
-                console.log(
+                this.writeMessage(
                     fullObject(flyingFishMovement.character),
                     'flies from island',
                     flyingFishMovement.fromIslandNumber,
@@ -826,25 +843,25 @@ export class Game {
                             return otherCard !== null && otherSlot !== slot;
                         })
                 ) {
-                    console.log('There is no card to fog.');
+                    this.writeMessage('There is no card to fog.');
                     break;
                 }
 
                 // try to get a fog target until a valid one is given
                 let fogTarget: number | null = null;
-                console.log('Starting fog loop');
+                this.writeMessage('Starting fog loop');
                 while (
                     !fogTarget ||
                     !this.actionOrderTrack.checkFogTargetLegal(slot, fogTarget)
                 ) {
-                    console.log('Requesting fog target');
+                    this.writeMessage('Requesting fog target');
                     // eslint-disable-next-line no-await-in-loop
                     fogTarget = await player.requestFogTarget();
-                    console.log('Got', fogTarget);
+                    this.writeMessage('Got', fogTarget);
                 }
 
                 // fog the target
-                console.log('Fogging slot', fogTarget);
+                this.writeMessage('Fogging slot', fogTarget);
                 const foggedCard = this.actionOrderTrack.resetSlot(fogTarget);
                 if (foggedCard) {
                     this.getPlayer(foggedCard.playerDesignator).discardCard(
@@ -877,14 +894,14 @@ export class Game {
                             );
                         })
                 ) {
-                    console.log(
+                    this.writeMessage(
                         `There are no valid harpoon targets for player ${player.playerDesignator}.`,
                     );
                     break;
                 }
 
                 let harpoonTarget: HarpoonTarget | null = null;
-                console.log('Starting harpoon loop');
+                this.writeMessage('Starting harpoon loop');
                 while (
                     !harpoonTarget ||
                     !this.checkHarpoonTargetLegal(
@@ -892,14 +909,14 @@ export class Game {
                         harpoonTarget,
                     )
                 ) {
-                    console.log('Requesting harpoon target');
+                    this.writeMessage('Requesting harpoon target');
                     // eslint-disable-next-line no-await-in-loop
                     harpoonTarget = await player.requestHarpoonTarget();
-                    console.log('Got', harpoonTarget);
+                    this.writeMessage('Got', harpoonTarget);
                 }
 
                 // kill the target
-                console.log(
+                this.writeMessage(
                     `Character ${fullObject(
                         harpoonTarget.character,
                     )} on island ${harpoonTarget.islandNumber} is harpooned.`,
@@ -909,7 +926,7 @@ export class Game {
                 );
                 break;
             case CardType.INDESCRETION:
-                console.log(
+                this.writeMessage(
                     `Player ${otherPlayerDesignator(
                         player.playerDesignator,
                     )} is put under the effects of indescretion.`,
@@ -919,7 +936,9 @@ export class Game {
                 ).indescretion = true;
                 break;
             case CardType.MEDITATION:
-                console.log(`Player ${player.playerDesignator} meditates.`);
+                this.writeMessage(
+                    `Player ${player.playerDesignator} meditates.`,
+                );
                 player.reshuffle();
                 break;
             case CardType.MOVEMENT:
@@ -954,7 +973,7 @@ export class Game {
                         );
                     })
                 ) {
-                    console.log(
+                    this.writeMessage(
                         `No movements are possible for player ${player.playerDesignator}.`,
                     );
                     break;
@@ -962,7 +981,7 @@ export class Game {
 
                 // try to get a movement set until a valid one is given
                 let movementSet: MovementSet | null = null;
-                console.log('Starting movement loop');
+                this.writeMessage('Starting movement loop');
                 while (
                     !movementSet ||
                     !this.checkMovementSetLegal(
@@ -970,15 +989,15 @@ export class Game {
                         movementSet,
                     )
                 ) {
-                    console.log('Requesting movement set');
+                    this.writeMessage('Requesting movement set');
                     // eslint-disable-next-line no-await-in-loop
                     movementSet = await player.requestMovementSet();
-                    console.log('Got', movementSet);
+                    this.writeMessage('Got', movementSet);
                 }
 
                 // make the moves
                 movementSet.forEach((movement) => {
-                    console.log(
+                    this.writeMessage(
                         `Player ${
                             player.playerDesignator
                         } moves character ${fullObject(
@@ -998,16 +1017,16 @@ export class Game {
             case CardType.NET:
                 // try to get a net target until a valid one is given
                 let netTarget: number | null = null;
-                console.log('Starting net loop');
+                this.writeMessage('Starting net loop');
                 while (!netTarget || !this.findIsland(netTarget)) {
-                    console.log('Requesting net target');
+                    this.writeMessage('Requesting net target');
                     // eslint-disable-next-line no-await-in-loop
                     netTarget = await player.requestNetTarget();
-                    console.log('Got', netTarget);
+                    this.writeMessage('Got', netTarget);
                 }
 
                 // place the net
-                console.log(
+                this.writeMessage(
                     `Player ${player.playerDesignator} casts a net over island ${netTarget}.`,
                 );
                 player.netIsland = netTarget;
@@ -1024,7 +1043,7 @@ export class Game {
                         );
                     })
                 ) {
-                    console.log(
+                    this.writeMessage(
                         'There are no islands that can support pilings.',
                     );
                     break;
@@ -1032,20 +1051,20 @@ export class Game {
 
                 // try to get a pilngs target until a valid one is given
                 let pilingsTarget: number | null = null;
-                console.log('Starting pilings loop');
+                this.writeMessage('Starting pilings loop');
                 while (
                     !pilingsTarget ||
                     !this.findIsland(pilingsTarget)?.smallCapacity ||
                     pilingsTarget === this.getPlayer(opponent).pilingsIsland
                 ) {
-                    console.log('Requesting pilings target');
+                    this.writeMessage('Requesting pilings target');
                     // eslint-disable-next-line no-await-in-loop
                     pilingsTarget = await player.requestPilingsTarget();
-                    console.log('Got', pilingsTarget);
+                    this.writeMessage('Got', pilingsTarget);
                 }
 
                 // place the net
-                console.log(
+                this.writeMessage(
                     `Player ${player.playerDesignator} constructs pilings on island ${pilingsTarget}.`,
                 );
                 player.pilingsIsland = pilingsTarget;
@@ -1069,7 +1088,7 @@ export class Game {
                     }, 0);
 
                 // draw the cards
-                console.log(
+                this.writeMessage(
                     `Player ${
                         player.playerDesignator
                     } prays for ${cardsToDraw} card${
@@ -1082,13 +1101,13 @@ export class Game {
                 // if there are no legal tidal surge targets, then the card
                 // does nothing
                 if (this.islands.length <= 1) {
-                    console.log('The tide cannot surge.');
+                    this.writeMessage('The tide cannot surge.');
                     break;
                 }
 
                 // try to get a tidal surge target until a valid one is given
                 let tidalSurgeTarget: number | null = null;
-                console.log('Starting tidal surge loop');
+                this.writeMessage('Starting tidal surge loop');
                 while (
                     !tidalSurgeTarget ||
                     !this.getAdjacentIslands(this.nextIslandToSink).some(
@@ -1098,29 +1117,31 @@ export class Game {
                         },
                     )
                 ) {
-                    console.log('Requesting tidal surge target');
+                    this.writeMessage('Requesting tidal surge target');
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tidalSurgeTarget = await player.requestTidalSurgeTarget();
-                    console.log('Got', tidalSurgeTarget);
+                    this.writeMessage('Got', tidalSurgeTarget);
                 }
 
                 // move the rising waters marker
-                console.log(`The tide surges to island ${tidalSurgeTarget}.`);
+                this.writeMessage(
+                    `The tide surges to island ${tidalSurgeTarget}.`,
+                );
                 this.nextIslandToSink = tidalSurgeTarget;
                 break;
             case CardType.TIDAL_WAVE:
                 // try to get a tidal wave target until a valid one is given
                 let tidalWaveTarget: number | null = null;
-                console.log('Starting tidal wave loop');
+                this.writeMessage('Starting tidal wave loop');
                 while (!tidalWaveTarget || !this.findIsland(tidalWaveTarget)) {
-                    console.log('Requesting tidal wave target');
+                    this.writeMessage('Requesting tidal wave target');
                     // eslint-disable-next-line no-await-in-loop
                     tidalWaveTarget = await player.requestTidalWaveTarget();
-                    console.log('Got', tidalWaveTarget);
+                    this.writeMessage('Got', tidalWaveTarget);
                 }
 
                 // move the rising waters marker
-                console.log(
+                this.writeMessage(
                     `A tidal wave moves upon island ${tidalWaveTarget}.`,
                 );
                 this.nextIslandToSink = tidalWaveTarget;
@@ -1128,7 +1149,7 @@ export class Game {
             case CardType.TORTOISE:
                 // try to get a tortoise target until a valid one is given
                 let tortoiseTarget: TortoiseTarget | null = null;
-                console.log('Starting tortoise loop');
+                this.writeMessage('Starting tortoise loop');
                 while (
                     !tortoiseTarget ||
                     tortoiseTarget.character.playerDesignator !==
@@ -1140,14 +1161,14 @@ export class Game {
                             return character.equals(tortoiseTarget?.character);
                         })
                 ) {
-                    console.log('Requesting tortoise target');
+                    this.writeMessage('Requesting tortoise target');
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tortoiseTarget = await player.requestTortoiseTarget();
-                    console.log('Got', tortoiseTarget);
+                    this.writeMessage('Got', tortoiseTarget);
                 }
 
                 // make the target a tortoise
-                console.log(
+                this.writeMessage(
                     `Character ${fullObject(
                         tortoiseTarget.character,
                     )} on island ${
@@ -1169,29 +1190,29 @@ export class Game {
                         return island.islandType === IslandType.VOLCANO;
                     })
                 ) {
-                    console.log('There are no volcanoes left.');
+                    this.writeMessage('There are no volcanoes left.');
                     break;
                 }
 
                 // try to get a volcanic eruption target until a valid one is
                 // given
                 let volcanicEruptionTarget: number | null = null;
-                console.log('Starting volcanic eruption loop');
+                this.writeMessage('Starting volcanic eruption loop');
                 while (
                     !volcanicEruptionTarget ||
                     this.findIsland(volcanicEruptionTarget)?.islandType !==
                         IslandType.VOLCANO
                 ) {
-                    console.log('Requesting volcanic eruption target');
+                    this.writeMessage('Requesting volcanic eruption target');
                     // eslint-disable-next-line require-atomic-updates
                     volcanicEruptionTarget =
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestVolcanicEruptionTarget();
-                    console.log('Got', volcanicEruptionTarget);
+                    this.writeMessage('Got', volcanicEruptionTarget);
                 }
 
                 // erupt the volcano
-                console.log(`Island ${volcanicEruptionTarget} erupts.`);
+                this.writeMessage(`Island ${volcanicEruptionTarget} erupts.`);
 
                 // find islands affected by lava flows
                 const lavaFlowIslands = this.getAdjacentIslands(
@@ -1248,7 +1269,7 @@ export class Game {
                         // try to get a flee choice until a valid one is
                         // given
                         let characterToFlee: CharacterSerialized | null = null;
-                        console.log('Starting flee loop');
+                        this.writeMessage('Starting flee loop');
                         while (
                             !characterToFlee ||
                             characterToFlee.playerDesignator !==
@@ -1260,14 +1281,14 @@ export class Game {
                                     return character.equals(characterToFlee);
                                 })
                         ) {
-                            console.log('Requesting flee choice');
+                            this.writeMessage('Requesting flee choice');
                             // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                             characterToFlee = await player.requestFleeChoice();
-                            console.log('Got', characterToFlee);
+                            this.writeMessage('Got', characterToFlee);
                         }
 
                         // move the chosen character
-                        console.log(
+                        this.writeMessage(
                             `Player ${
                                 player.playerDesignator
                             }'s character ${fullObject(
@@ -1276,7 +1297,7 @@ export class Game {
                         );
 
                         // move the character
-                        console.log(
+                        this.writeMessage(
                             `Character ${fullObject(
                                 characterToFlee,
                             )} flees from the lava flow.`,
@@ -1304,7 +1325,7 @@ export class Game {
                         // move all characters
                         lavaFlowIsland.getCharacters().forEach((character) => {
                             // move the character
-                            console.log(
+                            this.writeMessage(
                                 `Character ${fullObject(
                                     character.serialize(),
                                 )} flees from the lava flow.`,
@@ -1334,7 +1355,7 @@ export class Game {
                         }
 
                         // remove the character
-                        console.log(
+                        this.writeMessage(
                             `Character ${fullObject(
                                 character.serialize(),
                             )} burns to death in the lava flow.`,
@@ -1344,7 +1365,7 @@ export class Game {
                 });
 
                 // remove the volcano itself
-                console.log(
+                this.writeMessage(
                     `Island ${volcanicEruptionTarget} erupts and sinks.`,
                 );
                 this.islands = this.islands.filter((island) => {
@@ -1361,7 +1382,7 @@ export class Game {
                 // if the rising waters marker was on the volcano, move it to
                 // the next island
                 if (this.nextIslandToSink === volcanicEruptionTarget) {
-                    console.log('Starting sink loop');
+                    this.writeMessage('Starting sink loop');
                     while (!this.findIsland(this.nextIslandToSink)) {
                         this.nextIslandToSink =
                             (this.nextIslandToSink % 16) + 1;
@@ -1369,7 +1390,7 @@ export class Game {
                 }
                 break;
             case CardType.WEAKNESS:
-                console.log(
+                this.writeMessage(
                     `Player ${player.playerDesignator}'s characters are afflicted with weakness.`,
                 );
                 this.getPlayer(opponent).weakness = true;
@@ -1395,6 +1416,7 @@ export class Game {
             islands: this.islands.map((island) => {
                 return island.serialize();
             }),
+            messages: this.messages,
             nextIslandToSink: this.nextIslandToSink,
             you: playerDesignator,
             yourHand: this.getPlayer(playerDesignator).getHand(),
