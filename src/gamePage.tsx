@@ -131,9 +131,28 @@ export const GamePage = () => {
                         top: '10px',
                     }}
                 >
-                    <div>Game ID:</div>
-                    <div>{gameState.id}</div>
                     <div>{`You are ${gameState.you}`}</div>
+                    <div
+                        style={{
+                            alignItems: 'center',
+                            display: 'flex',
+                            gap: '6px',
+                        }}
+                    >
+                        <div>Game ID</div>
+                        <button
+                            style={{ fontSize: '8pt' }}
+                            type='button'
+                            onClick={() => {
+                                navigator.clipboard
+                                    .writeText(gameState.id)
+                                    .catch(console.error);
+                            }}
+                        >
+                            Copy
+                        </button>
+                    </div>
+                    <div>{gameState.id}</div>
                 </div>
                 {(() => {
                     switch (interfaceState) {

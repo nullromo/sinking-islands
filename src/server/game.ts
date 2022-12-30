@@ -114,6 +114,12 @@ export class Game {
         socket: Socket<ClientToServerEvents, ServerToClientEvents>,
     ) => {
         this.getPlayer(playerDesignator).connectSocket(socket);
+        this.writeMessage(`${playerDesignator} connected.`);
+        if (this.isWaitingForPlayers()) {
+            this.writeMessage(
+                `Waiting for ${otherPlayerDesignator(playerDesignator)}.`,
+            );
+        }
     };
 
     /**
