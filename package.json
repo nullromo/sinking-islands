@@ -27,7 +27,10 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "backend": "cd ./src/server && npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./server.ts"
+        "backend": "cd ./src/server && npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./server.ts",
+        "lint": "eslint src/",
+        "typecheck": "tsc --noemit || true",
+        "check": "run-p typecheck lint"
     },
     "eslintConfig": {
         "extends": [

@@ -11,3 +11,4 @@ TODO list:
 -   players should know when they are about to play if they are under the
     effects of indescretion
 -   player should know how many card are in their opponent's hand
+-   Figure out how to make `tsc --noEmit` actually work
