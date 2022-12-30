@@ -184,20 +184,6 @@ export const GamePage = () => {
                     case 'requestVolcanicEruptionTarget':
                         return (
                             <IslandSelectorWidget
-                                title={
-                                    interfaceState === 'requestNetTarget'
-                                        ? 'Choose Net target.'
-                                        : interfaceState ===
-                                          'requestPilingsTarget'
-                                        ? 'Choose Pilings target.'
-                                        : interfaceState ===
-                                          'requestTidalSurgeTarget'
-                                        ? 'Choose Tidal Surge target.'
-                                        : interfaceState ===
-                                          'requestTidalWaveTarget'
-                                        ? 'Choose Tidal Wave target.'
-                                        : 'Choose Volcanic Eruption target.'
-                                }
                                 gameState={gameState}
                                 submit={(islandNumber) => {
                                     socket.emit(
@@ -223,6 +209,20 @@ export const GamePage = () => {
                                     );
                                     setInterfaceState(null);
                                 }}
+                                title={
+                                    interfaceState === 'requestNetTarget'
+                                        ? 'Choose Net target.'
+                                        : interfaceState ===
+                                          'requestPilingsTarget'
+                                        ? 'Choose Pilings target.'
+                                        : interfaceState ===
+                                          'requestTidalSurgeTarget'
+                                        ? 'Choose Tidal Surge target.'
+                                        : interfaceState ===
+                                          'requestTidalWaveTarget'
+                                        ? 'Choose Tidal Wave target.'
+                                        : 'Choose Volcanic Eruption target.'
+                                }
                             />
                         );
                     case 'requestFleeChoice':

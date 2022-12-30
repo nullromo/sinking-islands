@@ -17,13 +17,13 @@ export const IslandSelectorWidget = (props: IslandSelectorWidgetProps) => {
         <>
             <Board
                 gameState={props.gameState}
+                highlightIslandNumber={islandChoice}
                 onCharacterClicked={(island, _) => {
                     setIslandChoice(island.islandNumber);
                 }}
                 onIslandClicked={(island) => {
                     setIslandChoice(island.islandNumber);
                 }}
-                highlightIslandNumber={islandChoice}
             />
             <ActionOrderTrack gameState={props.gameState} />
             <Hand gameState={props.gameState} />
