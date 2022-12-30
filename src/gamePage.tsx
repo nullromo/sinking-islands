@@ -107,8 +107,13 @@ export const GamePage = () => {
                 }}
             >
                 {gameState.messages.map((message, index) => {
-                    // eslint-disable-next-line react/no-array-index-key
-                    return <div key={index}>{message}</div>;
+                    return (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <React.Fragment key={index}>
+                            <div>{message}</div>
+                            <hr />
+                        </React.Fragment>
+                    );
                 })}
                 <div ref={messageLog} />
             </div>
