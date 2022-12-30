@@ -5,6 +5,8 @@ import type {
     IslandSerialized,
 } from './commonTypes';
 import { IslandType } from './commonTypes';
+import { Character } from './server/character';
+import type { HarpoonTarget } from './server/player';
 
 interface BoardProps {
     gameState: GameSerialized;
@@ -13,6 +15,8 @@ interface BoardProps {
         character: CharacterSerialized,
     ) => void;
     onIslandClicked?: (island: IslandSerialized) => void;
+    highlightCharacter?: HarpoonTarget;
+    highlightIslandNumber?: number;
 }
 
 export const Board = (props: BoardProps) => {
@@ -25,6 +29,7 @@ export const Board = (props: BoardProps) => {
                     <div key={island.islandNumber}>
                         <div
                             style={{
+                                alignItems: 'center',
                                 background:
                                     island.islandType === IslandType.SACRED
                                         ? 'gold'
@@ -32,9 +37,16 @@ export const Board = (props: BoardProps) => {
                                           IslandType.VOLCANO
                                         ? 'sandybrown'
                                         : 'mediumseagreen',
-                                border: '1px solid',
+                                border:
+                                    island.islandNumber ===
+                                    props.highlightIslandNumber
+                                        ? '3px solid'
+                                        : '1px solid',
+                                boxSizing: 'border-box',
                                 cursor: props.onIslandClicked ? 'pointer' : '',
+                                display: 'flex',
                                 fontSize,
+                                height: '28px',
                             }}
                             onClick={() => {
                                 if (props.onIslandClicked) {
@@ -73,15 +85,31 @@ export const Board = (props: BoardProps) => {
                                     // eslint-disable-next-line react/no-array-index-key
                                     key={index}
                                     style={{
+                                        alignItems: 'center',
                                         background:
                                             character.playerDesignator ===
                                             props.gameState.you
                                                 ? 'skyblue'
                                                 : 'indianred',
+                                        border:
+                                            island.islandNumber ===
+                                                props.highlightCharacter
+                                                    ?.islandNumber &&
+                                            Character.deserialize(
+                                                character,
+                                            ).equals(
+                                                props.highlightCharacter
+                                                    .character,
+                                            )
+                                                ? '3px solid'
+                                                : '',
+                                        boxSizing: 'border-box',
                                         cursor: props.onCharacterClicked
                                             ? 'pointer'
                                             : '',
+                                        display: 'flex',
                                         fontSize,
+                                        height: '28px',
                                     }}
                                     onClick={() => {
                                         if (props.onCharacterClicked) {

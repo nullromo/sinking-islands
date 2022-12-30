@@ -25,6 +25,10 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
         <>
             <Board
                 gameState={props.gameState}
+                highlightCharacter={{
+                    character: characterChoice,
+                    islandNumber: islandNumberChoice,
+                }}
                 onCharacterClicked={(island, character) => {
                     if (character.playerDesignator !== props.gameState.you) {
                         setCharacterChoice(character);
