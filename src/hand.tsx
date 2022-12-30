@@ -37,6 +37,7 @@ export const Hand = (props: HandProps) => {
                                         ? '3px solid'
                                         : '',
                                 boxSizing: 'border-box',
+                                cursor: props.onCardClicked ? 'pointer' : '',
                                 display: 'flex',
                                 height: '40px',
                                 justifyContent: 'center',

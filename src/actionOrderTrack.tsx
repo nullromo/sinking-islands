@@ -58,6 +58,9 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                     ? '3px solid'
                                                     : '',
                                             boxSizing: 'border-box',
+                                            cursor: props.onSlotClicked
+                                                ? 'pointer'
+                                                : '',
                                             height: '40px',
                                             width: '100px',
                                         }}
