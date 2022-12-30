@@ -16,3 +16,8 @@ TODO list:
     right
 -   display remaining movement points while choosing normal movement
 -   highlight selected card for fog target
+-   confirm that characters cannot move off of netted islands
+-   make sure cursors are correct for islands/characters/cards for all
+    situations
+-   deal with situation of 2 identical characters on an island when selecting a
+    tortoise/harpoon target

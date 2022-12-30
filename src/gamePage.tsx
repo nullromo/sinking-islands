@@ -99,7 +99,21 @@ export const GamePage = () => {
                 flexDirection: 'column',
             }}
         >
-            {interfaceState === null ? gameState.id : ''}
+            <div
+                style={{
+                    alignItems: 'flex-end',
+                    background: 'lightgray',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    fontSize: '10pt',
+                    position: 'absolute',
+                    right: '10px',
+                    top: '10px',
+                }}
+            >
+                <div>Game ID:</div>
+                <div>{gameState.id}</div>
+            </div>
             {(() => {
                 switch (interfaceState) {
                     case 'requestCardPlacement':
@@ -151,6 +165,9 @@ export const GamePage = () => {
                     case 'requestTortoiseTarget':
                         return (
                             <CharacterTargetWidget
+                                enemy={
+                                    interfaceState === 'requestHarpoonTarget'
+                                }
                                 gameState={gameState}
                                 submit={(target) => {
                                     socket.emit(
@@ -267,10 +284,10 @@ export const GamePage = () => {
                         return assertUnreachable(interfaceState);
                 }
             })()}
-            <br />
-            <br />
-            <br />
             {/*
+            <br />
+            <br />
+            <br />
             <textarea
                 readOnly={true}
                 style={{ height: '1000px', width: '700px' }}

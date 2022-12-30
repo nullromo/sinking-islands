@@ -38,7 +38,7 @@ export const Hand = (props: HandProps) => {
                                         : '',
                                 boxSizing: 'border-box',
                                 display: 'flex',
-                                height: '60px',
+                                height: '40px',
                                 justifyContent: 'center',
                                 width: '100px',
                             }}

@@ -10,6 +10,7 @@ interface CharacterTargetWidgetProps {
     gameState: GameSerialized;
     submit: (target: HarpoonTarget | TortoiseTarget) => void;
     title: string;
+    enemy: boolean;
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
@@ -30,7 +31,13 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
                     islandNumber: islandNumberChoice,
                 }}
                 onCharacterClicked={(island, character) => {
-                    if (character.playerDesignator !== props.gameState.you) {
+                    if (
+                        (props.enemy &&
+                            character.playerDesignator !==
+                                props.gameState.you) ||
+                        (!props.enemy &&
+                            character.playerDesignator === props.gameState.you)
+                    ) {
                         setCharacterChoice(character);
                         setIslandNumberChoice(island.islandNumber);
                     }
@@ -41,12 +48,6 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
             <div
                 style={{ width: '600px' }}
             >{`${props.title} Click on a character on the baord to select that character. Click Submit when ready.`}</div>
-            {`Character: ${characterChoice.tortoise ? '🐢' : '🧍'}${
-                characterChoice.strength
-            }`}
-            <br />
-            {`Island: ${islandNumberChoice}`}
-            <br />
             <button
                 type='button'
                 onClick={() => {

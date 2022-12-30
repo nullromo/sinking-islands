@@ -58,7 +58,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                     ? '3px solid'
                                                     : '',
                                             boxSizing: 'border-box',
-                                            height: '60px',
+                                            height: '40px',
                                             width: '100px',
                                         }}
                                         onClick={() => {
