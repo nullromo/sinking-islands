@@ -768,7 +768,10 @@ export class Game {
                         );
 
                     // kill necessary characters
-                    if (playerStrength > opponentStrength) {
+                    if (
+                        playerStrength > opponentStrength &&
+                        opponentStrength > 0
+                    ) {
                         this.writeMessage(
                             `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
                         );

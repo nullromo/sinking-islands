@@ -12,9 +12,14 @@ TODO list:
     deck, discard, etc.
 -   Figure out how to make `tsc --noEmit` actually work
 -   display remaining movement points while choosing normal movement
--   confirm that characters cannot move off of netted islands
+-   fix characters being able to move off of netted islands
 -   make sure cursors are correct for islands/characters/cards for all
     situations
 -   deal with situation of 2 identical characters on an island when selecting a
     tortoise/harpoon target
 -   better feedback for users when they enter an illegal choice
+-   characters at the bottom of the circle need to not overlap the action order
+    track
+-   show players their own cards that they played
+-   there is a bug where characters cannot flee from lava flows
+-   fix tortoise becoming normal character after moving
