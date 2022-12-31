@@ -79,52 +79,61 @@ export const Board = (props: BoardProps) => {
                                 ? '⛈️'
                                 : ''}
                         </div>
-                        {island.characters.map((character, index) => {
-                            return (
-                                <div
-                                    // eslint-disable-next-line react/no-array-index-key
-                                    key={index}
-                                    style={{
-                                        alignItems: 'center',
-                                        background:
-                                            character.playerDesignator ===
-                                            props.gameState.you
-                                                ? 'skyblue'
-                                                : 'indianred',
-                                        border:
-                                            island.islandNumber ===
-                                                props.highlightCharacter
-                                                    ?.islandNumber &&
-                                            Character.deserialize(
-                                                character,
-                                            ).equals(
-                                                props.highlightCharacter
-                                                    .character,
-                                            )
-                                                ? '3px solid'
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            {island.characters.map((character, index) => {
+                                return (
+                                    <div
+                                        // eslint-disable-next-line react/no-array-index-key
+                                        key={index}
+                                        style={{
+                                            alignItems: 'center',
+                                            background:
+                                                character.playerDesignator ===
+                                                props.gameState.you
+                                                    ? 'skyblue'
+                                                    : 'indianred',
+                                            border:
+                                                island.islandNumber ===
+                                                    props.highlightCharacter
+                                                        ?.islandNumber &&
+                                                Character.deserialize(
+                                                    character,
+                                                ).equals(
+                                                    props.highlightCharacter
+                                                        .character,
+                                                )
+                                                    ? '3px solid'
+                                                    : '',
+                                            boxSizing: 'border-box',
+                                            cursor: props.onCharacterClicked
+                                                ? 'pointer'
                                                 : '',
-                                        boxSizing: 'border-box',
-                                        cursor: props.onCharacterClicked
-                                            ? 'pointer'
-                                            : '',
-                                        display: 'flex',
-                                        fontSize,
-                                        height: '28px',
-                                    }}
-                                    onClick={() => {
-                                        if (props.onCharacterClicked) {
-                                            props.onCharacterClicked(
-                                                island,
-                                                character,
-                                            );
-                                        }
-                                    }}
-                                >
-                                    {character.tortoise ? '🐢' : '🧍'}
-                                    {character.strength}
-                                </div>
-                            );
-                        })}
+                                            display: 'flex',
+                                            fontSize,
+                                            height: '28px',
+                                            width: '50px',
+                                        }}
+                                        onClick={() => {
+                                            if (props.onCharacterClicked) {
+                                                props.onCharacterClicked(
+                                                    island,
+                                                    character,
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {character.tortoise ? '🐢' : '🧍'}
+                                        {character.strength}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 );
             })}
