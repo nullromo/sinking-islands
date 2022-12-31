@@ -315,6 +315,7 @@ export class Game {
             });
 
             // sink the lowest island
+            this.writeMessage(`Island ${this.nextIslandToSink} sinks.`);
             this.islands = this.islands.filter((island) => {
                 return island.islandNumber !== this.nextIslandToSink;
             });
@@ -1462,6 +1463,10 @@ export class Game {
         return {
             actionOrderTrack: this.actionOrderTrack.serialize(),
             id: this.id,
+            indescretion: {
+                [PlayerDesignator.PLAYER_A]: this.playerA.indescretion,
+                [PlayerDesignator.PLAYER_B]: this.playerB.indescretion,
+            },
             initiative: this.initiative,
             islandModifiers: {
                 playerANet: this.playerA.netIsland,

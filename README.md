@@ -23,3 +23,4 @@ TODO list:
 -   show players their own cards that they played
 -   there is a bug where characters cannot flee from lava flows
 -   fix tortoise becoming normal character after moving
+-   make characters smaller so more can fit on one row (like little squares)

@@ -48,11 +48,16 @@ export interface CardSerialized extends PlayerGamePieceSerialized {
 
 export type ActionOrderTrackSerialized = {
     cardSlots: Array<Partial<CardSerialized> | null>;
+    faceUpCards: number[];
 };
 
 export type GameSerialized = {
     actionOrderTrack: ActionOrderTrackSerialized;
     id: string;
+    indescretion: {
+        [PlayerDesignator.PLAYER_A]: boolean;
+        [PlayerDesignator.PLAYER_B]: boolean;
+    };
     initiative: PlayerDesignator;
     islandModifiers: {
         playerANet: number;

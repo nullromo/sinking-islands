@@ -123,6 +123,7 @@ export class ActionOrderTrack {
                         : { playerDesignator: card.playerDesignator }
                     : null;
             }),
+            faceUpCards: this.faceUpCards,
         };
     };
 }

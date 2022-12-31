@@ -39,6 +39,9 @@ export const assertUnreachable = (thing: never): never => {
  * Utility for making things readable.
  */
 export const upperSnakeToTitle = (message: string) => {
+    if (message === '') {
+        return message;
+    }
     return message
         .toLowerCase()
         .split('_')
