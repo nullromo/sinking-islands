@@ -857,7 +857,7 @@ export class Game {
                     flyingFishMovement.toIslandNumber,
                 )?.addCharacter(flyingFishMovement.character);
 
-                // remove tortoise and reclaim card if necessary
+                // reset tortoise and reclaim card if necessary
                 if (flyingFishMovement.character.tortoise) {
                     flyingFishMovement.character.tortoise = false;
                     player.reclaim(CardType.TORTOISE);
@@ -1044,6 +1044,13 @@ export class Game {
                     this.findIsland(movement.fromIslandNumber)?.removeCharacter(
                         movement.character,
                     );
+                    // reset tortoise and reclaim card if necessary
+                    if (movement.character.tortoise) {
+                        movement.character.tortoise = false;
+                        this.getPlayer(
+                            movement.character.playerDesignator,
+                        ).reclaim(CardType.TORTOISE);
+                    }
                     this.findIsland(movement.toIslandNumber)?.addCharacter(
                         movement.character,
                     );
