@@ -382,16 +382,23 @@ export class Game {
     };
 
     /**
+     * Returns true if the island cannot accept any more characters.
+     */
+    private readonly islandIsFull = (island: Island) => {
+        return (
+            this.islandIsNetted(island.islandNumber) ||
+            (island.smallCapacity &&
+                !this.islandHasPilings(island.islandNumber) &&
+                island.getCharacters().length > 0)
+        );
+    };
+
+    /**
      * Returns true if the given flying fish movement is legal.
      */
     private readonly checkFlyingFishMovementLegal = (
         flyingFishMovement: FlyingFishMovement,
     ) => {
-        // the flying fish can't move to a netted island
-        if (this.islandIsNetted(flyingFishMovement.toIslandNumber)) {
-            return false;
-        }
-
         const toIsland = this.findIsland(flyingFishMovement.toIslandNumber);
 
         // can't move to an island that already sank
@@ -400,11 +407,7 @@ export class Game {
         }
 
         // can't move to an island that is at full capacity
-        if (
-            toIsland.smallCapacity &&
-            !this.islandHasPilings(toIsland.islandNumber) &&
-            toIsland.getCharacters().length > 0
-        ) {
+        if (this.islandIsFull(toIsland)) {
             return false;
         }
 
@@ -815,18 +818,8 @@ export class Game {
                 // fish has no effect. This can only occur if all islands
                 // are netted or are at full capacity
                 if (
-                    (this.islands.length === 2 &&
-                        this.playerA.netIsland &&
-                        this.playerB.netIsland &&
-                        this.playerA.netIsland !== this.playerB.netIsland) ||
-                    (this.islands.length === 1 &&
-                        (this.playerA.netIsland || this.playerB.netIsland)) ||
                     !this.islands.some((island) => {
-                        return (
-                            !island.smallCapacity ||
-                            this.islandHasPilings(island.islandNumber) ||
-                            island.getCharacters().length <= 0
-                        );
+                        return !this.islandIsFull(island);
                     })
                 ) {
                     this.writeMessage(
@@ -999,17 +992,7 @@ export class Game {
                             }) &&
                             this.getIslandsWithinMovementRange(island).some(
                                 (otherIsland) => {
-                                    return (
-                                        (!otherIsland.smallCapacity ||
-                                            otherIsland.getCharacters()
-                                                .length <= 0 ||
-                                            this.islandHasPilings(
-                                                otherIsland.islandNumber,
-                                            )) &&
-                                        !this.islandIsNetted(
-                                            otherIsland.islandNumber,
-                                        )
-                                    );
+                                    return !this.islandIsFull(otherIsland);
                                 },
                             )
                         );
@@ -1378,11 +1361,7 @@ export class Game {
                     }
 
                     // everyone else gets a chance to flee
-                    if (
-                        (!safeIsland.smallCapacity ||
-                            this.islandHasPilings(safeIsland.islandNumber)) &&
-                        !this.islandIsNetted(safeIsland.islandNumber)
-                    ) {
+                    if (!this.islandIsFull(safeIsland)) {
                         // move all characters
                         lavaFlowIsland.getCharacters().forEach((character) => {
                             // move the character
