@@ -362,16 +362,33 @@ export class Game {
     };
 
     /**
+     * Returns true if the island has a net on it.
+     */
+    private readonly islandIsNetted = (islandNumber: number) => {
+        return (
+            islandNumber === this.playerA.netIsland ||
+            islandNumber === this.playerB.netIsland
+        );
+    };
+
+    /**
+     * Returns true if the island has pilings on it.
+     */
+    private readonly islandHasPilings = (islandNumber: number) => {
+        return (
+            islandNumber === this.playerA.pilingsIsland ||
+            islandNumber === this.playerB.pilingsIsland
+        );
+    };
+
+    /**
      * Returns true if the given flying fish movement is legal.
      */
     private readonly checkFlyingFishMovementLegal = (
         flyingFishMovement: FlyingFishMovement,
     ) => {
         // the flying fish can't move to a netted island
-        if (
-            flyingFishMovement.toIslandNumber === this.playerA.netIsland ||
-            flyingFishMovement.toIslandNumber === this.playerB.netIsland
-        ) {
+        if (this.islandIsNetted(flyingFishMovement.toIslandNumber)) {
             return false;
         }
 
@@ -385,8 +402,7 @@ export class Game {
         // can't move to an island that is at full capacity
         if (
             toIsland.smallCapacity &&
-            toIsland.islandNumber !== this.playerA.pilingsIsland &&
-            toIsland.islandNumber !== this.playerB.pilingsIsland &&
+            !this.islandHasPilings(toIsland.islandNumber) &&
             toIsland.getCharacters().length > 0
         ) {
             return false;
@@ -808,10 +824,7 @@ export class Game {
                     !this.islands.some((island) => {
                         return (
                             !island.smallCapacity ||
-                            island.islandNumber ===
-                                this.playerA.pilingsIsland ||
-                            island.islandNumber ===
-                                this.playerB.pilingsIsland ||
+                            this.islandHasPilings(island.islandNumber) ||
                             island.getCharacters().length <= 0
                         );
                     })
@@ -990,14 +1003,12 @@ export class Game {
                                         (!otherIsland.smallCapacity ||
                                             otherIsland.getCharacters()
                                                 .length <= 0 ||
-                                            otherIsland.islandNumber ===
-                                                this.playerA.pilingsIsland ||
-                                            otherIsland.islandNumber ===
-                                                this.playerB.pilingsIsland) &&
-                                        otherIsland.islandNumber !==
-                                            this.playerA.netIsland &&
-                                        otherIsland.islandNumber !==
-                                            this.playerB.netIsland
+                                            this.islandHasPilings(
+                                                otherIsland.islandNumber,
+                                            )) &&
+                                        !this.islandIsNetted(
+                                            otherIsland.islandNumber,
+                                        )
                                     );
                                 },
                             )
@@ -1297,18 +1308,14 @@ export class Game {
                     }
 
                     // if the safe island is small and unoccupied and not
-                    // netted and does not have pilines and the volcano
+                    // netted and does not have pilings and the volcano
                     // erupter has a character on the lava flow island, let
                     // them choose a character to flee
                     if (
                         safeIsland.smallCapacity &&
                         safeIsland.getCharacters().length <= 0 &&
-                        this.playerA.netIsland !== safeIsland.islandNumber &&
-                        this.playerB.netIsland !== safeIsland.islandNumber &&
-                        safeIsland.islandNumber !==
-                            this.playerA.pilingsIsland &&
-                        safeIsland.islandNumber !==
-                            this.playerB.pilingsIsland &&
+                        !this.islandIsNetted(safeIsland.islandNumber) &&
+                        !this.islandHasPilings(safeIsland.islandNumber) &&
                         lavaFlowIsland.getCharacters().some((character) => {
                             return (
                                 character.playerDesignator ===
@@ -1373,12 +1380,8 @@ export class Game {
                     // everyone else gets a chance to flee
                     if (
                         (!safeIsland.smallCapacity ||
-                            safeIsland.islandNumber ===
-                                this.playerA.pilingsIsland ||
-                            safeIsland.islandNumber ===
-                                this.playerB.pilingsIsland) &&
-                        safeIsland.islandNumber !== this.playerA.netIsland &&
-                        safeIsland.islandNumber !== this.playerB.netIsland
+                            this.islandHasPilings(safeIsland.islandNumber)) &&
+                        !this.islandIsNetted(safeIsland.islandNumber)
                     ) {
                         // move all characters
                         lavaFlowIsland.getCharacters().forEach((character) => {
