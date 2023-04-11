@@ -25,6 +25,17 @@ export const Board = (props: BoardProps) => {
     return (
         <CircularContainer
             items={props.gameState.islands.map((island) => {
+                const highlightCharacterIndex = island.characters.findIndex(
+                    (character) => {
+                        return (
+                            island.islandNumber ===
+                                props.highlightCharacter?.islandNumber &&
+                            Character.deserialize(character).equals(
+                                props.highlightCharacter.character,
+                            )
+                        );
+                    },
+                );
                 return (
                     <div key={island.islandNumber}>
                         <div
@@ -99,15 +110,8 @@ export const Board = (props: BoardProps) => {
                                                     ? 'skyblue'
                                                     : 'indianred',
                                             border:
-                                                island.islandNumber ===
-                                                    props.highlightCharacter
-                                                        ?.islandNumber &&
-                                                Character.deserialize(
-                                                    character,
-                                                ).equals(
-                                                    props.highlightCharacter
-                                                        .character,
-                                                )
+                                                index ===
+                                                highlightCharacterIndex
                                                     ? '3px solid'
                                                     : '',
                                             boxSizing: 'border-box',

@@ -15,13 +15,8 @@ TODO list:
 -   fix characters being able to move off of netted islands
 -   make sure cursors are correct for islands/characters/cards for all
     situations
--   deal with situation of 2 identical characters on an island when selecting a
-    tortoise/harpoon target
 -   better feedback for users when they enter an illegal choice
 -   characters at the bottom of the circle need to not overlap the action order
     track
 -   show players their own cards that they played
 -   there is a bug where characters cannot flee from lava flows
--   if a partially-executed movement set is illegal (for example, if 2
-    characters on small capacity islands try to switch places), then the game
-    will think the movement set is illegal
