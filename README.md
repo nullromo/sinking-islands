@@ -11,6 +11,7 @@ TODO list
 -   characters at the bottom of the circle need to not overlap the action order
     track
 -   show players their own cards that they played
+-   show the card that is being inputted right now
 
 ### Internal
 
@@ -24,5 +25,4 @@ TODO list
 -   handle page refresh re-connect
 -   player should know how many card are in their opponent's hand and in their
     deck, discard, etc.
--   fix characters being able to move off of netted islands
 -   there is a bug where characters cannot flee from lava flows

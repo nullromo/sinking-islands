@@ -494,6 +494,11 @@ export class Game {
                 return false;
             }
 
+            // can't move off a netted island
+            if (this.islandIsNetted(movement.fromIslandNumber)) {
+                return false;
+            }
+
             // movements cannot start and end on the same island
             if (movement.fromIslandNumber === movement.toIslandNumber) {
                 return false;
