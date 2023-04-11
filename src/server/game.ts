@@ -489,8 +489,64 @@ export class Game {
                 return false;
             }
 
+            // can't move to a netted island
+            if (this.islandIsNetted(movement.toIslandNumber)) {
+                return false;
+            }
+
             // movements cannot start and end on the same island
             if (movement.fromIslandNumber === movement.toIslandNumber) {
+                return false;
+            }
+        }
+
+        // the positioning of the characters after the movement must be legal
+        for (const island of this.islands) {
+            // if the island is not a small capacity island or if it has
+            // pilings, then there won't be a problem
+            if (
+                !island.smallCapacity ||
+                this.islandHasPilings(island.islandNumber)
+            ) {
+                continue;
+            }
+
+            // find out how many characters were added to the island
+            const numberOfCharactersThatLeft = movementSet.reduce(
+                (total, movement) => {
+                    return (
+                        total +
+                        (movement.fromIslandNumber === island.islandNumber
+                            ? 1
+                            : 0)
+                    );
+                },
+                0,
+            );
+
+            // find out how many characters were removed from the island
+            const numberOfCharactersThatArrived = movementSet.reduce(
+                (total, movement) => {
+                    return (
+                        total +
+                        (movement.toIslandNumber === island.islandNumber
+                            ? 1
+                            : 0)
+                    );
+                },
+                0,
+            );
+
+            // determine how many characters will be left on the island
+            const numberOfCharactersAfterMovement =
+                island.getCharacters().length +
+                numberOfCharactersThatArrived -
+                numberOfCharactersThatLeft;
+
+            // make sure the number of characters left is legal. We already
+            // know it's a small capacity island with no pilings, so the
+            // character limit will always be 1 here
+            if (numberOfCharactersAfterMovement > 1) {
                 return false;
             }
         }
