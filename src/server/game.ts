@@ -397,8 +397,16 @@ export class Game {
      * Returns true if the given flying fish movement is legal.
      */
     private readonly checkFlyingFishMovementLegal = (
+        playerDesignator: PlayerDesignator,
         flyingFishMovement: FlyingFishMovement,
     ) => {
+        // the player must move their own character
+        if (
+            flyingFishMovement.character.playerDesignator !== playerDesignator
+        ) {
+            return false;
+        }
+
         const toIsland = this.findIsland(flyingFishMovement.toIslandNumber);
 
         // can't move to an island that already sank
@@ -465,8 +473,19 @@ export class Game {
                 return false;
             }
 
-            // the movement must be a legal flying fish movement
-            if (!this.checkFlyingFishMovementLegal(movement)) {
+            const toIsland = this.findIsland(movement.toIslandNumber);
+
+            // can't move to an island that already sank
+            if (!toIsland) {
+                return false;
+            }
+
+            // can't move a character that is not there
+            if (
+                !this.findIsland(movement.fromIslandNumber)?.findCharacter(
+                    movement.character,
+                )
+            ) {
                 return false;
             }
 
@@ -833,7 +852,10 @@ export class Game {
                 console.log('Starting flying fish loop');
                 while (
                     !flyingFishMovement ||
-                    !this.checkFlyingFishMovementLegal(flyingFishMovement)
+                    !this.checkFlyingFishMovementLegal(
+                        player.playerDesignator,
+                        flyingFishMovement,
+                    )
                 ) {
                     this.writeMessage(
                         `Requesting flying fish movement from ${player.playerDesignator}.`,

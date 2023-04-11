@@ -22,3 +22,6 @@ TODO list:
     track
 -   show players their own cards that they played
 -   there is a bug where characters cannot flee from lava flows
+-   if a partially-executed movement set is illegal (for example, if 2
+    characters on small capacity islands try to switch places), then the game
+    will think the movement set is illegal
