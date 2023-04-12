@@ -73,11 +73,13 @@ export class ActionOrderTrack {
     public readonly checkFogTargetLegal = (slot: number, fogTarget: number) => {
         // if there is no card, that card cannot be fogged
         if (this.cardSlots[fogTarget] === null) {
+            console.log('Cannot fog a card that does not exist');
             return false;
         }
 
         // a fog cannot fog itself
         if (slot === fogTarget) {
+            console.log('A fog cannot fog itself');
             return false;
         }
 
