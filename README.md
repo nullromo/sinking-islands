@@ -26,3 +26,8 @@ TODO list
 -   player should know how many card are in their opponent's hand and in their
     deck, discard, etc.
 -   there is a bug where characters cannot flee from lava flows
+
+## Reference Material
+
+- [Rules Explanation](https://gamersalliance.com/atlas-zeus/)
+- [Board Game Geek photos](https://boardgamegeek.com/image/4472533/atlas-zeus)
