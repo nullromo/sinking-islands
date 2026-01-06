@@ -4,7 +4,6 @@ TODO list
 
 ### Visual
 
--   display remaining movement points while choosing normal movement
 -   make sure cursors are correct for islands/characters/cards for all
     situations
 -   better feedback for users when they enter an illegal choice
@@ -29,5 +28,5 @@ TODO list
 
 ## Reference Material
 
-- [Rules Explanation](https://gamersalliance.com/atlas-zeus/)
-- [Board Game Geek photos](https://boardgamegeek.com/image/4472533/atlas-zeus)
+-   [Rules Explanation](https://gamersalliance.com/atlas-zeus/)
+-   [Board Game Geek photos](https://boardgamegeek.com/image/4472533/atlas-zeus)
