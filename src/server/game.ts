@@ -976,7 +976,7 @@ export class Game {
             .getCardSlots()
             .entries()) {
             if (card === null) {
-                this.writeMessage('The card in slot', slot, 'was fogged.');
+                this.writeMessage('The card in slot', slot + 1, 'was fogged.');
                 continue;
             }
             // find the player that played the card
@@ -1166,7 +1166,7 @@ export class Game {
                 );
 
                 // fog the target
-                this.writeMessage(`Fogging slot ${fogTarget}.`);
+                this.writeMessage(`Fogging slot ${fogTarget + 1}.`);
                 const foggedCard = this.actionOrderTrack.resetSlot(fogTarget);
                 if (foggedCard) {
                     this.getPlayer(foggedCard.playerDesignator).discardCard(
