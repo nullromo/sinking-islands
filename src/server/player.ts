@@ -14,8 +14,8 @@ import { sampleArray, shuffleArray } from '../util';
 import type { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
+import type { CheckResult } from './checkResult';
 import { fullObject } from './util';
-import { CheckResult } from './checkResult';
 
 const randomIslandNumber = () => {
     return Math.floor(Math.random() * 16) + 1;
