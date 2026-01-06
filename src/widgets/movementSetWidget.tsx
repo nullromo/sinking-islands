@@ -3,6 +3,7 @@ import React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { GameSerialized } from '../commonTypes';
+import { computeMovementSteps } from '../computeMovementSteps';
 import { Hand } from '../hand';
 import type { MovementSet } from '../server/player';
 
@@ -54,10 +55,12 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                         movementSet.length > 0 &&
                         movementSet[movementSet.length - 1].toIslandNumber === 0
                     ) {
-                        const newSet = _.cloneDeep(movementSet);
-                        newSet[newSet.length - 1].toIslandNumber =
-                            island.islandNumber;
-                        setMovementSet(newSet);
+                        setMovementSet((oldSet) => {
+                            const newSet = _.cloneDeep(oldSet);
+                            newSet[newSet.length - 1].toIslandNumber =
+                                island.islandNumber;
+                            return newSet;
+                        });
                     }
                 }}
             />
@@ -68,6 +71,9 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                 move that character. Click Submit when finished, or click Reset
                 to start over.
             </div>
+            {'Movement steps used:'}{' '}
+            {computeMovementSteps(props.gameState.islands, movementSet)}{' '}
+            {'of 3'}
             {movementSet.map((movement, index) => {
                 return (
                     // eslint-disable-next-line react/no-array-index-key
@@ -79,7 +85,11 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                         <br />
                         {`from ${movement.fromIslandNumber}`}
                         <br />
-                        {`to ${movement.toIslandNumber}`}
+                        {`to ${
+                            movement.toIslandNumber === 0
+                                ? '?'
+                                : movement.toIslandNumber
+                        }`}
                         <br />
                     </React.Fragment>
                 );
