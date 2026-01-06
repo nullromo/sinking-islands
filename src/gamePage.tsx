@@ -3,7 +3,7 @@ import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
-import type { GameSerialized } from './commonTypes';
+import type { GameSerialized, PlayerDesignator } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
 import { Hand } from './hand';
 import type { CheckResult } from './server/checkResult';
@@ -150,12 +150,12 @@ const WidgetSelector = (props: {
                         interfaceState === 'requestNetTarget'
                             ? 'Choose Net target.'
                             : interfaceState === 'requestPilingsTarget'
-                            ? 'Choose Pilings target.'
-                            : interfaceState === 'requestTidalSurgeTarget'
-                            ? 'Choose Tidal Surge target.'
-                            : interfaceState === 'requestTidalWaveTarget'
-                            ? 'Choose Tidal Wave target.'
-                            : 'Choose Volcanic Eruption target.'
+                              ? 'Choose Pilings target.'
+                              : interfaceState === 'requestTidalSurgeTarget'
+                                ? 'Choose Tidal Surge target.'
+                                : interfaceState === 'requestTidalWaveTarget'
+                                  ? 'Choose Tidal Wave target.'
+                                  : 'Choose Volcanic Eruption target.'
                     }
                 />
             );
@@ -195,6 +195,66 @@ const WidgetSelector = (props: {
         default:
             return assertUnreachable(interfaceState);
     }
+};
+
+const GameIDBanner = (props: {
+    readonly gameID: string;
+    readonly status: CheckResult;
+    readonly you: PlayerDesignator;
+}) => {
+    return (
+        <>
+            <div
+                style={{
+                    alignItems: 'flex-end',
+                    background: 'lightgray',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    fontSize: '10pt',
+                    position: 'absolute',
+                    right: '10px',
+                    top: '10px',
+                }}
+            >
+                <div>{`You are ${props.you}`}</div>
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        gap: '6px',
+                    }}
+                >
+                    <div>Game ID</div>
+                    <button
+                        style={{ fontSize: '8pt' }}
+                        type='button'
+                        onClick={() => {
+                            navigator.clipboard
+                                .writeText(props.gameID)
+                                .catch(console.error);
+                        }}
+                    >
+                        Copy
+                    </button>
+                </div>
+                <div>{props.gameID}</div>
+            </div>
+            <div
+                style={{
+                    alignItems: 'flex-end',
+                    background: props.status.success ? 'lightgreen' : 'tomato',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    fontSize: '10pt',
+                    position: 'absolute',
+                    right: '10px',
+                    top: '70px',
+                }}
+            >
+                {props.status.message}
+            </div>
+        </>
+    );
 };
 
 export const GamePage = () => {
@@ -273,6 +333,11 @@ export const GamePage = () => {
 
     return (
         <div style={{ display: 'flex' }}>
+            <GameIDBanner
+                gameID={gameState.id}
+                status={status}
+                you={gameState.you}
+            />
             <div
                 style={{
                     border: '1px solid',
@@ -299,55 +364,6 @@ export const GamePage = () => {
                     flexDirection: 'column',
                 }}
             >
-                <div
-                    style={{
-                        alignItems: 'flex-end',
-                        background: 'lightgray',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        fontSize: '10pt',
-                        position: 'absolute',
-                        right: '10px',
-                        top: '10px',
-                    }}
-                >
-                    <div>{`You are ${gameState.you}`}</div>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            display: 'flex',
-                            gap: '6px',
-                        }}
-                    >
-                        <div>Game ID</div>
-                        <button
-                            style={{ fontSize: '8pt' }}
-                            type='button'
-                            onClick={() => {
-                                navigator.clipboard
-                                    .writeText(gameState.id)
-                                    .catch(console.error);
-                            }}
-                        >
-                            Copy
-                        </button>
-                    </div>
-                    <div>{gameState.id}</div>
-                </div>
-                <div
-                    style={{
-                        alignItems: 'flex-end',
-                        background: status.success ? 'lightgreen' : 'tomato',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        fontSize: '10pt',
-                        position: 'absolute',
-                        right: '10px',
-                        top: '70px',
-                    }}
-                >
-                    {status.message}
-                </div>
                 <WidgetSelector
                     gameState={gameState}
                     interfaceState={interfaceState}
