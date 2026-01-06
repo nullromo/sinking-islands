@@ -5,6 +5,7 @@ import {
     otherPlayerDesignator,
     PlayerDesignator,
 } from '../commonTypes';
+import { computeMovementSteps } from '../computeMovementSteps';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -436,28 +437,6 @@ export class Game {
     };
 
     /**
-     * Returns the number of movement points that it takes to get from one
-     * island to another.
-     */
-    private readonly countSpacesBetweenIslands = (
-        fromIslandNumber: number,
-        toIslandNumber: number,
-    ) => {
-        const fromIndex = this.islands.findIndex((island) => {
-            return island.islandNumber === fromIslandNumber;
-        });
-        const toIndex = this.islands.findIndex((island) => {
-            return island.islandNumber === toIslandNumber;
-        });
-        return Math.min(
-            Math.abs(fromIndex - toIndex + this.islands.length) %
-                this.islands.length,
-            Math.abs(fromIndex - toIndex - this.islands.length) %
-                this.islands.length,
-        );
-    };
-
-    /**
      * Returns true if the given movement set is legal.
      */
     private readonly checkMovementSetLegal = (
@@ -608,15 +587,10 @@ export class Game {
         }
 
         // the total movement must be at least 1 and no more than 3
-        const totalMovement = movementSet.reduce((total, movement) => {
-            return (
-                total +
-                this.countSpacesBetweenIslands(
-                    movement.fromIslandNumber,
-                    movement.toIslandNumber,
-                )
-            );
-        }, 0);
+        const totalMovement = computeMovementSteps(
+            this.getIslandsSerialized(),
+            movementSet,
+        );
         if (totalMovement < 1 || totalMovement > 3) {
             console.log('Too many or not enough movement points spent');
             return false;
@@ -1722,6 +1696,12 @@ export class Game {
         }
     };
 
+    public readonly getIslandsSerialized = () => {
+        return this.islands.map((island) => {
+            return island.serialize();
+        });
+    };
+
     public readonly serialize = (
         playerDesignator: PlayerDesignator,
     ): GameSerialized => {
@@ -1739,9 +1719,7 @@ export class Game {
                 playerBNet: this.playerB.netIsland,
                 playerBPilings: this.playerB.pilingsIsland,
             },
-            islands: this.islands.map((island) => {
-                return island.serialize();
-            }),
+            islands: this.getIslandsSerialized(),
             messages: this.messages,
             nextIslandToSink: this.nextIslandToSink,
             you: playerDesignator,
