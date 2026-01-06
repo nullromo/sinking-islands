@@ -4,9 +4,6 @@ TODO list
 
 ### Visual
 
--   make sure cursors are correct for islands/characters/cards for all
-    situations
--   better feedback for users when they enter an illegal choice
 -   characters at the bottom of the circle need to not overlap the action order
     track
 -   show players their own cards that they played
