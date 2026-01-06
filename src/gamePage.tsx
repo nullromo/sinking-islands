@@ -186,10 +186,20 @@ const WidgetSelector = (props: {
         case null:
             return (
                 <>
-                    <Board gameState={gameState} />
-                    <ActionOrderTrack gameState={gameState} />
-                    <Hand gameState={gameState} />
-                    Waiting for opponent
+                    <div>
+                        <Board gameState={gameState} />
+                    </div>
+                    <div
+                        style={{
+                            alignItems: 'center',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <ActionOrderTrack gameState={gameState} />
+                        <Hand gameState={gameState} />
+                        Waiting for opponent
+                    </div>
                 </>
             );
         default:
@@ -332,7 +342,7 @@ export const GamePage = () => {
     }
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', height: '100%' }}>
             <GameIDBanner
                 gameID={gameState.id}
                 status={status}
@@ -341,7 +351,7 @@ export const GamePage = () => {
             <div
                 style={{
                     border: '1px solid',
-                    height: '950px',
+                    height: '100%',
                     overflowY: 'auto',
                     padding: '4px',
                 }}
@@ -362,6 +372,7 @@ export const GamePage = () => {
                     alignItems: 'center',
                     display: 'flex',
                     flexDirection: 'column',
+                    justifyContent: 'space-between',
                 }}
             >
                 <WidgetSelector

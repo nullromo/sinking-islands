@@ -10,7 +10,13 @@ interface HandProps {
 
 export const Hand = (props: HandProps) => {
     return (
-        <>
+        <div
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
             <b>Your Hand</b>
             <div
                 style={{
@@ -54,6 +60,6 @@ export const Hand = (props: HandProps) => {
                     );
                 })}
             </div>
-        </>
+        </div>
     );
 };

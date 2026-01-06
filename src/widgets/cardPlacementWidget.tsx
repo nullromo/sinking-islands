@@ -20,7 +20,13 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
     const [ghostSlots, setGhostSlots] = React.useState<number[]>([]);
 
     return (
-        <>
+        <div
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
             <ActionOrderTrack
                 gameState={props.gameState}
                 overrideCards={cardChoices.map((card) => {
@@ -120,6 +126,6 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                     Submit
                 </button>
             </div>
-        </>
+        </div>
     );
 };

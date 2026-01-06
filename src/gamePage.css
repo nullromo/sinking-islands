@@ -1,3 +1,7 @@
+#root {
+    height: 96vh;
+}
+
 img {
     max-width: 100%;
 }
