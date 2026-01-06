@@ -6,6 +6,7 @@ import { Board } from './board';
 import type { GameSerialized } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
 import { Hand } from './hand';
+import type { CheckResult } from './server/checkResult';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -181,6 +182,7 @@ const WidgetSelector = (props: {
         case 'joinFail':
             return <>{'j f'}</>;
         case 'gameState':
+        case 'updateStatus':
         case null:
             return (
                 <>
@@ -202,6 +204,10 @@ export const GamePage = () => {
     const [interfaceState, setInterfaceState] = React.useState<
         keyof ServerToClientEvents | null
     >(null);
+    const [status, setStatus] = React.useState<CheckResult>({
+        message: '',
+        success: true,
+    });
 
     React.useEffect(() => {
         connectSocket();
@@ -232,6 +238,12 @@ export const GamePage = () => {
         });
         socket.on('joinFail', () => {
             console.log('Join failed');
+        });
+        socket.on('updateStatus', (status) => {
+            console.log(
+                `${status.success ? 'Status' : 'Error'}: ${status.message}`,
+            );
+            setStatus(status);
         });
         return () => {
             console.log('Un-registering event listeners');
@@ -321,6 +333,20 @@ export const GamePage = () => {
                         </button>
                     </div>
                     <div>{gameState.id}</div>
+                </div>
+                <div
+                    style={{
+                        alignItems: 'flex-end',
+                        background: status.success ? 'lightgreen' : 'tomato',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        fontSize: '10pt',
+                        position: 'absolute',
+                        right: '10px',
+                        top: '70px',
+                    }}
+                >
+                    {status.message}
                 </div>
                 <WidgetSelector
                     gameState={gameState}

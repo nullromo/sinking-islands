@@ -15,6 +15,7 @@ import type { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
 import { fullObject } from './util';
+import { CheckResult } from './checkResult';
 
 const randomIslandNumber = () => {
     return Math.floor(Math.random() * 16) + 1;
@@ -539,6 +540,12 @@ export class Player {
             // draw one card
             toDraw -= 1;
             this.hand.push(this.deck.pop() as Card);
+        }
+    };
+
+    public readonly updateStatus = (status: CheckResult) => {
+        if (this.socket) {
+            this.socket.emit('updateStatus', status);
         }
     };
 }

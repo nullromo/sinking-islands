@@ -1,5 +1,6 @@
 import type { CharacterSerialized, GameSerialized } from './commonTypes';
 import type { CardPlacement } from './server/actionOrderTrack';
+import type { CheckResult } from './server/checkResult';
 import type {
     FlyingFishMovement,
     HarpoonTarget,
@@ -41,4 +42,5 @@ export interface ServerToClientEvents {
     requestTortoiseTarget: () => void;
     requestVolcanicEruptionTarget: () => void;
     requestFleeChoice: () => void;
+    updateStatus: (status: CheckResult) => void;
 }

@@ -23,6 +23,7 @@ import type {
     TortoiseTarget,
 } from './player';
 import { Player } from './player';
+import { CheckResult } from './checkResult';
 
 /**
  * Represents a game of Sinking Islands
@@ -222,6 +223,10 @@ export class Game {
                     // keep trying until a valid card placement is given
                     let cardPlacement: CardPlacement | null = null;
                     console.log('Starting card placement loop');
+                    let checkResult: CheckResult = {
+                        message: '',
+                        success: false,
+                    };
                     do {
                         this.writeMessage(
                             `Requesting card placement from ${player.playerDesignator}.`,
@@ -229,12 +234,13 @@ export class Game {
                         // eslint-disable-next-line no-await-in-loop
                         cardPlacement = await player.requestCardPlacement();
                         console.log('Got', cardPlacement);
-                    } while (
-                        !this.checkCardPlacementLegal(
+                        checkResult = this.checkCardPlacementLegal(
                             player.playerDesignator,
                             cardPlacement,
-                        )
-                    );
+                        );
+                        console.log(checkResult.message);
+                        player.updateStatus(checkResult);
+                    } while (!checkResult.success);
                     return cardPlacement;
                 })();
 
@@ -399,27 +405,33 @@ export class Game {
     private readonly checkFlyingFishMovementLegal = (
         playerDesignator: PlayerDesignator,
         flyingFishMovement: FlyingFishMovement,
-    ) => {
+    ): CheckResult => {
         // the player must move their own character
         if (
             flyingFishMovement.character.playerDesignator !== playerDesignator
         ) {
-            console.log("Cannot move a character that isn't yours.");
-            return false;
+            return new CheckResult(
+                false,
+                "Cannot move a character that isn't yours.",
+            );
         }
 
         const toIsland = this.findIsland(flyingFishMovement.toIslandNumber);
 
         // can't move to an island that already sank
         if (!toIsland) {
-            console.log("Cannot move to an island that doesn't exist");
-            return false;
+            return new CheckResult(
+                false,
+                "Cannot move to an island that doesn't exist",
+            );
         }
 
         // can't move to an island that is at full capacity
         if (this.islandIsFull(toIsland)) {
-            console.log('Cannot move to an island that is full');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot move to an island that is full',
+            );
         }
 
         // can't move a character that is not there
@@ -428,12 +440,14 @@ export class Game {
                 flyingFishMovement.fromIslandNumber,
             )?.findCharacter(flyingFishMovement.character)
         ) {
-            console.log("Cannot move a character that isn't there");
-            return false;
+            return new CheckResult(
+                false,
+                "Cannot move a character that isn't there",
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Flying fish movement is legal');
     };
 
     /**
@@ -442,27 +456,30 @@ export class Game {
     private readonly checkMovementSetLegal = (
         playerDesignator: PlayerDesignator,
         movementSet: MovementSet,
-    ) => {
+    ): CheckResult => {
         // there must be at least one movement
         if (movementSet.length < 1) {
-            console.log('Must include at least 1 movement');
-            return false;
+            return new CheckResult(false, 'Must include at least 1 movement');
         }
 
         // check all movements
         for (const movement of movementSet) {
             // the player must move their own character
             if (movement.character.playerDesignator !== playerDesignator) {
-                console.log("Cannot move a character that isn't yours.");
-                return false;
+                return new CheckResult(
+                    false,
+                    "Cannot move a character that isn't yours.",
+                );
             }
 
             const toIsland = this.findIsland(movement.toIslandNumber);
 
             // can't move to an island that already sank
             if (!toIsland) {
-                console.log("Cannot move to an island that doesn't exist");
-                return false;
+                return new CheckResult(
+                    false,
+                    "Cannot move to an island that doesn't exist",
+                );
             }
 
             // can't move a character that is not there
@@ -471,26 +488,31 @@ export class Game {
                     movement.character,
                 )
             ) {
-                console.log("Cannot move a character that isn't there");
-                return false;
+                return new CheckResult(
+                    false,
+                    "Cannot move a character that isn't there",
+                );
             }
 
             // can't move to a netted island
             if (this.islandIsNetted(movement.toIslandNumber)) {
-                console.log('Cannot move to a netted island');
-                return false;
+                return new CheckResult(false, 'Cannot move to a netted island');
             }
 
             // can't move off a netted island
             if (this.islandIsNetted(movement.fromIslandNumber)) {
-                console.log('Cannot move off a netted island');
-                return false;
+                return new CheckResult(
+                    false,
+                    'Cannot move off a netted island',
+                );
             }
 
             // movements cannot start and end on the same island
             if (movement.fromIslandNumber === movement.toIslandNumber) {
-                console.log('Cannot move from an island to the same island');
-                return false;
+                return new CheckResult(
+                    false,
+                    'Cannot move from an island to the same island',
+                );
             }
         }
 
@@ -541,10 +563,10 @@ export class Game {
             // know it's a small capacity island with no pilings, so the
             // character limit will always be 1 here
             if (numberOfCharactersAfterMovement > 1) {
-                console.log(
+                return new CheckResult(
+                    false,
                     'Movement results in too many characters on an island',
                 );
-                return false;
             }
         }
 
@@ -581,8 +603,10 @@ export class Game {
                 numberOfMovesUsingThisTypeOfCharacter >
                 numberOfMatchingCharacters
             ) {
-                console.log('Two movements tried to move the same character');
-                return false;
+                return new CheckResult(
+                    false,
+                    'Two movements tried to move the same character',
+                );
             }
         }
 
@@ -592,12 +616,14 @@ export class Game {
             movementSet,
         );
         if (totalMovement < 1 || totalMovement > 3) {
-            console.log('Too many or not enough movement points spent');
-            return false;
+            return new CheckResult(
+                false,
+                'Too many or not enough movement points spent',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Movement set is legal');
     };
 
     /**
@@ -659,13 +685,13 @@ export class Game {
     public readonly checkCardPlacementLegal = (
         playerDesignator: PlayerDesignator,
         cardPlacement: CardPlacement,
-    ) => {
+    ): CheckResult => {
         // player must not already have cards on the track
         if (this.actionOrderTrack.playerHasPlayed(playerDesignator)) {
-            console.log(
+            return new CheckResult(
+                false,
                 'Cannot play cards when cards have already been played',
             );
-            return false;
         }
 
         // all cards must be owned by the player placing them
@@ -674,14 +700,12 @@ export class Game {
                 return card.playerDesignator !== playerDesignator;
             })
         ) {
-            console.log("Cannot play another player's cards");
-            return false;
+            return new CheckResult(false, "Cannot play another player's cards");
         }
 
         // they must place 3 cards
         if (Object.entries(cardPlacement).length !== 3) {
-            console.log('3 cards must be placed');
-            return false;
+            return new CheckResult(false, '3 cards must be placed');
         }
 
         // all chosen cards must be in the player's hand
@@ -690,8 +714,10 @@ export class Game {
                 Object.values(cardPlacement),
             )
         ) {
-            console.log("Cards must be played from the player's hand");
-            return false;
+            return new CheckResult(
+                false,
+                "Cards must be played from the player's hand",
+            );
         }
 
         // find which slots the player wants to place in
@@ -705,10 +731,10 @@ export class Game {
             (slots.includes(2) && slots.includes(3)) ||
             (slots.includes(4) && slots.includes(5))
         ) {
-            console.log(
+            return new CheckResult(
+                false,
                 'Two cards cannot be placed in the same area of the action order track',
             );
-            return false;
         }
 
         // all slots used must be available
@@ -718,12 +744,14 @@ export class Game {
                 return !availableSlots.includes(slot);
             })
         ) {
-            console.log('Cannot place a card on an unavailable slot');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot place a card on an unavailable slot',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Card placement is legal');
     };
 
     /**
@@ -732,17 +760,15 @@ export class Game {
     private readonly checkHarpoonTargetLegal = (
         playerDesignator: PlayerDesignator,
         harpoonTarget: HarpoonTarget,
-    ) => {
+    ): CheckResult => {
         // if the target is a tortoise, it's not valid
         if (harpoonTarget.character.tortoise) {
-            console.log('Cannot harpoon a tortoise');
-            return false;
+            return new CheckResult(false, 'Cannot harpoon a tortoise');
         }
 
         // the player cannot shoot their own characters
         if (playerDesignator === harpoonTarget.character.playerDesignator) {
-            console.log('Cannot harpoon your own character');
-            return false;
+            return new CheckResult(false, 'Cannot harpoon your own character');
         }
 
         // find the island being targeted
@@ -750,8 +776,10 @@ export class Game {
 
         // if the island does not exist, the target is not valid
         if (!targetIsland) {
-            console.log('Cannot harpoon on an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot harpoon on an island that does not exist',
+            );
         }
 
         // if there are no characters matching the target on the target island,
@@ -761,8 +789,10 @@ export class Game {
                 return character.equals(harpoonTarget.character);
             })
         ) {
-            console.log('Cannot harpoon a character that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot harpoon a character that does not exist',
+            );
         }
 
         // find the adjacent islands and make sure there is an enemy of the
@@ -776,31 +806,33 @@ export class Game {
                 },
             )
         ) {
-            console.log(
+            return new CheckResult(
+                false,
                 'Cannot harpoon a character that is out of harpoon range',
             );
-            return false;
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Harpoon target is legal');
     };
 
     /**
      * Returns true if the given net target is legal.
      */
-    private readonly checkNetTargetLegal = (netTarget: number) => {
+    private readonly checkNetTargetLegal = (netTarget: number): CheckResult => {
         // find the island
         const island = this.findIsland(netTarget);
 
         // the island must exist
         if (island === undefined) {
-            console.log('Cannot net an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot net an island that does not exist',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Net target is legal');
     };
 
     /**
@@ -809,20 +841,24 @@ export class Game {
     private readonly checkPilingsTargetLegal = (
         playerDesignator: PlayerDesignator,
         pilingsTarget: number,
-    ) => {
+    ): CheckResult => {
         // find the island
         const island = this.findIsland(pilingsTarget);
 
         // the island must exist
         if (island === undefined) {
-            console.log('Cannot put pilings on an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot put pilings on an island that does not exist',
+            );
         }
 
         // the island must have small capacity
         if (!island.smallCapacity) {
-            console.log('Cannot put pilings on a large capacity island');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot put pilings on a large capacity island',
+            );
         }
 
         // the island must not already have pilings on it
@@ -831,14 +867,14 @@ export class Game {
             this.getPlayer(otherPlayerDesignator(playerDesignator))
                 .pilingsIsland
         ) {
-            console.log(
+            return new CheckResult(
+                false,
                 'Cannot put pilings on an island that already has pilings on it',
             );
-            return false;
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Pilings target is legal');
     };
 
     /**
@@ -846,7 +882,7 @@ export class Game {
      */
     private readonly checkTidalSurgeTargetLegal = (
         tidalSurgeTarget: number,
-    ) => {
+    ): CheckResult => {
         if (
             !this.getAdjacentIslands(this.nextIslandToSink).some(
                 // eslint-disable-next-line @typescript-eslint/no-loop-func
@@ -855,29 +891,35 @@ export class Game {
                 },
             )
         ) {
-            console.log('Cannot tidal surge to a non-adjacent island');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot tidal surge to a non-adjacent island',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Tidal surge target is legal');
     };
 
     /**
      * Returns true if the given tidal wave target is legal.
      */
-    private readonly checkTidalWaveTargetLegal = (tidalWaveTarget: number) => {
+    private readonly checkTidalWaveTargetLegal = (
+        tidalWaveTarget: number,
+    ): CheckResult => {
         // find the island
         const island = this.findIsland(tidalWaveTarget);
 
         // the island must exist
         if (!island) {
-            console.log('Cannot tidal wave to an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot tidal wave to an island that does not exist',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Tidal wave target is legal');
     };
 
     /**
@@ -886,11 +928,13 @@ export class Game {
     private readonly checkTortoiseTargetLegal = (
         playerDesignator: PlayerDesignator,
         tortoiseTarget: TortoiseTarget,
-    ) => {
+    ): CheckResult => {
         // the player must target their own character
         if (tortoiseTarget.character.playerDesignator !== playerDesignator) {
-            console.log("Cannot target a character that isn't yours");
-            return false;
+            return new CheckResult(
+                false,
+                "Cannot target a character that isn't yours",
+            );
         }
 
         // find the island
@@ -898,8 +942,10 @@ export class Game {
 
         // the island must exist
         if (!island) {
-            console.log('Cannot tortoise on an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot tortoise on an island that does not exist',
+            );
         }
 
         // the character must exist
@@ -908,12 +954,14 @@ export class Game {
                 return character.equals(tortoiseTarget.character);
             })
         ) {
-            console.log('Cannot tortoise a character that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot tortoise a character that does not exist',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Tortoise target is legal');
     };
 
     /**
@@ -921,24 +969,28 @@ export class Game {
      */
     private readonly checkVolcanicEruptionTargetLegal = (
         volcanicEruptionTarget: number,
-    ) => {
+    ): CheckResult => {
         // find the island
         const island = this.findIsland(volcanicEruptionTarget);
 
         // the island must exist
         if (!island) {
-            console.log('Cannot erupt an island that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot erupt an island that does not exist',
+            );
         }
 
         // the island must be a volcano
         if (island.islandType !== IslandType.VOLCANO) {
-            console.log('Cannot erupt an island that is not a volcano');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot erupt an island that is not a volcano',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Volcanic eruption target is legal');
     };
 
     /**
@@ -948,23 +1000,27 @@ export class Game {
         playerDesignator: PlayerDesignator,
         lavaFlowIsland: Island,
         characterToFlee: CharacterSerialized,
-    ) => {
+    ): CheckResult => {
         // the player must choose their own character
         if (characterToFlee.playerDesignator !== playerDesignator) {
-            console.log("Cannot choose a character that isn't yours");
-            return false;
+            return new CheckResult(
+                false,
+                "Cannot choose a character that isn't yours",
+            );
         }
         if (
             !lavaFlowIsland.getCharacters().some((character) => {
                 return character.equals(characterToFlee);
             })
         ) {
-            console.log('Cannot choose a character that does not exist');
-            return false;
+            return new CheckResult(
+                false,
+                'Cannot choose a character that does not exist',
+            );
         }
 
         // all checks passed
-        return true;
+        return new CheckResult(true, 'Flee choice is legal');
     };
 
     /**
@@ -1023,6 +1079,7 @@ export class Game {
             }'s ${upperSnakeToTitle(card.cardType)}.`,
         );
         const opponent = otherPlayerDesignator(player.playerDesignator);
+        let checkResult: CheckResult = { message: '', success: false };
         switch (card.cardType) {
             case CardType.CRAB:
                 // handle fights on all the islands
@@ -1106,12 +1163,13 @@ export class Game {
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestFlyingFishMovement();
                     console.log('Got', flyingFishMovement);
-                } while (
-                    !this.checkFlyingFishMovementLegal(
+                    checkResult = this.checkFlyingFishMovementLegal(
                         player.playerDesignator,
                         flyingFishMovement,
-                    )
-                );
+                    );
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // move the character
                 this.writeMessage(
@@ -1196,7 +1254,7 @@ export class Game {
                             return this.checkHarpoonTargetLegal(
                                 player.playerDesignator,
                                 harpoonTarget,
-                            );
+                            ).success;
                         })
                 ) {
                     this.writeMessage(
@@ -1214,12 +1272,13 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop
                     harpoonTarget = await player.requestHarpoonTarget();
                     console.log('Got', harpoonTarget);
-                } while (
-                    !this.checkHarpoonTargetLegal(
+                    checkResult = this.checkHarpoonTargetLegal(
                         player.playerDesignator,
                         harpoonTarget,
-                    )
-                );
+                    );
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // kill the target
                 this.writeMessage(
@@ -1281,12 +1340,13 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop
                     movementSet = await player.requestMovementSet();
                     console.log('Got', movementSet);
-                } while (
-                    !this.checkMovementSetLegal(
+                    checkResult = this.checkMovementSetLegal(
                         player.playerDesignator,
                         movementSet,
-                    )
-                );
+                    );
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // make the moves
                 movementSet.forEach((movement) => {
@@ -1327,7 +1387,10 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop
                     netTarget = await player.requestNetTarget();
                     console.log('Got', netTarget);
-                } while (!this.checkNetTargetLegal(netTarget));
+                    checkResult = this.checkNetTargetLegal(netTarget);
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // place the net
                 this.writeMessage(
@@ -1363,12 +1426,13 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop
                     pilingsTarget = await player.requestPilingsTarget();
                     console.log('Got', pilingsTarget);
-                } while (
-                    !this.checkPilingsTargetLegal(
+                    checkResult = this.checkPilingsTargetLegal(
                         player.playerDesignator,
                         pilingsTarget,
-                    )
-                );
+                    );
+                    console.log(checkResult);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // place the net
                 this.writeMessage(
@@ -1422,7 +1486,11 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tidalSurgeTarget = await player.requestTidalSurgeTarget();
                     console.log('Got', tidalSurgeTarget);
-                } while (!this.checkTidalSurgeTargetLegal(tidalSurgeTarget));
+                    checkResult =
+                        this.checkTidalSurgeTargetLegal(tidalSurgeTarget);
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // move the rising waters marker
                 this.writeMessage(
@@ -1441,7 +1509,11 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop
                     tidalWaveTarget = await player.requestTidalWaveTarget();
                     console.log('Got', tidalWaveTarget);
-                } while (!this.checkTidalWaveTargetLegal(tidalWaveTarget));
+                    checkResult =
+                        this.checkTidalWaveTargetLegal(tidalWaveTarget);
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // move the rising waters marker
                 this.writeMessage(
@@ -1460,12 +1532,13 @@ export class Game {
                     // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                     tortoiseTarget = await player.requestTortoiseTarget();
                     console.log('Got', tortoiseTarget);
-                } while (
-                    !this.checkTortoiseTargetLegal(
+                    checkResult = this.checkTortoiseTargetLegal(
                         player.playerDesignator,
                         tortoiseTarget,
-                    )
-                );
+                    );
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // make the target a tortoise
                 this.writeMessage(
@@ -1503,11 +1576,12 @@ export class Game {
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestVolcanicEruptionTarget();
                     console.log('Got', volcanicEruptionTarget);
-                } while (
-                    !this.checkVolcanicEruptionTargetLegal(
+                    checkResult = this.checkVolcanicEruptionTargetLegal(
                         volcanicEruptionTarget,
-                    )
-                );
+                    );
+                    console.log(checkResult.message);
+                    player.updateStatus(checkResult);
+                } while (!checkResult.success);
 
                 // erupt the volcano
                 this.writeMessage(`Island ${volcanicEruptionTarget} erupts.`);
@@ -1571,13 +1645,14 @@ export class Game {
                             // eslint-disable-next-line no-await-in-loop, require-atomic-updates
                             characterToFlee = await player.requestFleeChoice();
                             console.log('Got', characterToFlee);
-                        } while (
-                            !this.checkFleeChoiceLegal(
+                            checkResult = this.checkFleeChoiceLegal(
                                 player.playerDesignator,
                                 lavaFlowIsland,
                                 characterToFlee,
-                            )
-                        );
+                            );
+                            console.log(checkResult.message);
+                            player.updateStatus(checkResult);
+                        } while (!checkResult.success);
 
                         // move the chosen character
                         this.writeMessage(
