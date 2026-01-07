@@ -1781,7 +1781,7 @@ export class Game {
         playerDesignator: PlayerDesignator,
     ): GameSerialized => {
         return {
-            actionOrderTrack: this.actionOrderTrack.serialize(),
+            actionOrderTrack: this.actionOrderTrack.serialize(playerDesignator),
             id: this.id,
             indescretion: {
                 [PlayerDesignator.PLAYER_A]: this.playerA.indescretion,

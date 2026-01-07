@@ -116,11 +116,14 @@ export class ActionOrderTrack {
         this.faceUpCards = [];
     };
 
-    public readonly serialize = (): ActionOrderTrackSerialized => {
+    public readonly serialize = (
+        playerDesignator: PlayerDesignator,
+    ): ActionOrderTrackSerialized => {
         return {
             cardSlots: this.cardSlots.map((card, slot) => {
                 return card
-                    ? this.faceUpCards.includes(slot)
+                    ? this.faceUpCards.includes(slot) ||
+                      card.playerDesignator === playerDesignator
                         ? card.serialize()
                         : { playerDesignator: card.playerDesignator }
                     : null;
