@@ -118,12 +118,14 @@ export class ActionOrderTrack {
 
     public readonly serialize = (
         playerDesignator: PlayerDesignator,
+        activeCardIndex: number | null,
     ): ActionOrderTrackSerialized => {
         return {
             cardSlots: this.cardSlots.map((card, slot) => {
                 return card
                     ? this.faceUpCards.includes(slot) ||
-                      card.playerDesignator === playerDesignator
+                      card.playerDesignator === playerDesignator ||
+                      slot === activeCardIndex
                         ? card.serialize()
                         : { playerDesignator: card.playerDesignator }
                     : null;

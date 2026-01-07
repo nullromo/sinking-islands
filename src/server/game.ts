@@ -1790,7 +1790,10 @@ export class Game {
         playerDesignator: PlayerDesignator,
     ): GameSerialized => {
         return {
-            actionOrderTrack: this.actionOrderTrack.serialize(playerDesignator),
+            actionOrderTrack: this.actionOrderTrack.serialize(
+                playerDesignator,
+                this.activeCardIndex,
+            ),
             activeCardIndex: this.activeCardIndex,
             id: this.id,
             indescretion: {
