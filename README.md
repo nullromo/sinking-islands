@@ -6,6 +6,10 @@ TODO list
 
 - show players their own cards that they played
 - show the card that is being inputted right now
+- similar to how it shows staged movement state before submit, it should also
+  show that for all the other types of input
+- similar to how it shows staged selections on the islands/characters, it should
+  also show that for movement and any other input that doesn't really indicate
 
 ### Internal
 
