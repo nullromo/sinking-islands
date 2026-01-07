@@ -45,8 +45,9 @@ export class Game {
     // representation of the Action Order Track
     private readonly actionOrderTrack = new ActionOrderTrack();
 
-    // next card to resolve (card that the game is waiting for input on)
-    private activeCardIndex = 0;
+    // next card to resolve (card that the game is waiting for input on, null
+    // during turns, number during card resolution)
+    private activeCardIndex: number | null = null;
 
     // message history for players to read
     private readonly messages: string[] = [];
@@ -215,7 +216,7 @@ export class Game {
             }
 
             // reset the active card slot
-            this.activeCardIndex = 0;
+            this.activeCardIndex = null;
 
             // determine player order
             const initiativePlayer = this.getPlayer(this.initiative);
@@ -272,6 +273,9 @@ export class Game {
             await takeTurn(initiativePlayer);
             // eslint-disable-next-line no-await-in-loop
             await takeTurn(otherPlayer);
+
+            // start the card index tracker
+            this.activeCardIndex = 0;
 
             // resolve the actions, catching any thrown PlayerDesignators
             try {
@@ -1061,7 +1065,8 @@ export class Game {
             }
 
             // advance the active card index
-            this.activeCardIndex += 1;
+            this.activeCardIndex =
+                this.activeCardIndex === null ? 1 : this.activeCardIndex + 1;
 
             this.broadcastGameState();
 
