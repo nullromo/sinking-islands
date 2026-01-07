@@ -1105,8 +1105,8 @@ export class Game {
                                         card.playerDesignator
                                             ? 0
                                             : this.getPlayer(opponent).weakness
-                                            ? 10
-                                            : character.strength),
+                                              ? 10
+                                              : character.strength),
                                     playerStrength:
                                         totals.playerStrength +
                                         (character.playerDesignator ===
