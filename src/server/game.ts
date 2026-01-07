@@ -1794,6 +1794,10 @@ export class Game {
     public readonly serialize = (
         playerDesignator: PlayerDesignator,
     ): GameSerialized => {
+        const player = this.getPlayer(playerDesignator);
+        const opponent = this.getPlayer(
+            otherPlayerDesignator(playerDesignator),
+        );
         return {
             actionOrderTrack: this.actionOrderTrack.serialize(
                 playerDesignator,
@@ -1815,8 +1819,13 @@ export class Game {
             islands: this.getIslandsSerialized(),
             messages: this.messages,
             nextIslandToSink: this.nextIslandToSink,
+            opponentDeckSize: opponent.getDeck().length,
+            opponentDiscardPile: opponent.getDiscardPile(),
+            opponentHandSize: opponent.getHand().length,
             you: playerDesignator,
-            yourHand: this.getPlayer(playerDesignator).getHand(),
+            yourDeckSize: player.getDeck().length,
+            yourDiscardPile: player.getDiscardPile(),
+            yourHand: player.getHand(),
         };
     };
 }

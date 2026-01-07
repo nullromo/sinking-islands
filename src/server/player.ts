@@ -137,6 +137,24 @@ export class Player {
     };
 
     /**
+     * Returns a list of cards in this player's discard pile.
+     */
+    public readonly getDiscardPile = () => {
+        return this.discardPile.map((card) => {
+            return card.serialize();
+        });
+    };
+
+    /**
+     * Returns a list of cards in this player's deck.
+     */
+    public readonly getDeck = () => {
+        return this.deck.map((card) => {
+            return card.serialize();
+        });
+    };
+
+    /**
      * Returns true if this player has a card matching the given card in their
      * hand.
      */
