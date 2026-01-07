@@ -352,6 +352,7 @@ export const GamePage = () => {
                 style={{
                     border: '1px solid',
                     height: '100%',
+                    minWidth: '200px',
                     overflowY: 'auto',
                     padding: '4px',
                 }}
