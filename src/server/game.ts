@@ -45,6 +45,9 @@ export class Game {
     // representation of the Action Order Track
     private readonly actionOrderTrack = new ActionOrderTrack();
 
+    // next card to resolve (card that the game is waiting for input on)
+    private activeCardIndex = 0;
+
     // message history for players to read
     private readonly messages: string[] = [];
 
@@ -210,6 +213,9 @@ export class Game {
             if (loser) {
                 return loser;
             }
+
+            // reset the active card slot
+            this.activeCardIndex = 0;
 
             // determine player order
             const initiativePlayer = this.getPlayer(this.initiative);
@@ -1054,6 +1060,9 @@ export class Game {
                 player.discardCard(card);
             }
 
+            // advance the active card index
+            this.activeCardIndex += 1;
+
             this.broadcastGameState();
 
             // check to see if the game is over
@@ -1782,6 +1791,7 @@ export class Game {
     ): GameSerialized => {
         return {
             actionOrderTrack: this.actionOrderTrack.serialize(playerDesignator),
+            activeCardIndex: this.activeCardIndex,
             id: this.id,
             indescretion: {
                 [PlayerDesignator.PLAYER_A]: this.playerA.indescretion,

@@ -53,6 +53,7 @@ export type ActionOrderTrackSerialized = {
 
 export type GameSerialized = {
     actionOrderTrack: ActionOrderTrackSerialized;
+    activeCardIndex: number;
     id: string;
     indescretion: {
         [PlayerDesignator.PLAYER_A]: boolean;
