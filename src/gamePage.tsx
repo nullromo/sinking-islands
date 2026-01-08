@@ -19,6 +19,7 @@ import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
 import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
+import { MessageLog } from './messageLog';
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 const connectSocket = () => {
@@ -323,11 +324,6 @@ export const GamePage = () => {
         };
     }, []);
 
-    const messageLog = React.useRef<HTMLDivElement>(null);
-    React.useEffect(() => {
-        messageLog.current?.scrollIntoView();
-    });
-
     if (gameState === null) {
         return (
             <CreateOrJoinPage
@@ -348,25 +344,7 @@ export const GamePage = () => {
                 status={status}
                 you={gameState.you}
             />
-            <div
-                style={{
-                    border: '1px solid',
-                    height: '100%',
-                    minWidth: '200px',
-                    overflowY: 'auto',
-                    padding: '4px',
-                }}
-            >
-                {gameState.messages.map((message, index) => {
-                    return (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <React.Fragment key={index}>
-                            <div>{message}</div>
-                            <hr />
-                        </React.Fragment>
-                    );
-                })}
-                <div ref={messageLog} />
+            <div>
             </div>
             <div
                 style={{
