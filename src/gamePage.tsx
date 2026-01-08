@@ -345,6 +345,19 @@ export const GamePage = () => {
                 you={gameState.you}
             />
             <div>
+                <div
+                    style={{
+                        background: 'tan',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '4px',
+                    }}
+                >
+                    <div>{`Cards in your deck: ${gameState.yourDeckSize}`}</div>
+                    <div>{`Cards in your opponent's deck: ${gameState.opponentDeckSize}`}</div>
+                    <div>{`Cards in your opponent's hand: ${gameState.opponentHandSize}`}</div>
+                </div>
+                <MessageLog gameState={gameState} />
             </div>
             <div
                 style={{
