@@ -1657,22 +1657,32 @@ export class Game {
                         // try to get a flee choice until a valid one is
                         // given
                         let characterToFlee: CharacterSerialized | null = null;
-                        console.log('Starting flee loop');
-                        do {
-                            this.writeMessage(
-                                `Requesting flee choice from ${player.playerDesignator}.`,
-                            );
-                            // eslint-disable-next-line no-await-in-loop, require-atomic-updates
-                            characterToFlee = await player.requestFleeChoice();
-                            console.log('Got', characterToFlee);
-                            checkResult = this.checkFleeChoiceLegal(
-                                player.playerDesignator,
-                                lavaFlowIsland,
-                                characterToFlee,
-                            );
-                            console.log(checkResult.message);
-                            player.updateStatus(checkResult);
-                        } while (!checkResult.success);
+
+                        // if the player only has one character on the island,
+                        // then automatically choose that character. Otherwise,
+                        // let the player choose a character to flee
+                        if (playerCharactersOnLavaFlowIsland.length <= 1) {
+                            characterToFlee =
+                                playerCharactersOnLavaFlowIsland[0].serialize();
+                        } else {
+                            console.log('Starting flee loop');
+                            do {
+                                this.writeMessage(
+                                    `Requesting flee choice from ${player.playerDesignator}.`,
+                                );
+                                characterToFlee =
+                                    // eslint-disable-next-line no-await-in-loop
+                                    await player.requestFleeChoice();
+                                console.log('Got', characterToFlee);
+                                checkResult = this.checkFleeChoiceLegal(
+                                    player.playerDesignator,
+                                    lavaFlowIsland,
+                                    characterToFlee,
+                                );
+                                console.log(checkResult.message);
+                                player.updateStatus(checkResult);
+                            } while (!checkResult.success);
+                        }
 
                         // move the chosen character
                         this.writeMessage(
