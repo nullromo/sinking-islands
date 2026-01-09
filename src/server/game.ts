@@ -1632,14 +1632,16 @@ export class Game {
                         return;
                     }
 
-                    // if the safe island is small and unoccupied and not
-                    // netted and does not have pilings and the volcano
-                    // erupter has a character on the lava flow island, let
-                    // them choose a character to flee
+                    // if the safe island is small, unoccupied, not netted, and
+                    // does not have pilings, the lava flow island is not
+                    // netted, and the volcano erupter has a character on the
+                    // lava flow island, then the volcano erupter has a chance
+                    // to flee
                     if (
                         safeIsland.smallCapacity &&
                         safeIsland.getCharacters().length <= 0 &&
                         !this.islandIsNetted(safeIsland.islandNumber) &&
+                        !this.islandIsNetted(lavaFlowIsland.islandNumber) &&
                         !this.islandHasPilings(safeIsland.islandNumber) &&
                         lavaFlowIsland.getCharacters().some((character) => {
                             return (
