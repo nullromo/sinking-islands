@@ -18,8 +18,6 @@ TODO list
 ### Functional
 
 - handle page refresh re-connect
-- render discard information, deck size information, and opponent's hand size
-  information
 - there is a bug where characters cannot flee from lava flows
 
 ## Reference Material
