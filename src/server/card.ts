@@ -1,4 +1,5 @@
 import type { CardSerialized, PlayerDesignator } from '../commonTypes';
+import { assertUnreachable } from '../util';
 import { PlayerGamePiece } from './playerGamePiece';
 
 /**
@@ -21,6 +22,46 @@ export enum CardType {
     VOLCANIC_ERUPTION = 'VOLCANIC_ERUPTION',
     WEAKNESS = 'WEAKNESS',
 }
+
+/**
+ * Converts a card type to a user-friendly string.
+ */
+export const cardTypeToString = (cardType: CardType) => {
+    switch (cardType) {
+        case CardType.CRAB:
+            return 'Crab';
+        case CardType.FLYING_FISH:
+            return 'Flying Fish';
+        case CardType.FOG:
+            return 'Fog';
+        case CardType.HARPOON:
+            return 'Harpoon';
+        case CardType.INDESCRETION:
+            return 'Indescretion';
+        case CardType.MEDITATION:
+            return 'Meditation';
+        case CardType.MOVEMENT:
+            return 'Movement';
+        case CardType.NET:
+            return 'Net';
+        case CardType.PILINGS:
+            return 'Pilings';
+        case CardType.PRAYER:
+            return 'Prayer';
+        case CardType.TIDAL_SURGE:
+            return 'Tidal Surge';
+        case CardType.TIDAL_WAVE:
+            return 'Tidal Wave';
+        case CardType.TORTOISE:
+            return 'Tortoise';
+        case CardType.VOLCANIC_ERUPTION:
+            return 'Volcanic Eruption';
+        case CardType.WEAKNESS:
+            return 'Weakness';
+        default:
+            return assertUnreachable(cardType);
+    }
+};
 
 /**
  * Represents an action card.
