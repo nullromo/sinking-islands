@@ -1632,6 +1632,15 @@ export class Game {
                         return;
                     }
 
+                    const playerCharactersOnLavaFlowIsland = lavaFlowIsland
+                        .getCharacters()
+                        .filter((character) => {
+                            return (
+                                character.playerDesignator ===
+                                player.playerDesignator
+                            );
+                        });
+
                     // if the safe island is small, unoccupied, not netted, and
                     // does not have pilings, the lava flow island is not
                     // netted, and the volcano erupter has a character on the
@@ -1643,12 +1652,7 @@ export class Game {
                         !this.islandIsNetted(safeIsland.islandNumber) &&
                         !this.islandIsNetted(lavaFlowIsland.islandNumber) &&
                         !this.islandHasPilings(safeIsland.islandNumber) &&
-                        lavaFlowIsland.getCharacters().some((character) => {
-                            return (
-                                character.playerDesignator ===
-                                player.playerDesignator
-                            );
-                        })
+                        playerCharactersOnLavaFlowIsland.length >= 1
                     ) {
                         // try to get a flee choice until a valid one is
                         // given
