@@ -16,4 +16,3 @@
 ## Functional
 
 - handle page refresh re-connect
-- there is a bug where characters cannot flee from lava flows
