@@ -5,6 +5,7 @@ import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
 import type { GameSerialized, PlayerDesignator } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
+import { DiscardPileWindow } from './discardPileWindow';
 import { Hand } from './hand';
 import { MessageLog } from './messageLog';
 import type { CheckResult } from './server/checkResult';
@@ -357,6 +358,18 @@ export const GamePage = () => {
                     <div>{`Cards in your deck: ${gameState.yourDeckSize}`}</div>
                     <div>{`Cards in your opponent's deck: ${gameState.opponentDeckSize}`}</div>
                     <div>{`Cards in your opponent's hand: ${gameState.opponentHandSize}`}</div>
+                    <div>
+                        <DiscardPileWindow
+                            gameState={gameState}
+                            opponent={false}
+                        />
+                    </div>
+                    <div>
+                        <DiscardPileWindow
+                            gameState={gameState}
+                            opponent={true}
+                        />
+                    </div>
                 </div>
                 <MessageLog gameState={gameState} />
             </div>
