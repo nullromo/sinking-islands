@@ -20,7 +20,7 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
             <Board
                 gameState={props.gameState}
                 onCharacterClicked={(island, character) => {
-                    if (movementSet.length === 0) {
+                    if (movementSet.length <= 0) {
                         setMovementSet([
                             {
                                 character,

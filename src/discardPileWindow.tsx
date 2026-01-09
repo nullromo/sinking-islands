@@ -33,7 +33,7 @@ export const DiscardPileWindow = (props: {
                     visibility: hover ? 'visible' : 'hidden',
                 }}
             >
-                {cards.length === 0
+                {cards.length <= 0
                     ? '<Empty>'
                     : cards.map((card, index) => {
                           return (
