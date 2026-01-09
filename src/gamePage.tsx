@@ -6,6 +6,7 @@ import { Board } from './board';
 import type { GameSerialized, PlayerDesignator } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
 import { Hand } from './hand';
+import { MessageLog } from './messageLog';
 import type { CheckResult } from './server/checkResult';
 import type {
     ClientToServerEvents,
@@ -19,7 +20,6 @@ import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
 import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
-import { MessageLog } from './messageLog';
 
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 const connectSocket = () => {
@@ -225,6 +225,7 @@ const GameIDBanner = (props: {
                     position: 'absolute',
                     right: '10px',
                     top: '10px',
+                    zIndex: 100,
                 }}
             >
                 <div>{`You are ${props.you}`}</div>

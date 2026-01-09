@@ -441,7 +441,7 @@
         "react/jsx-sort-props": ["warn", {"callbacksLast": true, "shorthandFirst": true, "reservedFirst": true}],
         "react/jsx-uses-react": "off",
         "react/no-access-state-in-setstate": "error",
-        "react/no-array-index-key": "warn",
+        "react/no-array-index-key": "off",
         "react/no-danger": "error",
         "react/no-redundant-should-component-update": "error",
         "react/no-this-in-sfc": "error",
