@@ -1692,7 +1692,7 @@ export class Game {
                                 characterToFlee.tortoise
                                     ? 'tortoise'
                                     : 'character'
-                            } flees first.`,
+                            } flees island ${lavaFlowIsland.islandNumber} first.`,
                         );
 
                         // move the character
@@ -1703,7 +1703,7 @@ export class Game {
                                 characterToFlee.tortoise
                                     ? 'tortoise'
                                     : 'character'
-                            } flees from the lava flow.`,
+                            } flees from the lava flow to island ${safeIsland.islandNumber}.`,
                         );
                         lavaFlowIsland.removeCharacter(characterToFlee);
                         safeIsland.addCharacter(characterToFlee);
@@ -1727,7 +1727,7 @@ export class Game {
                                     character.tortoise
                                         ? 'tortoise'
                                         : 'character'
-                                } flees from the lava flow.`,
+                                } flees from the lava flow to island ${safeIsland.islandNumber}.`,
                             );
                             lavaFlowIsland.removeCharacter(character);
                             safeIsland.addCharacter(character);
@@ -1759,7 +1759,7 @@ export class Game {
                                 character.strength
                             }-strength ${
                                 character.tortoise ? 'tortoise' : 'character'
-                            } burns to death in the lava flow.`,
+                            } burns to death in the lava flow on island ${lavaFlowIsland.islandNumber}.`,
                         );
                         lavaFlowIsland.removeCharacter(character);
                     });
