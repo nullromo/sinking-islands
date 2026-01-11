@@ -18,6 +18,49 @@
 1. Make a Dokploy instance in Hetzner that will push to the application VM
 1. Make a github action that spins up the build server, runs the build, then
    shuts down the build server
+    1. AI response:
+
+    ```
+    Using the Hetzner Cloud CLI (hcloud) via SSH/Action
+    If you have a persistent VM that you want to manually power on and off at specific times, you can use an action that interacts with the Hetzner Cloud API or SSHs into a control machine. The hcloud CLI is the command-line interface for interacting with Hetzner Cloud.
+    Prerequisites:
+    Hetzner API Token: Create a Read & Write API token in the Hetzner Cloud Console and add it to your GitHub repository secrets (e.g., as HCLOUD_TOKEN).
+    Server Name/ID: Know the name or ID of the specific VM you wish to control.
+    Workflow Example (using SSH to run the CLI command):
+    You can use an action like appleboy/ssh-action to connect to a management server and run the necessary hcloud commands to start or stop a target VM.
+    To start a VM: hcloud server poweron [SERVER_NAME_OR_ID]
+    To stop a VM: hcloud server poweroff [SERVER_NAME_OR_ID]
+    ---
+    To use the hcloud CLI in a GitHub Actions workflow, you can use a dedicated GitHub Action to install the CLI and configure it with a Hetzner Cloud API token.
+    Prerequisites
+    Create an API Token: In the Hetzner Cloud Console, select your project and create a new API token.
+    Store as a GitHub Secret: In your GitHub repository, go to Settings -> Secrets -> Actions, and add your API token as a new repository secret (e.g., named HCLOUD_TOKEN).
+    Workflow Example
+    The following YAML workflow demonstrates how to install the hcloud CLI using the hetznercloud/setup-hcloud action and then run an hcloud command.
+    yaml
+    name: Manage Hetzner Cloud Resources
+
+    on: [push]
+
+    jobs:
+      manage-servers:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Setup hcloud CLI
+            uses: hetznercloud/setup-hcloud@v1
+            with:
+              # Optional: specify a specific version, e.g., 'v1.41.1', or 'latest'
+              hcloud-version: latest
+
+          - name: List server types
+            run: hcloud server-type list
+            env:
+              # Use the secret you created in GitHub
+              HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+    ```
 
 ## Visual
 
