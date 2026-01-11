@@ -62,6 +62,9 @@
               HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
     ```
 
+1. Do I need to use tailscale for DNS? Do I need to get a domain with Namecheap
+   or Cloudflare?
+
 ## Visual
 
 - similar to how it shows staged movement state before submit, it should also
