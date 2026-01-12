@@ -1,4 +1,4 @@
-import type { CharacterSerialized, PlayerDesignator } from '../commonTypes';
+import type { CharacterSerialized, PlayerDesignator } from '../../commonTypes';
 import { PlayerGamePiece } from './playerGamePiece';
 
 /**

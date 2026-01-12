@@ -2,8 +2,8 @@ import React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import type { CardSerialized, GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
-import type { CardPlacement } from '../server/actionOrderTrack';
-import type { CardType } from '../server/card';
+import type { CardPlacement } from '../server/gameObjects/actionOrderTrack';
+import type { CardType } from '../server/gameObjects/card';
 
 interface CardPlacementWidgetProps {
     submit: (cardPlacement: CardPlacement) => void;

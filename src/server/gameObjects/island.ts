@@ -3,9 +3,9 @@ import type {
     IslandSerialized,
     IslandType,
     PlayerDesignator,
-} from '../commonTypes';
+} from '../../commonTypes';
+import { fullObject } from '../util';
 import { Character } from './character';
-import { fullObject } from './util';
 
 /**
  * Represents an island.

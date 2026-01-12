@@ -5,8 +5,8 @@ import type {
     IslandSerialized,
 } from './commonTypes';
 import { IslandType } from './commonTypes';
-import { Character } from './server/character';
-import type { HarpoonTarget } from './server/player';
+import { Character } from './server/gameObjects/character';
+import type { HarpoonTarget } from './server/gameObjects/player';
 
 interface BoardProps {
     gameState: GameSerialized;
@@ -45,9 +45,9 @@ export const Board = (props: BoardProps) => {
                                     island.islandType === IslandType.SACRED
                                         ? 'gold'
                                         : island.islandType ===
-                                          IslandType.VOLCANO
-                                        ? 'sandybrown'
-                                        : 'mediumseagreen',
+                                            IslandType.VOLCANO
+                                          ? 'sandybrown'
+                                          : 'mediumseagreen',
                                 border:
                                     island.islandNumber ===
                                     props.highlightIslandNumber
@@ -70,8 +70,8 @@ export const Board = (props: BoardProps) => {
                             {island.islandType === IslandType.SACRED
                                 ? '🙏'
                                 : island.islandType === IslandType.VOLCANO
-                                ? '🌋'
-                                : ''}
+                                  ? '🌋'
+                                  : ''}
                             {island.islandNumber ===
                                 props.gameState.islandModifiers
                                     .playerAPilings ||

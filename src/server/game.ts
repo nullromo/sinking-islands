@@ -11,18 +11,18 @@ import type {
     ServerToClientEvents,
 } from '../socketEvents';
 import { assertUnreachable, shuffleArray, upperSnakeToTitle } from '../util';
-import type { CardPlacement } from './actionOrderTrack';
-import { ActionOrderTrack } from './actionOrderTrack';
-import { Card, CardType } from './card';
-import { Character } from './character';
-import { Island } from './island';
+import type { CardPlacement } from './gameObjects/actionOrderTrack';
+import { ActionOrderTrack } from './gameObjects/actionOrderTrack';
+import { Card, CardType } from './gameObjects/card';
+import { Character } from './gameObjects/character';
+import { Island } from './gameObjects/island';
 import type {
     FlyingFishMovement,
     HarpoonTarget,
     MovementSet,
     TortoiseTarget,
-} from './player';
-import { Player } from './player';
+} from './gameObjects/player';
+import { Player } from './gameObjects/player';
 import { CheckResult } from './checkResult';
 
 /**

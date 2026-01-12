@@ -1,5 +1,5 @@
 import type { IslandSerialized } from './commonTypes';
-import type { MovementSet } from './server/player';
+import type { MovementSet } from './server/gameObjects/player';
 
 /**
  * Returns the number of movement points that it takes to get from one

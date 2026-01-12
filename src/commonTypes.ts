@@ -1,4 +1,4 @@
-import type { CardType } from './server/card';
+import type { CardType } from './server/gameObjects/card';
 
 /**
  * Unique IDs for each type of island.

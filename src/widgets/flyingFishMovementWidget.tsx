@@ -3,7 +3,7 @@ import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
-import type { FlyingFishMovement } from '../server/player';
+import type { FlyingFishMovement } from '../server/gameObjects/player';
 
 interface FlyingFishMovementWidgetProps {
     submit: (flyingFishMovement: FlyingFishMovement) => void;

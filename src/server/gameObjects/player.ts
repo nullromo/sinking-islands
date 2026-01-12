@@ -4,18 +4,18 @@ import type {
     CharacterSerialized,
     GameSerialized,
     PlayerDesignator,
-} from '../commonTypes';
-import { otherPlayerDesignator } from '../commonTypes';
+} from '../../commonTypes';
+import { otherPlayerDesignator } from '../../commonTypes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
-} from '../socketEvents';
-import { sampleArray, shuffleArray } from '../util';
+} from '../../socketEvents';
+import { sampleArray, shuffleArray } from '../../util';
+import type { CheckResult } from '../checkResult';
+import { fullObject } from '../util';
 import type { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
-import type { CheckResult } from './checkResult';
-import { fullObject } from './util';
 
 const randomIslandNumber = () => {
     return Math.floor(Math.random() * 16) + 1;

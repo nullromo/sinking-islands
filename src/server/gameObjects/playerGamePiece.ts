@@ -1,4 +1,4 @@
-import type { PlayerDesignator } from '../commonTypes';
+import type { PlayerDesignator } from '../../commonTypes';
 
 /**
  * Base class for game pieces that are owned by a player.

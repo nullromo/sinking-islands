@@ -5,7 +5,7 @@ import { Board } from '../board';
 import type { GameSerialized } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
 import { Hand } from '../hand';
-import type { MovementSet } from '../server/player';
+import type { MovementSet } from '../server/gameObjects/player';
 
 interface MovementSetWidgetProps {
     submit: (movementSet: MovementSet) => void;

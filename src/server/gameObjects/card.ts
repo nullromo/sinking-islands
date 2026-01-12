@@ -1,5 +1,5 @@
-import type { CardSerialized, PlayerDesignator } from '../commonTypes';
-import { assertUnreachable } from '../util';
+import type { CardSerialized, PlayerDesignator } from '../../commonTypes';
+import { assertUnreachable } from '../../util';
 import { PlayerGamePiece } from './playerGamePiece';
 
 /**

@@ -4,7 +4,10 @@ import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import { otherPlayerDesignator } from '../commonTypes';
 import { Hand } from '../hand';
-import type { HarpoonTarget, TortoiseTarget } from '../server/player';
+import type {
+    HarpoonTarget,
+    TortoiseTarget,
+} from '../server/gameObjects/player';
 
 interface CharacterTargetWidgetProps {
     gameState: GameSerialized;

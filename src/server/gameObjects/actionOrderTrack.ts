@@ -2,7 +2,7 @@ import type {
     ActionOrderTrackSerialized,
     CardSerialized,
     PlayerDesignator,
-} from '../commonTypes';
+} from '../../commonTypes';
 import { Card } from './card';
 
 /**

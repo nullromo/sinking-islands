@@ -1,12 +1,12 @@
 import type { CharacterSerialized, GameSerialized } from './commonTypes';
-import type { CardPlacement } from './server/actionOrderTrack';
+import type { CardPlacement } from './server/gameObjects/actionOrderTrack';
 import type { CheckResult } from './server/checkResult';
 import type {
     FlyingFishMovement,
     HarpoonTarget,
     MovementSet,
     TortoiseTarget,
-} from './server/player';
+} from './server/gameObjects/player';
 
 export interface ClientToServerEvents {
     createGame: () => void;
