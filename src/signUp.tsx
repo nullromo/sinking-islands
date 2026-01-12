@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React from 'react';
+import { withServerCalls } from './withServerCalls';
 
-export const SignUpWidget = () => {
+export const SignUpWidget = withServerCalls((props) => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [message, setMessage] = React.useState('');
@@ -51,15 +51,10 @@ export const SignUpWidget = () => {
                     onClick={() => {
                         setMessage('');
                         setErrorMessage('');
-                        axios
-                            .post('/user', { password, username })
+                        props.serverCalls
+                            .createUser(username, password)
                             .then((response) => {
-                                const message = (
-                                    response.data as { message: string }
-                                ).message;
-                                if (typeof message === 'string') {
-                                    setMessage(message);
-                                }
+                                setMessage(response.message);
                             })
                             .catch((error: unknown) => {
                                 setErrorMessage(
@@ -75,4 +70,4 @@ export const SignUpWidget = () => {
             </div>
         </div>
     );
-};
+}, 'SignUpWidget');
