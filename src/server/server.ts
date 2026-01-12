@@ -2,11 +2,11 @@ import http from 'http';
 import cors from 'cors';
 import express from 'express';
 import { Server } from 'socket.io';
+import { PlayerDesignator } from '../commonTypes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
-import { PlayerDesignator } from '../commonTypes';
 import { Game } from './game';
 
 const app = express();
