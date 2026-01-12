@@ -1,4 +1,5 @@
 import type { CardSerialized, GameSerialized } from './commonTypes';
+import { cardTypeToString } from './server/gameObjects/card';
 import { upperSnakeToTitle } from './util';
 
 interface ActionOrderTrackProps {
@@ -87,7 +88,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                         >
                                             <div>
                                                 {overrideCard
-                                                    ? upperSnakeToTitle(
+                                                    ? cardTypeToString(
                                                           overrideCard.cardType,
                                                       )
                                                     : card
