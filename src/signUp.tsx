@@ -1,8 +1,11 @@
+import axios from 'axios';
 import React from 'react';
 
 export const SignUpWidget = () => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [message, setMessage] = React.useState('');
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     return (
         <div>
@@ -37,10 +40,34 @@ export const SignUpWidget = () => {
                         }}
                     />
                 </label>
+                {message === '' ? null : (
+                    <div style={{ color: 'green' }}>{message}</div>
+                )}
+                {errorMessage === '' ? null : (
+                    <div style={{ color: 'red' }}>{errorMessage}</div>
+                )}
                 <button
                     type='button'
                     onClick={() => {
-                        //
+                        setMessage('');
+                        setErrorMessage('');
+                        axios
+                            .post('/user', { password, username })
+                            .then((response) => {
+                                const message = (
+                                    response.data as { message: string }
+                                ).message;
+                                if (typeof message === 'string') {
+                                    setMessage(message);
+                                }
+                            })
+                            .catch((error: unknown) => {
+                                setErrorMessage(
+                                    error instanceof Error
+                                        ? error.message
+                                        : `${error}`,
+                                );
+                            });
                     }}
                 >
                     Create Account

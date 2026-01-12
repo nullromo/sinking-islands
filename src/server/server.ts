@@ -8,6 +8,7 @@ import type {
     ServerToClientEvents,
 } from '../socketEvents';
 import { Game } from './game';
+import { usersRouter } from './usersRouter';
 
 const app = express();
 const server = http.createServer(app);
@@ -19,6 +20,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
 
 const whitelist = [
     'http://localhost:3000',
+    'http://localhost:5151',
     'http://192.168.0.16:3000',
     'http://10.0.0.163:3000',
     'http://192.168.42.2:3000',
@@ -43,6 +45,22 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.use(usersRouter);
+
+app.use(
+    (
+        error: Error,
+        __: express.Request,
+        response: express.Response,
+        next: express.NextFunction,
+    ) => {
+        console.error(error);
+        response.status(500).send({ message: error.message });
+        next();
+    },
+);
 
 server.listen(5151, () => {
     console.log('Listening');
