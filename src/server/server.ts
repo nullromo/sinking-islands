@@ -1,5 +1,7 @@
 import http from 'http';
+import session from 'express-session';
 import cors from 'cors';
+import { RedisStore } from 'connect-redis';
 import express from 'express';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
@@ -9,6 +11,7 @@ import type {
 } from '../socketEvents';
 import { Game } from './game';
 import { usersRouter } from './usersRouter';
+import { getRedis } from './redisConnector';
 
 const app = express();
 const server = http.createServer(app);
@@ -46,6 +49,23 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+(async () => {
+    const redisStore = new RedisStore({
+        client: await getRedis(),
+        prefix: 'sinking-islands:',
+    });
+
+    app.use(
+        session({
+            resave: false,
+            saveUninitialized: false,
+            // TODO
+            secret: 'TODO',
+            store: redisStore,
+        }),
+    );
+})().catch(console.error);
 
 app.use(usersRouter);
 
