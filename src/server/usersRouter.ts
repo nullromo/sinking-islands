@@ -1,8 +1,9 @@
-import express from 'express';
 import bcrypt from 'bcrypt';
+import express from 'express';
 import { Endpoints } from '../endpoints';
 import { EndpointUtils } from '../endpointUtils';
 import { getRedis } from './redisConnector';
+import { RedisKeys } from './redisKeys';
 
 const createUser = async (
     username: string | undefined,
@@ -19,7 +20,7 @@ const createUser = async (
     const redis = await getRedis();
 
     // create key for user
-    const key = `user:${username}`;
+    const key = RedisKeys.createUserKey(username);
 
     // check if the user already exists
     const existingUser = await redis.get(key);
