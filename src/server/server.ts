@@ -72,6 +72,16 @@ app.use(express.json());
         }),
     );
 
+    app.use((request, __, next) => {
+        console.log(
+            'HTTP request from',
+            request.session.username
+                ? `'${request.session.username}'`
+                : 'unknown user',
+        );
+        next();
+    });
+
     app.use(usersRouter);
 
     app.use(
