@@ -40,4 +40,10 @@ export class ServerCalls {
             requestBody: { password, username },
         });
     };
+
+    public readonly logIn = async (username: string, password: string) => {
+        return this.send(Endpoints.LogIn, {
+            requestBody: { password, username },
+        });
+    };
 }

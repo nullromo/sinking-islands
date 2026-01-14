@@ -1,5 +1,5 @@
 import React from 'react';
-import { SignUpWidget } from './signUp';
+import { LogInOrSignUpWidget } from './logInOrSignUp';
 
 export const CreateOrJoinPage = (props: {
     emitCreate: () => void;
@@ -50,7 +50,8 @@ export const CreateOrJoinPage = (props: {
             <br />
             <br />
             <br />
-            <SignUpWidget />
+            <LogInOrSignUpWidget widgetType='signUp' />
+            <LogInOrSignUpWidget widgetType='logIn' />
         </div>
     );
 };

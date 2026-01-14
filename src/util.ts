@@ -62,3 +62,9 @@ export type MakeEmptyKeysOptional<T> = {
         ? { [K in keyof U]: U[K] }
         : never
     : never;
+
+export const delay = async (milliseconds: number) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, milliseconds);
+    });
+};

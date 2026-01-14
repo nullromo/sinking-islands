@@ -65,22 +65,22 @@ app.use(express.json());
             store: redisStore,
         }),
     );
+
+    app.use(usersRouter);
+
+    app.use(
+        (
+            error: Error,
+            __: express.Request,
+            response: express.Response,
+            next: express.NextFunction,
+        ) => {
+            console.error(error);
+            response.status(500).send({ message: error.message });
+            next();
+        },
+    );
 })().catch(console.error);
-
-app.use(usersRouter);
-
-app.use(
-    (
-        error: Error,
-        __: express.Request,
-        response: express.Response,
-        next: express.NextFunction,
-    ) => {
-        console.error(error);
-        response.status(500).send({ message: error.message });
-        next();
-    },
-);
 
 server.listen(5151, () => {
     console.log('Listening');
