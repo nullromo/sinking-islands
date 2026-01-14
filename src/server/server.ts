@@ -1,8 +1,8 @@
 import http from 'http';
-import session from 'express-session';
-import cors from 'cors';
 import { RedisStore } from 'connect-redis';
+import cors from 'cors';
 import express from 'express';
+import session from 'express-session';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
 import type {
@@ -10,8 +10,8 @@ import type {
     ServerToClientEvents,
 } from '../socketEvents';
 import { Game } from './game';
-import { usersRouter } from './usersRouter';
 import { getRedis } from './redisConnector';
+import { usersRouter } from './usersRouter';
 
 const app = express();
 const server = http.createServer(app);
@@ -53,16 +53,22 @@ app.use(express.json());
 (async () => {
     const redisStore = new RedisStore({
         client: await getRedis(),
-        prefix: 'sinking-islands:',
+        prefix: 'session:sinking-islands:',
     });
 
     app.use(
         session({
+            cookie: {
+                maxAge: 1000 * 60 * 10, // 10 minutes
+                // secure: true // TODO enable this when https is set up. See https://github.com/expressjs/session?tab=readme-ov-file#cookiesecure
+            },
+            name: 'sinking-islands',
             resave: false,
-            saveUninitialized: false,
-            // TODO
-            secret: 'TODO',
+            rolling: true,
+            saveUninitialized: true,
+            secret: 'TODO', // TODO
             store: redisStore,
+            unset: 'destroy',
         }),
     );
 

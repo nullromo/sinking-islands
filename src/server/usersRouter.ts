@@ -3,7 +3,6 @@ import express from 'express';
 import type { Session, SessionData } from 'express-session';
 import { Endpoints } from '../endpoints';
 import { EndpointUtils } from '../endpointUtils';
-import { delay } from '../util';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';
 
