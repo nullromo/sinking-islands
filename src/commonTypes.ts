@@ -26,23 +26,43 @@ export const otherPlayerDesignator = (playerDesignator: PlayerDesignator) => {
         : PlayerDesignator.PLAYER_A;
 };
 
+/**
+ * Represents a game piece owned by a player.
+ */
 export type PlayerGamePieceSerialized = {
+    // the identifier of the player
     playerDesignator: PlayerDesignator;
 };
 
+/**
+ * Represents a character.
+ */
 export interface CharacterSerialized extends PlayerGamePieceSerialized {
+    // the character's battle strength
     strength: number;
+    // the character's tortoise status
     tortoise: boolean;
 }
 
+/**
+ * Represents an island.
+ */
 export type IslandSerialized = {
+    // the island's number
     islandNumber: number;
+    // the island's type
     islandType: IslandType;
+    // the island's capacity
     smallCapacity: boolean;
+    // list of characters present on the island
     characters: CharacterSerialized[];
 };
 
+/**
+ * Represents an action card.
+ */
 export interface CardSerialized extends PlayerGamePieceSerialized {
+    // the type of the card
     cardType: CardType;
 }
 
