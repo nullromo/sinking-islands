@@ -44,7 +44,7 @@ export namespace EndpointUtils {
         instance: T;
     };
 
-    type HandlerImplementation<T extends EndpointInfo> = (
+    export type HandlerImplementation<T extends EndpointInfo> = (
         request: EndpointRequest<T>,
     ) => EndpointResponse<T> | Promise<EndpointResponse<T>>;
 
@@ -64,7 +64,7 @@ export namespace EndpointUtils {
         };
     };
 
-    export const registerEndpointInfo = <T extends EndpointInfo>(
+    export const registerEndpoint = <T extends EndpointInfo>(
         router: Router,
         endpointConstructor: EndpointConstructor<T>,
         ...handlers: Array<HandlerImplementation<T>>

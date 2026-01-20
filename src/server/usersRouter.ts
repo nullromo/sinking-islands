@@ -116,7 +116,7 @@ const logIn = async (
 export const usersRouter = (() => {
     const router = express.Router();
 
-    EndpointUtils.registerEndpointInfo(
+    EndpointUtils.registerEndpoint(
         router,
         Endpoints.CreateUser,
         async (request) => {
@@ -124,17 +124,13 @@ export const usersRouter = (() => {
         },
     );
 
-    EndpointUtils.registerEndpointInfo(
-        router,
-        Endpoints.LogIn,
-        async (request) => {
-            return logIn(
-                request.session,
-                request.body.username,
-                request.body.password,
-            );
-        },
-    );
+    EndpointUtils.registerEndpoint(router, Endpoints.LogIn, async (request) => {
+        return logIn(
+            request.session,
+            request.body.username,
+            request.body.password,
+        );
+    });
 
     return router;
 })();

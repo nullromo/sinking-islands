@@ -12,32 +12,22 @@ const DefaultTypes = {
 export namespace Endpoints {
     class CreateUserInfo implements EndpointUtils.EndpointInfo {
         public readonly path = '/user' as const;
-
         public readonly method = HTTPMethod.POST;
-
         public readonly urlParameters = {};
-
         public readonly queryParameters = {};
-
         public readonly requestBody: { username?: string; password?: string } =
             {};
-
         public readonly responseBody = DefaultTypes.message;
     }
     export const CreateUser = { instance: new CreateUserInfo() };
 
     class LogInInfo implements EndpointUtils.EndpointInfo {
         public readonly path = '/session' as const;
-
         public readonly method = HTTPMethod.POST;
-
         public readonly urlParameters = {};
-
         public readonly queryParameters = {};
-
         public readonly requestBody: { username?: string; password?: string } =
             {};
-
         public readonly responseBody = DefaultTypes.message;
     }
     export const LogIn = { instance: new LogInInfo() };

@@ -3,7 +3,7 @@
 ## Plan
 
 1. ✅ Create users and store in redis.
-1. User sessions.
+1. ✅ User sessions.
 1. Re-structure backend to be state-based. REST API operates on game states that
    are stored in localhost Redis. Backend associates user IDs with players A and
    B. Each request includes
