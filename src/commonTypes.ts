@@ -72,12 +72,25 @@ export type ActionOrderTrackSerialized = {
     faceUpCards: number[];
 };
 
+export type PlayerSerialized = {
+    playerDesignator: PlayerDesignator;
+    deck: CardSerialized[];
+    hand: CardSerialized[];
+    discardPile: CardSerialized[];
+    setAsideCards: CardSerialized[];
+    netIsland: number;
+    pilingsIsland: number;
+    indiscretion: boolean;
+    weakness: boolean;
+    username: string | null;
+};
+
 export type GameSerialized = {
     actionOrderTrack: ActionOrderTrackSerialized;
     activeCardIndex: number | null;
     gameState: GameState;
     id: string;
-    indescretion: {
+    indiscretion: {
         [PlayerDesignator.PLAYER_A]: boolean;
         [PlayerDesignator.PLAYER_B]: boolean;
     };
@@ -91,11 +104,8 @@ export type GameSerialized = {
     islands: IslandSerialized[];
     messages: string[];
     nextIslandToSink: number;
-    opponentDeckSize: number;
-    opponentDiscardPile: CardSerialized[];
-    opponentHandSize: number;
-    you: PlayerDesignator;
-    yourDeckSize: number;
-    yourDiscardPile: CardSerialized[];
-    yourHand: CardSerialized[];
+    players: {
+        [PlayerDesignator.PLAYER_A]: PlayerSerialized;
+        [PlayerDesignator.PLAYER_B]: PlayerSerialized;
+    };
 };
