@@ -3,4 +3,8 @@ export namespace RedisKeys {
     export const createUserKey = (username: string) => {
         return `user:${username}`;
     };
+
+    export const createGameKey = (gameID: string) => {
+        return `game:${gameID}`;
+    };
 }
