@@ -1,3 +1,4 @@
+import type { GameState } from './gameState';
 import type { CardType } from './server/gameObjects/card';
 
 /**
@@ -54,6 +55,7 @@ export type ActionOrderTrackSerialized = {
 export type GameSerialized = {
     actionOrderTrack: ActionOrderTrackSerialized;
     activeCardIndex: number | null;
+    gameState: GameState;
     id: string;
     indescretion: {
         [PlayerDesignator.PLAYER_A]: boolean;

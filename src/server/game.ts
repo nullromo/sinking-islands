@@ -11,6 +11,7 @@ import type {
     ServerToClientEvents,
 } from '../socketEvents';
 import { assertUnreachable, shuffleArray, upperSnakeToTitle } from '../util';
+import { GameState } from '../gameState';
 import type { CardPlacement } from './gameObjects/actionOrderTrack';
 import { ActionOrderTrack } from './gameObjects/actionOrderTrack';
 import { Card, CardType } from './gameObjects/card';
@@ -71,6 +72,8 @@ export class Game {
         new Island(15, IslandType.VOLCANO, false),
         new Island(16, IslandType.NORMAL, true),
     ]);
+
+    public gameState: GameState = GameState.INITIAL_STATE;
 
     public constructor() {
         this.writeMessage('Creating game.');
@@ -1820,6 +1823,7 @@ export class Game {
                 this.activeCardIndex,
             ),
             activeCardIndex: this.activeCardIndex,
+            gameState: this.gameState,
             id: this.id,
             indescretion: {
                 [PlayerDesignator.PLAYER_A]: this.playerA.indescretion,
