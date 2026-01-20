@@ -12,6 +12,7 @@ import type {
 import { Game } from './game';
 import { getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
+import { gameRouter } from './gameRouter';
 
 const app = express();
 const server = http.createServer(app);
@@ -83,6 +84,7 @@ app.use(express.json());
     });
 
     app.use(usersRouter);
+    app.use(gameRouter);
 
     app.use(
         (
