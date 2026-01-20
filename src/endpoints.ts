@@ -31,4 +31,14 @@ export namespace Endpoints {
         public readonly responseBody = DefaultTypes.message;
     }
     export const LogIn = { instance: new LogInInfo() };
+
+    class CreateGameInfo implements EndpointUtils.EndpointInfo {
+        public readonly path = '/game' as const;
+        public readonly method = HTTPMethod.POST;
+        public readonly urlParameters = {};
+        public readonly queryParameters = {};
+        public readonly requestBody = {};
+        public readonly responseBody = DefaultTypes.message;
+    }
+    export const CreateGame = { instance: new CreateGameInfo() };
 }
