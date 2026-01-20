@@ -101,7 +101,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                 slotIndex,
                                             ) &&
                                                 card) ||
-                                            (props.gameState.indescretion[
+                                            (props.gameState.indiscretion[
                                                 props.gameState.you
                                             ] &&
                                                 overrideCard) ? (

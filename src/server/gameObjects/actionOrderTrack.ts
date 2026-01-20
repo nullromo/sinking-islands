@@ -99,11 +99,11 @@ export class ActionOrderTrack {
      */
     public readonly assignPlacement = (
         cardPlacement: CardPlacement,
-        indescretion: boolean,
+        indiscretion: boolean,
     ) => {
         Object.entries(cardPlacement).forEach(([slot, card]) => {
             this.placeCard(Number(slot), Card.deserialize(card));
-            if (indescretion) {
+            if (indiscretion) {
                 this.faceUpCards.push(Number(slot));
             }
         });

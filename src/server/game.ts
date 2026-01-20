@@ -257,7 +257,7 @@ export class Game {
                 // assign cards to action track
                 this.actionOrderTrack.assignPlacement(
                     cardPlacement,
-                    player.indescretion,
+                    player.indiscretion,
                 );
 
                 // remove the cards from the player's hand
@@ -265,8 +265,8 @@ export class Game {
                     player.removeCardFromHand(Card.deserialize(card));
                 });
 
-                // remove indescretion's effect from the player
-                player.indescretion = false;
+                // remove indiscretion's effect from the player
+                player.indiscretion = false;
 
                 this.broadcastGameState();
             };
@@ -1305,15 +1305,15 @@ export class Game {
                     harpoonTarget.character,
                 );
                 break;
-            case CardType.INDESCRETION:
+            case CardType.INDISCRETION:
                 this.writeMessage(
                     `Player ${otherPlayerDesignator(
                         player.playerDesignator,
-                    )} is put under the effects of indescretion.`,
+                    )} is put under the effects of indiscretion.`,
                 );
                 this.getPlayer(
                     otherPlayerDesignator(player.playerDesignator),
-                ).indescretion = true;
+                ).indiscretion = true;
                 break;
             case CardType.MEDITATION:
                 this.writeMessage(
@@ -1825,9 +1825,9 @@ export class Game {
             activeCardIndex: this.activeCardIndex,
             gameState: this.gameState,
             id: this.id,
-            indescretion: {
-                [PlayerDesignator.PLAYER_A]: this.playerA.indescretion,
-                [PlayerDesignator.PLAYER_B]: this.playerB.indescretion,
+            indiscretion: {
+                [PlayerDesignator.PLAYER_A]: this.playerA.indiscretion,
+                [PlayerDesignator.PLAYER_B]: this.playerB.indiscretion,
             },
             initiative: this.initiative,
             islandModifiers: {

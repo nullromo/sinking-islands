@@ -55,8 +55,8 @@ export class Player {
     public netIsland = NaN;
     public pilingsIsland = NaN;
 
-    // specifier for whether or not the player is under indescretion
-    public indescretion = false;
+    // specifier for whether or not the player is under indiscretion
+    public indiscretion = false;
 
     // specifier for whether or not the player is afflicted with weakness
     public weakness = false;
@@ -77,7 +77,7 @@ export class Player {
             new Card(this.playerDesignator, CardType.FOG),
             new Card(this.playerDesignator, CardType.HARPOON),
             new Card(this.playerDesignator, CardType.HARPOON),
-            new Card(this.playerDesignator, CardType.INDESCRETION),
+            new Card(this.playerDesignator, CardType.INDISCRETION),
             new Card(this.playerDesignator, CardType.MEDITATION),
             new Card(this.playerDesignator, CardType.MOVEMENT),
             new Card(this.playerDesignator, CardType.MOVEMENT),

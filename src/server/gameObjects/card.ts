@@ -10,7 +10,7 @@ export enum CardType {
     FLYING_FISH = 'FLYING_FISH',
     FOG = 'FOG',
     HARPOON = 'HARPOON',
-    INDESCRETION = 'INDESCRETION',
+    INDISCRETION = 'INDISCRETION',
     MEDITATION = 'MEDITATION',
     MOVEMENT = 'MOVEMENT',
     NET = 'NET',
@@ -36,8 +36,8 @@ export const cardTypeToString = (cardType: CardType) => {
             return 'Fog';
         case CardType.HARPOON:
             return 'Harpoon';
-        case CardType.INDESCRETION:
-            return 'Indescretion';
+        case CardType.INDISCRETION:
+            return 'indiscretion';
         case CardType.MEDITATION:
             return 'Meditation';
         case CardType.MOVEMENT:

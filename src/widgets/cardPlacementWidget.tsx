@@ -73,11 +73,11 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 on a slot in the Action Order Track to place the card. Click
                 Submit when finished, or click Reset to start over.
             </div>
-            {props.gameState.indescretion[props.gameState.you] ? (
+            {props.gameState.indiscretion[props.gameState.you] ? (
                 <>
                     <br />
                     <div style={{ color: 'darkred', width: '600px' }}>
-                        You are under the effects of indescretion.
+                        You are under the effects of indiscretion.
                     </div>
                 </>
             ) : null}
