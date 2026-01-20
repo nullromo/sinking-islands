@@ -72,9 +72,9 @@ export class Game {
         new Island(16, IslandType.NORMAL, true),
     ]);
 
-    public constructor(id: string) {
+    public constructor() {
         this.writeMessage('Creating game.');
-        this.id = id;
+        this.id = crypto.randomUUID();
 
         // create and randomize all the characters
         const characters = shuffleArray([
