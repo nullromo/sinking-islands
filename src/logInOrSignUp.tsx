@@ -1,6 +1,7 @@
 import React from 'react';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
+import { useResultMessage } from './useResultMessage';
 
 interface LogInOrSignUpWidgetProps extends InjectedServerCallsProps {
     widgetType: 'logIn' | 'signUp';
@@ -10,8 +11,7 @@ export const LogInOrSignUpWidget = withServerCalls(
     (props: LogInOrSignUpWidgetProps) => {
         const [username, setUsername] = React.useState('');
         const [password, setPassword] = React.useState('');
-        const [message, setMessage] = React.useState('');
-        const [errorMessage, setErrorMessage] = React.useState('');
+        const [result, setResult] = useResultMessage();
 
         return (
             <div>
@@ -46,17 +46,17 @@ export const LogInOrSignUpWidget = withServerCalls(
                             }}
                         />
                     </label>
-                    {message === '' ? null : (
-                        <div style={{ color: 'green' }}>{message}</div>
-                    )}
-                    {errorMessage === '' ? null : (
-                        <div style={{ color: 'red' }}>{errorMessage}</div>
+                    {result.success === null ? null : (
+                        <div
+                            style={{ color: result.success ? 'green' : 'red' }}
+                        >
+                            {result.message}
+                        </div>
                     )}
                     <button
                         type='button'
                         onClick={() => {
-                            setMessage('');
-                            setErrorMessage('');
+                            setResult(null, '');
                             (props.widgetType === 'logIn'
                                 ? props.serverCalls.logIn
                                 : props.serverCalls.createUser)(
@@ -64,10 +64,11 @@ export const LogInOrSignUpWidget = withServerCalls(
                                 password,
                             )
                                 .then((response) => {
-                                    setMessage(response.message);
+                                    setResult(true, response.message);
                                 })
                                 .catch((error: unknown) => {
-                                    setErrorMessage(
+                                    setResult(
+                                        false,
                                         error instanceof Error
                                             ? error.message
                                             : `${error}`,

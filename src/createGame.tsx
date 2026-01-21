@@ -1,13 +1,10 @@
-import React from 'react';
+import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
 
 export const CreateGameWidget = withServerCalls(
     (props: InjectedServerCallsProps) => {
-        const [result, setResult] = React.useState<{
-            success: boolean | null;
-            message: string;
-        }>({ message: '', success: null });
+        const [result, setResult] = useResultMessage();
 
         return (
             <div>
@@ -35,23 +32,15 @@ export const CreateGameWidget = withServerCalls(
                             props.serverCalls
                                 .createGame()
                                 .then((result) => {
-                                    setResult({
-                                        message: result.message,
-                                        success: true,
-                                    });
+                                    setResult(true, result.message);
                                 })
                                 .catch((error) => {
-                                    if (error instanceof Error) {
-                                        setResult({
-                                            message: error.message,
-                                            success: false,
-                                        });
-                                    } else {
-                                        setResult({
-                                            message: `${error}`,
-                                            success: false,
-                                        });
-                                    }
+                                    setResult(
+                                        false,
+                                        error instanceof Error
+                                            ? error.message
+                                            : `${error}`,
+                                    );
                                 });
                         }}
                     >
