@@ -6,8 +6,16 @@ export const useResultMessage = () => {
         message: string;
     }>({ message: '', success: null });
 
-    const setResultFunction = (success: boolean | null, message: string) => {
-        setResult({ message, success });
+    const setResultFunction = (success: boolean | null, value: unknown) => {
+        setResult({
+            message:
+                typeof value === 'string'
+                    ? value
+                    : value instanceof Error
+                      ? value.message
+                      : `${value}`,
+            success,
+        });
     };
 
     return [result, setResultFunction] as const;

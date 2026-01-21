@@ -67,12 +67,7 @@ export const LogInOrSignUpWidget = withServerCalls(
                                     setResult(true, response.message);
                                 })
                                 .catch((error: unknown) => {
-                                    setResult(
-                                        false,
-                                        error instanceof Error
-                                            ? error.message
-                                            : `${error}`,
-                                    );
+                                    setResult(false, error);
                                 });
                         }}
                     >

@@ -31,16 +31,11 @@ export const CreateGameWidget = withServerCalls(
                         onClick={() => {
                             props.serverCalls
                                 .createGame()
-                                .then((result) => {
-                                    setResult(true, result.message);
+                                .then((response) => {
+                                    setResult(true, response.message);
                                 })
                                 .catch((error) => {
-                                    setResult(
-                                        false,
-                                        error instanceof Error
-                                            ? error.message
-                                            : `${error}`,
-                                    );
+                                    setResult(false, error);
                                 });
                         }}
                     >
