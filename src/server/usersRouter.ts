@@ -122,15 +122,21 @@ export const usersRouter = (() => {
         async (request) => {
             return createUser(request.body.username, request.body.password);
         },
+        true,
     );
 
-    EndpointUtils.registerEndpoint(router, Endpoints.LogIn, async (request) => {
-        return logIn(
-            request.session,
-            request.body.username,
-            request.body.password,
-        );
-    });
+    EndpointUtils.registerEndpoint(
+        router,
+        Endpoints.LogIn,
+        async (request) => {
+            return logIn(
+                request.session,
+                request.body.username,
+                request.body.password,
+            );
+        },
+        true,
+    );
 
     return router;
 })();

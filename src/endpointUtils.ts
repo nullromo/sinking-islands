@@ -1,5 +1,6 @@
 import type express from 'express';
 import type { RequestHandler, Router } from 'express';
+import { requireSession } from './server/requireSession';
 
 export enum HTTPMethod {
     GET = 'GET',
@@ -67,25 +68,27 @@ export namespace EndpointUtils {
     export const registerEndpoint = <T extends EndpointInfo>(
         router: Router,
         endpointConstructor: EndpointConstructor<T>,
-        ...handlers: Array<HandlerImplementation<T>>
+        handler: HandlerImplementation<T>,
+        skipRequireSession = false,
     ) => {
         const method = endpointConstructor.instance.method;
         const path = endpointConstructor.instance.path;
 
-        const wrappedHandlers = handlers.map((handler) => {
-            return wrapExpressHandler(handler);
-        });
+        const wrappedHandler = wrapExpressHandler(handler);
+
+        const middleware = skipRequireSession ? [] : [requireSession];
+
         switch (method) {
             case HTTPMethod.GET:
-                return router.get(path, ...wrappedHandlers);
+                return router.get(path, ...middleware, wrappedHandler);
             case HTTPMethod.DELETE:
-                return router.delete(path, ...wrappedHandlers);
+                return router.delete(path, ...middleware, wrappedHandler);
             case HTTPMethod.PATCH:
-                return router.patch(path, ...wrappedHandlers);
+                return router.patch(path, ...middleware, wrappedHandler);
             case HTTPMethod.POST:
-                return router.post(path, ...wrappedHandlers);
+                return router.post(path, ...middleware, wrappedHandler);
             case HTTPMethod.PUT:
-                return router.put(path, ...wrappedHandlers);
+                return router.put(path, ...middleware, wrappedHandler);
             default:
                 return router;
         }

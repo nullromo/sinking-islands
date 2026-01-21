@@ -35,8 +35,6 @@ const createGame = async (username: string | undefined) => {
 export const gameRouter = (() => {
     const router = express.Router();
 
-    router.use(requireSession);
-
     EndpointUtils.registerEndpoint(
         router,
         Endpoints.CreateGame,
