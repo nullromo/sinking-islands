@@ -15,6 +15,9 @@ const createGame = async (username: string | undefined) => {
     // create a new game
     const game = GameOperations.create();
 
+    // assign the user to the game
+    GameOperations.assignUserToGame(game, username);
+
     // connect to redis
     const redis = await getRedis();
 

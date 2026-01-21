@@ -1,4 +1,8 @@
-import type { CharacterSerialized, IslandSerialized } from '../../commonTypes';
+import type {
+    CharacterSerialized,
+    IslandSerialized,
+    PlayerSerialized,
+} from '../../commonTypes';
 import {
     IslandType,
     PlayerDesignator,
@@ -93,5 +97,30 @@ export namespace GameOperations {
                 [PlayerDesignator.PLAYER_B]: playerB,
             },
         };
+    };
+
+    /**
+     * Assigns a user to an available player in the game.
+     */
+    export const assignUserToGame = (
+        game: GameSerialized,
+        username: string,
+    ) => {
+        // search for an available player
+        const availablePlayer = (
+            Object.entries(game.players) as Array<
+                [PlayerDesignator, PlayerSerialized]
+            >
+        ).find(([__, player]) => {
+            return player.username === null;
+        });
+
+        // make sure there is an available player
+        if (availablePlayer === undefined) {
+            throw new Error(`Game with ID '${game.id}' is full.`);
+        }
+
+        // assign username
+        game.players[availablePlayer[0]].username = username;
     };
 }
