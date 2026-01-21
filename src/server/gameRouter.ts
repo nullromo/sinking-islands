@@ -3,8 +3,8 @@ import { EndpointUtils } from '../endpointUtils';
 import { Endpoints } from '../endpoints';
 import { GameOperations } from './gameObjects/gameOperations';
 import { getRedis } from './redisConnector';
-import { requireSession } from './requireSession';
 import { RedisKeys } from './redisKeys';
+import { requireSession } from './requireSession';
 
 const createGame = async (username: string | undefined) => {
     // validate arguments
@@ -22,7 +22,7 @@ const createGame = async (username: string | undefined) => {
     const key = RedisKeys.createGameKey(game.id);
 
     // add the game to redis
-    await redis.json.set(key, '$', JSON.stringify(game));
+    await redis.json.set(key, '$', game);
 
     const message = 'Game created.';
     console.log(message);

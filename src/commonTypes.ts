@@ -38,12 +38,12 @@ export type PlayerGamePieceSerialized = {
 /**
  * Represents a character.
  */
-export interface CharacterSerialized extends PlayerGamePieceSerialized {
+export type CharacterSerialized = PlayerGamePieceSerialized & {
     // the character's battle strength
     strength: number;
     // the character's tortoise status
     tortoise: boolean;
-}
+};
 
 /**
  * Represents an island.
@@ -62,10 +62,10 @@ export type IslandSerialized = {
 /**
  * Represents an action card.
  */
-export interface CardSerialized extends PlayerGamePieceSerialized {
+export type CardSerialized = PlayerGamePieceSerialized & {
     // the type of the card
     cardType: CardType;
-}
+};
 
 export type ActionOrderTrackSerialized = {
     cardSlots: Array<Partial<CardSerialized> | null>;
