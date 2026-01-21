@@ -46,4 +46,8 @@ export class ServerCalls {
             requestBody: { password, username },
         });
     };
+
+    public readonly createGame = async () => {
+        return this.send(Endpoints.CreateGame, {});
+    };
 }

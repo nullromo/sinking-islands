@@ -1,5 +1,6 @@
 import React from 'react';
 import { LogInOrSignUpWidget } from './logInOrSignUp';
+import { CreateGameWidget } from './createGame';
 
 export const CreateOrJoinPage = (props: {
     emitCreate: () => void;
@@ -52,6 +53,7 @@ export const CreateOrJoinPage = (props: {
             <br />
             <LogInOrSignUpWidget widgetType='signUp' />
             <LogInOrSignUpWidget widgetType='logIn' />
+            <CreateGameWidget />
         </div>
     );
 };
