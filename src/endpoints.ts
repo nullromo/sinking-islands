@@ -1,3 +1,4 @@
+import type { GameSerialized } from './commonTypes';
 import type { EndpointUtils } from './endpointUtils';
 import { HTTPMethod } from './endpointUtils';
 
@@ -41,4 +42,14 @@ export namespace Endpoints {
         public readonly responseBody = DefaultTypes.message;
     }
     export const CreateGame = { instance: new CreateGameInfo() };
+
+    class GetGamesForUserInfo implements EndpointUtils.EndpointInfo {
+        public readonly path = '/games' as const;
+        public readonly method = HTTPMethod.GET;
+        public readonly urlParameters = {};
+        public readonly queryParameters = {};
+        public readonly requestBody = {};
+        public readonly responseBody: GameSerialized[] = [];
+    }
+    export const GetGamesForUser = { instance: new GetGamesForUserInfo() };
 }

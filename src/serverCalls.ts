@@ -50,4 +50,8 @@ export class ServerCalls {
     public readonly createGame = async () => {
         return this.send(Endpoints.CreateGame, {});
     };
+
+    public readonly getGamesForUser = async () => {
+        return this.send(Endpoints.GetGamesForUser, {});
+    };
 }
