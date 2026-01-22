@@ -54,9 +54,15 @@ export const LogInOrCreateAccountWidget = withServerCalls(
                     </div>
                 )}
                 {result.success ? (
-                    <Link to={PageRoutes.TITLE}>
+                    <Link
+                        to={
+                            props.widgetType === 'logIn'
+                                ? PageRoutes.DASHBOARD
+                                : PageRoutes.TITLE
+                        }
+                    >
                         <button style={{ width: '100%' }} type='button'>
-                            Back
+                            {props.widgetType === 'logIn' ? 'Continue' : 'Back'}
                         </button>
                     </Link>
                 ) : (

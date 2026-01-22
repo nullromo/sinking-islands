@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { GamePage } from './gamePage';
-import { TitlePage } from './pages/titlePage';
-import { PageRoutes } from './pageRoutes';
-import { LogInPage } from './logInPage';
 import { CreateAccountPage } from './createAccountPage';
+import { DashboardPage } from './dashboardPage';
+import { GamePage } from './gamePage';
+import { LogInPage } from './logInPage';
+import { PageRoutes } from './pageRoutes';
+import { TitlePage } from './pages/titlePage';
 
 export const SinkingIslandsApp = () => {
     return (
@@ -14,6 +15,10 @@ export const SinkingIslandsApp = () => {
                     path={PageRoutes.CREATE_ACCOUNT}
                 />
                 <Route element={<LogInPage />} path={PageRoutes.LOG_IN} />
+                <Route
+                    element={<DashboardPage />}
+                    path={PageRoutes.DASHBOARD}
+                />
                 <Route element={<GamePage />} path={PageRoutes.GAME} />
                 <Route element={<TitlePage />} path={PageRoutes.TITLE} />
             </Routes>

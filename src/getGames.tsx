@@ -10,6 +10,23 @@ export const GetGamesWidget = withServerCalls(
         const [games, setGames] = React.useState<GameSerialized[]>([]);
         const [result, setResult] = useResultMessage();
 
+        const refreshGameList = React.useCallback(() => {
+            setResult(null, '');
+            props.serverCalls
+                .getGamesForUser()
+                .then((response) => {
+                    setResult(true, 'Got games.');
+                    setGames(response);
+                })
+                .catch((error: unknown) => {
+                    setResult(false, error);
+                });
+        }, []);
+
+        React.useEffect(() => {
+            refreshGameList();
+        }, [refreshGameList]);
+
         return (
             <BoxWidget title='List Games'>
                 {result.success === null ? null : (
@@ -20,19 +37,10 @@ export const GetGamesWidget = withServerCalls(
                 <button
                     type='button'
                     onClick={() => {
-                        setResult(null, '');
-                        props.serverCalls
-                            .getGamesForUser()
-                            .then((response) => {
-                                setResult(true, 'Got games.');
-                                setGames(response);
-                            })
-                            .catch((error: unknown) => {
-                                setResult(false, error);
-                            });
+                        refreshGameList();
                     }}
                 >
-                    List My Games
+                    Refresh
                 </button>
                 <ul>
                     {games.map((game) => {

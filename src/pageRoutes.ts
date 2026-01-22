@@ -3,4 +3,5 @@ export enum PageRoutes {
     GAME = '/game',
     LOG_IN = '/log-in',
     CREATE_ACCOUNT = '/create-account',
+    DASHBOARD = '/dashboard',
 }

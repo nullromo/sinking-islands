@@ -1,5 +1,4 @@
 import React from 'react';
-import { LogInOrCreateAccountWidget } from './logInOrCreateAccount';
 import { CreateGameWidget } from './createGame';
 import { GetGamesWidget } from './getGames';
 
@@ -48,14 +47,6 @@ export const CreateOrJoinPage = (props: {
             >
                 Join Game
             </button>
-            <br />
-            <br />
-            <br />
-            <br />
-            <LogInOrCreateAccountWidget widgetType='createAccount' />
-            <LogInOrCreateAccountWidget widgetType='logIn' />
-            <CreateGameWidget />
-            <GetGamesWidget />
         </div>
     );
 };
