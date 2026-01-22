@@ -3,6 +3,8 @@ import { BoxWidget } from './boxWidget';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
+import { Link } from 'react-router';
+import { PageRoutes } from './pageRoutes';
 
 interface LogInOrCreateAccountWidgetProps extends InjectedServerCallsProps {
     widgetType: 'createAccount' | 'logIn';
@@ -14,12 +16,8 @@ export const LogInOrCreateAccountWidget = withServerCalls(
         const [password, setPassword] = React.useState('');
         const [result, setResult] = useResultMessage();
 
-        return (
-            <BoxWidget
-                title={
-                    props.widgetType === 'logIn' ? 'Log In' : 'Create Account'
-                }
-            >
+        const inputBoxes = (
+            <>
                 <label>
                     {'Username: '}
                     <input
@@ -40,28 +38,51 @@ export const LogInOrCreateAccountWidget = withServerCalls(
                         }}
                     />
                 </label>
+            </>
+        );
+
+        return (
+            <BoxWidget
+                title={
+                    props.widgetType === 'logIn' ? 'Log In' : 'Create Account'
+                }
+            >
+                {result.success ? null : inputBoxes}
                 {result.success === null ? null : (
                     <div style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}
                     </div>
                 )}
-                <button
-                    type='button'
-                    onClick={() => {
-                        setResult(null, '');
-                        (props.widgetType === 'logIn'
-                            ? props.serverCalls.logIn
-                            : props.serverCalls.createUser)(username, password)
-                            .then((response) => {
-                                setResult(true, response.message);
-                            })
-                            .catch((error: unknown) => {
-                                setResult(false, error);
-                            });
-                    }}
-                >
-                    {props.widgetType === 'logIn' ? 'Log In' : 'Create Account'}
-                </button>
+                {result.success ? (
+                    <Link to={PageRoutes.TITLE}>
+                        <button style={{ width: '100%' }} type='button'>
+                            Back
+                        </button>
+                    </Link>
+                ) : (
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setResult(null, '');
+                            (props.widgetType === 'logIn'
+                                ? props.serverCalls.logIn
+                                : props.serverCalls.createUser)(
+                                username,
+                                password,
+                            )
+                                .then((response) => {
+                                    setResult(true, response.message);
+                                })
+                                .catch((error: unknown) => {
+                                    setResult(false, error);
+                                });
+                        }}
+                    >
+                        {props.widgetType === 'logIn'
+                            ? 'Log In'
+                            : 'Create Account'}
+                    </button>
+                )}
             </BoxWidget>
         );
     },

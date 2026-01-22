@@ -15,7 +15,7 @@ export const SinkingIslandsApp = () => {
                 />
                 <Route element={<LogInPage />} path={PageRoutes.LOG_IN} />
                 <Route element={<GamePage />} path={PageRoutes.GAME} />
-                <Route element={<TitlePage />} path='/' />
+                <Route element={<TitlePage />} path={PageRoutes.TITLE} />
             </Routes>
         </BrowserRouter>
     );
