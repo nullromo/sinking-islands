@@ -8,24 +8,10 @@ export const TitlePage = () => {
             <h1>Sinking Islands</h1>
             <div style={{ columnGap: '10px', display: 'flex' }}>
                 <Link to={PageRoutes.LOG_IN}>
-                    <button
-                        type='button'
-                        onClick={() => {
-                            //
-                        }}
-                    >
-                        Log In
-                    </button>
+                    <button type='button'>Log In</button>
                 </Link>
                 <Link to={PageRoutes.CREATE_ACCOUNT}>
-                    <button
-                        type='button'
-                        onClick={() => {
-                            //
-                        }}
-                    >
-                        Create Account
-                    </button>
+                    <button type='button'>Create Account</button>
                 </Link>
             </div>
         </CenteredPage>
