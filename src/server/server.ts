@@ -57,7 +57,7 @@ app.use(express.json());
         prefix: 'session:sinking-islands:',
     });
 
-    app.use(
+    app.use((request, response, next) => {
         session({
             cookie: {
                 maxAge: 1000 * 60 * 10, // 10 minutes
@@ -70,8 +70,8 @@ app.use(express.json());
             secret: 'TODO', // TODO
             store: redisStore,
             unset: 'destroy',
-        }),
-    );
+        })(request, response, next);
+    });
 
     app.use((request, __, next) => {
         console.log(

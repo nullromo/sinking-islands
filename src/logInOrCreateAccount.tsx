@@ -3,12 +3,12 @@ import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
 import { useResultMessage } from './useResultMessage';
 
-interface LogInOrSignUpWidgetProps extends InjectedServerCallsProps {
-    widgetType: 'logIn' | 'signUp';
+interface LogInOrCreateAccountWidgetProps extends InjectedServerCallsProps {
+    widgetType: 'createAccount' | 'logIn';
 }
 
-export const LogInOrSignUpWidget = withServerCalls(
-    (props: LogInOrSignUpWidgetProps) => {
+export const LogInOrCreateAccountWidget = withServerCalls(
+    (props: LogInOrCreateAccountWidgetProps) => {
         const [username, setUsername] = React.useState('');
         const [password, setPassword] = React.useState('');
         const [result, setResult] = useResultMessage();
@@ -79,5 +79,5 @@ export const LogInOrSignUpWidget = withServerCalls(
             </div>
         );
     },
-    'SignUpWidget',
+    'CreateAccountWidget',
 );

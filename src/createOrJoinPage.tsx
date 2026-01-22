@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogInOrSignUpWidget } from './logInOrSignUp';
+import { LogInOrCreateAccountWidget } from './logInOrCreateAccount';
 import { CreateGameWidget } from './createGame';
 import { GetGamesWidget } from './getGames';
 
@@ -52,8 +52,8 @@ export const CreateOrJoinPage = (props: {
             <br />
             <br />
             <br />
-            <LogInOrSignUpWidget widgetType='signUp' />
-            <LogInOrSignUpWidget widgetType='logIn' />
+            <LogInOrCreateAccountWidget widgetType='createAccount' />
+            <LogInOrCreateAccountWidget widgetType='logIn' />
             <CreateGameWidget />
             <GetGamesWidget />
         </div>
