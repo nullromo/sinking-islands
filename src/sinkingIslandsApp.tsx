@@ -5,6 +5,7 @@ import { GamePage } from './gamePage';
 import { LogInPage } from './logInPage';
 import { PageRoutes } from './pageRoutes';
 import { TitlePage } from './pages/titlePage';
+import { LogOutWidget } from './logOutWidget';
 
 export const SinkingIslandsApp = () => {
     return (
@@ -22,6 +23,7 @@ export const SinkingIslandsApp = () => {
                 <Route element={<GamePage />} path={PageRoutes.GAME} />
                 <Route element={<TitlePage />} path={PageRoutes.TITLE} />
             </Routes>
+            <LogOutWidget />
         </BrowserRouter>
     );
 };

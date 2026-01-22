@@ -47,6 +47,10 @@ export class ServerCalls {
         });
     };
 
+    public readonly logOut = async () => {
+        return this.send(Endpoints.LogOut, {});
+    };
+
     public readonly createGame = async () => {
         return this.send(Endpoints.CreateGame, {});
     };

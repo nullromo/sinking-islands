@@ -113,6 +113,26 @@ const logIn = async (
     return { message };
 };
 
+const logOut = (session: Session & SessionData) => {
+    const username = session.username;
+
+    // validate arguments
+    if (!username) {
+        throw new Error('Logging out requires a username.');
+    }
+
+    // destroy the session
+    session.destroy((error) => {
+        if (error) {
+            throw error;
+        }
+    });
+
+    const message = `User '${username}' logged out.`;
+    console.log(message);
+    return { message };
+};
+
 export const usersRouter = (() => {
     const router = express.Router();
 
@@ -137,6 +157,10 @@ export const usersRouter = (() => {
         },
         true,
     );
+
+    EndpointUtils.registerEndpoint(router, Endpoints.LogOut, (request) => {
+        return logOut(request.session);
+    });
 
     return router;
 })();
