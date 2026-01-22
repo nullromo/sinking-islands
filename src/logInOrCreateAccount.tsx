@@ -1,10 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { BoxWidget } from './boxWidget';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
-import { Link } from 'react-router';
 import { PageRoutes } from './pageRoutes';
+import { LoggedInUserContext } from './loggedInUserContext';
 
 interface LogInOrCreateAccountWidgetProps extends InjectedServerCallsProps {
     widgetType: 'createAccount' | 'logIn';
@@ -15,6 +16,8 @@ export const LogInOrCreateAccountWidget = withServerCalls(
         const [username, setUsername] = React.useState('');
         const [password, setPassword] = React.useState('');
         const [result, setResult] = useResultMessage();
+
+        const loggedInUserContext = React.useContext(LoggedInUserContext);
 
         const inputBoxes = (
             <>
@@ -78,6 +81,11 @@ export const LogInOrCreateAccountWidget = withServerCalls(
                             )
                                 .then((response) => {
                                     setResult(true, response.message);
+                                    if (props.widgetType === 'logIn') {
+                                        loggedInUserContext.setLoggedInUser(
+                                            username,
+                                        );
+                                    }
                                 })
                                 .catch((error: unknown) => {
                                     setResult(false, error);
