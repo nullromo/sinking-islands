@@ -133,6 +133,15 @@ const logOut = (session: Session & SessionData) => {
     return { message };
 };
 
+const whoAmI = (username: string | undefined) => {
+    // check username is valid
+    if (username === undefined) {
+        throw new Error('No user logged in.');
+    }
+
+    return { username };
+};
+
 export const usersRouter = (() => {
     const router = express.Router();
 
@@ -160,6 +169,10 @@ export const usersRouter = (() => {
 
     EndpointUtils.registerEndpoint(router, Endpoints.LogOut, (request) => {
         return logOut(request.session);
+    });
+
+    EndpointUtils.registerEndpoint(router, Endpoints.WhoAmI, (request) => {
+        return whoAmI(request.session.username);
     });
 
     return router;

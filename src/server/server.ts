@@ -76,7 +76,8 @@ app.use(express.json());
     app.use((request, __, next) => {
         console.log(
             'HTTP request from',
-            request.session.username
+            (request.session as unknown) !== undefined &&
+                request.session.username !== undefined
                 ? `'${request.session.username}'`
                 : 'unknown user',
         );

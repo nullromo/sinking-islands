@@ -51,6 +51,10 @@ export class ServerCalls {
         return this.send(Endpoints.LogOut, {});
     };
 
+    public readonly whoAmI = async () => {
+        return this.send(Endpoints.WhoAmI, {});
+    };
+
     public readonly createGame = async () => {
         return this.send(Endpoints.CreateGame, {});
     };

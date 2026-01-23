@@ -43,6 +43,18 @@ export namespace Endpoints {
     }
     export const LogOut = { instance: new LogOutInfo() };
 
+    class WhoAmIInfo implements EndpointUtils.EndpointInfo {
+        public readonly path = '/session' as const;
+        public readonly method = HTTPMethod.GET;
+        public readonly urlParameters = {};
+        public readonly queryParameters = {};
+        public readonly requestBody = {};
+        public readonly responseBody: { username: string } = {
+            username: DefaultTypes.string,
+        };
+    }
+    export const WhoAmI = { instance: new WhoAmIInfo() };
+
     class CreateGameInfo implements EndpointUtils.EndpointInfo {
         public readonly path = '/game' as const;
         public readonly method = HTTPMethod.POST;
