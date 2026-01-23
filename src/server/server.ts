@@ -13,6 +13,7 @@ import { Game } from './game';
 import { getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
 import { gameRouter } from './gameRouter';
+import { HTTPResponseCodes } from '../httpResponseCodes';
 
 const app = express();
 const server = http.createServer(app);
@@ -95,7 +96,10 @@ app.use(express.json());
             next: express.NextFunction,
         ) => {
             console.error(error);
-            response.status(500).send({ message: error.message });
+            if (response.statusCode === HTTPResponseCodes.OK) {
+                response.status(HTTPResponseCodes.INTERNAL_SERVER_ERROR);
+            }
+            response.send({ message: error.message });
             next();
         },
     );
