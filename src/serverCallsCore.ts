@@ -1,9 +1,10 @@
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios';
 import type { EndpointUtils } from './endpointUtils';
 import { HTTPMethod } from './endpointUtils';
 import type { MakeEmptyKeysOptional } from './util';
 import { assertUnreachable } from './util';
+import { HTTPResponseCodes } from './httpResponseCodes';
 
 const replaceURLWithParameters = (
     path: string,
@@ -99,6 +100,12 @@ const simpleLogger = (error: AxiosError<{ message: string } | undefined>) => {
 };
 
 export class ServerCallsCore {
+    private readonly onUnauthorized: () => void;
+
+    public constructor(onUnauthorized: () => void) {
+        this.onUnauthorized = onUnauthorized;
+    }
+
     private abortController: AbortController = new AbortController();
 
     public readonly abort = () => {
@@ -173,6 +180,21 @@ export class ServerCallsCore {
             }
         })();
 
-        return request.then(simpleCaster).catch(simpleLogger);
+        return request
+            .catch((error: unknown) => {
+                if (
+                    error instanceof AxiosError &&
+                    error.status === HTTPResponseCodes.UNAUTHORIZED
+                ) {
+                    // if any server call comes back with 401 UNAUTHORIZED,
+                    // call the onUnauthorized callback. This is set up to
+                    // notify the rest of the frontend that the user session is
+                    // no longer valid
+                    this.onUnauthorized();
+                }
+                throw error;
+            })
+            .then(simpleCaster)
+            .catch(simpleLogger);
     };
 }

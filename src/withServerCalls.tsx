@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ServerCalls } from './serverCalls';
+import { LoggedInUserContext } from './loggedInUserContext';
 
 export interface InjectedServerCallsProps extends React.PropsWithChildren {
     readonly serverCalls: Omit<ServerCalls, 'abort'>;
@@ -14,8 +15,12 @@ export const withServerCalls = <P extends InjectedServerCallsProps>(
         props: Omit<P, keyof InjectedServerCallsProps> &
             React.PropsWithChildren,
     ) => {
+        const loggedInUserContext = React.use(LoggedInUserContext);
+
         const [serverCalls] = React.useState(() => {
-            return new ServerCalls();
+            return new ServerCalls(() => {
+                loggedInUserContext.setLoggedInUser(null);
+            });
         });
 
         React.useEffect(() => {
