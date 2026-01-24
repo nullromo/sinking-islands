@@ -1,6 +1,4 @@
 import * as React from 'react';
-import type { InjectedServerCallsProps } from './withServerCalls';
-import { withServerCalls } from './withServerCalls';
 
 type LoggedInUserContextData = {
     loggedInUser: string | null;

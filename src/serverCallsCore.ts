@@ -1,10 +1,10 @@
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import axios from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { EndpointUtils } from './endpointUtils';
 import { HTTPMethod } from './endpointUtils';
+import { HTTPResponseCodes } from './httpResponseCodes';
 import type { MakeEmptyKeysOptional } from './util';
 import { assertUnreachable } from './util';
-import { HTTPResponseCodes } from './httpResponseCodes';
 
 const replaceURLWithParameters = (
     path: string,
