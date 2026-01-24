@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { BoxWidget } from './boxWidget';
 import type { GameSerialized } from './commonTypes';
 import { useResultMessage } from './useResultMessage';

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import React from 'react';
+import * as React from 'react';
 import { PageRoutes } from './pageRoutes';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';

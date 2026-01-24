@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import { GameContext } from '../gameContext';
 
 interface FleeChoiceWidgetProps {
-    submit: (character: CharacterSerialized) => void;
-    gameState: GameSerialized;
+    readonly submit: (character: CharacterSerialized) => void;
+    readonly gameState: GameSerialized;
 }
 
 export const FleeChoiceWidget = (props: FleeChoiceWidgetProps) => {

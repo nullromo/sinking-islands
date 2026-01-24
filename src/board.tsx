@@ -11,14 +11,14 @@ import type { HarpoonTarget } from './server/gameObjects/player';
 import { GameContext } from './gameContext';
 
 interface BoardProps {
-    gameState: GameSerialized;
-    onCharacterClicked?: (
+    readonly gameState: GameSerialized;
+    readonly onCharacterClicked?: (
         island: IslandSerialized,
         character: CharacterSerialized,
     ) => void;
-    onIslandClicked?: (island: IslandSerialized) => void;
-    highlightCharacter?: HarpoonTarget;
-    highlightIslandNumber?: number;
+    readonly onIslandClicked?: (island: IslandSerialized) => void;
+    readonly highlightCharacter?: HarpoonTarget;
+    readonly highlightIslandNumber?: number;
 }
 
 export const Board = (props: BoardProps) => {
@@ -104,7 +104,6 @@ export const Board = (props: BoardProps) => {
                             {island.characters.map((character, index) => {
                                 return (
                                     <div
-                                        // eslint-disable-next-line react/no-array-index-key
                                         key={index}
                                         style={{
                                             alignItems: 'center',

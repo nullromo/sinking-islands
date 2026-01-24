@@ -4,10 +4,10 @@ import { upperSnakeToTitle } from './util';
 import { GameContext } from './gameContext';
 
 interface HandProps {
-    gameState: GameSerialized;
-    onCardClicked?: (card: CardSerialized, index: number) => void;
-    highlightIndex?: number;
-    ghostSlots?: number[];
+    readonly gameState: GameSerialized;
+    readonly onCardClicked?: (card: CardSerialized, index: number) => void;
+    readonly highlightIndex?: number;
+    readonly ghostSlots?: number[];
 }
 
 export const Hand = (props: HandProps) => {

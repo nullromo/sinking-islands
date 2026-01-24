@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { GameSerialized } from '../commonTypes';
@@ -8,8 +8,8 @@ import { Hand } from '../hand';
 import type { MovementSet } from '../server/gameObjects/player';
 
 interface MovementSetWidgetProps {
-    submit: (movementSet: MovementSet) => void;
-    gameState: GameSerialized;
+    readonly submit: (movementSet: MovementSet) => void;
+    readonly gameState: GameSerialized;
 }
 
 export const MovementSetWidget = (props: MovementSetWidgetProps) => {
@@ -76,7 +76,6 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
             {'of 3'}
             {movementSet.map((movement, index) => {
                 return (
-                    // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
                         <br />
                         {`Character: ${

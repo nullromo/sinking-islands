@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
 
@@ -15,9 +15,11 @@ export const LoggedInUserContext = React.createContext<LoggedInUserContextData>(
         },
     },
 );
+LoggedInUserContext.displayName = 'LoggedInUserContext';
 
 interface LoggedInUserContextProviderProps
-    extends React.PropsWithChildren, InjectedServerCallsProps {
+    extends React.PropsWithChildren,
+        InjectedServerCallsProps {
     //
 }
 
@@ -47,16 +49,16 @@ export const LoggedInUserContextProvider = withServerCalls(
         }, [loggedInUser]);
 
         return (
-            <LoggedInUserContext.Provider value={value}>
+            <LoggedInUserContext value={value}>
                 {props.children}
-            </LoggedInUserContext.Provider>
+            </LoggedInUserContext>
         );
     },
     'LoggedInUserContextProvider',
 );
 
 interface LogInGuardProps extends React.PropsWithChildren {
-    alternativeChildren: React.ReactNode;
+    readonly alternativeChildren: React.ReactNode;
 }
 
 export const LogInGuard = (props: LogInGuardProps) => {

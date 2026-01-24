@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import type { GameSerialized } from './commonTypes';
 
 export const MessageLog = (props: { readonly gameState: GameSerialized }) => {

@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import type { GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
 
 interface FogTargetWidgetProps {
-    submit: (fogTarget: number) => void;
-    gameState: GameSerialized;
+    readonly submit: (fogTarget: number) => void;
+    readonly gameState: GameSerialized;
 }
 
 export const FogTargetWidget = (props: FogTargetWidgetProps) => {

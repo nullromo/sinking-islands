@@ -1,13 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
 
 interface IslandSelectorWidgetProps {
-    gameState: GameSerialized;
-    submit: (islandNumber: number) => void;
-    title: string;
+    readonly gameState: GameSerialized;
+    readonly submit: (islandNumber: number) => void;
+    readonly title: string;
 }
 
 export const IslandSelectorWidget = (props: IslandSelectorWidgetProps) => {

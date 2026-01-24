@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ServerCalls } from './serverCalls';
 
 export interface InjectedServerCallsProps extends React.PropsWithChildren {

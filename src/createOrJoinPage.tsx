@@ -1,8 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 
 export const CreateOrJoinPage = (props: {
-    emitCreate: () => void;
-    emitJoin: (id: string) => void;
+    readonly emitCreate: () => void;
+    readonly emitJoin: (id: string) => void;
 }) => {
     const [joinID, setJoinID] = React.useState('');
 

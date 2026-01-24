@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import type { CardSerialized, GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
@@ -7,8 +7,8 @@ import type { CardType } from '../server/gameObjects/card';
 import { GameContext } from '../gameContext';
 
 interface CardPlacementWidgetProps {
-    submit: (cardPlacement: CardPlacement) => void;
-    gameState: GameSerialized;
+    readonly submit: (cardPlacement: CardPlacement) => void;
+    readonly gameState: GameSerialized;
 }
 
 export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {

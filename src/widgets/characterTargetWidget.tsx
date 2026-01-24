@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
@@ -11,10 +11,10 @@ import type {
 import { GameContext } from '../gameContext';
 
 interface CharacterTargetWidgetProps {
-    gameState: GameSerialized;
-    submit: (target: HarpoonTarget | TortoiseTarget) => void;
-    title: string;
-    enemy: boolean;
+    readonly gameState: GameSerialized;
+    readonly submit: (target: HarpoonTarget | TortoiseTarget) => void;
+    readonly title: string;
+    readonly enemy: boolean;
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {

@@ -3,7 +3,7 @@ import './gamePage.css';
 type CSSWithVariables = React.CSSProperties & Record<string, number | string>;
 
 interface CircularContainerProps {
-    items: React.ReactNode[];
+    readonly items: React.ReactNode[];
 }
 
 export const CircularContainer = (props: CircularContainerProps) => {
@@ -38,7 +38,6 @@ export const CircularContainer = (props: CircularContainerProps) => {
                     width: 'var(--diameter)',
                 };
                 return (
-                    // eslint-disable-next-line react/no-array-index-key
                     <span key={index} style={style}>
                         {item}
                     </span>

@@ -5,10 +5,10 @@ import { upperSnakeToTitle } from './util';
 import { GameContext } from './gameContext';
 
 interface ActionOrderTrackProps {
-    gameState: GameSerialized;
-    onSlotClicked?: (slotIndex: number) => void;
-    overrideCards?: Array<CardSerialized | null>;
-    highlightIndex?: number;
+    readonly gameState: GameSerialized;
+    readonly onSlotClicked?: (slotIndex: number) => void;
+    readonly overrideCards?: Array<CardSerialized | null>;
+    readonly highlightIndex?: number;
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
