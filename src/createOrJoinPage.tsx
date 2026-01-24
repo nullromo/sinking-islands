@@ -1,6 +1,4 @@
 import React from 'react';
-import { CreateGameWidget } from './createGame';
-import { GetGamesWidget } from './getGames';
 
 export const CreateOrJoinPage = (props: {
     emitCreate: () => void;

@@ -5,15 +5,15 @@ import express from 'express';
 import session from 'express-session';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
+import { HTTPResponseCodes } from '../httpResponseCodes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
 import { Game } from './game';
+import { gameRouter } from './gameRouter';
 import { getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
-import { gameRouter } from './gameRouter';
-import { HTTPResponseCodes } from '../httpResponseCodes';
 
 const app = express();
 const server = http.createServer(app);
@@ -118,7 +118,8 @@ io.on('connection', (socket) => {
 
     socket.on('createGame', () => {
         console.log(`Game created for socket ID ${socket.id}`);
-        const game = new Game(socket.id);
+        //const game = new Game(socket.id);
+        const game = new Game();
         games[socket.id] = game;
         game.connectSocket(PlayerDesignator.PLAYER_A, socket);
         socket.emit('gameState', game.serialize(PlayerDesignator.PLAYER_A));

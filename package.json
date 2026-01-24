@@ -16,8 +16,7 @@
         "react-scripts": "5.0.1",
         "redis": "^5.10.0",
         "socket.io": "^4.5.4",
-        "socket.io-client": "^4.5.4",
-        "typescript": "^4.9.4"
+        "socket.io-client": "^4.5.4"
     },
     "devDependencies": {
         "@types/bcrypt": "^6.0.0",
@@ -30,7 +29,7 @@
         "@typescript-eslint/parser": "^5.46.1",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-sort-keys-fix": "^1.1.2",
-        "typescript": "^4.9.4"
+        "typescript": "^5.9.3"
     },
     "scripts": {
         "start": "BROWSER=none react-scripts start",
