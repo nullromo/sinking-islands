@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "esnext",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "skipLibCheck": true,
@@ -16,14 +16,10 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "downlevelIteration": true,
-        "noErrorTruncation": true
+        "noErrorTruncation": true,
+        "useUnknownInCatchVariables": true
     },
-    "ts-node": {
-        "compilerOptions": {
-            "module": "CommonJS"
-        },
-        "files": true
-    },
+    "ts-node": { "compilerOptions": { "module": "CommonJS" }, "files": true },
     "include": ["src"],
     "exclude": ["node_modules"]
 }
