@@ -14,7 +14,7 @@ interface FlyingFishMovementWidgetProps {
 export const FlyingFishMovementWidget = (
     props: FlyingFishMovementWidgetProps,
 ) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [fromIslandChoice, setFromIslandChoice] = React.useState(0);
     const [toIslandChoice, setToIslandChoice] = React.useState(0);

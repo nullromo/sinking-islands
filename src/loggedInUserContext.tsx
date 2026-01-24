@@ -18,8 +18,7 @@ export const LoggedInUserContext = React.createContext<LoggedInUserContextData>(
 LoggedInUserContext.displayName = 'LoggedInUserContext';
 
 interface LoggedInUserContextProviderProps
-    extends React.PropsWithChildren,
-        InjectedServerCallsProps {
+    extends React.PropsWithChildren, InjectedServerCallsProps {
     //
 }
 
@@ -41,7 +40,7 @@ export const LoggedInUserContextProvider = withServerCalls(
                     console.error(error);
                     setLoggedInUser(null);
                 });
-        }, []);
+        }, [props.serverCalls]);
 
         // provide the state value
         const value = React.useMemo(() => {
@@ -62,7 +61,7 @@ interface LogInGuardProps extends React.PropsWithChildren {
 }
 
 export const LogInGuard = (props: LogInGuardProps) => {
-    const loggedInUserContext = React.useContext(LoggedInUserContext);
+    const loggedInUserContext = React.use(LoggedInUserContext);
     return (
         <>
             {loggedInUserContext.loggedInUser === null

@@ -1,8 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 import type { CardSerialized, GameSerialized } from './commonTypes';
+import { GameContext } from './gameContext';
 import { cardTypeToString } from './server/gameObjects/card';
 import { upperSnakeToTitle } from './util';
-import { GameContext } from './gameContext';
 
 interface ActionOrderTrackProps {
     readonly gameState: GameSerialized;
@@ -12,7 +12,7 @@ interface ActionOrderTrackProps {
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     return (
         <div
@@ -47,7 +47,6 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                     props.gameState.activeCardIndex;
                                 return (
                                     <td
-                                        // eslint-disable-next-line react/no-array-index-key
                                         key={slotIndex}
                                         style={{
                                             border:

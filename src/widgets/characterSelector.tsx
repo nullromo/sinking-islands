@@ -1,8 +1,8 @@
 import type { CharacterSerialized } from '../commonTypes';
 
 interface CharacterSelectorProps {
-    character: CharacterSerialized;
-    setCharacter: (character: CharacterSerialized) => void;
+    readonly character: CharacterSerialized;
+    readonly setCharacter: (character: CharacterSerialized) => void;
 }
 
 export const CharacterSelector = (props: CharacterSelectorProps) => {

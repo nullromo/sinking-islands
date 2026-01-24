@@ -3,12 +3,12 @@ import { CharacterSelector } from './characterSelector';
 import { IslandSelector } from './islandSelector';
 
 interface NormalMovementSelectorProps {
-    fromIsland: number;
-    setFromIsland: (islandNumber: number) => void;
-    toIsland: number;
-    setToIsland: (islandNumber: number) => void;
-    character: CharacterSerialized;
-    setCharacter: (character: CharacterSerialized) => void;
+    readonly fromIsland: number;
+    readonly setFromIsland: (islandNumber: number) => void;
+    readonly toIsland: number;
+    readonly setToIsland: (islandNumber: number) => void;
+    readonly character: CharacterSerialized;
+    readonly setCharacter: (character: CharacterSerialized) => void;
 }
 
 export const NormalMovementSelector = (props: NormalMovementSelectorProps) => {

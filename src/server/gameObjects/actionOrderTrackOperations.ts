@@ -58,7 +58,7 @@ export namespace ActionOrderTrackOperations {
         playerDesignator: PlayerDesignator,
     ) => {
         return actionOrderTrack.cardSlots.some((card) => {
-            return card && card.playerDesignator === playerDesignator;
+            return card?.playerDesignator === playerDesignator;
         });
     };
 

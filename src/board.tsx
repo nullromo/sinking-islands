@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { CircularContainer } from './circularContainer';
 import type {
     CharacterSerialized,
@@ -6,9 +6,9 @@ import type {
     IslandSerialized,
 } from './commonTypes';
 import { IslandType } from './commonTypes';
-import { Character } from './server/gameObjects/character';
-import type { HarpoonTarget } from './server/gameObjects/player';
 import { GameContext } from './gameContext';
+import { Character } from './server/gameObjects/character';
+import type { TargetCharacter } from './server/gameObjects/player';
 
 interface BoardProps {
     readonly gameState: GameSerialized;
@@ -17,12 +17,12 @@ interface BoardProps {
         character: CharacterSerialized,
     ) => void;
     readonly onIslandClicked?: (island: IslandSerialized) => void;
-    readonly highlightCharacter?: HarpoonTarget;
+    readonly highlightCharacter?: TargetCharacter;
     readonly highlightIslandNumber?: number;
 }
 
 export const Board = (props: BoardProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const fontSize = '18px';
 

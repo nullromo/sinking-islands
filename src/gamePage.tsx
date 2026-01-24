@@ -214,7 +214,7 @@ const GameIDBanner = (props: {
     readonly gameID: string;
     readonly status: CheckResult;
 }) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     return (
         <>
@@ -273,7 +273,7 @@ const GameIDBanner = (props: {
 };
 
 export const GamePage = () => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [gameState, setGameState] = React.useState<GameSerialized | null>(
         null,

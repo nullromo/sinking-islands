@@ -17,7 +17,7 @@ export const LogInOrCreateAccountWidget = withServerCalls(
         const [password, setPassword] = React.useState('');
         const [result, setResult] = useResultMessage();
 
-        const loggedInUserContext = React.useContext(LoggedInUserContext);
+        const loggedInUserContext = React.use(LoggedInUserContext);
 
         const inputBoxes = (
             <>

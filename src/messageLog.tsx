@@ -30,7 +30,6 @@ export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
             />
             {props.gameState.messages.map((message, index) => {
                 return (
-                    // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
                         <div>{message}</div>
                         <hr />

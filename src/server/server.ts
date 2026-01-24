@@ -1,8 +1,7 @@
-import http from 'http';
 import { RedisStore } from 'connect-redis';
-import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
+import http from 'http';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
@@ -16,6 +15,7 @@ import { getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
 
 const app = express();
+// eslint-disable-next-line @typescript-eslint/strict-void-return
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     cors: {
@@ -23,32 +23,31 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     },
 });
 
-const whitelist = [
-    'http://localhost:3000',
-    'http://localhost:5151',
-    'http://192.168.0.16:3000',
-    'http://10.0.0.163:3000',
-    'http://192.168.42.2:3000',
-    'http://135.180.0.49:3000',
-];
-app.use(
-    cors({
-        credentials: true,
-        origin: (origin, callback) => {
-            if (true) {
-                //if (origin && whitelist.includes(origin)) {
-                console.log(`CORS is accepting ${origin} as a valid origin.`);
-                callback(null, true);
-            } else {
-                callback(
-                    new Error(
-                        `Origin (${origin}) not whitelisted by CORS policy.`,
-                    ),
-                );
-            }
-        },
-    }),
-);
+//const whitelist = [
+//'http://localhost:3000',
+//'http://localhost:5151',
+//'http://192.168.0.16:3000',
+//'http://10.0.0.163:3000',
+//'http://192.168.42.2:3000',
+//'http://135.180.0.49:3000',
+//];
+//app.use(
+//cors({
+//credentials: true,
+//origin: (origin, callback) => {
+//if (origin && whitelist.includes(origin)) {
+//console.log(`CORS is accepting ${origin} as a valid origin.`);
+//callback(null, true);
+//} else {
+//callback(
+//new Error(
+//`Origin (${origin}) not whitelisted by CORS policy.`,
+//),
+//);
+//}
+//},
+//}),
+//);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

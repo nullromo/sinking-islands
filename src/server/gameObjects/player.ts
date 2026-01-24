@@ -28,7 +28,7 @@ export type FlyingFishMovement = {
     toIslandNumber: number;
 };
 
-export type HarpoonTarget = {
+export type TargetCharacter = {
     character: CharacterSerialized;
     islandNumber: number;
 };
@@ -36,8 +36,6 @@ export type HarpoonTarget = {
 type NormalMovement = FlyingFishMovement;
 
 export type MovementSet = NormalMovement[];
-
-export type TortoiseTarget = HarpoonTarget;
 
 /**
  * Represents a player.
@@ -307,24 +305,28 @@ export class Player {
     /**
      * Returns a harpoon target.
      */
-    public readonly requestHarpoonTarget = async (): Promise<HarpoonTarget> => {
-        return new Promise<HarpoonTarget>((resolve) => {
-            if (this.socket) {
-                this.socket.once('responseHarpoonTarget', (harpoonTarget) => {
-                    resolve(harpoonTarget);
-                });
-                this.socket.emit('requestHarpoonTarget');
-            } else {
-                resolve({
-                    character: new Character(
-                        otherPlayerDesignator(this.playerDesignator),
-                        sampleArray([20, 30, 40]),
-                    ),
-                    islandNumber: randomIslandNumber(),
-                });
-            }
-        });
-    };
+    public readonly requestHarpoonTarget =
+        async (): Promise<TargetCharacter> => {
+            return new Promise<TargetCharacter>((resolve) => {
+                if (this.socket) {
+                    this.socket.once(
+                        'responseHarpoonTarget',
+                        (harpoonTarget) => {
+                            resolve(harpoonTarget);
+                        },
+                    );
+                    this.socket.emit('requestHarpoonTarget');
+                } else {
+                    resolve({
+                        character: new Character(
+                            otherPlayerDesignator(this.playerDesignator),
+                            sampleArray([20, 30, 40]),
+                        ),
+                        islandNumber: randomIslandNumber(),
+                    });
+                }
+            });
+        };
 
     /**
      * Returns a movement set.
@@ -431,8 +433,8 @@ export class Player {
      * Returns a tortoise target.
      */
     public readonly requestTortoiseTarget =
-        async (): Promise<TortoiseTarget> => {
-            return new Promise<TortoiseTarget>((resolve) => {
+        async (): Promise<TargetCharacter> => {
+            return new Promise<TargetCharacter>((resolve) => {
                 if (this.socket) {
                     this.socket.once(
                         'responseTortoiseTarget',

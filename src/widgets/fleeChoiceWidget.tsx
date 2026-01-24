@@ -9,7 +9,7 @@ interface FleeChoiceWidgetProps {
 }
 
 export const FleeChoiceWidget = (props: FleeChoiceWidgetProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({

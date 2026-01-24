@@ -1,6 +1,6 @@
 interface IslandSelectorProps {
-    islandNumber: number;
-    setIslandNumber: (islandNumber: number) => void;
+    readonly islandNumber: number;
+    readonly setIslandNumber: (islandNumber: number) => void;
 }
 
 export const IslandSelector = (props: IslandSelectorProps) => {

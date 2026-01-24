@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import type { CardSerialized, GameSerialized } from './commonTypes';
-import { upperSnakeToTitle } from './util';
 import { GameContext } from './gameContext';
+import { upperSnakeToTitle } from './util';
 
 interface HandProps {
     readonly gameState: GameSerialized;
@@ -11,7 +11,7 @@ interface HandProps {
 }
 
 export const Hand = (props: HandProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     return (
         <div
@@ -38,7 +38,6 @@ export const Hand = (props: HandProps) => {
                         }
                         return (
                             <div
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={index}
                                 style={{
                                     alignItems: 'center',

@@ -39,6 +39,7 @@ export default defineConfig([
         },
         rules: {
             '@eslint-react/avoid-shorthand-fragment': 'off',
+            '@eslint-react/jsx-shorthand-boolean': 'off',
             '@eslint-react/hooks-extra/no-direct-set-state-in-use-effect':
                 'off',
             '@eslint-react/hooks-extra/no-unnecessary-use-prefix': 'off',

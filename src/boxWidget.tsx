@@ -1,5 +1,5 @@
 interface BoxWidgetProps extends React.PropsWithChildren {
-    title: string;
+    readonly title: string;
 }
 
 export const BoxWidget = (props: BoxWidgetProps) => {

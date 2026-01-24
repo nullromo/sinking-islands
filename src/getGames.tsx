@@ -21,7 +21,7 @@ export const GetGamesWidget = withServerCalls(
                 .catch((error: unknown) => {
                     setResult(false, error);
                 });
-        }, []);
+        }, [props.serverCalls, setResult]);
 
         React.useEffect(() => {
             refreshGameList();

@@ -3,9 +3,8 @@ import type { CardPlacement } from './server/gameObjects/actionOrderTrack';
 import type { CheckResult } from './server/checkResult';
 import type {
     FlyingFishMovement,
-    HarpoonTarget,
+    TargetCharacter,
     MovementSet,
-    TortoiseTarget,
 } from './server/gameObjects/player';
 
 export interface ClientToServerEvents {
@@ -16,13 +15,13 @@ export interface ClientToServerEvents {
         flyingFishMovement: FlyingFishMovement,
     ) => void;
     responseFogTarget: (fogTarget: number) => void;
-    responseHarpoonTarget: (harpoonTarget: HarpoonTarget) => void;
+    responseHarpoonTarget: (harpoonTarget: TargetCharacter) => void;
     responseMovementSet: (movementSet: MovementSet) => void;
     responseNetTarget: (netTarget: number) => void;
     responsePilingsTarget: (pilingsTarget: number) => void;
     responseTidalSurgeTarget: (tidalSurgeTarget: number) => void;
     responseTidalWaveTarget: (tidalWaveTarget: number) => void;
-    responseTortoiseTarget: (tortoiseTarget: TortoiseTarget) => void;
+    responseTortoiseTarget: (tortoiseTarget: TargetCharacter) => void;
     responseVolcanicEruptionTarget: (volcanicEruptionTarget: number) => void;
     responseFleeChoice: (fleeChoice: CharacterSerialized) => void;
 }

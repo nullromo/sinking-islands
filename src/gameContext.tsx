@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import type { GameSerialized } from './commonTypes';
 import { PlayerDesignator } from './commonTypes';
 import { createBlankGame } from './createBlankGame';
@@ -17,12 +17,14 @@ export const GameContext = React.createContext<GameContextData>({
     },
     you: PlayerDesignator.PLAYER_A,
 });
+GameContext.displayName = 'GameContext';
 
 export const GameContextProvider = (props: React.PropsWithChildren) => {
-    const loggedInUserContext = React.useContext(LoggedInUserContext);
+    const loggedInUserContext = React.use(LoggedInUserContext);
 
-    const [gameState, setGameState] =
-        React.useState<GameSerialized>(createBlankGame());
+    const [gameState, setGameState] = React.useState<GameSerialized>(() => {
+        return createBlankGame();
+    });
 
     const you = (() => {
         if (
@@ -50,9 +52,5 @@ export const GameContextProvider = (props: React.PropsWithChildren) => {
         };
     }, [gameState, you]);
 
-    return (
-        <GameContext.Provider value={value}>
-            {props.children}
-        </GameContext.Provider>
-    );
+    return <GameContext value={value}>{props.children}</GameContext>;
 };

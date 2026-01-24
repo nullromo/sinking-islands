@@ -12,7 +12,7 @@ interface CardPlacementWidgetProps {
 }
 
 export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [cardChoices, setCardChoices] = React.useState<
         Array<CardType | null>

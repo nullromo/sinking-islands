@@ -63,7 +63,7 @@ export class ActionOrderTrack {
      */
     public readonly playerHasPlayed = (playerDesignator: PlayerDesignator) => {
         return this.cardSlots.some((card) => {
-            return card && card.playerDesignator === playerDesignator;
+            return card?.playerDesignator === playerDesignator;
         });
     };
 

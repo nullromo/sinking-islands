@@ -3,28 +3,27 @@ import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
 import { otherPlayerDesignator } from '../commonTypes';
-import { Hand } from '../hand';
-import type {
-    HarpoonTarget,
-    TortoiseTarget,
-} from '../server/gameObjects/player';
 import { GameContext } from '../gameContext';
+import { Hand } from '../hand';
+import type { TargetCharacter } from '../server/gameObjects/player';
 
 interface CharacterTargetWidgetProps {
     readonly gameState: GameSerialized;
-    readonly submit: (target: HarpoonTarget | TortoiseTarget) => void;
+    readonly submit: (target: TargetCharacter) => void;
     readonly title: string;
     readonly enemy: boolean;
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [characterChoice, setCharacterChoice] =
-        React.useState<CharacterSerialized>({
-            playerDesignator: otherPlayerDesignator(gameContext.you),
-            strength: 20,
-            tortoise: false,
+        React.useState<CharacterSerialized>(() => {
+            return {
+                playerDesignator: otherPlayerDesignator(gameContext.you),
+                strength: 20,
+                tortoise: false,
+            };
         });
     const [islandNumberChoice, setIslandNumberChoice] = React.useState(1);
 

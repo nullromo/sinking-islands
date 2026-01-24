@@ -19,9 +19,8 @@ import { Character } from './gameObjects/character';
 import { Island } from './gameObjects/island';
 import type {
     FlyingFishMovement,
-    HarpoonTarget,
+    TargetCharacter,
     MovementSet,
-    TortoiseTarget,
 } from './gameObjects/player';
 import { Player } from './gameObjects/player';
 import { CheckResult } from './checkResult';
@@ -117,7 +116,7 @@ export class Game {
      */
     private readonly writeMessage = (...messages: unknown[]) => {
         const message = messages.join(' ');
-        this.messages.push(`${message}`);
+        this.messages.push(message);
         console.log(message);
         this.broadcastGameState();
     };
@@ -206,7 +205,7 @@ export class Game {
     private readonly runMainGameLoop = async () => {
         let roundCounter = 1;
         console.log('Starting game loop');
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
             this.writeMessage(`Begin round number ${roundCounter}.`);
             roundCounter += 1;
@@ -772,7 +771,7 @@ export class Game {
      */
     private readonly checkHarpoonTargetLegal = (
         playerDesignator: PlayerDesignator,
-        harpoonTarget: HarpoonTarget,
+        harpoonTarget: TargetCharacter,
     ): CheckResult => {
         // if the target is a tortoise, it's not valid
         if (harpoonTarget.character.tortoise) {
@@ -897,12 +896,9 @@ export class Game {
         tidalSurgeTarget: number,
     ): CheckResult => {
         if (
-            !this.getAdjacentIslands(this.nextIslandToSink).some(
-                // eslint-disable-next-line @typescript-eslint/no-loop-func
-                (island) => {
-                    return island.islandNumber === tidalSurgeTarget;
-                },
-            )
+            !this.getAdjacentIslands(this.nextIslandToSink).some((island) => {
+                return island.islandNumber === tidalSurgeTarget;
+            })
         ) {
             return new CheckResult(
                 false,
@@ -940,7 +936,7 @@ export class Game {
      */
     private readonly checkTortoiseTargetLegal = (
         playerDesignator: PlayerDesignator,
-        tortoiseTarget: TortoiseTarget,
+        tortoiseTarget: TargetCharacter,
     ): CheckResult => {
         // the player must target their own character
         if (tortoiseTarget.character.playerDesignator !== playerDesignator) {
@@ -1076,7 +1072,7 @@ export class Game {
             // check to see if the game is over
             const loser = this.getLoser();
             if (loser) {
-                // eslint-disable-next-line @typescript-eslint/no-throw-literal
+                // eslint-disable-next-line @typescript-eslint/only-throw-error
                 throw loser;
             }
         }
@@ -1256,7 +1252,7 @@ export class Game {
                 // computation
                 if (
                     !this.islands
-                        .reduce<HarpoonTarget[]>((allCharacters, island) => {
+                        .reduce<TargetCharacter[]>((allCharacters, island) => {
                             return [
                                 ...allCharacters,
                                 ...island.getCharacters().map((character) => {
@@ -1280,7 +1276,7 @@ export class Game {
                     break;
                 }
 
-                let harpoonTarget: HarpoonTarget | null = null;
+                let harpoonTarget: TargetCharacter | null = null;
                 console.log('Starting harpoon loop');
                 do {
                     this.writeMessage(
@@ -1500,7 +1496,7 @@ export class Game {
                     this.writeMessage(
                         `Requesting tidal surge target from ${player.playerDesignator}.`,
                     );
-                    // eslint-disable-next-line no-await-in-loop, require-atomic-updates
+                    // eslint-disable-next-line no-await-in-loop
                     tidalSurgeTarget = await player.requestTidalSurgeTarget();
                     console.log('Got', tidalSurgeTarget);
                     checkResult =
@@ -1540,13 +1536,13 @@ export class Game {
                 break;
             case CardType.TORTOISE:
                 // try to get a tortoise target until a valid one is given
-                let tortoiseTarget: TortoiseTarget | null = null;
+                let tortoiseTarget: TargetCharacter | null = null;
                 console.log('Starting tortoise loop');
                 do {
                     this.writeMessage(
                         `Requesting tortoise target from ${player.playerDesignator}.`,
                     );
-                    // eslint-disable-next-line no-await-in-loop, require-atomic-updates
+                    // eslint-disable-next-line no-await-in-loop
                     tortoiseTarget = await player.requestTortoiseTarget();
                     console.log('Got', tortoiseTarget);
                     checkResult = this.checkTortoiseTargetLegal(
@@ -1588,7 +1584,6 @@ export class Game {
                     this.writeMessage(
                         `Requesting volcanic eruption target from ${player.playerDesignator}.`,
                     );
-                    // eslint-disable-next-line require-atomic-updates
                     volcanicEruptionTarget =
                         // eslint-disable-next-line no-await-in-loop
                         await player.requestVolcanicEruptionTarget();

@@ -9,7 +9,7 @@ export const shuffleArray = <T>(array: T[]) => {
     while (currentIndex !== 0) {
         // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex = currentIndex - 1;
+        currentIndex -= 1;
 
         // And swap it with the current element.
         [array[currentIndex], array[randomIndex]] = [

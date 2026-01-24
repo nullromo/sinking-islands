@@ -8,7 +8,7 @@ import { LoggedInUserContext } from './loggedInUserContext';
 export const LogOutWidget = withServerCalls(
     (props: InjectedServerCallsProps) => {
         const navigate = useNavigate();
-        const loggedInUserContext = React.useContext(LoggedInUserContext);
+        const loggedInUserContext = React.use(LoggedInUserContext);
 
         return (
             <div style={{ position: 'fixed', right: '10px', top: '10px' }}>

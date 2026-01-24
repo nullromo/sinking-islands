@@ -1,15 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 import { otherPlayerDesignator, type GameSerialized } from './commonTypes';
 import { GameContext } from './gameContext';
-import * as React from 'react';
-import type { GameSerialized } from './commonTypes';
 import { cardTypeToString } from './server/gameObjects/card';
 
 export const DiscardPileWindow = (props: {
     readonly gameState: GameSerialized;
     readonly opponent: boolean;
 }) => {
-    const gameContext = React.useContext(GameContext);
+    const gameContext = React.use(GameContext);
 
     const [hover, setHover] = React.useState(false);
 
