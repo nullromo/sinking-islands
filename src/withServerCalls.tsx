@@ -10,24 +10,22 @@ export const withServerCalls = <P extends InjectedServerCallsProps>(
     displayName: string,
 ) => {
     WrappedComponent.displayName = displayName;
-    class WithServerCalls extends React.Component<
-        Omit<P, keyof InjectedServerCallsProps> & React.PropsWithChildren,
-        Record<string, never>
-    > {
-        public componentWillUnmount() {
-            this.serverCalls.abort();
-        }
+    const WithServerCalls = (
+        props: Omit<P, keyof InjectedServerCallsProps> &
+            React.PropsWithChildren,
+    ) => {
+        const [serverCalls] = React.useState(() => {
+            return new ServerCalls();
+        });
 
-        private readonly serverCalls = new ServerCalls();
+        React.useEffect(() => {
+            return () => {
+                serverCalls.abort();
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
 
-        public render() {
-            return (
-                <WrappedComponent
-                    {...(this.props as P)}
-                    serverCalls={this.serverCalls}
-                />
-            );
-        }
-    }
+        return <WrappedComponent {...(props as P)} serverCalls={serverCalls} />;
+    };
     return WithServerCalls;
 };
