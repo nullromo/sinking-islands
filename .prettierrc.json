@@ -8,8 +8,10 @@
     "jsxSingleQuote": true,
     "trailingComma": "all",
     "bracketSpacing": true,
+    "objectWrap": "collapse",
     "bracketSameLine": false,
     "arrowParens": "always",
     "proseWrap": "always",
-    "endOfLine": "lf"
+    "endOfLine": "lf",
+    "singleAttributePerLine": false
 }

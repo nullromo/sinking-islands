@@ -18,9 +18,7 @@ const app = express();
 // eslint-disable-next-line @typescript-eslint/strict-void-return
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
-    cors: {
-        origin: '*',
-    },
+    cors: { origin: '*' },
 });
 
 //const whitelist = [

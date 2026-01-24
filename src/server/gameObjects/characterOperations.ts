@@ -9,11 +9,7 @@ export namespace CharacterOperations {
         playerDesignator: PlayerDesignator,
         strength: number,
     ): CharacterSerialized => {
-        return {
-            playerDesignator,
-            strength,
-            tortoise: false,
-        };
+        return { playerDesignator, strength, tortoise: false };
     };
 
     /**

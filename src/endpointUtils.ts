@@ -41,9 +41,7 @@ export namespace EndpointUtils {
 
     type EndpointResponse<T extends EndpointInfo> = T['responseBody'];
 
-    export type EndpointConstructor<T extends EndpointInfo> = {
-        instance: T;
-    };
+    export type EndpointConstructor<T extends EndpointInfo> = { instance: T };
 
     export type HandlerImplementation<T extends EndpointInfo> = (
         request: EndpointRequest<T>,

@@ -4,10 +4,7 @@ import { GameState } from './gameState';
 
 export const createBlankGame = (): GameSerialized => {
     return {
-        actionOrderTrack: {
-            cardSlots: [],
-            faceUpCards: [],
-        },
+        actionOrderTrack: { cardSlots: [], faceUpCards: [] },
         activeCardIndex: null,
         gameState: GameState.INITIAL_STATE,
         id: '',

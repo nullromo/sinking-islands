@@ -7,9 +7,6 @@ export namespace CardOperations {
         playerDesignator: PlayerDesignator,
         cardType: CardType,
     ): CardSerialized => {
-        return {
-            cardType,
-            playerDesignator,
-        };
+        return { cardType, playerDesignator };
     };
 }
