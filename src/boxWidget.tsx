@@ -1,4 +1,5 @@
-interface BoxWidgetProps extends React.PropsWithChildren {
+interface BoxWidgetProps
+    extends React.PropsWithChildren, React.HTMLAttributes<HTMLDivElement> {
     readonly title: string;
 }
 
@@ -8,6 +9,7 @@ export const BoxWidget = (props: BoxWidgetProps) => {
             {props.title}
             <div
                 style={{
+                    ...props.style,
                     border: '1px solid',
                     display: 'flex',
                     flexDirection: 'column',

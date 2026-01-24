@@ -1,7 +1,5 @@
-import type { HTMLAttributes } from 'react';
-
 export const CenteredPage = (
-    props: React.PropsWithChildren & HTMLAttributes<HTMLDivElement>,
+    props: React.PropsWithChildren & React.HTMLAttributes<HTMLDivElement>,
 ) => {
     return (
         <div

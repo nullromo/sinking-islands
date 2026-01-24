@@ -46,6 +46,7 @@ export const LogInOrCreateAccountWidget = withServerCalls(
 
         return (
             <BoxWidget
+                style={{ background: '#FFFFFFAA' }}
                 title={
                     props.widgetType === 'logIn' ? 'Log In' : 'Create Account'
                 }
