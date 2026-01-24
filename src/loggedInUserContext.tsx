@@ -17,51 +17,42 @@ export const LoggedInUserContext = React.createContext<LoggedInUserContextData>(
 );
 LoggedInUserContext.displayName = 'LoggedInUserContext';
 
-interface LoggedInUserContextProviderProps
+export const LoggedInUserContextProvider = (props: React.PropsWithChildren) => {
+    // keep track of the logged in user
+    const [loggedInUser, setLoggedInUser] = React.useState<string | null>(null);
+
+    // provide the state value
+    const value = React.useMemo(() => {
+        return { loggedInUser, setLoggedInUser };
+    }, [loggedInUser]);
+
+    return (
+        <LoggedInUserContext value={value}>
+            {props.children}
+        </LoggedInUserContext>
+    );
+};
+
+interface LogInGuardProps
     extends React.PropsWithChildren, InjectedServerCallsProps {
-    //
-}
-
-export const LoggedInUserContextProvider = withServerCalls(
-    (props: LoggedInUserContextProviderProps) => {
-        // keep track of the logged in user
-        const [loggedInUser, setLoggedInUser] = React.useState<string | null>(
-            null,
-        );
-
-        // on mount, try to see if the user is logged in and update the state
-        React.useEffect(() => {
-            props.serverCalls
-                .whoAmI()
-                .then((response) => {
-                    setLoggedInUser(response.username);
-                })
-                .catch((error: unknown) => {
-                    console.error(error);
-                    setLoggedInUser(null);
-                });
-        }, [props.serverCalls]);
-
-        // provide the state value
-        const value = React.useMemo(() => {
-            return { loggedInUser, setLoggedInUser };
-        }, [loggedInUser]);
-
-        return (
-            <LoggedInUserContext value={value}>
-                {props.children}
-            </LoggedInUserContext>
-        );
-    },
-    'LoggedInUserContextProvider',
-);
-
-interface LogInGuardProps extends React.PropsWithChildren {
     readonly alternativeChildren: React.ReactNode;
 }
 
-export const LogInGuard = (props: LogInGuardProps) => {
+export const LogInGuard = withServerCalls((props: LogInGuardProps) => {
     const loggedInUserContext = React.use(LoggedInUserContext);
+
+    // on mount, try to see if the user is logged in and update the state
+    React.useEffect(() => {
+        props.serverCalls
+            .whoAmI()
+            .then((response) => {
+                loggedInUserContext.setLoggedInUser(response.username);
+            })
+            .catch((error: unknown) => {
+                console.error(error);
+                loggedInUserContext.setLoggedInUser(null);
+            });
+    }, [loggedInUserContext, props.serverCalls]);
     return (
         <>
             {loggedInUserContext.loggedInUser === null
@@ -69,4 +60,4 @@ export const LogInGuard = (props: LogInGuardProps) => {
                 : props.children}
         </>
     );
-};
+}, 'LogInGuard');
