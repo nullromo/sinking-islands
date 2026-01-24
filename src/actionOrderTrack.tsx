@@ -1,6 +1,8 @@
+import React from 'react';
 import type { CardSerialized, GameSerialized } from './commonTypes';
 import { cardTypeToString } from './server/gameObjects/card';
 import { upperSnakeToTitle } from './util';
+import { GameContext } from './gameContext';
 
 interface ActionOrderTrackProps {
     gameState: GameSerialized;
@@ -10,6 +12,8 @@ interface ActionOrderTrackProps {
 }
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
+    const gameContext = React.useContext(GameContext);
+
     return (
         <div
             style={{
@@ -63,9 +67,9 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                 alignItems: 'center',
                                                 background:
                                                     overrideCard?.playerDesignator ===
-                                                        props.gameState.you ||
+                                                        gameContext.you ||
                                                     card?.playerDesignator ===
-                                                        props.gameState.you
+                                                        gameContext.you
                                                         ? 'skyblue'
                                                         : overrideCard || card
                                                           ? 'indianred'
@@ -102,7 +106,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                             ) &&
                                                 card) ||
                                             (props.gameState.indiscretion[
-                                                props.gameState.you
+                                                gameContext.you
                                             ] &&
                                                 overrideCard) ? (
                                                 <div>(Face Up)</div>

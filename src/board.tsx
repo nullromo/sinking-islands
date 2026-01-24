@@ -1,3 +1,4 @@
+import React from 'react';
 import { CircularContainer } from './circularContainer';
 import type {
     CharacterSerialized,
@@ -7,6 +8,7 @@ import type {
 import { IslandType } from './commonTypes';
 import { Character } from './server/gameObjects/character';
 import type { HarpoonTarget } from './server/gameObjects/player';
+import { GameContext } from './gameContext';
 
 interface BoardProps {
     gameState: GameSerialized;
@@ -20,6 +22,8 @@ interface BoardProps {
 }
 
 export const Board = (props: BoardProps) => {
+    const gameContext = React.useContext(GameContext);
+
     const fontSize = '18px';
 
     return (
@@ -106,7 +110,7 @@ export const Board = (props: BoardProps) => {
                                             alignItems: 'center',
                                             background:
                                                 character.playerDesignator ===
-                                                props.gameState.you
+                                                gameContext.you
                                                     ? 'skyblue'
                                                     : 'indianred',
                                             border:

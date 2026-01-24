@@ -1839,13 +1839,16 @@ export class Game {
             islands: this.getIslandsSerialized(),
             messages: this.messages,
             nextIslandToSink: this.nextIslandToSink,
-            opponentDeckSize: opponent.getDeck().length,
-            opponentDiscardPile: opponent.getDiscardPile(),
-            opponentHandSize: opponent.getHand().length,
-            you: playerDesignator,
-            yourDeckSize: player.getDeck().length,
-            yourDiscardPile: player.getDiscardPile(),
-            yourHand: player.getHand(),
+            players: {
+                [PlayerDesignator.PLAYER_A]: {
+                    ...player.serialize(),
+                    username: 'TODO',
+                },
+                [PlayerDesignator.PLAYER_B]: {
+                    ...opponent.serialize(),
+                    username: 'TODO',
+                },
+            },
         };
     };
 }

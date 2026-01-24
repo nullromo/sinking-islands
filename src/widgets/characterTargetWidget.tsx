@@ -8,6 +8,7 @@ import type {
     HarpoonTarget,
     TortoiseTarget,
 } from '../server/gameObjects/player';
+import { GameContext } from '../gameContext';
 
 interface CharacterTargetWidgetProps {
     gameState: GameSerialized;
@@ -17,9 +18,11 @@ interface CharacterTargetWidgetProps {
 }
 
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
+    const gameContext = React.useContext(GameContext);
+
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: otherPlayerDesignator(props.gameState.you),
+            playerDesignator: otherPlayerDesignator(gameContext.you),
             strength: 20,
             tortoise: false,
         });
@@ -36,10 +39,9 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
                 onCharacterClicked={(island, character) => {
                     if (
                         (props.enemy &&
-                            character.playerDesignator !==
-                                props.gameState.you) ||
+                            character.playerDesignator !== gameContext.you) ||
                         (!props.enemy &&
-                            character.playerDesignator === props.gameState.you)
+                            character.playerDesignator === gameContext.you)
                     ) {
                         setCharacterChoice(character);
                         setIslandNumberChoice(island.islandNumber);

@@ -2,6 +2,7 @@ import React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
+import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
 import type { FlyingFishMovement } from '../server/gameObjects/player';
 
@@ -13,11 +14,13 @@ interface FlyingFishMovementWidgetProps {
 export const FlyingFishMovementWidget = (
     props: FlyingFishMovementWidgetProps,
 ) => {
+    const gameContext = React.useContext(GameContext);
+
     const [fromIslandChoice, setFromIslandChoice] = React.useState(0);
     const [toIslandChoice, setToIslandChoice] = React.useState(0);
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: props.gameState.you,
+            playerDesignator: gameContext.you,
             strength: 20,
             tortoise: false,
         });
@@ -32,7 +35,7 @@ export const FlyingFishMovementWidget = (
                 }}
                 highlightIslandNumber={toIslandChoice}
                 onCharacterClicked={(island, character) => {
-                    if (character.playerDesignator === props.gameState.you) {
+                    if (character.playerDesignator === gameContext.you) {
                         setCharacterChoice(character);
                         setFromIslandChoice(island.islandNumber);
                     }

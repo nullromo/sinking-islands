@@ -1,6 +1,7 @@
 import React from 'react';
 import { Board } from '../board';
 import type { CharacterSerialized, GameSerialized } from '../commonTypes';
+import { GameContext } from '../gameContext';
 
 interface FleeChoiceWidgetProps {
     submit: (character: CharacterSerialized) => void;
@@ -8,9 +9,11 @@ interface FleeChoiceWidgetProps {
 }
 
 export const FleeChoiceWidget = (props: FleeChoiceWidgetProps) => {
+    const gameContext = React.useContext(GameContext);
+
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>({
-            playerDesignator: props.gameState.you,
+            playerDesignator: gameContext.you,
             strength: 20,
             tortoise: false,
         });

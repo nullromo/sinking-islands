@@ -1,16 +1,20 @@
 import React from 'react';
-import type { GameSerialized } from './commonTypes';
+import { otherPlayerDesignator, type GameSerialized } from './commonTypes';
+import { GameContext } from './gameContext';
 import { cardTypeToString } from './server/gameObjects/card';
 
 export const DiscardPileWindow = (props: {
     readonly gameState: GameSerialized;
     readonly opponent: boolean;
 }) => {
+    const gameContext = React.useContext(GameContext);
+
     const [hover, setHover] = React.useState(false);
 
     const cards = props.opponent
-        ? props.gameState.opponentDiscardPile
-        : props.gameState.yourDiscardPile;
+        ? props.gameState.players[otherPlayerDesignator(gameContext.you)]
+              .discardPile
+        : props.gameState.players[gameContext.you].discardPile;
 
     return (
         <span>

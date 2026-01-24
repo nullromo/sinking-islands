@@ -1,5 +1,7 @@
+import React from 'react';
 import type { CardSerialized, GameSerialized } from './commonTypes';
 import { upperSnakeToTitle } from './util';
+import { GameContext } from './gameContext';
 
 interface HandProps {
     gameState: GameSerialized;
@@ -9,6 +11,8 @@ interface HandProps {
 }
 
 export const Hand = (props: HandProps) => {
+    const gameContext = React.useContext(GameContext);
+
     return (
         <div
             style={{
@@ -27,38 +31,42 @@ export const Hand = (props: HandProps) => {
                     textAlign: 'center',
                 }}
             >
-                {props.gameState.yourHand.map((card, index) => {
-                    if (props.ghostSlots?.includes(index)) {
-                        return null;
-                    }
-                    return (
-                        <div
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={index}
-                            style={{
-                                alignItems: 'center',
-                                background: 'lightblue',
-                                border:
-                                    props.highlightIndex === index
-                                        ? '3px solid'
+                {props.gameState.players[gameContext.you].hand.map(
+                    (card, index) => {
+                        if (props.ghostSlots?.includes(index)) {
+                            return null;
+                        }
+                        return (
+                            <div
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={index}
+                                style={{
+                                    alignItems: 'center',
+                                    background: 'lightblue',
+                                    border:
+                                        props.highlightIndex === index
+                                            ? '3px solid'
+                                            : '',
+                                    boxSizing: 'border-box',
+                                    cursor: props.onCardClicked
+                                        ? 'pointer'
                                         : '',
-                                boxSizing: 'border-box',
-                                cursor: props.onCardClicked ? 'pointer' : '',
-                                display: 'flex',
-                                height: '40px',
-                                justifyContent: 'center',
-                                width: '100px',
-                            }}
-                            onClick={() => {
-                                if (props.onCardClicked) {
-                                    props.onCardClicked(card, index);
-                                }
-                            }}
-                        >
-                            <span>{upperSnakeToTitle(card.cardType)}</span>
-                        </div>
-                    );
-                })}
+                                    display: 'flex',
+                                    height: '40px',
+                                    justifyContent: 'center',
+                                    width: '100px',
+                                }}
+                                onClick={() => {
+                                    if (props.onCardClicked) {
+                                        props.onCardClicked(card, index);
+                                    }
+                                }}
+                            >
+                                <span>{upperSnakeToTitle(card.cardType)}</span>
+                            </div>
+                        );
+                    },
+                )}
             </div>
         </div>
     );

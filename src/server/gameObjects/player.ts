@@ -4,6 +4,7 @@ import type {
     CharacterSerialized,
     GameSerialized,
     PlayerDesignator,
+    PlayerSerialized,
 } from '../../commonTypes';
 import { otherPlayerDesignator } from '../../commonTypes';
 import type {
@@ -565,5 +566,25 @@ export class Player {
         if (this.socket) {
             this.socket.emit('updateStatus', status);
         }
+    };
+
+    public readonly serialize = (): Omit<PlayerSerialized, 'username'> => {
+        const serializeCardList = (cardList: Card[]): CardSerialized[] => {
+            return cardList.map((card) => {
+                return card.serialize();
+            });
+        };
+
+        return {
+            deck: serializeCardList(this.deck),
+            discardPile: serializeCardList(this.discardPile),
+            hand: serializeCardList(this.hand),
+            indiscretion: this.indiscretion,
+            netIsland: this.netIsland,
+            pilingsIsland: this.pilingsIsland,
+            playerDesignator: this.playerDesignator,
+            setAsideCards: serializeCardList(this.setAsideCards),
+            weakness: this.weakness,
+        };
     };
 }

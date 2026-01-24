@@ -4,6 +4,7 @@ import type { CardSerialized, GameSerialized } from '../commonTypes';
 import { Hand } from '../hand';
 import type { CardPlacement } from '../server/gameObjects/actionOrderTrack';
 import type { CardType } from '../server/gameObjects/card';
+import { GameContext } from '../gameContext';
 
 interface CardPlacementWidgetProps {
     submit: (cardPlacement: CardPlacement) => void;
@@ -11,6 +12,8 @@ interface CardPlacementWidgetProps {
 }
 
 export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
+    const gameContext = React.useContext(GameContext);
+
     const [cardChoices, setCardChoices] = React.useState<
         Array<CardType | null>
     >(Array(6).fill(null));
@@ -35,7 +38,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                     }
                     return {
                         cardType: card,
-                        playerDesignator: props.gameState.you,
+                        playerDesignator: gameContext.you,
                     };
                 })}
                 onSlotClicked={(slotIndex) => {
@@ -48,7 +51,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                     ) {
                         setCardChoices((oldCardChoices) => {
                             oldCardChoices[slotIndex] =
-                                props.gameState.yourHand[
+                                props.gameState.players[gameContext.you].hand[
                                     clickedCardIndex
                                 ].cardType;
                             return [...oldCardChoices];
@@ -73,7 +76,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 on a slot in the Action Order Track to place the card. Click
                 Submit when finished, or click Reset to start over.
             </div>
-            {props.gameState.indiscretion[props.gameState.you] ? (
+            {props.gameState.indiscretion[gameContext.you] ? (
                 <>
                     <br />
                     <div style={{ color: 'darkred', width: '600px' }}>
@@ -114,8 +117,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                                         item.index,
                                         {
                                             cardType: item.cardType,
-                                            playerDesignator:
-                                                props.gameState.you,
+                                            playerDesignator: gameContext.you,
                                         },
                                     ];
                                 }),

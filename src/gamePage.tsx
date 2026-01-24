@@ -3,9 +3,10 @@ import type { Socket } from 'socket.io-client';
 import { io } from 'socket.io-client';
 import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
-import type { GameSerialized, PlayerDesignator } from './commonTypes';
+import { otherPlayerDesignator, type GameSerialized } from './commonTypes';
 import { CreateOrJoinPage } from './createOrJoinPage';
 import { DiscardPileWindow } from './discardPileWindow';
+import { GameContext } from './gameContext';
 import { Hand } from './hand';
 import { MessageLog } from './messageLog';
 import type { CheckResult } from './server/checkResult';
@@ -212,8 +213,9 @@ const WidgetSelector = (props: {
 const GameIDBanner = (props: {
     readonly gameID: string;
     readonly status: CheckResult;
-    readonly you: PlayerDesignator;
 }) => {
+    const gameContext = React.useContext(GameContext);
+
     return (
         <>
             <div
@@ -229,7 +231,7 @@ const GameIDBanner = (props: {
                     zIndex: 100,
                 }}
             >
-                <div>{`You are ${props.you}`}</div>
+                <div>{`You are ${gameContext.you}`}</div>
                 <div
                     style={{
                         alignItems: 'center',
@@ -271,6 +273,8 @@ const GameIDBanner = (props: {
 };
 
 export const GamePage = () => {
+    const gameContext = React.useContext(GameContext);
+
     const [gameState, setGameState] = React.useState<GameSerialized | null>(
         null,
     );
@@ -341,11 +345,7 @@ export const GamePage = () => {
 
     return (
         <div style={{ display: 'flex', height: '100%' }}>
-            <GameIDBanner
-                gameID={gameState.id}
-                status={status}
-                you={gameState.you}
-            />
+            <GameIDBanner gameID={gameState.id} status={status} />
             <div>
                 <div
                     style={{
@@ -355,9 +355,9 @@ export const GamePage = () => {
                         padding: '4px',
                     }}
                 >
-                    <div>{`Cards in your deck: ${gameState.yourDeckSize}`}</div>
-                    <div>{`Cards in your opponent's deck: ${gameState.opponentDeckSize}`}</div>
-                    <div>{`Cards in your opponent's hand: ${gameState.opponentHandSize}`}</div>
+                    <div>{`Cards in your deck: ${gameState.players[gameContext.you].deck.length}`}</div>
+                    <div>{`Cards in your opponent's deck: ${gameState.players[otherPlayerDesignator(gameContext.you)].deck.length}`}</div>
+                    <div>{`Cards in your opponent's hand: ${gameState.players[otherPlayerDesignator(gameContext.you)].hand.length}`}</div>
                     <div>
                         <DiscardPileWindow
                             gameState={gameState}
