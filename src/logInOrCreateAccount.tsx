@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Link } from 'react-router';
 import { BoxWidget } from './boxWidget';
+import { LoggedInUserContext } from './loggedInUserContext';
+import { PageRoutes } from './pageRoutes';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
-import { PageRoutes } from './pageRoutes';
-import { LoggedInUserContext } from './loggedInUserContext';
 
 interface LogInOrCreateAccountWidgetProps extends InjectedServerCallsProps {
     widgetType: 'createAccount' | 'logIn';

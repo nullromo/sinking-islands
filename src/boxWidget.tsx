@@ -1,12 +1,17 @@
 interface BoxWidgetProps
     extends React.PropsWithChildren, React.HTMLAttributes<HTMLDivElement> {
     readonly title: string;
+    readonly bigTitle: boolean;
 }
 
 export const BoxWidget = (props: BoxWidgetProps) => {
     return (
         <div>
-            {props.title}
+            {props.bigTitle ? (
+                <h2 style={{ marginTop: 0 }}>{props.title}</h2>
+            ) : (
+                <div>{props.title}</div>
+            )}
             <div
                 style={{
                     ...props.style,

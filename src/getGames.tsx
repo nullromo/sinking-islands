@@ -28,7 +28,7 @@ export const GetGamesWidget = withServerCalls(
         }, [refreshGameList]);
 
         return (
-            <BoxWidget title='List Games'>
+            <BoxWidget bigTitle={true} title='List Games'>
                 {result.success === null ? null : (
                     <div style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}
