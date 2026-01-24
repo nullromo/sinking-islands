@@ -27,10 +27,7 @@ export default defineConfig([
         languageOptions: {
             ecmaVersion: 'latest',
             parser: eslintTS.parser,
-            parserOptions: {
-                ecmaFeatures: { jsx: true },
-                project: ['./tsconfig.json', './tsconfig.eslint.json'],
-            },
+            parserOptions: { ecmaFeatures: { jsx: true } },
             sourceType: 'module',
         },
         plugins: {
