@@ -35,7 +35,8 @@ app.use(
     cors({
         credentials: true,
         origin: (origin, callback) => {
-            if (origin && whitelist.includes(origin)) {
+            if (true) {
+                //if (origin && whitelist.includes(origin)) {
                 console.log(`CORS is accepting ${origin} as a valid origin.`);
                 callback(null, true);
             } else {
