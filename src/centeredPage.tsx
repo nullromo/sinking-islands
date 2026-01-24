@@ -1,15 +1,27 @@
-export const CenteredPage = (props: React.PropsWithChildren) => {
+import type { HTMLAttributes } from 'react';
+
+export const CenteredPage = (
+    props: React.PropsWithChildren & HTMLAttributes<HTMLDivElement>,
+) => {
     return (
         <div
             style={{
                 alignItems: 'center',
                 display: 'flex',
-                flexDirection: 'column',
                 height: '100vh',
                 justifyContent: 'center',
             }}
         >
-            {props.children}
+            <div
+                style={{
+                    ...props.style,
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                {props.children}
+            </div>
         </div>
     );
 };
