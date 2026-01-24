@@ -1,5 +1,6 @@
 import type {
     CharacterSerialized,
+    GameSerialized,
     IslandSerialized,
     PlayerSerialized,
 } from '../../commonTypes';
@@ -9,6 +10,7 @@ import {
     type GameSerialized,
 } from '../../commonTypes';
 import { createBlankGame } from '../../createBlankGame';
+import { IslandType, PlayerDesignator } from '../../commonTypes';
 import { GameState } from '../../gameState';
 import { shuffleArray } from '../../util';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
