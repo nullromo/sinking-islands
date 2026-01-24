@@ -5,7 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 //import richSvg from 'vite-plugin-react-rich-svg';
 
 export default defineConfig(() => {
-    const proxyTarget = 'http://127.0.0.1:5321';
+    const proxyTarget = 'http://127.0.0.1:5151';
     return {
         // eslint-disable-next-line no-undef
         build: { outDir: process.env.VITE_BUILD_PATH ?? 'build' },
