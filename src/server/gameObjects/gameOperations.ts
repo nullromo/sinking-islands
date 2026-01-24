@@ -8,6 +8,7 @@ import {
     PlayerDesignator,
     type GameSerialized,
 } from '../../commonTypes';
+import { createBlankGame } from '../../createBlankGame';
 import { GameState } from '../../gameState';
 import { shuffleArray } from '../../util';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
@@ -69,29 +70,18 @@ export namespace GameOperations {
         const playerA = PlayerOperations.create(PlayerDesignator.PLAYER_A);
         const playerB = PlayerOperations.create(PlayerDesignator.PLAYER_B);
 
+        const blankGame = createBlankGame();
+
         return {
+            ...blankGame,
             actionOrderTrack: ActionOrderTrackOperations.create(),
-            activeCardIndex: null,
-            gameState: GameState.INITIAL_STATE,
             id: crypto.randomUUID(),
-            indiscretion: {
-                [PlayerDesignator.PLAYER_A]: false,
-                [PlayerDesignator.PLAYER_B]: false,
-            },
             initiative: (
                 islands.find((island) => {
                     return island.islandNumber === 1;
                 }) as IslandSerialized
             ).characters[0].playerDesignator,
-            islandModifiers: {
-                playerANet: NaN,
-                playerAPilings: NaN,
-                playerBNet: NaN,
-                playerBPilings: NaN,
-            },
             islands,
-            messages: [],
-            nextIslandToSink: 1,
             players: {
                 [PlayerDesignator.PLAYER_A]: playerA,
                 [PlayerDesignator.PLAYER_B]: playerB,
