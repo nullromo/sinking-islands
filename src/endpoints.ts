@@ -12,7 +12,7 @@ const DefaultTypes = {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Endpoints {
     class CreateUserInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/user' as const;
+        public readonly path = '/backend/user' as const;
         public readonly method = HTTPMethod.POST;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
@@ -23,7 +23,7 @@ export namespace Endpoints {
     export const CreateUser = { instance: new CreateUserInfo() };
 
     class LogInInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/session' as const;
+        public readonly path = '/backend/session' as const;
         public readonly method = HTTPMethod.POST;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
@@ -34,7 +34,7 @@ export namespace Endpoints {
     export const LogIn = { instance: new LogInInfo() };
 
     class LogOutInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/session' as const;
+        public readonly path = '/backend/session' as const;
         public readonly method = HTTPMethod.DELETE;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
@@ -44,7 +44,7 @@ export namespace Endpoints {
     export const LogOut = { instance: new LogOutInfo() };
 
     class WhoAmIInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/session' as const;
+        public readonly path = '/backend/session' as const;
         public readonly method = HTTPMethod.GET;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
@@ -56,7 +56,7 @@ export namespace Endpoints {
     export const WhoAmI = { instance: new WhoAmIInfo() };
 
     class CreateGameInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/game' as const;
+        public readonly path = '/backend/game' as const;
         public readonly method = HTTPMethod.POST;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
@@ -66,7 +66,7 @@ export namespace Endpoints {
     export const CreateGame = { instance: new CreateGameInfo() };
 
     class GetGamesForUserInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/games' as const;
+        public readonly path = '/backend/games' as const;
         public readonly method = HTTPMethod.GET;
         public readonly urlParameters = {};
         public readonly queryParameters = {};
