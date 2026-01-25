@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { GameListWidget } from './gameList';
 import { LoggedInUserContext } from './loggedInUserContext';
+import { TopBanner } from './topBanner';
 
 export const DashboardPage = () => {
     const loggedInUserContext = React.use(LoggedInUserContext);
@@ -15,7 +16,8 @@ export const DashboardPage = () => {
                 width: '100%',
             }}
         >
-            <h1>Hello {loggedInUserContext.loggedInUser}!</h1>
+            <TopBanner />
+            <h1>Hello, {loggedInUserContext.loggedInUser}!</h1>
             <GameListWidget />
         </div>
     );

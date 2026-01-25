@@ -1,17 +1,29 @@
-import { useNavigate } from 'react-router';
 import * as React from 'react';
+import { useNavigate } from 'react-router';
+import { LoggedInUserContext } from './loggedInUserContext';
 import { PageRoutes } from './pageRoutes';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
-import { LoggedInUserContext } from './loggedInUserContext';
 
-export const LogOutWidget = withServerCalls(
-    (props: InjectedServerCallsProps) => {
-        const navigate = useNavigate();
-        const loggedInUserContext = React.use(LoggedInUserContext);
+export const TopBanner = withServerCalls((props: InjectedServerCallsProps) => {
+    const navigate = useNavigate();
+    const loggedInUserContext = React.use(LoggedInUserContext);
 
-        return (
-            <div style={{ position: 'fixed', right: '10px', top: '10px' }}>
+    return (
+        <div
+            style={{
+                alignItems: 'center',
+                background: '#2082D9',
+                display: 'flex',
+                height: '50px',
+                justifyContent: 'space-between',
+                width: '100%',
+            }}
+        >
+            <div style={{ color: 'white', marginLeft: '20px' }}>
+                Sinking Islands
+            </div>
+            <div style={{ marginRight: '20px' }}>
                 <button
                     type='button'
                     onClick={() => {
@@ -29,7 +41,6 @@ export const LogOutWidget = withServerCalls(
                     Log out
                 </button>
             </div>
-        );
-    },
-    'LogOutWidget',
-);
+        </div>
+    );
+}, 'TopBanner');

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { BoxWidget } from './boxWidget';
 import { PlayerDesignator, type GameSerialized } from './commonTypes';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
@@ -34,7 +33,15 @@ export const GameListWidget = withServerCalls(
         }, [refreshGameList]);
 
         return (
-            <BoxWidget bigTitle={false} title='Your Games'>
+            <div
+                style={{
+                    border: '1px solid',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '10px',
+                    rowGap: '10px',
+                }}
+            >
                 {
                     <div style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}
@@ -128,7 +135,7 @@ export const GameListWidget = withServerCalls(
                         )}
                     </tbody>
                 </table>
-            </BoxWidget>
+            </div>
         );
     },
     'GetGamesWidget',

@@ -4,7 +4,6 @@ import { DashboardPage } from './dashboardPage';
 import { GamePage } from './gamePage';
 import { LogInGuard } from './logInGuard';
 import { LogInPage } from './logInPage';
-import { LogOutWidget } from './logOutWidget';
 import { LoggedInUserContextProvider } from './loggedInUserContext';
 import { PageRoutes } from './pageRoutes';
 import { TitlePage } from './pages/titlePage';
@@ -46,7 +45,6 @@ export const SinkingIslandsApp = () => {
                             path='/*'
                         />
                     </Routes>
-                    <LogOutWidget />
                 </LogInGuard>
             </LoggedInUserContextProvider>
         </BrowserRouter>
