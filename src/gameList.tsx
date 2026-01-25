@@ -11,7 +11,7 @@ const cellStyle: React.CSSProperties = {
     textAlign: 'center',
 };
 
-export const GetGamesWidget = withServerCalls(
+export const GameListWidget = withServerCalls(
     (props: InjectedServerCallsProps) => {
         const [games, setGames] = React.useState<GameSerialized[]>([]);
         const [result, setResult] = useResultMessage();
@@ -35,19 +35,46 @@ export const GetGamesWidget = withServerCalls(
 
         return (
             <BoxWidget bigTitle={false} title='Your Games'>
-                {result.success === null ? null : (
+                {
                     <div style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}
                     </div>
-                )}
-                <button
-                    type='button'
-                    onClick={() => {
-                        refreshGameList();
+                }
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        marginBottom: '10px',
                     }}
                 >
-                    Refresh
-                </button>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setResult(null, '');
+                            props.serverCalls
+                                .createGame()
+                                .then((response) => {
+                                    setResult(true, response.message);
+                                })
+                                .then(() => {
+                                    refreshGameList();
+                                })
+                                .catch((error: unknown) => {
+                                    setResult(false, error);
+                                });
+                        }}
+                    >
+                        Create New Game
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            refreshGameList();
+                        }}
+                    >
+                        Refresh List
+                    </button>
+                </div>
                 <table style={{ border: '1px solid' }}>
                     <thead>
                         <tr>
@@ -61,7 +88,13 @@ export const GetGamesWidget = withServerCalls(
                     <tbody>
                         {games.length <= 0 ? (
                             <tr>
-                                <td colSpan={4} style={{ textAlign: 'center' }}>
+                                <td
+                                    colSpan={5}
+                                    style={{
+                                        textAlign: 'center',
+                                        width: '620px',
+                                    }}
+                                >
                                     You have no active games.
                                 </td>
                             </tr>
