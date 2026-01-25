@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { BoxWidget } from './boxWidget';
-import type { GameSerialized } from './commonTypes';
+import { PlayerDesignator, type GameSerialized } from './commonTypes';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
+
+const cellStyle: React.CSSProperties = {
+    border: '1px solid',
+    padding: '4px',
+    textAlign: 'center',
+};
 
 export const GetGamesWidget = withServerCalls(
     (props: InjectedServerCallsProps) => {
@@ -45,18 +51,11 @@ export const GetGamesWidget = withServerCalls(
                 <table style={{ border: '1px solid' }}>
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid', padding: '4px' }}>
-                                Game ID
-                            </th>
-                            <th style={{ border: '1px solid', padding: '4px' }}>
-                                Game State
-                            </th>
-                            <th style={{ border: '1px solid', padding: '4px' }}>
-                                Opponent
-                            </th>
-                            <th style={{ border: '1px solid', padding: '4px' }}>
-                                Actions
-                            </th>
+                            <th style={cellStyle}>Game ID</th>
+                            <th style={cellStyle}>Game State</th>
+                            <th style={cellStyle}>Player A</th>
+                            <th style={cellStyle}>Player B</th>
+                            <th style={cellStyle}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,7 +65,34 @@ export const GetGamesWidget = withServerCalls(
                                     You have no active games.
                                 </td>
                             </tr>
-                        ) : null}
+                        ) : (
+                            games.map((game) => {
+                                return (
+                                    <tr key={game.id}>
+                                        <td style={cellStyle}>{game.id}</td>
+                                        <td style={cellStyle}>
+                                            {game.gameState}
+                                        </td>
+                                        <td style={cellStyle}>
+                                            {game.players[
+                                                PlayerDesignator.PLAYER_A
+                                            ].username ?? '<none>'}
+                                        </td>
+                                        <td style={cellStyle}>
+                                            {game.players[
+                                                PlayerDesignator.PLAYER_B
+                                            ].username ?? '<none>'}
+                                        </td>
+                                        <td style={cellStyle}>
+                                            <button type='button'>Play</button>
+                                            <button type='button'>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </BoxWidget>

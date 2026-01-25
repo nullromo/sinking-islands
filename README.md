@@ -64,6 +64,8 @@
 
 1. Do I need to use tailscale for DNS? Do I need to get a domain with Namecheap
    or Cloudflare?
+1. Clean up all the visuals so that it looks nice when you are playing.
+1. Build a tutorial that explains the game.
 
 ## Visual
 
@@ -72,3 +74,10 @@
 - similar to how it shows staged selections on the islands/characters, it should
   also show that for movement and any other input that doesn't really indicate
 - make everything pretty. Get some good AI art going.
+
+## Later Features
+
+- Users want to see their game history. They should be able to have some number
+  of active games (5?) and they should see their previous games. Replays would
+  be nice. Also win/loss ratio and such. Analytics.
+- Host/join public games.
