@@ -46,11 +46,32 @@ export const LogInOrCreateAccountWidget = withServerCalls(
 
         return (
             <BoxWidget
+                bigTitle={true}
                 style={{ background: '#FFFFFFAA' }}
                 title={
                     props.widgetType === 'logIn' ? 'Log In' : 'Create Account'
                 }
             >
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        height: 0,
+                        justifyContent: 'flex-end',
+                        left: 0,
+                        position: 'relative',
+                        width: '100%',
+                    }}
+                >
+                    <Link to={PageRoutes.TITLE}>
+                        <button
+                            style={{ position: 'relative', top: '-40px' }}
+                            type='button'
+                        >
+                            Back
+                        </button>
+                    </Link>
+                </div>
                 {result.success ? null : inputBoxes}
                 {result.success === null ? null : (
                     <div style={{ color: result.success ? 'green' : 'red' }}>
