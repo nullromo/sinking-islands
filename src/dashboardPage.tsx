@@ -1,5 +1,5 @@
 import { CreateGameWidget } from './createGame';
-import { GetGamesWidget } from './getGames';
+import { GetGamesWidget } from './gameList';
 
 export const DashboardPage = () => {
     return (

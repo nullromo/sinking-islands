@@ -8,7 +8,7 @@ export const CreateGameWidget = withServerCalls(
         const [result, setResult] = useResultMessage();
 
         return (
-            <BoxWidget bigTitle={true} title='Create Game'>
+            <BoxWidget bigTitle={false} title='Create Game'>
                 {result.success === null ? null : (
                     <span style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}

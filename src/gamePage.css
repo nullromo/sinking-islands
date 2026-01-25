@@ -11,3 +11,7 @@ html {
 img {
     max-width: 100%;
 }
+
+table {
+    border-collapse: collapse;
+}

@@ -13,8 +13,8 @@ interface LogInOrCreateAccountWidgetProps extends InjectedServerCallsProps {
 
 export const LogInOrCreateAccountWidget = withServerCalls(
     (props: LogInOrCreateAccountWidgetProps) => {
-        const [username, setUsername] = React.useState('');
-        const [password, setPassword] = React.useState('');
+        const [username, setUsername] = React.useState('kyle');
+        const [password, setPassword] = React.useState('okay');
         const [result, setResult] = useResultMessage();
 
         const loggedInUserContext = React.use(LoggedInUserContext);

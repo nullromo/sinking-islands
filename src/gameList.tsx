@@ -15,7 +15,7 @@ export const GetGamesWidget = withServerCalls(
             props.serverCalls
                 .getGamesForUser()
                 .then((response) => {
-                    setResult(true, 'Got games.');
+                    setResult(true, '');
                     setGames(response);
                 })
                 .catch((error: unknown) => {
@@ -28,7 +28,7 @@ export const GetGamesWidget = withServerCalls(
         }, [refreshGameList]);
 
         return (
-            <BoxWidget bigTitle={true} title='List Games'>
+            <BoxWidget bigTitle={false} title='Your Games'>
                 {result.success === null ? null : (
                     <div style={{ color: result.success ? 'green' : 'red' }}>
                         {result.message}
@@ -42,11 +42,33 @@ export const GetGamesWidget = withServerCalls(
                 >
                     Refresh
                 </button>
-                <ul>
-                    {games.map((game) => {
-                        return <li key={game.id}>{game.id}</li>;
-                    })}
-                </ul>
+                <table style={{ border: '1px solid' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ border: '1px solid', padding: '4px' }}>
+                                Game ID
+                            </th>
+                            <th style={{ border: '1px solid', padding: '4px' }}>
+                                Game State
+                            </th>
+                            <th style={{ border: '1px solid', padding: '4px' }}>
+                                Opponent
+                            </th>
+                            <th style={{ border: '1px solid', padding: '4px' }}>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {games.length <= 0 ? (
+                            <tr>
+                                <td colSpan={4} style={{ textAlign: 'center' }}>
+                                    You have no active games.
+                                </td>
+                            </tr>
+                        ) : null}
+                    </tbody>
+                </table>
             </BoxWidget>
         );
     },

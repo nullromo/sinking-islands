@@ -26,7 +26,8 @@ export const LogInGuard = withServerCalls((props: LogInGuardProps) => {
 
     return (
         <>
-            {loggedInUserContext.loggedInUser === null
+            {(loggedInUserContext.loggedInUser as unknown) === undefined ||
+            loggedInUserContext.loggedInUser === null
                 ? props.alternativeChildren
                 : props.children}
         </>
