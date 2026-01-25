@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { PlayerDesignator, type GameSerialized } from './commonTypes';
+import type { GameSerialized } from './commonTypes';
+import { GameListRow } from './gameListRow';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
 
-const cellStyle: React.CSSProperties = {
+export const cellStyle: React.CSSProperties = {
     border: '1px solid',
     padding: '4px',
     textAlign: 'center',
@@ -108,28 +109,7 @@ export const GameListWidget = withServerCalls(
                         ) : (
                             games.map((game) => {
                                 return (
-                                    <tr key={game.id}>
-                                        <td style={cellStyle}>{game.id}</td>
-                                        <td style={cellStyle}>
-                                            {game.gameState}
-                                        </td>
-                                        <td style={cellStyle}>
-                                            {game.players[
-                                                PlayerDesignator.PLAYER_A
-                                            ].username ?? '<none>'}
-                                        </td>
-                                        <td style={cellStyle}>
-                                            {game.players[
-                                                PlayerDesignator.PLAYER_B
-                                            ].username ?? '<none>'}
-                                        </td>
-                                        <td style={cellStyle}>
-                                            <button type='button'>Play</button>
-                                            <button type='button'>
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <GameListRow key={game.id} game={game} />
                                 );
                             })
                         )}
