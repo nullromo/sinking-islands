@@ -1,6 +1,11 @@
 import type { RedisClientType } from 'redis';
 import { createClient } from 'redis';
 
+const REDIS_IP_ADDRESS = 'localhost';
+const REDIS_PORT = 6379;
+const REDIS_DATABASE_NUMBER = 7;
+const REDIS_TEST_DATABASE_NUMBER = 6;
+
 class RedisConnector {
     private readonly redisClient: RedisClientType;
 
@@ -23,8 +28,32 @@ class RedisConnector {
         }
         return this.redisClient;
     };
+
+    public readonly destroy = () => {
+        this.redisClient.destroy();
+    };
 }
 
-const RedisConnectorInstance = new RedisConnector('localhost', 6379, 7);
+let RedisConnectorInstance: RedisConnector | null = null;
 
-export const getRedis = RedisConnectorInstance.getClient;
+export const initializeRedis = (test: boolean) => {
+    RedisConnectorInstance = new RedisConnector(
+        REDIS_IP_ADDRESS,
+        REDIS_PORT,
+        test ? REDIS_TEST_DATABASE_NUMBER : REDIS_DATABASE_NUMBER,
+    );
+};
+
+export const getRedis = async (): Promise<RedisClientType> => {
+    if (RedisConnectorInstance === null) {
+        initializeRedis(false);
+    }
+    return (RedisConnectorInstance as RedisConnector).getClient();
+};
+
+export const destroyRedis = () => {
+    if (RedisConnectorInstance === null) {
+        return;
+    }
+    RedisConnectorInstance.destroy();
+};
