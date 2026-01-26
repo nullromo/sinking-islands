@@ -1,3 +1,4 @@
+import { CanceledError } from 'axios';
 import * as React from 'react';
 import { LoggedInUserContext } from './loggedInUserContext';
 import type { InjectedServerCallsProps } from './withServerCalls';
@@ -19,17 +20,20 @@ export const LogInGuard = withServerCalls((props: LogInGuardProps) => {
                 loggedInUserContext.setLoggedInUser(response.username);
             })
             .catch((error: unknown) => {
-                console.error(error);
-                loggedInUserContext.setLoggedInUser(null);
+                if (!(error instanceof CanceledError)) {
+                    console.error(error);
+                    loggedInUserContext.setLoggedInUser(null);
+                }
             });
     }, [loggedInUserContext, props.serverCalls]);
 
-    return (
-        <>
-            {(loggedInUserContext.loggedInUser as unknown) === undefined ||
-            loggedInUserContext.loggedInUser === null
-                ? props.alternativeChildren
-                : props.children}
-        </>
-    );
+    if (loggedInUserContext.loggedInUser === undefined) {
+        return <>Loading...</>;
+    }
+
+    if (loggedInUserContext.loggedInUser === null) {
+        return <>{props.alternativeChildren}</>;
+    }
+
+    return <>{props.children}</>;
 }, 'LogInGuard');
