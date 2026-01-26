@@ -1,6 +1,6 @@
 export enum PageRoutes {
     TITLE = '/',
-    GAME = '/game',
+    PLAY = '/play/:id',
     LOG_IN = '/log-in',
     CREATE_ACCOUNT = '/create-account',
     DASHBOARD = '/dashboard',
