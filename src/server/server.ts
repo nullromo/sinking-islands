@@ -1,6 +1,6 @@
 import { RedisStore } from 'connect-redis';
 import express from 'express';
-import session, { MemoryStore } from 'express-session';
+import session from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
@@ -13,9 +13,7 @@ import { Game } from './game';
 import { gameRouter } from './gameRouter';
 import { destroyRedis, getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
-
-const BACKEND_PORT = 5151;
-const TEST_BACKEND_PORT = 5150;
+import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 
 class SinkingIslandsBackend {
     private server: http.Server | null = null;
@@ -25,7 +23,7 @@ class SinkingIslandsBackend {
 
     private running = false;
 
-    public readonly start = (test: boolean) => {
+    public readonly start = async (test: boolean) => {
         if (this.running) {
             throw new Error(
                 'Cannot start the backend because it is already running.',
@@ -73,59 +71,57 @@ class SinkingIslandsBackend {
         app.use(express.urlencoded({ extended: false }));
         app.use(express.json());
 
-        (async () => {
-            const redisStore = new RedisStore({
-                client: await getRedis(),
-                prefix: 'session:sinking-islands:',
-            });
-            app.use((request, response, next) => {
-                session({
-                    cookie: {
-                        maxAge: 1000 * 60 * 10, // 10 minutes
-                        // secure: true // TODO enable this when https is set up. See https://github.com/expressjs/session?tab=readme-ov-file#cookiesecure
-                    },
-                    name: 'sinking-islands',
-                    resave: false,
-                    rolling: true,
-                    saveUninitialized: true,
-                    secret: 'TODO', // TODO
-                    store: redisStore,
-                    unset: 'destroy',
-                })(request, response, next);
-            });
-            app.use((request, __, next) => {
-                console.log(
-                    'HTTP request from',
-                    (request.session as unknown) !== undefined &&
-                        request.session.username !== undefined
-                        ? `'${request.session.username}'`
-                        : 'unknown user',
-                );
-                next();
-            });
-            app.use(usersRouter);
-            app.use(gameRouter);
-            app.use(
-                (
-                    error: Error,
-                    __: express.Request,
-                    response: express.Response,
-                    next: express.NextFunction,
-                ) => {
-                    console.error(error);
-                    if (response.statusCode === HTTPResponseCodes.OK) {
-                        response.status(
-                            HTTPResponseCodes.INTERNAL_SERVER_ERROR,
-                        );
-                    }
-                    response.send({ message: error.message });
-                    next();
+        const redis = await getRedis();
+
+        const redisStore = new RedisStore({
+            client: redis,
+            prefix: 'session:sinking-islands:',
+        });
+        app.use((request, response, next) => {
+            session({
+                cookie: {
+                    maxAge: 1000 * 60 * 10, // 10 minutes
+                    // secure: true // TODO enable this when https is set up. See https://github.com/expressjs/session?tab=readme-ov-file#cookiesecure
                 },
+                name: 'sinking-islands',
+                resave: false,
+                rolling: true,
+                saveUninitialized: true,
+                secret: 'TODO', // TODO
+                store: redisStore,
+                unset: 'destroy',
+            })(request, response, next);
+        });
+        app.use((request, __, next) => {
+            console.log(
+                'HTTP request from',
+                (request.session as unknown) !== undefined &&
+                    request.session.username !== undefined
+                    ? `'${request.session.username}'`
+                    : 'unknown user',
             );
-        })().catch(console.error);
+            next();
+        });
+        app.use(usersRouter);
+        app.use(gameRouter);
+        app.use(
+            (
+                error: Error,
+                __: express.Request,
+                response: express.Response,
+                next: express.NextFunction,
+            ) => {
+                console.error(error);
+                if (response.statusCode === HTTPResponseCodes.OK) {
+                    response.status(HTTPResponseCodes.INTERNAL_SERVER_ERROR);
+                }
+                response.send({ message: error.message });
+                next();
+            },
+        );
 
         this.server.listen(port, () => {
-            console.log('Listening');
+            console.log('Listening on port', port);
         });
 
         const games: Partial<Record<string, Game>> = {};

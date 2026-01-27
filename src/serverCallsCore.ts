@@ -5,6 +5,7 @@ import { HTTPMethod } from './endpointUtils';
 import { HTTPResponseCodes } from './httpResponseCodes';
 import type { MakeEmptyKeysOptional } from './util';
 import { assertUnreachable } from './util';
+import { TEST_BACKEND_PORT } from './ports';
 
 const replaceURLWithParameters = (
     path: string,
@@ -102,8 +103,16 @@ const simpleLogger = (error: AxiosError<{ message: string } | undefined>) => {
 export class ServerCallsCore {
     private readonly onUnauthorized: () => void;
 
-    public constructor(onUnauthorized: () => void) {
+    private readonly baseUrl: string;
+
+    public constructor(
+        test: boolean,
+        onUnauthorized = () => {
+            //
+        },
+    ) {
         this.onUnauthorized = onUnauthorized;
+        this.baseUrl = test ? `http://localhost:${TEST_BACKEND_PORT}` : '';
     }
 
     private abortController: AbortController = new AbortController();
@@ -139,7 +148,12 @@ export class ServerCallsCore {
         // remove all *'s from the endpoint
         const newPath = path.replace('*', '');
 
-        const { url } = replaceURLWithParameters(newPath, data.urlParameters);
+        const { url: tail } = replaceURLWithParameters(
+            newPath,
+            data.urlParameters,
+        );
+
+        const url = `${this.baseUrl}${tail}`;
 
         const body = data.requestBody;
         const params = data.queryParameters;

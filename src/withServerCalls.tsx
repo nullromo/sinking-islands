@@ -18,7 +18,7 @@ export const withServerCalls = <P extends InjectedServerCallsProps>(
         const loggedInUserContext = React.use(LoggedInUserContext);
 
         const [serverCalls] = React.useState(() => {
-            return new ServerCalls(() => {
+            return new ServerCalls(false, () => {
                 loggedInUserContext.setLoggedInUser(null);
             });
         });

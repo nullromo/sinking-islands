@@ -18,8 +18,13 @@ type SendConfig = Omit<
 export class ServerCalls {
     private readonly serverCallsCore: ServerCallsCore;
 
-    public constructor(onUnauthorized: () => void) {
-        this.serverCallsCore = new ServerCallsCore(onUnauthorized);
+    public constructor(
+        test: boolean,
+        onUnauthorized = () => {
+            //
+        },
+    ) {
+        this.serverCallsCore = new ServerCallsCore(test, onUnauthorized);
     }
 
     public readonly abort = () => {
