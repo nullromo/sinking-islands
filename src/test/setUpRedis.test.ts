@@ -1,12 +1,12 @@
 import { afterAll, beforeEach, expect, test } from '@jest/globals';
-import { setUpRedis } from './setUpRedis';
-import { destroyRedis, getRedis } from '../server/redisConnector';
+import { getRedis } from '../server/redisConnector';
+import { setUpRedis, tearDownRedis } from './setUpRedis';
 
 beforeEach(async () => {
     await setUpRedis();
 });
 afterAll(() => {
-    destroyRedis();
+    tearDownRedis();
 });
 
 test('The database starts empty', async () => {

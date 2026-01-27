@@ -1,4 +1,8 @@
-import { getRedis, initializeRedis } from '../server/redisConnector';
+import {
+    destroyRedis,
+    getRedis,
+    initializeRedis,
+} from '../server/redisConnector';
 
 /**
  * Used to initialize the test redis database.
@@ -12,4 +16,8 @@ export const setUpRedis = async () => {
 
     // erase all data in the database
     await redis.flushDb();
+};
+
+export const tearDownRedis = () => {
+    destroyRedis();
 };
