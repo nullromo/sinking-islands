@@ -55,7 +55,7 @@
     "scripts": {
         "start": "BROWSER=none vite",
         "build": "vite build",
-        "backend": "cd ./src/server && npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./server.ts",
+        "backend": "cd ./src/server && npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./serverLauncher.ts",
         "lint": "eslint src/",
         "typecheck": "tsc --noemit || true",
         "check": "run-p typecheck lint",
