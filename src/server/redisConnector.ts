@@ -29,8 +29,8 @@ class RedisConnector {
         return this.redisClient;
     };
 
-    public readonly destroy = () => {
-        this.redisClient.destroy();
+    public readonly close = async () => {
+        return this.redisClient.quit();
     };
 }
 
@@ -51,9 +51,9 @@ export const getRedis = async (): Promise<RedisClientType> => {
     return (RedisConnectorInstance as RedisConnector).getClient();
 };
 
-export const destroyRedis = () => {
+export const destroyRedis = async () => {
     if (RedisConnectorInstance === null) {
-        return;
+        return Promise.resolve();
     }
-    RedisConnectorInstance.destroy();
+    return RedisConnectorInstance.close();
 };

@@ -1,6 +1,6 @@
 import { RedisStore } from 'connect-redis';
 import express from 'express';
-import session from 'express-session';
+import session, { MemoryStore } from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
@@ -189,7 +189,7 @@ class SinkingIslandsBackend {
             this.io.close().catch(console.error);
         }
 
-        destroyRedis();
+        destroyRedis().catch(console.error);
     };
 }
 
