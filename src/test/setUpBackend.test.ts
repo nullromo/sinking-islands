@@ -1,6 +1,7 @@
-import { afterAll, beforeEach, test } from '@jest/globals';
+import { afterAll, beforeEach, expect, test } from '@jest/globals';
 import { setUpBackend, tearDownBackend } from './setUpBackend';
 import { ServerCalls } from '../serverCalls';
+import { NOT_LOGGED_IN_ERROR_MESSAGE } from '../server/requireSession';
 
 beforeEach(async () => {
     await setUpBackend();
@@ -14,6 +15,6 @@ test('The server runs', async () => {
     try {
         await serverCalls.whoAmI();
     } catch (error) {
-        console.log(error);
+        expect((error as Error).message).toEqual(NOT_LOGGED_IN_ERROR_MESSAGE);
     }
 });
