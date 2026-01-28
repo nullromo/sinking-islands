@@ -18,6 +18,6 @@ export const setUpRedis = async () => {
     await redis.flushDb();
 };
 
-export const tearDownRedis = () => {
-    destroyRedis();
+export const tearDownRedis = async () => {
+    await destroyRedis();
 };

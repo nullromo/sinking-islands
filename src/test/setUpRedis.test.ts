@@ -5,8 +5,8 @@ import { setUpRedis, tearDownRedis } from './setUpRedis';
 beforeEach(async () => {
     await setUpRedis();
 });
-afterAll(() => {
-    tearDownRedis();
+afterAll(async () => {
+    await tearDownRedis();
 });
 
 test('The database starts empty', async () => {
