@@ -60,7 +60,7 @@
         "typecheck": "tsc --noemit || true",
         "check": "run-p typecheck lint",
         "print-node-version": "node --version",
-        "test": "jest",
+        "test": "jest --silent=true",
         "test-verbose": "jest --silent=false"
     },
     "eslintConfig": {
