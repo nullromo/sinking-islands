@@ -61,7 +61,7 @@ export namespace Endpoints {
         public readonly urlParameters = {};
         public readonly queryParameters = {};
         public readonly requestBody = {};
-        public readonly responseBody = DefaultTypes.message;
+        public readonly responseBody = DefaultTypes.string;
     }
     export const CreateGame = { instance: new CreateGameInfo() };
 
