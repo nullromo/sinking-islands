@@ -1,3 +1,5 @@
+import { customRandom } from './random';
+
 /**
  * Shuffles an array in place and returns it.
  */
@@ -8,7 +10,7 @@ export const shuffleArray = <T>(array: T[]) => {
     // While there remain elements to shuffle.
     while (currentIndex !== 0) {
         // Pick a remaining element.
-        randomIndex = Math.floor(Math.random() * currentIndex);
+        randomIndex = Math.floor(customRandom() * currentIndex);
         currentIndex -= 1;
 
         // And swap it with the current element.
@@ -25,7 +27,7 @@ export const shuffleArray = <T>(array: T[]) => {
  * Returns a random element from the given array.
  */
 export const sampleArray = <T>(array: T[]) => {
-    return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(customRandom() * array.length)];
 };
 
 /**

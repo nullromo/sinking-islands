@@ -17,9 +17,10 @@ import { fullObject } from '../util';
 import type { CardPlacement } from './actionOrderTrack';
 import { Card, CardType } from './card';
 import { Character } from './character';
+import { customRandom } from '../../random';
 
 const randomIslandNumber = () => {
-    return Math.floor(Math.random() * 16) + 1;
+    return Math.floor(customRandom() * 16) + 1;
 };
 
 export type FlyingFishMovement = {
@@ -278,7 +279,7 @@ export class Player {
                         fromIslandNumber: randomIslandNumber(),
                         toIslandNumber: randomIslandNumber(),
                     };
-                    if (Math.random() > 0.5) {
+                    if (customRandom() > 0.5) {
                         movement.character.tortoise = true;
                     }
                     resolve(movement);
@@ -297,7 +298,7 @@ export class Player {
                 });
                 this.socket.emit('requestFogTarget');
             } else {
-                resolve(Math.floor(Math.random() * 6));
+                resolve(Math.floor(customRandom() * 6));
             }
         });
     };
@@ -340,20 +341,22 @@ export class Player {
                 this.socket.emit('requestMovementSet');
             } else {
                 const movementSet: MovementSet = [];
-                [...Array(Math.floor(Math.random() * 3)).keys()].forEach(() => {
-                    const movement = {
-                        character: new Character(
-                            this.playerDesignator,
-                            sampleArray([20, 30, 40]),
-                        ),
-                        fromIslandNumber: randomIslandNumber(),
-                        toIslandNumber: randomIslandNumber(),
-                    };
-                    if (Math.random() > 0.5) {
-                        movement.character.tortoise = true;
-                    }
-                    movementSet.push(movement);
-                });
+                [...Array(Math.floor(customRandom() * 3)).keys()].forEach(
+                    () => {
+                        const movement = {
+                            character: new Character(
+                                this.playerDesignator,
+                                sampleArray([20, 30, 40]),
+                            ),
+                            fromIslandNumber: randomIslandNumber(),
+                            toIslandNumber: randomIslandNumber(),
+                        };
+                        if (customRandom() > 0.5) {
+                            movement.character.tortoise = true;
+                        }
+                        movementSet.push(movement);
+                    },
+                );
                 resolve(movementSet);
             }
         });
@@ -489,7 +492,7 @@ export class Player {
                     this.playerDesignator,
                     sampleArray([20, 30, 40]),
                 );
-                if (Math.random() > 0.5) {
+                if (customRandom() > 0.5) {
                     character.tortoise = true;
                 }
                 resolve(character);
