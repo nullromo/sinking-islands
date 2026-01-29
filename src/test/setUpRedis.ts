@@ -9,7 +9,7 @@ import {
  */
 export const setUpRedis = async () => {
     // set the correct database
-    initializeRedis(true);
+    await initializeRedis(true);
 
     // connect to redis
     const redis = await getRedis();

@@ -36,7 +36,15 @@ class RedisConnector {
 
 let RedisConnectorInstance: RedisConnector | null = null;
 
-export const initializeRedis = (test: boolean) => {
+export const destroyRedis = async () => {
+    if (RedisConnectorInstance === null) {
+        return Promise.resolve();
+    }
+    return RedisConnectorInstance.close();
+};
+
+export const initializeRedis = async (test: boolean) => {
+    await destroyRedis();
     RedisConnectorInstance = new RedisConnector(
         REDIS_IP_ADDRESS,
         REDIS_PORT,
@@ -46,14 +54,7 @@ export const initializeRedis = (test: boolean) => {
 
 export const getRedis = async (): Promise<RedisClientType> => {
     if (RedisConnectorInstance === null) {
-        initializeRedis(false);
+        await initializeRedis(false);
     }
     return (RedisConnectorInstance as RedisConnector).getClient();
-};
-
-export const destroyRedis = async () => {
-    if (RedisConnectorInstance === null) {
-        return Promise.resolve();
-    }
-    return RedisConnectorInstance.close();
 };

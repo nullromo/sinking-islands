@@ -1,9 +1,9 @@
-import { afterAll, beforeEach, expect, test } from '@jest/globals';
-import { setUpBackend, tearDownBackend } from './setUpBackend';
-import { ServerCalls } from '../serverCalls';
+import { afterAll, beforeAll, expect, test } from '@jest/globals';
 import { NOT_LOGGED_IN_ERROR_MESSAGE } from '../server/requireSession';
+import { ServerCalls } from '../serverCalls';
+import { setUpBackend, tearDownBackend } from './setUpBackend';
 
-beforeEach(async () => {
+beforeAll(async () => {
     await setUpBackend();
 });
 afterAll(() => {
