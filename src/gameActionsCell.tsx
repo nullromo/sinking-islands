@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router';
 import type { GameSerialized } from './commonTypes';
 import { PlayerDesignator } from './commonTypes';
 import { cellStyle } from './gameList';
 import { GameState } from './gameState';
 import { LoggedInUserContext } from './loggedInUserContext';
+import { buildPlayRoute } from './pageRoutes';
 import type { SetResultProps } from './useResultMessage';
 
 interface GameActionsCellProps extends SetResultProps {
@@ -11,6 +13,7 @@ interface GameActionsCellProps extends SetResultProps {
 }
 
 export const GameActionsCell = (props: GameActionsCellProps) => {
+    const navigate = useNavigate();
     const loggedInUserContext = React.use(LoggedInUserContext);
 
     const playerAUsername =
@@ -19,7 +22,12 @@ export const GameActionsCell = (props: GameActionsCellProps) => {
         props.game.players[PlayerDesignator.PLAYER_B].username;
 
     const playGame = () => {
-        // TODO
+        const result = navigate(buildPlayRoute(props.game.id));
+        if (result instanceof Promise) {
+            result.catch((error: unknown) => {
+                props.setResult(false, error);
+            });
+        }
     };
 
     const joinGame = () => {

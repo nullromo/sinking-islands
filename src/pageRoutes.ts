@@ -5,3 +5,7 @@ export enum PageRoutes {
     CREATE_ACCOUNT = '/create-account',
     DASHBOARD = '/dashboard',
 }
+
+export const buildPlayRoute = (id: string) => {
+    return PageRoutes.PLAY.replace(':id', id);
+};
