@@ -6,12 +6,14 @@ import {
     PlayerDesignator,
 } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
+import { GameState } from '../gameState';
+import { randomUUID } from '../random';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
 import { assertUnreachable, shuffleArray, upperSnakeToTitle } from '../util';
-import { GameState } from '../gameState';
+import { CheckResult } from './checkResult';
 import type { CardPlacement } from './gameObjects/actionOrderTrack';
 import { ActionOrderTrack } from './gameObjects/actionOrderTrack';
 import { Card, CardType } from './gameObjects/card';
@@ -19,11 +21,10 @@ import { Character } from './gameObjects/character';
 import { Island } from './gameObjects/island';
 import type {
     FlyingFishMovement,
-    TargetCharacter,
     MovementSet,
+    TargetCharacter,
 } from './gameObjects/player';
 import { Player } from './gameObjects/player';
-import { CheckResult } from './checkResult';
 
 /**
  * Represents a game of Sinking Islands
@@ -76,7 +77,7 @@ export class Game {
 
     public constructor() {
         this.writeMessage('Creating game.');
-        this.id = crypto.randomUUID();
+        this.id = randomUUID();
 
         // create and randomize all the characters
         const characters = shuffleArray([

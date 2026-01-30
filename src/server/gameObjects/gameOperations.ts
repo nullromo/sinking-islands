@@ -8,6 +8,7 @@ import { IslandType, PlayerDesignator } from '../../commonTypes';
 import { createBlankGame } from '../../createBlankGame';
 import { GameActionType, type GameAction } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { randomUUID } from '../../random';
 import { assertUnreachable, shuffleArray } from '../../util';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CharacterOperations } from './characterOperations';
@@ -73,7 +74,7 @@ export namespace GameOperations {
         return {
             ...blankGame,
             actionOrderTrack: ActionOrderTrackOperations.create(),
-            id: crypto.randomUUID(),
+            id: randomUUID(),
             initiative: (
                 islands.find((island) => {
                     return island.islandNumber === 1;
