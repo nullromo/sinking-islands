@@ -1,4 +1,5 @@
 import seedrandom from 'seedrandom';
+// eslint-disable-next-line import/no-unresolved
 import { v4 as uuidv4 } from 'uuid';
 
 export let customRandom = Math.random;
