@@ -48,5 +48,6 @@ export const createBlankGame = (): GameSerialized => {
                 weakness: false,
             },
         },
+        waitingForPlayer: PlayerDesignator.PLAYER_A,
     };
 };

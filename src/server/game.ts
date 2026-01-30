@@ -1844,6 +1844,8 @@ export class Game {
                     username: 'TODO',
                 },
             },
+            //TODO: this one is wrong. This field did not exist before
+            waitingForPlayer: PlayerDesignator.PLAYER_A,
         };
     };
 }

@@ -90,11 +90,13 @@ export type GameSerialized = {
     activeCardIndex: number | null;
     gameState: GameState;
     id: string;
+    // TODO: remove indiscretion because it's in players now
     indiscretion: {
         [PlayerDesignator.PLAYER_A]: boolean;
         [PlayerDesignator.PLAYER_B]: boolean;
     };
     initiative: PlayerDesignator;
+    // TODO: remove island modifiers because they are in players now
     islandModifiers: {
         playerANet: number;
         playerAPilings: number;
@@ -108,4 +110,5 @@ export type GameSerialized = {
         [PlayerDesignator.PLAYER_A]: PlayerSerialized;
         [PlayerDesignator.PLAYER_B]: PlayerSerialized;
     };
+    waitingForPlayer: PlayerDesignator;
 };

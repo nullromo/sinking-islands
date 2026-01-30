@@ -5,15 +5,16 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { PlayerDesignator } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
+import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
 import { Game } from './game';
 import { gameRouter } from './gameRouter';
+import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
 import { usersRouter } from './usersRouter';
-import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 
 class SinkingIslandsBackend {
     private server: http.Server | null = null;
@@ -104,6 +105,7 @@ class SinkingIslandsBackend {
         });
         app.use(usersRouter);
         app.use(gameRouter);
+        app.use(playRouter);
         app.use(
             (
                 error: Error,

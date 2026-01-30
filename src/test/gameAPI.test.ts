@@ -17,8 +17,8 @@ test('Games can be created', async () => {
     const id = await GameAPI.createGame('testuser');
     const game = (await redis.json.get(
         RedisKeys.createGameKey(id),
-    )) as GameSerialized;
-    expect(game.id).toEqual(id);
+    )) as GameSerialized | null;
+    expect(game?.id).toEqual(id);
 });
 
 test('Games for user can be obtained', async () => {

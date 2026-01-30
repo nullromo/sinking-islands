@@ -1,6 +1,8 @@
 import type { GameSerialized } from './commonTypes';
 import type { EndpointUtils } from './endpointUtils';
 import { HTTPMethod } from './endpointUtils';
+import type { GameAction } from './gameActionTypes';
+import { GameOperations } from './server/gameObjects/gameOperations';
 
 const DefaultTypes = {
     boolean: true,
@@ -74,4 +76,17 @@ export namespace Endpoints {
         public readonly responseBody: GameSerialized[] = [];
     }
     export const GetGamesForUser = { instance: new GetGamesForUserInfo() };
+
+    class TakeGameActionInfo implements EndpointUtils.EndpointInfo {
+        public readonly path = '/backend/game/action' as const;
+        public readonly method = HTTPMethod.POST;
+        public readonly urlParameters = {};
+        public readonly queryParameters = {};
+        public readonly requestBody: {
+            gameID?: string;
+            gameAction?: GameAction;
+        } = {};
+        public readonly responseBody: GameSerialized = GameOperations.create();
+    }
+    export const TakeGameAction = { instance: new TakeGameActionInfo() };
 }
