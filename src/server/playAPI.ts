@@ -1,4 +1,5 @@
-import { GameSerialized, PlayerDesignator } from '../commonTypes';
+import type { GameSerialized } from '../commonTypes';
+import { PlayerDesignator } from '../commonTypes';
 import type { GameAction } from '../gameActionTypes';
 import { GameOperations } from './gameObjects/gameOperations';
 import { getRedis } from './redisConnector';
