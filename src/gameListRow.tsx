@@ -2,8 +2,9 @@ import type { GameSerialized } from './commonTypes';
 import { PlayerDesignator } from './commonTypes';
 import { GameActionsCell } from './gameActionsCell';
 import { cellStyle } from './gameList';
+import type { SetResultProps } from './useResultMessage';
 
-interface GameListRowProps {
+interface GameListRowProps extends SetResultProps {
     readonly game: GameSerialized;
 }
 
@@ -19,7 +20,7 @@ export const GameListRow = (props: GameListRowProps) => {
             <td style={cellStyle}>{props.game.gameState}</td>
             <td style={cellStyle}>{playerAUsername ?? '<none>'}</td>
             <td style={cellStyle}>{playerBUsername ?? '<none>'}</td>
-            <GameActionsCell game={props.game} />
+            <GameActionsCell game={props.game} setResult={props.setResult} />
         </tr>
     );
 };

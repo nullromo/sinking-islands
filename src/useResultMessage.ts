@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+export interface SetResultProps {
+    readonly setResult: (success: boolean | null, value: unknown) => void;
+}
+
 export const useResultMessage = () => {
     const [result, setResult] = React.useState<{
         success: boolean | null;

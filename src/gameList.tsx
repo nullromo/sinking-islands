@@ -62,7 +62,7 @@ export const GameListWidget = withServerCalls(
                             props.serverCalls
                                 .createGame()
                                 .then((response) => {
-                                    setResult(true, response.message);
+                                    setResult(true, `Created game ${response}`);
                                 })
                                 .then(() => {
                                     refreshGameList();
@@ -109,7 +109,11 @@ export const GameListWidget = withServerCalls(
                         ) : (
                             games.map((game) => {
                                 return (
-                                    <GameListRow key={game.id} game={game} />
+                                    <GameListRow
+                                        key={game.id}
+                                        game={game}
+                                        setResult={setResult}
+                                    />
                                 );
                             })
                         )}

@@ -4,8 +4,9 @@ import { PlayerDesignator } from './commonTypes';
 import { cellStyle } from './gameList';
 import { GameState } from './gameState';
 import { LoggedInUserContext } from './loggedInUserContext';
+import type { SetResultProps } from './useResultMessage';
 
-interface GameActionsCellProps {
+interface GameActionsCellProps extends SetResultProps {
     readonly game: GameSerialized;
 }
 
