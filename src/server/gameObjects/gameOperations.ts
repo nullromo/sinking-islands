@@ -4,12 +4,17 @@ import type {
     IslandSerialized,
     PlayerSerialized,
 } from '../../commonTypes';
-import { IslandType, PlayerDesignator } from '../../commonTypes';
+import {
+    IslandType,
+    otherPlayerDesignator,
+    PlayerDesignator,
+} from '../../commonTypes';
 import { createBlankGame } from '../../createBlankGame';
 import { GameActionType, type GameAction } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
 import { randomUUID } from '../../random';
 import { assertUnreachable, shuffleArray } from '../../util';
+import type { CardPlacement } from './actionOrderTrack';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
@@ -89,6 +94,69 @@ export namespace GameOperations {
     };
 
     /**
+     * Resolves as much as possible without input from a user.
+     */
+    export const resolveCards = (game: GameSerialized) => {
+        // TODO
+    };
+
+    /**
+     * Resolves anything that can be resolved without user input and leaves the
+     * game's main state variables with the correct values so that the next
+     * action can be taken.
+     */
+    export const advanceGameState = (game: GameSerialized) => {
+        switch (game.gameState) {
+            case GameState.INITIAL_STATE:
+                // if the game is in the initial state but all players have
+                // joined, start the game
+                if (
+                    game.players[PlayerDesignator.PLAYER_A].username !== null &&
+                    game.players[PlayerDesignator.PLAYER_B].username !== null
+                ) {
+                    // advance the game to the card placement step
+                    game.gameState = GameState.AWAIT_CARD_PLACEMENT;
+
+                    // set the active player
+                    game.waitingForPlayer = game.initiative;
+                }
+                return;
+            case GameState.AWAIT_CARD_PLACEMENT:
+                // if not all cards have been placed, wait for the next player
+                // to place their cards
+                if (
+                    game.actionOrderTrack.cardSlots.some((slot) => {
+                        return slot === null;
+                    })
+                ) {
+                    game.waitingForPlayer = otherPlayerDesignator(
+                        game.waitingForPlayer,
+                    );
+                } else {
+                    // all cards have been placed, so advance the game to the
+                    // next step
+                    resolveCards(game);
+                }
+                return;
+            case GameState.AWAIT_FLYING_FISH_MOVEMENT:
+            case GameState.AWAIT_FOG_TARGET:
+            case GameState.AWAIT_HARPOON_TARGET:
+            case GameState.AWAIT_MOVEMENT_SET:
+            case GameState.AWAIT_NET_TARGET:
+            case GameState.AWAIT_PILINGS_TARGET:
+            case GameState.AWAIT_TIDAL_SURGE_TARGET:
+            case GameState.AWAIT_TIDAL_WAVE_TARGET:
+            case GameState.AWAIT_TORTOISE_TARGET:
+            case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
+            case GameState.AWAIT_FLEE_CHOICE:
+            case GameState.FINISHED:
+                throw new Error('TODO');
+            default:
+                assertUnreachable(game.gameState);
+        }
+    };
+
+    /**
      * Assigns a user to an available player in the game.
      */
     export const assignUserToGame = (
@@ -111,6 +179,96 @@ export namespace GameOperations {
 
         // assign username
         game.players[availablePlayer[0]].username = username;
+
+        // advance the game state
+        advanceGameState(game);
+    };
+
+    const handleCardPlacementAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        cardPlacement: CardPlacement,
+    ) => {
+        const player = game.players[playerDesignator];
+
+        // player must not already have cards on the track
+        if (
+            ActionOrderTrackOperations.playerHasPlayed(
+                game.actionOrderTrack,
+                playerDesignator,
+            )
+        ) {
+            throw new Error(
+                'Cannot play cards when cards have already been played.',
+            );
+        }
+
+        // all cards must be owned by the player placing them
+        if (
+            Object.values(cardPlacement).some((card) => {
+                return card.playerDesignator !== playerDesignator;
+            })
+        ) {
+            throw new Error("Cannot play another player's cards.");
+        }
+
+        // they must place 3 cards
+        if (Object.entries(cardPlacement).length !== 3) {
+            throw new Error('3 cards must be placed.');
+        }
+
+        // all chosen cards must be in the player's hand
+        if (
+            !PlayerOperations.checkCardsInHand(
+                player,
+                Object.values(cardPlacement),
+            )
+        ) {
+            throw new Error("Cards must be played from the player's hand.");
+        }
+
+        // find which slots the player wants to place in
+        const slots = Object.keys(cardPlacement).map((slot) => {
+            return Number(slot);
+        });
+
+        // they can't put 2 cards in the same area
+        if (
+            (slots.includes(0) && slots.includes(1)) ||
+            (slots.includes(2) && slots.includes(3)) ||
+            (slots.includes(4) && slots.includes(5))
+        ) {
+            throw new Error(
+                'Two cards cannot be placed in the same area of the action order track.',
+            );
+        }
+
+        // all slots used must be available
+        const availableSlots = ActionOrderTrackOperations.getAvailableSlots(
+            game.actionOrderTrack,
+        );
+        if (
+            slots.some((slot) => {
+                return !availableSlots.includes(slot);
+            })
+        ) {
+            throw new Error('Cannot place a card on an unavailable slot.');
+        }
+
+        // assign cards to action track
+        ActionOrderTrackOperations.assignPlacement(
+            game.actionOrderTrack,
+            cardPlacement,
+            player.indiscretion,
+        );
+
+        // remove the cards from the player's hand
+        Object.values(cardPlacement).forEach((card) => {
+            PlayerOperations.removeCardFromHand(player, card);
+        });
+
+        // remove indiscretion's effect from the player
+        player.indiscretion = false;
     };
 
     export const takeGameAction = (
@@ -134,7 +292,13 @@ export namespace GameOperations {
         switch (gameAction.action) {
             case GameActionType.CARD_PLACEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_CARD_PLACEMENT);
-                throw new Error('TODO: unimplemented game action');
+                handleCardPlacementAction(
+                    game,
+                    playerDesignator,
+                    gameAction.data,
+                );
+                advanceGameState(game);
+                return;
             case GameActionType.FLYING_FISH_MOVEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_FLYING_FISH_MOVEMENT);
                 throw new Error('TODO: unimplemented game action');

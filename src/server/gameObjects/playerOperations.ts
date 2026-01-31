@@ -111,7 +111,7 @@ export namespace PlayerOperations {
      */
     export const removeCardFromHand = (
         player: PlayerSerialized,
-        cardToRemove: Card,
+        cardToRemove: CardSerialized,
     ) => {
         const index = player.hand.findIndex((card) => {
             return card.cardType === cardToRemove.cardType;
