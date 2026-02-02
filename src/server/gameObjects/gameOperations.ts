@@ -12,10 +12,12 @@ import {
 import { createBlankGame } from '../../createBlankGame';
 import { GameActionType, type GameAction } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { mapToValues } from '../../maps';
 import { randomUUID } from '../../random';
 import { assertUnreachable, shuffleArray } from '../../util';
 import type { CardPlacement } from './actionOrderTrack';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
+import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
 import { PlayerOperations } from './playerOperations';
@@ -94,10 +96,138 @@ export namespace GameOperations {
     };
 
     /**
+     * Attempts to find an island matching the given island number.
+     */
+    const findIsland = (game: GameSerialized, islandNumber: number) => {
+        return game.islands.find((island) => {
+            return island.islandNumber === islandNumber;
+        });
+    };
+
+    /**
+     * Processes end-of-round actions and prepares the game for the next round.
+     */
+    const endRound = (game: GameSerialized) => {
+        // weakness wears off
+        game.players[PlayerDesignator.PLAYER_A].weakness = false;
+        game.players[PlayerDesignator.PLAYER_B].weakness = false;
+
+        // reset the face up card list
+        ActionOrderTrackOperations.resetFaceUpCards(game.actionOrderTrack);
+
+        // players reclaim their set aside cards due to sunken tokens or
+        // characters
+        mapToValues(game.players).forEach((player) => {
+            // reclaim net card
+            if (player.netIsland === game.nextIslandToSink) {
+                PlayerOperations.reclaim(player, CardType.NET);
+            }
+
+            // reclaim pilings card
+            if (player.pilingsIsland === game.nextIslandToSink) {
+                PlayerOperations.reclaim(player, CardType.PILINGS);
+            }
+
+            // reclaim tortoise card
+            if (
+                findIsland(game, game.nextIslandToSink)?.characters.some(
+                    (character) => {
+                        return (
+                            character.playerDesignator ===
+                                player.playerDesignator && character.tortoise
+                        );
+                    },
+                )
+            ) {
+                PlayerOperations.reclaim(player, CardType.TORTOISE);
+            }
+        });
+
+        // sink the lowest island
+        console.log(`Island ${game.nextIslandToSink} sinks.`);
+        game.islands = game.islands.filter((island) => {
+            return island.islandNumber !== game.nextIslandToSink;
+        });
+
+        // if there are no islands left, then the game is a draw
+        if (game.islands.length < 1) {
+            // TODO
+            throw new Error('TODO: the game ends in a draw');
+        }
+
+        // advance the rising waters marker
+        console.log('Starting rising water loop');
+        while (!findIsland(game, game.nextIslandToSink)) {
+            game.nextIslandToSink = (game.nextIslandToSink % 16) + 1;
+        }
+
+        // swap the initiative
+        game.initiative = otherPlayerDesignator(game.initiative);
+
+        // players draw new cards
+        mapToValues(game.players).forEach((player) => {
+            PlayerOperations.draw(player, 3);
+        });
+
+        // update the active card index
+        game.activeCardIndex = null;
+
+        // update the new game state
+        game.gameState = GameState.AWAIT_CARD_PLACEMENT;
+    };
+
+    /**
      * Resolves as much as possible without input from a user.
      */
-    export const resolveCards = (game: GameSerialized) => {
-        // TODO
+    const resolveUntilNextDecision = (game: GameSerialized) => {
+        // in card placement step, there is nothing to resolve
+        if (game.activeCardIndex === null) {
+            return;
+        }
+
+        if (game.activeCardIndex > 5) {
+            endRound(game);
+        }
+
+        // find the next card that needs to resolve
+        const nextCardToResolve =
+            game.actionOrderTrack.cardSlots[game.activeCardIndex];
+
+        // if there is no card to resolve (because of fog), advance to the next
+        // card
+        if (nextCardToResolve === null) {
+            console.log(
+                'The card in slot',
+                game.activeCardIndex + 1,
+                'was fogged.',
+            );
+            game.activeCardIndex += 1;
+            resolveUntilNextDecision(game);
+            return;
+        }
+
+        // resolve next card
+        switch (nextCardToResolve.cardType) {
+            case CardType.CRAB:
+            case CardType.FLYING_FISH:
+            case CardType.FOG:
+            case CardType.HARPOON:
+            case CardType.INDISCRETION:
+            case CardType.MEDITATION:
+            case CardType.MOVEMENT:
+            case CardType.NET:
+            case CardType.PILINGS:
+            case CardType.PRAYER:
+            case CardType.TIDAL_SURGE:
+            case CardType.TIDAL_WAVE:
+            case CardType.TORTOISE:
+            case CardType.VOLCANIC_ERUPTION:
+            case CardType.WEAKNESS:
+                // TODO resolve cards
+                break;
+            default:
+                assertUnreachable(nextCardToResolve.cardType);
+        }
     };
 
     /**
@@ -135,7 +265,8 @@ export namespace GameOperations {
                 } else {
                     // all cards have been placed, so advance the game to the
                     // next step
-                    resolveCards(game);
+                    game.activeCardIndex = 0;
+                    resolveUntilNextDecision(game);
                 }
                 return;
             case GameState.AWAIT_FLYING_FISH_MOVEMENT:
@@ -330,7 +461,7 @@ export namespace GameOperations {
                 checkGameStateAndPlayer(GameState.AWAIT_FLEE_CHOICE);
                 throw new Error('TODO: unimplemented game action');
             default:
-                return assertUnreachable(gameAction);
+                assertUnreachable(gameAction);
         }
     };
 }

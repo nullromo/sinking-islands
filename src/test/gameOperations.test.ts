@@ -1,4 +1,4 @@
-import { beforeAll, test } from '@jest/globals';
+import { beforeAll, expect, test } from '@jest/globals';
 import { GameOperations } from '../server/gameObjects/gameOperations';
 import { setUpRandom } from './setUpRandom';
 import { PlayerDesignator } from '../commonTypes';
@@ -31,4 +31,10 @@ test('Game actions can be taken', () => {
             },
         },
     });
+
+    expect(
+        game.actionOrderTrack.cardSlots.reduce((count, item) => {
+            return count + (item === null ? 0 : 1);
+        }, 0),
+    ).toEqual(3);
 });

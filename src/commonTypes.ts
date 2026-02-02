@@ -68,7 +68,7 @@ export type CardSerialized = PlayerGamePieceSerialized & {
 };
 
 export type ActionOrderTrackSerialized = {
-    cardSlots: Array<Partial<CardSerialized> | null>;
+    cardSlots: Array<CardSerialized | null>;
     faceUpCards: number[];
 };
 
