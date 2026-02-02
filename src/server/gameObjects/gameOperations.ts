@@ -20,6 +20,7 @@ import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
+import { FlyingFishMovement } from './player';
 import { PlayerOperations } from './playerOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -280,6 +281,46 @@ export namespace GameOperations {
             case GameState.AWAIT_TORTOISE_TARGET:
             case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
             case GameState.AWAIT_FLEE_CHOICE:
+                // make sure the active card index is a number, which indicates
+                // that the game is in the resolution phase rather than the
+                // card placement phase
+                if (game.activeCardIndex === null) {
+                    throw new Error('The game is not ready to advance.');
+                }
+
+                // get the card that just resolved
+                const card =
+                    game.actionOrderTrack.cardSlots[game.activeCardIndex];
+
+                // find the player that played the card
+                const player = game.players[card.playerDesignator];
+
+                // make sure the card that just resolved exists
+                if (!card) {
+                    throw new Error('Could not find card to resolve.');
+                }
+
+                // move the card to the appropriate zone
+                ActionOrderTrackOperations.resetSlot(
+                    game.actionOrderTrack,
+                    game.activeCardIndex,
+                );
+                if (
+                    card.cardType === CardType.PILINGS ||
+                    card.cardType === CardType.NET ||
+                    card.cardType === CardType.TORTOISE
+                ) {
+                    PlayerOperations.setAside(player, card);
+                } else {
+                    PlayerOperations.discardCard(player, card);
+                }
+
+                // advance the active card index
+                game.activeCardIndex =
+                    game.activeCardIndex === null
+                        ? 1
+                        : game.activeCardIndex + 1;
+                return;
             case GameState.FINISHED:
                 throw new Error('TODO');
             default:
@@ -386,6 +427,8 @@ export namespace GameOperations {
             throw new Error('Cannot place a card on an unavailable slot.');
         }
 
+        // all checks passed
+
         // assign cards to action track
         ActionOrderTrackOperations.assignPlacement(
             game.actionOrderTrack,
@@ -402,6 +445,116 @@ export namespace GameOperations {
         player.indiscretion = false;
     };
 
+    /**
+     * Returns true if the island has a net on it.
+     */
+    const islandIsNetted = (game: GameSerialized, islandNumber: number) => {
+        return (
+            islandNumber ===
+                game.players[PlayerDesignator.PLAYER_A].netIsland ||
+            islandNumber === game.players[PlayerDesignator.PLAYER_B].netIsland
+        );
+    };
+
+    /**
+     * Returns true if the island has pilings on it.
+     */
+    const islandHasPilings = (game: GameSerialized, islandNumber: number) => {
+        return (
+            islandNumber ===
+                game.players[PlayerDesignator.PLAYER_A].pilingsIsland ||
+            islandNumber ===
+                game.players[PlayerDesignator.PLAYER_B].pilingsIsland
+        );
+    };
+
+    /**
+     * Returns true if the island is full.
+     */
+    const islandIsFull = (game: GameSerialized, island: IslandSerialized) => {
+        return (
+            islandIsNetted(game, island.islandNumber) ||
+            (island.smallCapacity &&
+                !islandHasPilings(game, island.islandNumber) &&
+                island.characters.length > 0)
+        );
+    };
+
+    const handleFlyingFishMovementAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        flyingFishMovement: FlyingFishMovement,
+    ) => {
+        const player = game.players[playerDesignator];
+
+        // the player must move their own character
+        if (
+            flyingFishMovement.character.playerDesignator !== playerDesignator
+        ) {
+            throw new Error("Cannot move a character that isn't yours.");
+        }
+
+        // find the island the character is moving to
+        const toIsland = findIsland(game, flyingFishMovement.toIslandNumber);
+
+        // can't move to an island that already sank
+        if (!toIsland) {
+            throw new Error("Cannot move to an island that doesn't exist.");
+        }
+
+        // can't move to an island that is at full capacity
+        if (islandIsFull(game, toIsland)) {
+            throw new Error('Cannot move to an island that is full.');
+        }
+
+        // find the island the character is moving from
+        const fromIsland = findIsland(
+            game,
+            flyingFishMovement.fromIslandNumber,
+        );
+
+        // can't move a character that is not there
+        if (
+            !fromIsland ||
+            !IslandOperations.findCharacter(
+                fromIsland,
+                flyingFishMovement.character,
+            )
+        ) {
+            throw new Error("Cannot move a character that isn't there.");
+        }
+
+        // all checks passed
+
+        // move the character
+        console.log(
+            `Player ${
+                flyingFishMovement.character.playerDesignator
+            }'s ${flyingFishMovement.character.strength}-strength ${
+                flyingFishMovement.character.tortoise ? 'tortoise' : 'character'
+            } flies from island ${
+                flyingFishMovement.fromIslandNumber
+            } to island ${flyingFishMovement.toIslandNumber}.`,
+        );
+        IslandOperations.removeCharacter(
+            fromIsland,
+            flyingFishMovement.character,
+        );
+        IslandOperations.addCharacter(toIsland, flyingFishMovement.character);
+
+        // reset tortoise and reclaim card if necessary
+        if (flyingFishMovement.character.tortoise) {
+            flyingFishMovement.character.tortoise = false;
+            PlayerOperations.reclaim(player, CardType.TORTOISE);
+        }
+    };
+
+    /**
+     * Attempts to take the given action on the given game.
+     *
+     * The game must be in the proper state and the player must be allowed to
+     * take the action.
+     */
     export const takeGameAction = (
         game: GameSerialized,
         playerDesignator: PlayerDesignator,
@@ -420,6 +573,7 @@ export namespace GameOperations {
             }
         };
 
+        // take the action on the game
         switch (gameAction.action) {
             case GameActionType.CARD_PLACEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_CARD_PLACEMENT);
@@ -428,11 +582,15 @@ export namespace GameOperations {
                     playerDesignator,
                     gameAction.data,
                 );
-                advanceGameState(game);
-                return;
+                break;
             case GameActionType.FLYING_FISH_MOVEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_FLYING_FISH_MOVEMENT);
-                throw new Error('TODO: unimplemented game action');
+                handleFlyingFishMovementAction(
+                    game,
+                    playerDesignator,
+                    gameAction.data,
+                );
+                break;
             case GameActionType.FOG_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_FOG_TARGET);
                 throw new Error('TODO: unimplemented game action');
@@ -463,5 +621,8 @@ export namespace GameOperations {
             default:
                 assertUnreachable(gameAction);
         }
+
+        // advance the game
+        advanceGameState(game);
     };
 }
