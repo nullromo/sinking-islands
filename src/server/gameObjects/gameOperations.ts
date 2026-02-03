@@ -886,6 +886,45 @@ export namespace GameOperations {
         game.players[playerDesignator].netIsland = netTarget;
     };
 
+    const handlePilingsTargetAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        pilingsTarget: number,
+    ) => {
+        // find the island
+        const island = findIsland(game, pilingsTarget);
+
+        // the island must exist
+        if (island === undefined) {
+            throw new Error(
+                'Cannot put pilings on an island that does not exist.',
+            );
+        }
+
+        // the island must have small capacity
+        if (!island.smallCapacity) {
+            throw new Error('Cannot put pilings on a large capacity island.');
+        }
+
+        // the island must not already have pilings on it
+        if (
+            pilingsTarget ===
+            game.players[otherPlayerDesignator(playerDesignator)].pilingsIsland
+        ) {
+            throw new Error(
+                'Cannot put pilings on an island that already has pilings on it.',
+            );
+        }
+
+        // all checks passed
+
+        // construct the pilings
+        console.log(
+            `Player ${playerDesignator} constructs pilings on island ${pilingsTarget}.`,
+        );
+        game.players[playerDesignator].pilingsIsland = pilingsTarget;
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -950,7 +989,12 @@ export namespace GameOperations {
                 break;
             case GameActionType.PILINGS_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_PILINGS_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handlePilingsTargetAction(
+                    game,
+                    playerDesignator,
+                    gameAction.data,
+                );
+                break;
             case GameActionType.TIDAL_SURGE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_SURGE_TARGET);
                 throw new Error('TODO: unimplemented game action');
