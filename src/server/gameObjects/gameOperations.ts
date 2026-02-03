@@ -16,16 +16,13 @@ import { GameState } from '../../gameState';
 import { mapToValues } from '../../maps';
 import { randomUUID } from '../../random';
 import { assertUnreachable, shuffleArray } from '../../util';
-import type { CardPlacement } from './actionOrderTrack';
+import { handleCardPlacement } from '../actionHandlers/cardPlacementAction';
+import { handleFlyingFish } from '../actionHandlers/flyingFishAction';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
-import type {
-    FlyingFishMovement,
-    MovementSet,
-    TargetCharacter,
-} from './player';
+import type { MovementSet, TargetCharacter } from './player';
 import { PlayerOperations } from './playerOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -104,7 +101,7 @@ export namespace GameOperations {
     /**
      * Attempts to find an island matching the given island number.
      */
-    const findIsland = (game: GameSerialized, islandNumber: number) => {
+    export const findIsland = (game: GameSerialized, islandNumber: number) => {
         return game.islands.find((island) => {
             return island.islandNumber === islandNumber;
         });
@@ -358,95 +355,6 @@ export namespace GameOperations {
         advanceGameState(game);
     };
 
-    const handleCardPlacementAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        cardPlacement: CardPlacement,
-    ) => {
-        const player = game.players[playerDesignator];
-
-        // player must not already have cards on the track
-        if (
-            ActionOrderTrackOperations.playerHasPlayed(
-                game.actionOrderTrack,
-                playerDesignator,
-            )
-        ) {
-            throw new Error(
-                'Cannot play cards when cards have already been played.',
-            );
-        }
-
-        // all cards must be owned by the player placing them
-        if (
-            Object.values(cardPlacement).some((card) => {
-                return card.playerDesignator !== playerDesignator;
-            })
-        ) {
-            throw new Error("Cannot play another player's cards.");
-        }
-
-        // they must place 3 cards
-        if (Object.entries(cardPlacement).length !== 3) {
-            throw new Error('3 cards must be placed.');
-        }
-
-        // all chosen cards must be in the player's hand
-        if (
-            !PlayerOperations.checkCardsInHand(
-                player,
-                Object.values(cardPlacement),
-            )
-        ) {
-            throw new Error("Cards must be played from the player's hand.");
-        }
-
-        // find which slots the player wants to place in
-        const slots = Object.keys(cardPlacement).map((slot) => {
-            return Number(slot);
-        });
-
-        // they can't put 2 cards in the same area
-        if (
-            (slots.includes(0) && slots.includes(1)) ||
-            (slots.includes(2) && slots.includes(3)) ||
-            (slots.includes(4) && slots.includes(5))
-        ) {
-            throw new Error(
-                'Two cards cannot be placed in the same area of the action order track.',
-            );
-        }
-
-        // all slots used must be available
-        const availableSlots = ActionOrderTrackOperations.getAvailableSlots(
-            game.actionOrderTrack,
-        );
-        if (
-            slots.some((slot) => {
-                return !availableSlots.includes(slot);
-            })
-        ) {
-            throw new Error('Cannot place a card on an unavailable slot.');
-        }
-
-        // all checks passed
-
-        // assign cards to action track
-        ActionOrderTrackOperations.assignPlacement(
-            game.actionOrderTrack,
-            cardPlacement,
-            player.indiscretion,
-        );
-
-        // remove the cards from the player's hand
-        Object.values(cardPlacement).forEach((card) => {
-            PlayerOperations.removeCardFromHand(player, card);
-        });
-
-        // remove indiscretion's effect from the player
-        player.indiscretion = false;
-    };
-
     /**
      * Returns true if the island has a net on it.
      */
@@ -473,82 +381,16 @@ export namespace GameOperations {
     /**
      * Returns true if the island is full.
      */
-    const islandIsFull = (game: GameSerialized, island: IslandSerialized) => {
+    export const islandIsFull = (
+        game: GameSerialized,
+        island: IslandSerialized,
+    ) => {
         return (
             islandIsNetted(game, island.islandNumber) ||
             (island.smallCapacity &&
                 !islandHasPilings(game, island.islandNumber) &&
                 island.characters.length > 0)
         );
-    };
-
-    const handleFlyingFishMovementAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        flyingFishMovement: FlyingFishMovement,
-    ) => {
-        const player = game.players[playerDesignator];
-
-        // the player must move their own character
-        if (
-            flyingFishMovement.character.playerDesignator !== playerDesignator
-        ) {
-            throw new Error("Cannot move a character that isn't yours.");
-        }
-
-        // find the island the character is moving to
-        const toIsland = findIsland(game, flyingFishMovement.toIslandNumber);
-
-        // can't move to an island that already sank
-        if (!toIsland) {
-            throw new Error("Cannot move to an island that doesn't exist.");
-        }
-
-        // can't move to an island that is at full capacity
-        if (islandIsFull(game, toIsland)) {
-            throw new Error('Cannot move to an island that is full.');
-        }
-
-        // find the island the character is moving from
-        const fromIsland = findIsland(
-            game,
-            flyingFishMovement.fromIslandNumber,
-        );
-
-        // can't move a character that is not there
-        if (
-            !fromIsland ||
-            !IslandOperations.findCharacter(
-                fromIsland,
-                flyingFishMovement.character,
-            )
-        ) {
-            throw new Error("Cannot move a character that isn't there.");
-        }
-
-        // all checks passed
-
-        // move the character
-        console.log(
-            `Player ${
-                flyingFishMovement.character.playerDesignator
-            }'s ${flyingFishMovement.character.strength}-strength ${
-                flyingFishMovement.character.tortoise ? 'tortoise' : 'character'
-            } flies from island ${
-                flyingFishMovement.fromIslandNumber
-            } to island ${flyingFishMovement.toIslandNumber}.`,
-        );
-        IslandOperations.removeCharacter(
-            fromIsland,
-            flyingFishMovement.character,
-        );
-        IslandOperations.addCharacter(toIsland, flyingFishMovement.character);
-
-        // reset tortoise and reclaim card if necessary
-        if (flyingFishMovement.character.tortoise) {
-            flyingFishMovement.character.tortoise = false;
-            PlayerOperations.reclaim(player, CardType.TORTOISE);
-        }
     };
 
     const handleFogTargetAction = (game: GameSerialized, fogTarget: number) => {
@@ -1245,19 +1087,11 @@ export namespace GameOperations {
         switch (gameAction.action) {
             case GameActionType.CARD_PLACEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_CARD_PLACEMENT);
-                handleCardPlacementAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handleCardPlacement(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.FLYING_FISH_MOVEMENT:
                 checkGameStateAndPlayer(GameState.AWAIT_FLYING_FISH_MOVEMENT);
-                handleFlyingFishMovementAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handleFlyingFish(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.FOG_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_FOG_TARGET);
