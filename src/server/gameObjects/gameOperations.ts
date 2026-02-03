@@ -556,6 +556,33 @@ export namespace GameOperations {
         }
     };
 
+    const handleFogTargetAction = (game: GameSerialized, fogTarget: number) => {
+        // if there is no card, that card cannot be fogged
+        if (game.actionOrderTrack.cardSlots[fogTarget] === null) {
+            throw new Error('Cannot fog a card that does not exist');
+        }
+
+        // a fog cannot fog itself
+        if (game.activeCardIndex === fogTarget) {
+            throw new Error('A fog cannot fog itself');
+        }
+
+        // all checks passed
+
+        // fog the target
+        console.log(`Fogging slot ${fogTarget + 1}.`);
+        const foggedCard = ActionOrderTrackOperations.resetSlot(
+            game.actionOrderTrack,
+            fogTarget,
+        );
+        if (foggedCard) {
+            PlayerOperations.discardCard(
+                game.players[foggedCard.playerDesignator],
+                foggedCard,
+            );
+        }
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -600,7 +627,8 @@ export namespace GameOperations {
                 break;
             case GameActionType.FOG_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_FOG_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleFogTargetAction(game, gameAction.data);
+                break;
             case GameActionType.HARPOON_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_HARPOON_TARGET);
                 throw new Error('TODO: unimplemented game action');
