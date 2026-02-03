@@ -130,7 +130,10 @@ export namespace PlayerOperations {
     /**
      * Adds a card to this player's discard pile.
      */
-    export const discardCard = (player: PlayerSerialized, card: Card) => {
+    export const discardCard = (
+        player: PlayerSerialized,
+        card: CardSerialized,
+    ) => {
         if (card.playerDesignator !== player.playerDesignator) {
             throw new Error('Tried to discard a card into the wrong pile.');
         }
@@ -140,7 +143,10 @@ export namespace PlayerOperations {
     /**
      * Adds a card to this player's set aside cards.
      */
-    export const setAside = (player: PlayerSerialized, card: Card) => {
+    export const setAside = (
+        player: PlayerSerialized,
+        card: CardSerialized,
+    ) => {
         if (card.playerDesignator !== player.playerDesignator) {
             throw new Error('Tried to set aside a card into the wrong pile.');
         }

@@ -20,7 +20,7 @@ import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
-import { FlyingFishMovement } from './player';
+import type { FlyingFishMovement } from './player';
 import { PlayerOperations } from './playerOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -292,13 +292,13 @@ export namespace GameOperations {
                 const card =
                     game.actionOrderTrack.cardSlots[game.activeCardIndex];
 
-                // find the player that played the card
-                const player = game.players[card.playerDesignator];
-
                 // make sure the card that just resolved exists
                 if (!card) {
                     throw new Error('Could not find card to resolve.');
                 }
+
+                // find the player that played the card
+                const player = game.players[card.playerDesignator];
 
                 // move the card to the appropriate zone
                 ActionOrderTrackOperations.resetSlot(
@@ -316,10 +316,8 @@ export namespace GameOperations {
                 }
 
                 // advance the active card index
-                game.activeCardIndex =
-                    game.activeCardIndex === null
-                        ? 1
-                        : game.activeCardIndex + 1;
+                game.activeCardIndex += 1;
+
                 return;
             case GameState.FINISHED:
                 throw new Error('TODO');
@@ -354,6 +352,15 @@ export namespace GameOperations {
 
         // advance the game state
         advanceGameState(game);
+    };
+
+    /**
+     * Attempts to find an island matching the given island number.
+     */
+    const findIsland = (game: GameSerialized, islandNumber: number) => {
+        return game.islands.find((island) => {
+            return island.islandNumber === islandNumber;
+        });
     };
 
     const handleCardPlacementAction = (
