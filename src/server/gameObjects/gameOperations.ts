@@ -436,6 +436,40 @@ export namespace GameOperations {
     };
 
     /**
+     * Moves a character from one island to another.
+     *
+     * Handles de-tortoise-ing the character.
+     */
+    export const moveCharacter = (
+        game: GameSerialized,
+        character: CharacterSerialized,
+        fromIsland: IslandSerialized,
+        toIsland: IslandSerialized,
+        verb: string,
+    ) => {
+        console.log(
+            `Player ${
+                character.playerDesignator
+            }'s ${character.strength}-strength ${
+                character.tortoise ? 'tortoise' : 'character'
+            } ${verb} from island ${
+                fromIsland.islandNumber
+            } to island ${toIsland.islandNumber}.`,
+        );
+        IslandOperations.removeCharacter(fromIsland, character);
+        IslandOperations.addCharacter(toIsland, character);
+
+        // reset tortoise and reclaim card if necessary
+        if (character.tortoise) {
+            character.tortoise = false;
+            PlayerOperations.reclaim(
+                game.players[character.playerDesignator],
+                CardType.TORTOISE,
+            );
+        }
+    };
+
+    /**
      * Attempts to take the given action on the given game.
      *
      * The game must be in the proper state and the player must be allowed to

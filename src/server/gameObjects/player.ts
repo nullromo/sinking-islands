@@ -34,7 +34,7 @@ export type TargetCharacter = {
     islandNumber: number;
 };
 
-type NormalMovement = FlyingFishMovement;
+export type NormalMovement = FlyingFishMovement;
 
 export type MovementSet = NormalMovement[];
 

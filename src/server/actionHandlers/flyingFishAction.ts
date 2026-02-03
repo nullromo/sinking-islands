@@ -4,21 +4,18 @@ import type {
     IslandSerialized,
     PlayerDesignator,
 } from '../../commonTypes';
-import { convertFlyingFishMovementToIslands } from '../../convertActionData';
-import { CardType } from '../gameObjects/card';
+import {
+    ConvertedMovement,
+    convertMovementToIslands,
+} from '../../convertActionData';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import type { FlyingFishMovement } from '../gameObjects/player';
-import { PlayerOperations } from '../gameObjects/playerOperations';
 
 const checkFlyingFishLegal = (
     game: GameSerialized,
     playerDesignator: PlayerDesignator,
-    convertedMovement: {
-        character: CharacterSerialized;
-        fromIsland: IslandSerialized;
-        toIsland: IslandSerialized;
-    },
+    convertedMovement: ConvertedMovement,
 ) => {
     // the player must move their own character
     if (convertedMovement.character.playerDesignator !== playerDesignator) {
@@ -46,37 +43,18 @@ export const handleFlyingFish = (
     playerDesignator: PlayerDesignator,
     flyingFishMovement: FlyingFishMovement,
 ) => {
-    const convertedMovement = convertFlyingFishMovementToIslands(
+    const convertedMovement = convertMovementToIslands(
         game,
         flyingFishMovement,
     );
     checkFlyingFishLegal(game, playerDesignator, convertedMovement);
 
     // move the character
-    console.log(
-        `Player ${
-            flyingFishMovement.character.playerDesignator
-        }'s ${flyingFishMovement.character.strength}-strength ${
-            flyingFishMovement.character.tortoise ? 'tortoise' : 'character'
-        } flies from island ${
-            flyingFishMovement.fromIslandNumber
-        } to island ${flyingFishMovement.toIslandNumber}.`,
-    );
-    IslandOperations.removeCharacter(
+    GameOperations.moveCharacter(
+        game,
+        flyingFishMovement.character,
         convertedMovement.fromIsland,
-        flyingFishMovement.character,
-    );
-    IslandOperations.addCharacter(
         convertedMovement.toIsland,
-        flyingFishMovement.character,
+        'flies',
     );
-
-    // reset tortoise and reclaim card if necessary
-    if (flyingFishMovement.character.tortoise) {
-        flyingFishMovement.character.tortoise = false;
-        PlayerOperations.reclaim(
-            game.players[playerDesignator],
-            CardType.TORTOISE,
-        );
-    }
 };

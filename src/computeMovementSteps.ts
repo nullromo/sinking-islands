@@ -1,5 +1,5 @@
 import type { IslandSerialized } from './commonTypes';
-import type { MovementSet } from './server/gameObjects/player';
+import type { ConvertedMovementSet } from './convertActionData';
 
 /**
  * Returns the number of movement points that it takes to get from one
@@ -32,15 +32,15 @@ const countSpacesBetweenIslands = (
 
 export const computeMovementSteps = (
     islands: IslandSerialized[],
-    movementSet: MovementSet,
+    convertedMovementSet: ConvertedMovementSet,
 ) => {
-    return movementSet.reduce((total, movement) => {
+    return convertedMovementSet.reduce((total, convertedMovement) => {
         return (
             total +
             countSpacesBetweenIslands(
                 islands,
-                movement.fromIslandNumber,
-                movement.toIslandNumber,
+                convertedMovement.fromIsland.islandNumber,
+                convertedMovement.toIsland.islandNumber,
             )
         );
     }, 0);

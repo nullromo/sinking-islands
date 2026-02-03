@@ -1,25 +1,34 @@
-import type { GameSerialized } from './commonTypes';
+import type {
+    CharacterSerialized,
+    GameSerialized,
+    IslandSerialized,
+} from './commonTypes';
 import { GameOperations } from './server/gameObjects/gameOperations';
 import type {
-    FlyingFishMovement,
+    NormalMovement,
     TargetCharacter,
 } from './server/gameObjects/player';
 
-export const convertFlyingFishMovementToIslands = (
+export type ConvertedMovement = {
+    character: CharacterSerialized;
+    fromIsland: IslandSerialized;
+    toIsland: IslandSerialized;
+};
+
+export type ConvertedMovementSet = ConvertedMovement[];
+
+export const convertMovementToIslands = (
     game: GameSerialized,
-    flyingFishMovement: FlyingFishMovement,
-) => {
+    movement: NormalMovement,
+): ConvertedMovement => {
     // find the island the character is moving from
     const fromIsland = GameOperations.findIsland(
         game,
-        flyingFishMovement.fromIslandNumber,
+        movement.fromIslandNumber,
     );
 
     // find the island the character is moving to
-    const toIsland = GameOperations.findIsland(
-        game,
-        flyingFishMovement.toIslandNumber,
-    );
+    const toIsland = GameOperations.findIsland(game, movement.toIslandNumber);
 
     // can't move to an island that already sank
     if (!toIsland) {
@@ -30,7 +39,7 @@ export const convertFlyingFishMovementToIslands = (
         throw new Error("Cannot move from an island that doesn't exist.");
     }
 
-    return { character: flyingFishMovement.character, fromIsland, toIsland };
+    return { character: movement.character, fromIsland, toIsland };
 };
 
 export const convertTargetCharacterToIslands = (

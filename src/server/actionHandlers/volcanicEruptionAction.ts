@@ -119,27 +119,13 @@ export const handleVolcanicEruption = (
                 }
 
                 // move the character
-                console.log(
-                    `Player ${characterToFlee.playerDesignator}'s ${
-                        characterToFlee.strength
-                    }-strength ${
-                        characterToFlee.tortoise ? 'tortoise' : 'character'
-                    } flees from the lava flow to island ${safeIsland.islandNumber}.`,
-                );
-                IslandOperations.removeCharacter(
-                    lavaFlowIsland,
+                GameOperations.moveCharacter(
+                    game,
                     characterToFlee,
+                    lavaFlowIsland,
+                    safeIsland,
+                    'flees',
                 );
-                IslandOperations.addCharacter(safeIsland, characterToFlee);
-
-                // reset tortoise and reclaim card if necessary
-                if (characterToFlee.tortoise) {
-                    characterToFlee.tortoise = false;
-                    PlayerOperations.reclaim(
-                        game.players[playerDesignator],
-                        CardType.TORTOISE,
-                    );
-                }
 
                 // done fleeing from this island
                 break;
@@ -149,25 +135,13 @@ export const handleVolcanicEruption = (
 
             // move all characters
             lavaFlowIsland.characters.forEach((character) => {
-                // move the character
-                console.log(
-                    `Player ${character.playerDesignator}'s ${
-                        character.strength
-                    }-strength ${
-                        character.tortoise ? 'tortoise' : 'character'
-                    } flees from the lava flow to island ${safeIsland.islandNumber}.`,
+                GameOperations.moveCharacter(
+                    game,
+                    character,
+                    lavaFlowIsland,
+                    safeIsland,
+                    'flees',
                 );
-                IslandOperations.removeCharacter(lavaFlowIsland, character);
-                IslandOperations.addCharacter(safeIsland, character);
-
-                // reset tortoise and reclaim card if necessary
-                if (character.tortoise) {
-                    character.tortoise = false;
-                    PlayerOperations.reclaim(
-                        game.players[character.playerDesignator],
-                        CardType.TORTOISE,
-                    );
-                }
             });
         }
     }
@@ -175,14 +149,6 @@ export const handleVolcanicEruption = (
     // now that everyone has fled, burn anyone who didn't flee
     lavaFlowIslands.forEach((lavaFlowIsland) => {
         lavaFlowIsland.characters.forEach((character) => {
-            // reset tortoise and reclaim card if necessary
-            if (character.tortoise) {
-                PlayerOperations.reclaim(
-                    game.players[character.playerDesignator],
-                    CardType.TORTOISE,
-                );
-            }
-
             // remove the character
             console.log(
                 `Player ${character.playerDesignator}'s ${
@@ -192,6 +158,15 @@ export const handleVolcanicEruption = (
                 } burns to death in the lava flow on island ${lavaFlowIsland.islandNumber}.`,
             );
             IslandOperations.removeCharacter(lavaFlowIsland, character);
+
+            // reset tortoise and reclaim card if necessary
+            if (character.tortoise) {
+                character.tortoise = false;
+                PlayerOperations.reclaim(
+                    game.players[character.playerDesignator],
+                    CardType.TORTOISE,
+                );
+            }
         });
     });
 
