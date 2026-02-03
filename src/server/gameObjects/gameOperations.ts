@@ -864,6 +864,28 @@ export namespace GameOperations {
         });
     };
 
+    const handleNetTargetAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        netTarget: number,
+    ) => {
+        // find the island
+        const island = findIsland(game, netTarget);
+
+        // the island must exist
+        if (island === undefined) {
+            throw new Error('Cannot net an island that does not exist.');
+        }
+
+        // all checks passed
+
+        // place the net
+        console.log(
+            `Player ${playerDesignator} casts a net over island ${netTarget}.`,
+        );
+        game.players[playerDesignator].netIsland = netTarget;
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -924,7 +946,8 @@ export namespace GameOperations {
                 break;
             case GameActionType.NET_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_NET_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleNetTargetAction(game, playerDesignator, gameAction.data);
+                break;
             case GameActionType.PILINGS_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_PILINGS_TARGET);
                 throw new Error('TODO: unimplemented game action');
