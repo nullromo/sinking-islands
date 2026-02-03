@@ -20,7 +20,7 @@ import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
-import type { FlyingFishMovement } from './player';
+import type { FlyingFishMovement, TargetCharacter } from './player';
 import { PlayerOperations } from './playerOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -584,6 +584,93 @@ export namespace GameOperations {
     };
 
     /**
+     * Returns the two islands next to this island in an array. If there are
+     * only 2 islands in the game, returns only 1 item. If there is only 1
+     * island, returns an empty array.
+     */
+    const getAdjacentIslands = (game: GameSerialized, islandNumber: number) => {
+        if (game.islands.length <= 1) {
+            return [];
+        }
+        const islandIndex = game.islands.findIndex((island) => {
+            return island.islandNumber === islandNumber;
+        });
+        if (islandIndex < 0) {
+            throw new Error(`Invalid island number: ${islandNumber}.`);
+        }
+        if (game.islands.length < 3) {
+            return [game.islands[(islandIndex + 1) % 2]];
+        }
+        return [
+            game.islands[
+                (islandIndex + game.islands.length - 1) % game.islands.length
+            ],
+            game.islands[(islandIndex + 1) % game.islands.length],
+        ];
+    };
+
+    const handleHarpoonTargetAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        harpoonTarget: TargetCharacter,
+    ) => {
+        // if the target is a tortoise, it's not valid
+        if (harpoonTarget.character.tortoise) {
+            throw new Error('Cannot harpoon a tortoise.');
+        }
+
+        // the player cannot shoot their own characters
+        if (playerDesignator === harpoonTarget.character.playerDesignator) {
+            throw new Error('Cannot harpoon your own character.');
+        }
+
+        // find the island being targeted
+        const targetIsland = findIsland(game, harpoonTarget.islandNumber);
+
+        // if the island does not exist, the target is not valid
+        if (!targetIsland) {
+            throw new Error('Cannot harpoon on an island that does not exist.');
+        }
+
+        // if there are no characters matching the target on the target island,
+        // then it is not valid
+        if (
+            !targetIsland.characters.some((character) => {
+                return CharacterOperations.equals(
+                    character,
+                    harpoonTarget.character,
+                );
+            })
+        ) {
+            throw new Error('Cannot harpoon a character that does not exist.');
+        }
+
+        // find the adjacent islands and make sure there is an enemy of the
+        // target in range
+        if (
+            !getAdjacentIslands(game, harpoonTarget.islandNumber).some(
+                (island) => {
+                    return island.characters.some((character) => {
+                        return character.playerDesignator === playerDesignator;
+                    });
+                },
+            )
+        ) {
+            throw new Error(
+                'Cannot harpoon a character that is out of harpoon range.',
+            );
+        }
+
+        // all checks passed
+
+        // kill the target
+        console.log(
+            `Player ${harpoonTarget.character.playerDesignator}'s ${harpoonTarget.character.strength}-strength character on island ${harpoonTarget.islandNumber} is harpooned.`,
+        );
+        IslandOperations.removeCharacter(targetIsland, harpoonTarget.character);
+    };
+
+    /**
      * Attempts to take the given action on the given game.
      *
      * The game must be in the proper state and the player must be allowed to
@@ -631,7 +718,12 @@ export namespace GameOperations {
                 break;
             case GameActionType.HARPOON_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_HARPOON_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleHarpoonTargetAction(
+                    game,
+                    playerDesignator,
+                    gameAction.data,
+                );
+                break;
             case GameActionType.MOVEMENT_SET:
                 checkGameStateAndPlayer(GameState.AWAIT_MOVEMENT_SET);
                 throw new Error('TODO: unimplemented game action');
