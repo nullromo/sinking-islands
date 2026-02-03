@@ -4,7 +4,7 @@ import type {
     IslandSerialized,
     PlayerDesignator,
 } from '../../commonTypes';
-import { convertFlyingFishMovementToIslands } from '../../convertMovementToIslands';
+import { convertFlyingFishMovementToIslands } from '../../convertActionData';
 import { CardType } from '../gameObjects/card';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';

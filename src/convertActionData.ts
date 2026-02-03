@@ -1,6 +1,9 @@
 import type { GameSerialized } from './commonTypes';
 import { GameOperations } from './server/gameObjects/gameOperations';
-import type { FlyingFishMovement } from './server/gameObjects/player';
+import type {
+    FlyingFishMovement,
+    TargetCharacter,
+} from './server/gameObjects/player';
 
 export const convertFlyingFishMovementToIslands = (
     game: GameSerialized,
@@ -28,4 +31,22 @@ export const convertFlyingFishMovementToIslands = (
     }
 
     return { character: flyingFishMovement.character, fromIsland, toIsland };
+};
+
+export const convertTargetCharacterToIslands = (
+    game: GameSerialized,
+    targetCharacter: TargetCharacter,
+) => {
+    // find the island being targeted
+    const targetIsland = GameOperations.findIsland(
+        game,
+        targetCharacter.islandNumber,
+    );
+
+    // if the island does not exist, the target is not valid
+    if (!targetIsland) {
+        throw new Error('Cannot harpoon on an island that does not exist.');
+    }
+
+    return { character: targetCharacter.character, targetIsland };
 };

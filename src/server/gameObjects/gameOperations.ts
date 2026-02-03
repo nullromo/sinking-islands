@@ -9,7 +9,6 @@ import {
     otherPlayerDesignator,
     PlayerDesignator,
 } from '../../commonTypes';
-import { computeMovementSteps } from '../../computeMovementSteps';
 import { createBlankGame } from '../../createBlankGame';
 import { GameActionType, type GameAction } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
@@ -18,11 +17,19 @@ import { randomUUID } from '../../random';
 import { assertUnreachable, shuffleArray } from '../../util';
 import { handleCardPlacement } from '../actionHandlers/cardPlacementAction';
 import { handleFlyingFish } from '../actionHandlers/flyingFishAction';
+import { handleFog } from '../actionHandlers/fogAction';
+import { handleHarpoon } from '../actionHandlers/harpoonAction';
+import { handleMovement } from '../actionHandlers/movementAction';
+import { handleNet } from '../actionHandlers/netAction';
+import { handlePilings } from '../actionHandlers/pilingsAction';
+import { handleTidalSurge } from '../actionHandlers/tidalSurgeAction';
+import { handleTidalWave } from '../actionHandlers/tidalWaveAction';
+import { handleTortoise } from '../actionHandlers/tortoiseAction';
+import { handleVolcanicEruption } from '../actionHandlers/volcanicEruptionAction';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';
-import type { MovementSet, TargetCharacter } from './player';
 import { PlayerOperations } from './playerOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -358,7 +365,10 @@ export namespace GameOperations {
     /**
      * Returns true if the island has a net on it.
      */
-    const islandIsNetted = (game: GameSerialized, islandNumber: number) => {
+    export const islandIsNetted = (
+        game: GameSerialized,
+        islandNumber: number,
+    ) => {
         return (
             islandNumber ===
                 game.players[PlayerDesignator.PLAYER_A].netIsland ||
@@ -369,7 +379,10 @@ export namespace GameOperations {
     /**
      * Returns true if the island has pilings on it.
      */
-    const islandHasPilings = (game: GameSerialized, islandNumber: number) => {
+    export const islandHasPilings = (
+        game: GameSerialized,
+        islandNumber: number,
+    ) => {
         return (
             islandNumber ===
                 game.players[PlayerDesignator.PLAYER_A].pilingsIsland ||
@@ -393,39 +406,15 @@ export namespace GameOperations {
         );
     };
 
-    const handleFogTargetAction = (game: GameSerialized, fogTarget: number) => {
-        // if there is no card, that card cannot be fogged
-        if (game.actionOrderTrack.cardSlots[fogTarget] === null) {
-            throw new Error('Cannot fog a card that does not exist');
-        }
-
-        // a fog cannot fog itself
-        if (game.activeCardIndex === fogTarget) {
-            throw new Error('A fog cannot fog itself');
-        }
-
-        // all checks passed
-
-        // fog the target
-        console.log(`Fogging slot ${fogTarget + 1}.`);
-        const foggedCard = ActionOrderTrackOperations.resetSlot(
-            game.actionOrderTrack,
-            fogTarget,
-        );
-        if (foggedCard) {
-            PlayerOperations.discardCard(
-                game.players[foggedCard.playerDesignator],
-                foggedCard,
-            );
-        }
-    };
-
     /**
      * Returns the two islands next to this island in an array. If there are
      * only 2 islands in the game, returns only 1 item. If there is only 1
      * island, returns an empty array.
      */
-    const getAdjacentIslands = (game: GameSerialized, islandNumber: number) => {
+    export const getAdjacentIslands = (
+        game: GameSerialized,
+        islandNumber: number,
+    ) => {
         if (game.islands.length <= 1) {
             return [];
         }
@@ -444,619 +433,6 @@ export namespace GameOperations {
             ],
             game.islands[(islandIndex + 1) % game.islands.length],
         ];
-    };
-
-    const handleHarpoonTargetAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        harpoonTarget: TargetCharacter,
-    ) => {
-        // if the target is a tortoise, it's not valid
-        if (harpoonTarget.character.tortoise) {
-            throw new Error('Cannot harpoon a tortoise.');
-        }
-
-        // the player cannot shoot their own characters
-        if (playerDesignator === harpoonTarget.character.playerDesignator) {
-            throw new Error('Cannot harpoon your own character.');
-        }
-
-        // find the island being targeted
-        const targetIsland = findIsland(game, harpoonTarget.islandNumber);
-
-        // if the island does not exist, the target is not valid
-        if (!targetIsland) {
-            throw new Error('Cannot harpoon on an island that does not exist.');
-        }
-
-        // if there are no characters matching the target on the target island,
-        // then it is not valid
-        if (
-            !targetIsland.characters.some((character) => {
-                return CharacterOperations.equals(
-                    character,
-                    harpoonTarget.character,
-                );
-            })
-        ) {
-            throw new Error('Cannot harpoon a character that does not exist.');
-        }
-
-        // find the adjacent islands and make sure there is an enemy of the
-        // target in range
-        if (
-            !getAdjacentIslands(game, harpoonTarget.islandNumber).some(
-                (island) => {
-                    return island.characters.some((character) => {
-                        return character.playerDesignator === playerDesignator;
-                    });
-                },
-            )
-        ) {
-            throw new Error(
-                'Cannot harpoon a character that is out of harpoon range.',
-            );
-        }
-
-        // all checks passed
-
-        // kill the target
-        console.log(
-            `Player ${harpoonTarget.character.playerDesignator}'s ${harpoonTarget.character.strength}-strength character on island ${harpoonTarget.islandNumber} is harpooned.`,
-        );
-        IslandOperations.removeCharacter(targetIsland, harpoonTarget.character);
-    };
-
-    const handleMovementAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        movementSet: MovementSet,
-    ) => {
-        // there must be at least one movement
-        if (movementSet.length < 1) {
-            throw new Error('Must include at least 1 movement.');
-        }
-
-        // check all movements
-        for (const movement of movementSet) {
-            // the player must move their own character
-            if (movement.character.playerDesignator !== playerDesignator) {
-                throw new Error("Cannot move a character that isn't yours.");
-            }
-
-            const toIsland = findIsland(game, movement.toIslandNumber);
-
-            // can't move to an island that already sank
-            if (!toIsland) {
-                throw new Error("Cannot move to an island that doesn't exist.");
-            }
-
-            const fromIsland = findIsland(game, movement.fromIslandNumber);
-
-            // can't move from an island that doesn't exist
-            if (!fromIsland) {
-                throw new Error(
-                    "Cannot move from an island that doesn't exist.",
-                );
-            }
-
-            // can't move a character that is not there
-            if (
-                !IslandOperations.findCharacter(fromIsland, movement.character)
-            ) {
-                throw new Error("Cannot move a character that isn't there.");
-            }
-
-            // can't move to a netted island
-            if (islandIsNetted(game, movement.toIslandNumber)) {
-                throw new Error('Cannot move to a netted island.');
-            }
-
-            // can't move off a netted island
-            if (islandIsNetted(game, movement.fromIslandNumber)) {
-                throw new Error('Cannot move off a netted island.');
-            }
-
-            // movements cannot start and end on the same island
-            if (movement.fromIslandNumber === movement.toIslandNumber) {
-                throw new Error(
-                    'Cannot move from an island to the same island.',
-                );
-            }
-        }
-
-        // the positioning of the characters after the movement must be legal
-        for (const island of game.islands) {
-            // if the island is not a small capacity island or if it has
-            // pilings, then there won't be a problem
-            if (
-                !island.smallCapacity ||
-                islandHasPilings(game, island.islandNumber)
-            ) {
-                continue;
-            }
-
-            // find out how many characters were added to the island
-            const numberOfCharactersThatLeft = movementSet.reduce(
-                (total, movement) => {
-                    return (
-                        total +
-                        (movement.fromIslandNumber === island.islandNumber
-                            ? 1
-                            : 0)
-                    );
-                },
-                0,
-            );
-
-            // find out how many characters were removed from the island
-            const numberOfCharactersThatArrived = movementSet.reduce(
-                (total, movement) => {
-                    return (
-                        total +
-                        (movement.toIslandNumber === island.islandNumber
-                            ? 1
-                            : 0)
-                    );
-                },
-                0,
-            );
-
-            // determine how many characters will be left on the island
-            const numberOfCharactersAfterMovement =
-                island.characters.length +
-                numberOfCharactersThatArrived -
-                numberOfCharactersThatLeft;
-
-            // make sure the number of characters left is legal. We already
-            // know it's a small capacity island with no pilings, so the
-            // character limit will always be 1 here
-            if (numberOfCharactersAfterMovement > 1) {
-                throw new Error(
-                    'Movement results in too many characters on an island.',
-                );
-            }
-        }
-
-        // each movement must be for a different character
-        for (const movement of movementSet) {
-            const fromIsland = findIsland(game, movement.fromIslandNumber);
-
-            // can't move from an island that doesn't exist
-            if (!fromIsland) {
-                throw new Error(
-                    "Cannot move from an island that doesn't exist.",
-                );
-            }
-            // find the number of potential characters on the from island that
-            // this movement could refer to
-            const numberOfMatchingCharacters = fromIsland.characters.filter(
-                (character) => {
-                    return CharacterOperations.equals(
-                        character,
-                        movement.character,
-                    );
-                },
-            ).length;
-
-            // find the number of movements in the movement set that refer to
-            // this type of character on this from island
-            const numberOfMovesUsingThisTypeOfCharacter = movementSet.filter(
-                (otherMovement) => {
-                    return (
-                        CharacterOperations.equals(
-                            otherMovement.character,
-                            movement.character,
-                        ) &&
-                        otherMovement.fromIslandNumber ===
-                            movement.fromIslandNumber
-                    );
-                },
-            ).length;
-
-            // if there are not enough of the type of character in question on
-            // the from island in question, then at least two of the movements
-            // in the movement set are trying to refer to the same character
-            if (
-                numberOfMovesUsingThisTypeOfCharacter >
-                numberOfMatchingCharacters
-            ) {
-                throw new Error(
-                    'Two movements tried to move the same character.',
-                );
-            }
-        }
-
-        // the total movement must be at least 1 and no more than 3
-        const totalMovement = computeMovementSteps(game.islands, movementSet);
-        if (totalMovement < 1 || totalMovement > 3) {
-            throw new Error('Too many or not enough movement points spent.');
-        }
-
-        // all checks passed
-
-        // make the moves
-        movementSet.forEach((movement) => {
-            console.log(
-                `Player ${playerDesignator} moves their ${
-                    movement.character.strength
-                }-strength ${
-                    movement.character.tortoise ? 'tortoise' : 'character'
-                } from island ${movement.fromIslandNumber} to island ${
-                    movement.toIslandNumber
-                }.`,
-            );
-            IslandOperations.removeCharacter(
-                findIsland(game, movement.fromIslandNumber) as IslandSerialized,
-                movement.character,
-            );
-            // reset tortoise and reclaim card if necessary
-            if (movement.character.tortoise) {
-                movement.character.tortoise = false;
-                PlayerOperations.reclaim(
-                    game.players[movement.character.playerDesignator],
-                    CardType.TORTOISE,
-                );
-            }
-            IslandOperations.addCharacter(
-                findIsland(game, movement.toIslandNumber) as IslandSerialized,
-                movement.character,
-            );
-        });
-    };
-
-    const handleNetTargetAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        netTarget: number,
-    ) => {
-        // find the island
-        const island = findIsland(game, netTarget);
-
-        // the island must exist
-        if (island === undefined) {
-            throw new Error('Cannot net an island that does not exist.');
-        }
-
-        // all checks passed
-
-        // place the net
-        console.log(
-            `Player ${playerDesignator} casts a net over island ${netTarget}.`,
-        );
-        game.players[playerDesignator].netIsland = netTarget;
-    };
-
-    const handlePilingsTargetAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        pilingsTarget: number,
-    ) => {
-        // find the island
-        const island = findIsland(game, pilingsTarget);
-
-        // the island must exist
-        if (island === undefined) {
-            throw new Error(
-                'Cannot put pilings on an island that does not exist.',
-            );
-        }
-
-        // the island must have small capacity
-        if (!island.smallCapacity) {
-            throw new Error('Cannot put pilings on a large capacity island.');
-        }
-
-        // the island must not already have pilings on it
-        if (
-            pilingsTarget ===
-            game.players[otherPlayerDesignator(playerDesignator)].pilingsIsland
-        ) {
-            throw new Error(
-                'Cannot put pilings on an island that already has pilings on it.',
-            );
-        }
-
-        // all checks passed
-
-        // construct the pilings
-        console.log(
-            `Player ${playerDesignator} constructs pilings on island ${pilingsTarget}.`,
-        );
-        game.players[playerDesignator].pilingsIsland = pilingsTarget;
-    };
-
-    const handleTidalSurgeTargetAction = (
-        game: GameSerialized,
-        tidalSurgeTarget: number,
-    ) => {
-        if (
-            !getAdjacentIslands(game, game.nextIslandToSink).some((island) => {
-                return island.islandNumber === tidalSurgeTarget;
-            })
-        ) {
-            throw new Error('Cannot tidal surge to a non-adjacent island.');
-        }
-
-        // all checks passed
-
-        // move the rising waters marker
-        console.log(`The tide surges to island ${tidalSurgeTarget}.`);
-        game.nextIslandToSink = tidalSurgeTarget;
-    };
-
-    const handleTidalWaveTargetAction = (
-        game: GameSerialized,
-        tidalWaveTarget: number,
-    ) => {
-        // find the island
-        const island = findIsland(game, tidalWaveTarget);
-
-        // the island must exist
-        if (!island) {
-            throw new Error(
-                'Cannot tidal wave to an island that does not exist.',
-            );
-        }
-
-        // all checks passed
-
-        // move the rising waters marker
-        console.log(`A tidal wave moves upon island ${tidalWaveTarget}.`);
-        game.nextIslandToSink = tidalWaveTarget;
-    };
-
-    const handleTortoiseTargetAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        tortoiseTarget: TargetCharacter,
-    ) => {
-        // the player must target their own character
-        if (tortoiseTarget.character.playerDesignator !== playerDesignator) {
-            throw new Error("Cannot target a character that isn't yours.");
-        }
-
-        // find the island
-        const island = findIsland(game, tortoiseTarget.islandNumber);
-
-        // the island must exist
-        if (!island) {
-            throw new Error(
-                'Cannot tortoise on an island that does not exist.',
-            );
-        }
-
-        // the character must exist
-        if (
-            !island.characters.some((character) => {
-                return CharacterOperations.equals(
-                    character,
-                    tortoiseTarget.character,
-                );
-            })
-        ) {
-            throw new Error('Cannot tortoise a character that does not exist.');
-        }
-
-        // all checks passed
-
-        // make the target a tortoise
-        console.log(
-            `Player ${tortoiseTarget.character.playerDesignator}'s ${tortoiseTarget.character.strength}-strength character on island ${tortoiseTarget.islandNumber} turns into a tortoise.`,
-        );
-        (
-            IslandOperations.findCharacter(
-                island,
-                tortoiseTarget.character,
-            ) as CharacterSerialized
-        ).tortoise = true;
-    };
-
-    const handleVolcanicEruptionTargetAction = (
-        game: GameSerialized,
-        playerDesignator: PlayerDesignator,
-        volcanicEruptionTarget: number,
-    ) => {
-        // find the island
-        const island = findIsland(game, volcanicEruptionTarget);
-
-        // the island must exist
-        if (!island) {
-            throw new Error('Cannot erupt an island that does not exist.');
-        }
-
-        // the island must be a volcano
-        if (island.islandType !== IslandType.VOLCANO) {
-            throw new Error('Cannot erupt an island that is not a volcano.');
-        }
-
-        // all checks passed
-
-        // start to erupt the volcano
-        console.log(`Island ${volcanicEruptionTarget} erupts.`);
-
-        // find islands affected by lava flows
-        const lavaFlowIslands = getAdjacentIslands(
-            game,
-            volcanicEruptionTarget,
-        );
-
-        // handle fleeing from lava flows
-        for (const lavaFlowIsland of lavaFlowIslands) {
-            // find the safe island to flee to
-            const safeIsland = (() => {
-                const safeIslandList = getAdjacentIslands(
-                    game,
-                    lavaFlowIsland.islandNumber,
-                ).filter((island) => {
-                    return island.islandNumber !== volcanicEruptionTarget;
-                });
-                if (safeIslandList.length <= 0) {
-                    return null;
-                }
-                if (safeIslandList.length > 1) {
-                    throw new Error(
-                        'There cannot be two safe islands for characters to flee to.',
-                    );
-                }
-                return safeIslandList[0];
-            })();
-
-            // if there is no safe island, no fleeing can occur
-            if (safeIsland === null) {
-                continue;
-            }
-
-            // if the safe island is full or if the lava flow island is netted,
-            // then fleeing is not possible
-            if (
-                islandIsFull(game, safeIsland) ||
-                islandIsNetted(game, lavaFlowIsland.islandNumber)
-            ) {
-                continue;
-            }
-
-            // if the safe island can only accommodate one character, then only
-            // one character can flee. Otherwise, everyone flees
-            if (
-                safeIsland.smallCapacity &&
-                !islandHasPilings(game, safeIsland.islandNumber)
-            ) {
-                // if only one character can flee, then the volcano erupter
-                // flees first. If they don't flee, then the other player can
-                for (const playerToFlee of [
-                    playerDesignator,
-                    otherPlayerDesignator(playerDesignator),
-                ]) {
-                    // Find out how many characters this player has on the island
-                    const playerCharactersOnLavaFlowIsland =
-                        lavaFlowIsland.characters.filter((character) => {
-                            return character.playerDesignator === playerToFlee;
-                        });
-
-                    // if this player has multiple characters on the island,
-                    // choose the strongest one to flee. If they only have one
-                    // character there, that character will flee. If they have
-                    // none, then none of their characters flee
-                    const characterToFlee =
-                        playerCharactersOnLavaFlowIsland.length === 1
-                            ? playerCharactersOnLavaFlowIsland[0]
-                            : playerCharactersOnLavaFlowIsland.length > 1
-                              ? playerCharactersOnLavaFlowIsland.reduce(
-                                    (largestCharacter, character) => {
-                                        if (
-                                            character.strength >
-                                            largestCharacter.strength
-                                        ) {
-                                            return character;
-                                        }
-                                        return largestCharacter;
-                                    },
-                                )
-                              : null;
-
-                    // if no character flees, skip this player
-                    if (characterToFlee === null) {
-                        continue;
-                    }
-
-                    // move the character
-                    console.log(
-                        `Player ${characterToFlee.playerDesignator}'s ${
-                            characterToFlee.strength
-                        }-strength ${
-                            characterToFlee.tortoise ? 'tortoise' : 'character'
-                        } flees from the lava flow to island ${safeIsland.islandNumber}.`,
-                    );
-                    IslandOperations.removeCharacter(
-                        lavaFlowIsland,
-                        characterToFlee,
-                    );
-                    IslandOperations.addCharacter(safeIsland, characterToFlee);
-
-                    // reset tortoise and reclaim card if necessary
-                    if (characterToFlee.tortoise) {
-                        characterToFlee.tortoise = false;
-                        PlayerOperations.reclaim(
-                            game.players[playerDesignator],
-                            CardType.TORTOISE,
-                        );
-                    }
-
-                    // done fleeing from this island
-                    break;
-                }
-            } else {
-                // the island is not small or has pilings, so everyone flees
-
-                // move all characters
-                lavaFlowIsland.characters.forEach((character) => {
-                    // move the character
-                    console.log(
-                        `Player ${character.playerDesignator}'s ${
-                            character.strength
-                        }-strength ${
-                            character.tortoise ? 'tortoise' : 'character'
-                        } flees from the lava flow to island ${safeIsland.islandNumber}.`,
-                    );
-                    IslandOperations.removeCharacter(lavaFlowIsland, character);
-                    IslandOperations.addCharacter(safeIsland, character);
-
-                    // reset tortoise and reclaim card if necessary
-                    if (character.tortoise) {
-                        character.tortoise = false;
-                        PlayerOperations.reclaim(
-                            game.players[character.playerDesignator],
-                            CardType.TORTOISE,
-                        );
-                    }
-                });
-            }
-        }
-
-        // now that everyone has fled, burn anyone who didn't flee
-        lavaFlowIslands.forEach((lavaFlowIsland) => {
-            lavaFlowIsland.characters.forEach((character) => {
-                // reset tortoise and reclaim card if necessary
-                if (character.tortoise) {
-                    PlayerOperations.reclaim(
-                        game.players[character.playerDesignator],
-                        CardType.TORTOISE,
-                    );
-                }
-
-                // remove the character
-                console.log(
-                    `Player ${character.playerDesignator}'s ${
-                        character.strength
-                    }-strength ${
-                        character.tortoise ? 'tortoise' : 'character'
-                    } burns to death in the lava flow on island ${lavaFlowIsland.islandNumber}.`,
-                );
-                IslandOperations.removeCharacter(lavaFlowIsland, character);
-            });
-        });
-
-        // remove the volcano itself
-        console.log(`Island ${volcanicEruptionTarget} erupts and sinks.`);
-        game.islands = game.islands.filter((island) => {
-            return island.islandNumber !== volcanicEruptionTarget;
-        });
-
-        // if there are no islands left, then the game is a draw
-        if (game.islands.length < 1) {
-            // TODO
-            throw new Error('The last remaining island erupted and sank.');
-        }
-
-        // if the rising waters marker was on the volcano, move it to
-        // the next island
-        if (game.nextIslandToSink === volcanicEruptionTarget) {
-            console.log('Starting sink loop');
-            while (!findIsland(game, game.nextIslandToSink)) {
-                game.nextIslandToSink = (game.nextIslandToSink % 16) + 1;
-            }
-        }
     };
 
     /**
@@ -1095,57 +471,41 @@ export namespace GameOperations {
                 break;
             case GameActionType.FOG_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_FOG_TARGET);
-                handleFogTargetAction(game, gameAction.data);
+                handleFog(game, gameAction.data);
                 break;
             case GameActionType.HARPOON_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_HARPOON_TARGET);
-                handleHarpoonTargetAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handleHarpoon(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.MOVEMENT_SET:
                 checkGameStateAndPlayer(GameState.AWAIT_MOVEMENT_SET);
-                handleMovementAction(game, playerDesignator, gameAction.data);
+                handleMovement(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.NET_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_NET_TARGET);
-                handleNetTargetAction(game, playerDesignator, gameAction.data);
+                handleNet(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.PILINGS_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_PILINGS_TARGET);
-                handlePilingsTargetAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handlePilings(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.TIDAL_SURGE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_SURGE_TARGET);
-                handleTidalSurgeTargetAction(game, gameAction.data);
+                handleTidalSurge(game, gameAction.data);
                 break;
             case GameActionType.TIDAL_WAVE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_WAVE_TARGET);
-                handleTidalWaveTargetAction(game, gameAction.data);
+                handleTidalWave(game, gameAction.data);
                 break;
             case GameActionType.TORTOISE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TORTOISE_TARGET);
-                handleTortoiseTargetAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handleTortoise(game, playerDesignator, gameAction.data);
                 break;
             case GameActionType.VOLCANIC_ERUPTION_TARGET:
                 checkGameStateAndPlayer(
                     GameState.AWAIT_VOLCANIC_ERUPTION_TARGET,
                 );
-                handleVolcanicEruptionTargetAction(
-                    game,
-                    playerDesignator,
-                    gameAction.data,
-                );
+                handleVolcanicEruption(game, playerDesignator, gameAction.data);
                 break;
             default:
                 assertUnreachable(gameAction);

@@ -1,0 +1,26 @@
+import type { GameSerialized } from '../../commonTypes';
+import { GameOperations } from '../gameObjects/gameOperations';
+
+const checkTidalWaveTargetLegal = (
+    game: GameSerialized,
+    tidalWaveTarget: number,
+) => {
+    // find the island
+    const island = GameOperations.findIsland(game, tidalWaveTarget);
+
+    // the island must exist
+    if (!island) {
+        throw new Error('Cannot tidal wave to an island that does not exist.');
+    }
+};
+
+export const handleTidalWave = (
+    game: GameSerialized,
+    tidalWaveTarget: number,
+) => {
+    checkTidalWaveTargetLegal(game, tidalWaveTarget);
+
+    // move the rising waters marker
+    console.log(`A tidal wave moves upon island ${tidalWaveTarget}.`);
+    game.nextIslandToSink = tidalWaveTarget;
+};
