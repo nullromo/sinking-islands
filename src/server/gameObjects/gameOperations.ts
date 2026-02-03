@@ -1011,6 +1011,51 @@ export namespace GameOperations {
         ).tortoise = true;
     };
 
+    const handleFleeChoiceAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        fleeChoice: CharacterSerialized,
+    ) => {
+        // the game must be in the middle of processing a lava flow
+        if (game.lavaFlowIsland === null || game.safeIsland === null) {
+            throw new Error('There is no active lava flow.');
+        }
+
+        // the player must choose their own character
+        if (fleeChoice.playerDesignator !== playerDesignator) {
+            throw new Error("Cannot choose a character that isn't yours.");
+        }
+        if (
+            !game.lavaFlowIsland.characters.some((character) => {
+                return CharacterOperations.equals(character, fleeChoice);
+            })
+        ) {
+            throw new Error('Cannot choose a character that does not exist.');
+        }
+
+        // all checks passed
+
+        // move the character
+        console.log(
+            `Player ${fleeChoice.playerDesignator}'s ${
+                fleeChoice.strength
+            }-strength ${
+                fleeChoice.tortoise ? 'tortoise' : 'character'
+            } flees from the lava flow to island ${game.safeIsland.islandNumber}.`,
+        );
+        IslandOperations.removeCharacter(game.lavaFlowIsland, fleeChoice);
+        IslandOperations.addCharacter(game.safeIsland, fleeChoice);
+
+        // reset tortoise and reclaim card if necessary
+        if (fleeChoice.tortoise) {
+            fleeChoice.tortoise = false;
+            PlayerOperations.reclaim(
+                game.players[playerDesignator],
+                CardType.TORTOISE,
+            );
+        }
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -1099,7 +1144,8 @@ export namespace GameOperations {
                 break;
             case GameActionType.FLEE_CHOICE:
                 checkGameStateAndPlayer(GameState.AWAIT_FLEE_CHOICE);
-                throw new Error('TODO: unimplemented game action');
+                handleFleeChoiceAction(game, playerDesignator, gameAction.data);
+                break;
             default:
                 assertUnreachable(gameAction);
         }

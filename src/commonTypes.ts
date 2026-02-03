@@ -111,4 +111,7 @@ export type GameSerialized = {
         [PlayerDesignator.PLAYER_B]: PlayerSerialized;
     };
     waitingForPlayer: PlayerDesignator;
+    eruptingIsland: IslandSerialized | null;
+    lavaFlowIsland: IslandSerialized | null;
+    safeIsland: IslandSerialized | null;
 };
