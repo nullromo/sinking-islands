@@ -354,15 +354,6 @@ export namespace GameOperations {
         advanceGameState(game);
     };
 
-    /**
-     * Attempts to find an island matching the given island number.
-     */
-    const findIsland = (game: GameSerialized, islandNumber: number) => {
-        return game.islands.find((island) => {
-            return island.islandNumber === islandNumber;
-        });
-    };
-
     const handleCardPlacementAction = (
         game: GameSerialized,
         playerDesignator: PlayerDesignator,
