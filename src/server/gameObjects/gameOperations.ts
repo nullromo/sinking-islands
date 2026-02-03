@@ -925,6 +925,25 @@ export namespace GameOperations {
         game.players[playerDesignator].pilingsIsland = pilingsTarget;
     };
 
+    const handleTidalSurgeTargetAction = (
+        game: GameSerialized,
+        tidalSurgeTarget: number,
+    ) => {
+        if (
+            !getAdjacentIslands(game, game.nextIslandToSink).some((island) => {
+                return island.islandNumber === tidalSurgeTarget;
+            })
+        ) {
+            throw new Error('Cannot tidal surge to a non-adjacent island.');
+        }
+
+        // all checks passed
+
+        // move the rising waters marker
+        console.log(`The tide surges to island ${tidalSurgeTarget}.`);
+        game.nextIslandToSink = tidalSurgeTarget;
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -997,7 +1016,8 @@ export namespace GameOperations {
                 break;
             case GameActionType.TIDAL_SURGE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_SURGE_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleTidalSurgeTargetAction(game, gameAction.data);
+                break;
             case GameActionType.TIDAL_WAVE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_WAVE_TARGET);
                 throw new Error('TODO: unimplemented game action');
