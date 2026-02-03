@@ -944,6 +944,27 @@ export namespace GameOperations {
         game.nextIslandToSink = tidalSurgeTarget;
     };
 
+    const handleTidalWaveTargetAction = (
+        game: GameSerialized,
+        tidalWaveTarget: number,
+    ) => {
+        // find the island
+        const island = findIsland(game, tidalWaveTarget);
+
+        // the island must exist
+        if (!island) {
+            throw new Error(
+                'Cannot tidal wave to an island that does not exist.',
+            );
+        }
+
+        // all checks passed
+
+        // move the rising waters marker
+        console.log(`A tidal wave moves upon island ${tidalWaveTarget}.`);
+        game.nextIslandToSink = tidalWaveTarget;
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -1020,7 +1041,8 @@ export namespace GameOperations {
                 break;
             case GameActionType.TIDAL_WAVE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TIDAL_WAVE_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleTidalWaveTargetAction(game, gameAction.data);
+                break;
             case GameActionType.TORTOISE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TORTOISE_TARGET);
                 throw new Error('TODO: unimplemented game action');
