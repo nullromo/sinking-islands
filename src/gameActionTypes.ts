@@ -63,7 +63,7 @@ export type TortoiseTargetAction = {
     data: TargetCharacter;
 };
 export type VolcanicEruptionTargetAction = {
-    action: GameActionType.FLEE_CHOICE;
+    action: GameActionType.VOLCANIC_ERUPTION_TARGET;
     data: number;
 };
 export type FleeChoiceAction = {
