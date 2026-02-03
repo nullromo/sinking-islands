@@ -965,6 +965,52 @@ export namespace GameOperations {
         game.nextIslandToSink = tidalWaveTarget;
     };
 
+    const handleTortoiseTargetAction = (
+        game: GameSerialized,
+        playerDesignator: PlayerDesignator,
+        tortoiseTarget: TargetCharacter,
+    ) => {
+        // the player must target their own character
+        if (tortoiseTarget.character.playerDesignator !== playerDesignator) {
+            throw new Error("Cannot target a character that isn't yours.");
+        }
+
+        // find the island
+        const island = findIsland(game, tortoiseTarget.islandNumber);
+
+        // the island must exist
+        if (!island) {
+            throw new Error(
+                'Cannot tortoise on an island that does not exist.',
+            );
+        }
+
+        // the character must exist
+        if (
+            !island.characters.some((character) => {
+                return CharacterOperations.equals(
+                    character,
+                    tortoiseTarget.character,
+                );
+            })
+        ) {
+            throw new Error('Cannot tortoise a character that does not exist.');
+        }
+
+        // all checks passed
+
+        // make the target a tortoise
+        console.log(
+            `Player ${tortoiseTarget.character.playerDesignator}'s ${tortoiseTarget.character.strength}-strength character on island ${tortoiseTarget.islandNumber} turns into a tortoise.`,
+        );
+        (
+            IslandOperations.findCharacter(
+                island,
+                tortoiseTarget.character,
+            ) as CharacterSerialized
+        ).tortoise = true;
+    };
+
     /**
      * Attempts to take the given action on the given game.
      *
@@ -1045,7 +1091,12 @@ export namespace GameOperations {
                 break;
             case GameActionType.TORTOISE_TARGET:
                 checkGameStateAndPlayer(GameState.AWAIT_TORTOISE_TARGET);
-                throw new Error('TODO: unimplemented game action');
+                handleTortoiseTargetAction(
+                    game,
+                    playerDesignator,
+                    gameAction.data,
+                );
+                break;
             case GameActionType.FLEE_CHOICE:
                 checkGameStateAndPlayer(GameState.AWAIT_FLEE_CHOICE);
                 throw new Error('TODO: unimplemented game action');
