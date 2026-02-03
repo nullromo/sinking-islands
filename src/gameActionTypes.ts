@@ -18,7 +18,6 @@ export enum GameActionType {
     TIDAL_WAVE_TARGET = 'TIDAL_WAVE_TARGET',
     TORTOISE_TARGET = 'TORTOISE_TARGET',
     VOLCANIC_ERUPTION_TARGET = 'VOLCANIC_ERUPTION_TARGET',
-    FLEE_CHOICE = 'FLEE_CHOICE',
 }
 
 export type CardPlacementAction = {
@@ -66,10 +65,6 @@ export type VolcanicEruptionTargetAction = {
     action: GameActionType.VOLCANIC_ERUPTION_TARGET;
     data: number;
 };
-export type FleeChoiceAction = {
-    action: GameActionType.FLEE_CHOICE;
-    data: CharacterSerialized;
-};
 
 export type GameAction =
     | CardPlacementAction
@@ -82,5 +77,4 @@ export type GameAction =
     | TidalSurgeTargetAction
     | TidalWaveTargetAction
     | TortoiseTargetAction
-    | VolcanicEruptionTargetAction
-    | FleeChoiceAction;
+    | VolcanicEruptionTargetAction;
