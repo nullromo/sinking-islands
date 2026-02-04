@@ -1,4 +1,3 @@
-import type { CharacterSerialized } from './commonTypes';
 import type { CardPlacement } from './server/gameObjects/actionOrderTrack';
 import type {
     FlyingFishMovement,

@@ -235,8 +235,11 @@ export namespace GameOperations {
             case CardType.WEAKNESS:
                 // TODO resolve cards
                 break;
+            case null:
+                // TODO handle somehow null card
+                break;
             default:
-                assertUnreachable(nextCardToResolve.cardType);
+                assertUnreachable(nextCardToResolve);
         }
     };
 

@@ -1,13 +1,6 @@
-import type {
-    CharacterSerialized,
-    GameSerialized,
-    IslandSerialized,
-    PlayerDesignator,
-} from '../../commonTypes';
-import {
-    ConvertedMovement,
-    convertMovementToIslands,
-} from '../../convertActionData';
+import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
+import type { ConvertedMovement } from '../../convertActionData';
+import { convertMovementToIslands } from '../../convertActionData';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import type { FlyingFishMovement } from '../gameObjects/player';

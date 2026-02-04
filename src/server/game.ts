@@ -25,6 +25,7 @@ import type {
     TargetCharacter,
 } from './gameObjects/player';
 import { Player } from './gameObjects/player';
+import { convertMovementToIslands } from '../convertActionData';
 
 /**
  * Represents a game of Sinking Islands
@@ -626,7 +627,14 @@ export class Game {
         // the total movement must be at least 1 and no more than 3
         const totalMovement = computeMovementSteps(
             this.getIslandsSerialized(),
-            movementSet,
+            // NOTE: this has been modified to avoid an error
+            movementSet.map((movement) => {
+                return convertMovementToIslands(
+                    this.serialize(playerDesignator),
+                    movement,
+                );
+            }),
+            // END NOTE
         );
         if (totalMovement < 1 || totalMovement > 3) {
             return new CheckResult(

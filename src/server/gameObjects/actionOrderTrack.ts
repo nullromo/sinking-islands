@@ -127,7 +127,10 @@ export class ActionOrderTrack {
                       card.playerDesignator === playerDesignator ||
                       slot === activeCardIndex
                         ? card.serialize()
-                        : { playerDesignator: card.playerDesignator }
+                        : {
+                              cardType: null,
+                              playerDesignator: card.playerDesignator,
+                          }
                     : null;
             }),
             faceUpCards: this.faceUpCards,

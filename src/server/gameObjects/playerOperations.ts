@@ -1,5 +1,6 @@
 import type {
     CardSerialized,
+    FaceDownCard,
     PlayerDesignator,
     PlayerSerialized,
 } from '../../commonTypes';
@@ -132,8 +133,11 @@ export namespace PlayerOperations {
      */
     export const discardCard = (
         player: PlayerSerialized,
-        card: CardSerialized,
+        card: CardSerialized | FaceDownCard,
     ) => {
+        if (card.cardType === null) {
+            throw new Error('Cannot discard a face-down card.');
+        }
         if (card.playerDesignator !== player.playerDesignator) {
             throw new Error('Tried to discard a card into the wrong pile.');
         }

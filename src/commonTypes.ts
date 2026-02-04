@@ -67,8 +67,12 @@ export type CardSerialized = PlayerGamePieceSerialized & {
     cardType: CardType;
 };
 
+export type FaceDownCard = Omit<CardSerialized, 'cardType'> & {
+    cardType: null;
+};
+
 export type ActionOrderTrackSerialized = {
-    cardSlots: Array<CardSerialized | null>;
+    cardSlots: Array<CardSerialized | FaceDownCard | null>;
     faceUpCards: number[];
 };
 
@@ -111,7 +115,4 @@ export type GameSerialized = {
         [PlayerDesignator.PLAYER_B]: PlayerSerialized;
     };
     waitingForPlayer: PlayerDesignator;
-    eruptingIsland: IslandSerialized | null;
-    lavaFlowIsland: IslandSerialized | null;
-    safeIsland: IslandSerialized | null;
 };

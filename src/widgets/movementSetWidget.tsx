@@ -6,6 +6,7 @@ import type { GameSerialized } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
 import { Hand } from '../hand';
 import type { MovementSet } from '../server/gameObjects/player';
+import { convertMovementToIslands } from '../convertActionData';
 
 interface MovementSetWidgetProps {
     readonly submit: (movementSet: MovementSet) => void;
@@ -72,7 +73,12 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                 to start over.
             </div>
             {'Movement steps used:'}{' '}
-            {computeMovementSteps(props.gameState.islands, movementSet)}{' '}
+            {computeMovementSteps(
+                props.gameState.islands,
+                movementSet.map((movement) => {
+                    return convertMovementToIslands(props.gameState, movement);
+                }),
+            )}{' '}
             {'of 3'}
             {movementSet.map((movement, index) => {
                 return (
