@@ -1,4 +1,5 @@
 import { beforeEach, expect, test } from '@jest/globals';
+import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import type { CardPlacementAction } from '../../gameActionTypes';
 import { GameActionType } from '../../gameActionTypes';
@@ -7,16 +8,19 @@ import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
 
-beforeEach(() => {
-    setUpRandom();
-});
-
 const setUpGame = () => {
+    setUpRandom();
     const game = GameOperations.create();
     GameOperations.assignUserToGame(game, 'testuser');
     GameOperations.assignUserToGame(game, 'otheruser');
     return game;
 };
+
+let game: GameSerialized;
+
+beforeEach(() => {
+    game = setUpGame();
+});
 
 const basicCardPlacementDataB = (): CardPlacementAction => {
     return {
@@ -59,9 +63,6 @@ const basicCardPlacementDataA = (): CardPlacementAction => {
 };
 
 test('Cards can be placed', () => {
-    // set up a game
-    const game = setUpGame();
-
     // take a card placement action
     GameOperations.takeGameAction(
         game,
@@ -78,9 +79,6 @@ test('Cards can be placed', () => {
 });
 
 test('The game ends up in the right state after card placement', () => {
-    // set up a game
-    const game = setUpGame();
-
     // take a card placement action
     GameOperations.takeGameAction(
         game,
@@ -99,9 +97,6 @@ test('The game ends up in the right state after card placement', () => {
 });
 
 test('Players cannot play cards twice', () => {
-    // set up a game
-    const game = setUpGame();
-
     // take a card placement action
     GameOperations.takeGameAction(
         game,
@@ -145,9 +140,6 @@ test('Players cannot play cards twice', () => {
 });
 
 test('Players can only play their own cards', () => {
-    // set up a game
-    const game = setUpGame();
-
     // take a card placement action with the wrong cards
     expect(() => {
         GameOperations.takeGameAction(
@@ -159,9 +151,6 @@ test('Players can only play their own cards', () => {
 });
 
 test('Players must play exactly 3 cards', () => {
-    // set up a game
-    const game = setUpGame();
-
     // play only 1 card
     expect(() => {
         GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
@@ -202,9 +191,6 @@ test('Players must play exactly 3 cards', () => {
 });
 
 test('Players must play cards that exist in their hands', () => {
-    // set up a game
-    const game = setUpGame();
-
     // modify template data
     const data = basicCardPlacementDataB();
     data.data[1].cardType = CardType.FLYING_FISH;
@@ -216,9 +202,6 @@ test('Players must play cards that exist in their hands', () => {
 });
 
 test('Players cannot play two cards in the same area', () => {
-    // set up a game
-    const game = setUpGame();
-
     // modify template data
     const data = basicCardPlacementDataB();
     data.data[0] = data.data[3];
@@ -231,9 +214,6 @@ test('Players cannot play two cards in the same area', () => {
 });
 
 test('Cards must be placed in empty slots', () => {
-    // set up a game
-    const game = setUpGame();
-
     // take a card placement action
     GameOperations.takeGameAction(
         game,
