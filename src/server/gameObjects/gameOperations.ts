@@ -197,12 +197,15 @@ export namespace GameOperations {
      *   in the waiting for card placement state.
      */
     const resolveNextCard = (game: GameSerialized) => {
+        console.log('Resolving next card');
         // in card placement step, there is nothing to resolve
         if (game.activeCardIndex === null) {
+            console.log('No cards. Nothing to resolve');
             return;
         }
 
         if (game.activeCardIndex > 5) {
+            console.log('Ending the round now');
             endRound(game);
         }
 
@@ -277,6 +280,13 @@ export namespace GameOperations {
             default:
                 assertUnreachable(nextCardToResolve);
         }
+
+        console.log(
+            'Game is now in state',
+            game.gameState,
+            'and waiting for',
+            game.waitingForPlayer,
+        );
     };
 
     /**
