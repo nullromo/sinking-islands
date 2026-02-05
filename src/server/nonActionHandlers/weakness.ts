@@ -1,5 +1,11 @@
-import type { GameSerialized } from '../../commonTypes';
+import { otherPlayerDesignator, type GameSerialized } from '../../commonTypes';
+import { GameOperations } from '../gameObjects/gameOperations';
 
 export const handleWeakness = (game: GameSerialized) => {
-    throw new Error('handle weakness todo');
+    const card = GameOperations.getCurrentlyResolvingCard(game);
+    const player = card.playerDesignator;
+    const opponent = otherPlayerDesignator(player);
+
+    console.log(`Player ${player}'s characters are afflicted with weakness.`);
+    game.players[opponent].weakness = true;
 };
