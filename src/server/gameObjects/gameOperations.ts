@@ -226,22 +226,51 @@ export namespace GameOperations {
         // resolve next card
         switch (nextCardToResolve.cardType) {
             case CardType.CRAB:
+                // TODO
+                throw new Error('resolve crab');
             case CardType.FLYING_FISH:
-            case CardType.FOG:
-            case CardType.HARPOON:
-            case CardType.INDISCRETION:
-            case CardType.MEDITATION:
-            case CardType.MOVEMENT:
-            case CardType.NET:
-            case CardType.PILINGS:
-            case CardType.PRAYER:
-            case CardType.TIDAL_SURGE:
-            case CardType.TIDAL_WAVE:
-            case CardType.TORTOISE:
-            case CardType.VOLCANIC_ERUPTION:
-            case CardType.WEAKNESS:
-                // TODO resolve cards
+                game.gameState = GameState.AWAIT_FLYING_FISH_MOVEMENT;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
+            case CardType.FOG:
+                // TODO
+                throw new Error('resolve fog');
+            case CardType.HARPOON:
+                // TODO
+                throw new Error('resolve harpoon');
+            case CardType.INDISCRETION:
+                // TODO
+                throw new Error('resolve indiscretion');
+            case CardType.MEDITATION:
+                // TODO
+                throw new Error('resolve meditatino');
+            case CardType.MOVEMENT:
+                // TODO
+                throw new Error('resolve movement');
+            case CardType.NET:
+                // TODO
+                throw new Error('resolve net');
+            case CardType.PILINGS:
+                // TODO
+                throw new Error('resolve pilings');
+            case CardType.PRAYER:
+                // TODO
+                throw new Error('resolve prayer');
+            case CardType.TIDAL_SURGE:
+                // TODO
+                throw new Error('resolve tidal surge');
+            case CardType.TIDAL_WAVE:
+                // TODO
+                throw new Error('resolve tidal wave');
+            case CardType.TORTOISE:
+                // TODO
+                throw new Error('resolve tortoise');
+            case CardType.VOLCANIC_ERUPTION:
+                // TODO
+                throw new Error('resolve volcano');
+            case CardType.WEAKNESS:
+                // TODO
+                throw new Error('resolve weakness');
             case null:
                 // TODO handle somehow null card
                 break;

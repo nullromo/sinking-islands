@@ -58,7 +58,7 @@ beforeEach(() => {
 const basicFlyingFishData = () => {
     return {
         character: {
-            playerDesignator: PlayerDesignator.PLAYER_B,
+            playerDesignator: PlayerDesignator.PLAYER_A,
             strength: 20,
             tortoise: false,
         },
@@ -71,7 +71,7 @@ test('Flying fish actions can be taken', () => {
     //console.log(fullObject(game));
 
     // take flying fish action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.FLYING_FISH_MOVEMENT,
         data: basicFlyingFishData(),
     });
