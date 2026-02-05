@@ -1,0 +1,71 @@
+import { otherPlayerDesignator, type GameSerialized } from '../../commonTypes';
+import { CardType } from '../gameObjects/card';
+import { IslandOperations } from '../gameObjects/islandOperations';
+import { PlayerOperations } from '../gameObjects/playerOperations';
+
+export const handleCrab = (game: GameSerialized) => {
+    const player = (() => {
+        if (game.activeCardIndex === null) {
+            throw new Error(
+                'Cannot handle crab effect while waiting for card placement',
+            );
+        }
+        const card = game.actionOrderTrack.cardSlots[game.activeCardIndex];
+        if (!card || !card.cardType) {
+            throw new Error('Could not find active crab card');
+        }
+        return card.playerDesignator;
+    })();
+    const opponent = otherPlayerDesignator(player);
+
+    // handle fights on all the islands
+    game.islands.forEach((island) => {
+        // compute the strength of each player
+        const { playerStrength, opponentStrength } = island.characters.reduce(
+            (totals, character) => {
+                return {
+                    opponentStrength:
+                        totals.opponentStrength +
+                        (character.playerDesignator === player
+                            ? 0
+                            : game.players[opponent].weakness
+                              ? 10
+                              : character.strength),
+                    playerStrength:
+                        totals.playerStrength +
+                        (character.playerDesignator === player
+                            ? game.players[player].weakness
+                                ? 10
+                                : character.strength
+                            : 0),
+                };
+            },
+            { opponentStrength: 0, playerStrength: 0 },
+        );
+
+        // kill necessary characters
+        if (playerStrength > opponentStrength && opponentStrength > 0) {
+            console.log(
+                `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
+            );
+
+            // if a tortoise died, reclaim the appropriate card
+            if (
+                island.characters.some((character) => {
+                    return (
+                        character.playerDesignator === opponent &&
+                        character.tortoise
+                    );
+                })
+            ) {
+                PlayerOperations.reclaim(
+                    game.players[opponent],
+                    CardType.TORTOISE,
+                );
+            }
+
+            // remove the dead characters
+            IslandOperations.removeCharactersOfPlayer(island, opponent);
+        }
+    });
+};
