@@ -119,10 +119,10 @@ export namespace GameOperations {
         });
     };
 
-    const finishResolvingCard = (game: GameSerialized) => {
+    export const getCurrentlyResolvingCard = (game: GameSerialized) => {
         if (game.activeCardIndex === null) {
             throw new Error(
-                'Active card index was null while a card was resolving.',
+                'Active card index was null while retrieving active card.',
             );
         }
 
@@ -130,6 +130,14 @@ export namespace GameOperations {
         if (!card || card.cardType === null) {
             throw new Error('Face-down card or no card in active card slot.');
         }
+        return card;
+    };
+
+    const finishResolvingCard = (game: GameSerialized) => {
+        if (game.activeCardIndex === null) {
+            throw new Error('Null active card index');
+        }
+        const card = getCurrentlyResolvingCard(game);
 
         // move the card to the appropriate zone
         ActionOrderTrackOperations.resetSlot(

@@ -1,21 +1,12 @@
 import { otherPlayerDesignator, type GameSerialized } from '../../commonTypes';
 import { CardType } from '../gameObjects/card';
+import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 
 export const handleCrab = (game: GameSerialized) => {
-    const player = (() => {
-        if (game.activeCardIndex === null) {
-            throw new Error(
-                'Cannot handle crab effect while waiting for card placement',
-            );
-        }
-        const card = game.actionOrderTrack.cardSlots[game.activeCardIndex];
-        if (!card || !card.cardType) {
-            throw new Error('Could not find active crab card');
-        }
-        return card.playerDesignator;
-    })();
+    const card = GameOperations.getCurrentlyResolvingCard(game);
+    const player = card.playerDesignator;
     const opponent = otherPlayerDesignator(player);
 
     // handle fights on all the islands
