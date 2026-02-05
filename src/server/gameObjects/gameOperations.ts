@@ -548,7 +548,46 @@ export namespace GameOperations {
                 assertUnreachable(gameAction);
         }
 
-        // advance the game
-        advanceGameState(game);
+        // if cards were not being placed, then a card is resolving
+        if (gameAction.action !== GameActionType.CARD_PLACEMENT) {
+            if (game.activeCardIndex === null) {
+                throw new Error(
+                    'Active card index was null while a card was resolving.',
+                );
+            }
+
+            const card = game.actionOrderTrack.cardSlots[game.activeCardIndex];
+            if (!card || card.cardType === null) {
+                throw new Error(
+                    'Face-down card or no card in active card slot.',
+                );
+            }
+
+            // move the card to the appropriate zone
+            ActionOrderTrackOperations.resetSlot(
+                game.actionOrderTrack,
+                game.activeCardIndex,
+            );
+            if (
+                card.cardType === CardType.PILINGS ||
+                card.cardType === CardType.NET ||
+                card.cardType === CardType.TORTOISE
+            ) {
+                PlayerOperations.setAside(
+                    game.players[card.playerDesignator],
+                    card,
+                );
+            } else {
+                PlayerOperations.discardCard(
+                    game.players[card.playerDesignator],
+                    card,
+                );
+            }
+
+            // advance the active card index
+            game.activeCardIndex += 1;
+        } else {
+            // otherwise, cards were being placed
+        }
     };
 }
