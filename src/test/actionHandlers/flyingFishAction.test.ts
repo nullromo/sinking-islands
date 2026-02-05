@@ -62,13 +62,13 @@ const basicFlyingFishData = () => {
             strength: 20,
             tortoise: false,
         },
-        fromIslandNumber: 1,
-        toIslandNumber: 1,
+        fromIslandNumber: 7,
+        toIslandNumber: 5,
     };
 };
 
 test('Flying fish actions can be taken', () => {
-    //console.log(fullObject(game));
+    console.log(fullObject(game));
 
     // take flying fish action
     GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
