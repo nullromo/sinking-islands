@@ -236,11 +236,13 @@ export namespace GameOperations {
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.FOG:
-                // TODO
-                throw new Error('resolve fog');
+                game.gameState = GameState.AWAIT_FOG_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.HARPOON:
-                // TODO
-                throw new Error('resolve harpoon');
+                game.gameState = GameState.AWAIT_HARPOON_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.INDISCRETION:
                 // TODO
                 throw new Error('resolve indiscretion');
@@ -248,29 +250,36 @@ export namespace GameOperations {
                 // TODO
                 throw new Error('resolve meditatino');
             case CardType.MOVEMENT:
-                // TODO
-                throw new Error('resolve movement');
+                game.gameState = GameState.AWAIT_MOVEMENT_SET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.NET:
-                // TODO
-                throw new Error('resolve net');
+                game.gameState = GameState.AWAIT_NET_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.PILINGS:
-                // TODO
-                throw new Error('resolve pilings');
+                game.gameState = GameState.AWAIT_PILINGS_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.PRAYER:
                 // TODO
                 throw new Error('resolve prayer');
             case CardType.TIDAL_SURGE:
-                // TODO
-                throw new Error('resolve tidal surge');
+                game.gameState = GameState.AWAIT_TIDAL_SURGE_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.TIDAL_WAVE:
-                // TODO
-                throw new Error('resolve tidal wave');
+                game.gameState = GameState.AWAIT_TIDAL_WAVE_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.TORTOISE:
-                // TODO
-                throw new Error('resolve tortoise');
+                game.gameState = GameState.AWAIT_TORTOISE_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.VOLCANIC_ERUPTION:
-                // TODO
-                throw new Error('resolve volcano');
+                game.gameState = GameState.AWAIT_VOLCANIC_ERUPTION_TARGET;
+                game.waitingForPlayer = nextCardToResolve.playerDesignator;
+                break;
             case CardType.WEAKNESS:
                 // TODO
                 throw new Error('resolve weakness');

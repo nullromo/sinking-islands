@@ -1,4 +1,4 @@
-import { beforeEach, test } from '@jest/globals';
+import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
@@ -6,6 +6,7 @@ import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { fullObject } from '../../server/util';
 import { setUpRandom } from '../setUpRandom';
+import { GameState } from '../../gameState';
 
 const setUpGame = () => {
     setUpRandom();
@@ -68,11 +69,26 @@ const basicFlyingFishData = () => {
 };
 
 test('Flying fish actions can be taken', () => {
-    console.log(fullObject(game));
-
     // take flying fish action
     GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.FLYING_FISH_MOVEMENT,
         data: basicFlyingFishData(),
     });
+
+    // the character should have moved
+    const island5 = game.islands.find((island) => {
+        return island.islandNumber === 5;
+    });
+    const island7 = game.islands.find((island) => {
+        return island.islandNumber === 7;
+    });
+    expect(island5?.characters.length).toEqual(2);
+    expect(island7?.characters.length).toEqual(0);
+
+    // the active card index should have changed
+    expect(game.activeCardIndex).toEqual(1);
+
+    // the game state should have updated
+    expect(game.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);
+    expect(game.waitingForPlayer).toEqual(PlayerDesignator.PLAYER_B);
 });
