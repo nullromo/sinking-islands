@@ -226,6 +226,7 @@ test('Cards must be placed in empty slots', () => {
     data.data[1] = data.data[0];
     delete data.data[0];
 
+    // playing should fail
     expect(() => {
         GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, data);
     }).toThrow();

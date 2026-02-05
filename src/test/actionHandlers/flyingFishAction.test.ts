@@ -92,3 +92,45 @@ test('Flying fish actions can be taken', () => {
     expect(game.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);
     expect(game.waitingForPlayer).toEqual(PlayerDesignator.PLAYER_B);
 });
+
+test('Players must flying fish their own characters', () => {
+    // modify data
+    const data = basicFlyingFishData();
+    data.character.playerDesignator = PlayerDesignator.PLAYER_B;
+
+    // cannot perform movement
+    expect(() => {
+        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+            action: GameActionType.FLYING_FISH_MOVEMENT,
+            data,
+        });
+    }).toThrow();
+});
+
+test('Players cannot move to full islands', () => {
+    // modify data
+    const data = basicFlyingFishData();
+    data.toIslandNumber = 13;
+
+    // cannot perform movement
+    expect(() => {
+        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+            action: GameActionType.FLYING_FISH_MOVEMENT,
+            data,
+        });
+    }).toThrow();
+});
+
+test('Players cannot move a character that is not present', () => {
+    // modify data
+    const data = basicFlyingFishData();
+    data.character.strength = 40;
+
+    // cannot perform movement
+    expect(() => {
+        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+            action: GameActionType.FLYING_FISH_MOVEMENT,
+            data,
+        });
+    }).toThrow();
+});
