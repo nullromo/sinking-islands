@@ -187,9 +187,16 @@ export namespace GameOperations {
     };
 
     /**
-     * Resolves as much as possible without input from a user.
+     * Resolves the next card.
+     *
+     * - If the card requires a user action, this function leaves the game in
+     *   the proper awaiting state.
+     * - If the card requires no action, this function resolves the card and
+     *   then calls itself again.
+     * - If there are no more cards to resolve, this function leaves the game
+     *   in the waiting for card placement state.
      */
-    const resolveUntilNextDecision = (game: GameSerialized) => {
+    const resolveNextCard = (game: GameSerialized) => {
         // in card placement step, there is nothing to resolve
         if (game.activeCardIndex === null) {
             return;
@@ -212,7 +219,7 @@ export namespace GameOperations {
                 'was fogged.',
             );
             game.activeCardIndex += 1;
-            resolveUntilNextDecision(game);
+            resolveNextCard(game);
             return;
         }
 
@@ -244,106 +251,19 @@ export namespace GameOperations {
     };
 
     /**
-     * Resolves anything that can be resolved without user input and leaves the
-     * game's main state variables with the correct values so that the next
-     * action can be taken.
-     */
-    export const advanceGameState = (game: GameSerialized) => {
-        switch (game.gameState) {
-            case GameState.INITIAL_STATE:
-                // if the game is in the initial state but all players have
-                // joined, start the game
-                if (
-                    game.players[PlayerDesignator.PLAYER_A].username !== null &&
-                    game.players[PlayerDesignator.PLAYER_B].username !== null
-                ) {
-                    // advance the game to the card placement step
-                    game.gameState = GameState.AWAIT_CARD_PLACEMENT;
-
-                    // set the active player
-                    game.waitingForPlayer = game.initiative;
-                }
-                return;
-            case GameState.AWAIT_CARD_PLACEMENT:
-                // if not all cards have been placed, wait for the next player
-                // to place their cards
-                if (
-                    game.actionOrderTrack.cardSlots.some((slot) => {
-                        return slot === null;
-                    })
-                ) {
-                    game.waitingForPlayer = otherPlayerDesignator(
-                        game.waitingForPlayer,
-                    );
-                } else {
-                    // all cards have been placed, so advance the game to the
-                    // next step
-                    game.activeCardIndex = 0;
-                    resolveUntilNextDecision(game);
-                }
-                return;
-            case GameState.AWAIT_FLYING_FISH_MOVEMENT:
-            case GameState.AWAIT_FOG_TARGET:
-            case GameState.AWAIT_HARPOON_TARGET:
-            case GameState.AWAIT_MOVEMENT_SET:
-            case GameState.AWAIT_NET_TARGET:
-            case GameState.AWAIT_PILINGS_TARGET:
-            case GameState.AWAIT_TIDAL_SURGE_TARGET:
-            case GameState.AWAIT_TIDAL_WAVE_TARGET:
-            case GameState.AWAIT_TORTOISE_TARGET:
-            case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
-                // make sure the active card index is a number, which indicates
-                // that the game is in the resolution phase rather than the
-                // card placement phase
-                if (game.activeCardIndex === null) {
-                    throw new Error('The game is not ready to advance.');
-                }
-
-                // get the card that just resolved
-                const card =
-                    game.actionOrderTrack.cardSlots[game.activeCardIndex];
-
-                // make sure the card that just resolved exists
-                if (!card) {
-                    throw new Error('Could not find card to resolve.');
-                }
-
-                // find the player that played the card
-                const player = game.players[card.playerDesignator];
-
-                // move the card to the appropriate zone
-                ActionOrderTrackOperations.resetSlot(
-                    game.actionOrderTrack,
-                    game.activeCardIndex,
-                );
-                if (
-                    card.cardType === CardType.PILINGS ||
-                    card.cardType === CardType.NET ||
-                    card.cardType === CardType.TORTOISE
-                ) {
-                    PlayerOperations.setAside(player, card);
-                } else {
-                    PlayerOperations.discardCard(player, card);
-                }
-
-                // advance the active card index
-                game.activeCardIndex += 1;
-
-                return;
-            case GameState.FINISHED:
-                throw new Error('TODO');
-            default:
-                assertUnreachable(game.gameState);
-        }
-    };
-
-    /**
      * Assigns a user to an available player in the game.
      */
     export const assignUserToGame = (
         game: GameSerialized,
         username: string,
     ) => {
+        // make sure the game is in the right state
+        if (game.gameState !== GameState.INITIAL_STATE) {
+            throw new Error(
+                'Cannot assign a user to a game that has already begun.',
+            );
+        }
+
         // search for an available player
         const availablePlayer = (
             Object.entries(game.players) as Array<
@@ -361,8 +281,17 @@ export namespace GameOperations {
         // assign username
         game.players[availablePlayer[0]].username = username;
 
-        // advance the game state
-        advanceGameState(game);
+        // if all players have joined, start the game
+        if (
+            game.players[PlayerDesignator.PLAYER_A].username !== null &&
+            game.players[PlayerDesignator.PLAYER_B].username !== null
+        ) {
+            // advance the game to the card placement step
+            game.gameState = GameState.AWAIT_CARD_PLACEMENT;
+
+            // set the active player
+            game.waitingForPlayer = game.initiative;
+        }
     };
 
     /**
@@ -586,8 +515,30 @@ export namespace GameOperations {
 
             // advance the active card index
             game.activeCardIndex += 1;
-        } else {
-            // otherwise, cards were being placed
+
+            // execute the next card
+            resolveNextCard(game);
+
+            return;
         }
+        // otherwise, cards were being placed
+
+        // if not all cards have been placed, wait for the next player to place
+        // their cards
+        if (
+            game.actionOrderTrack.cardSlots.some((slot) => {
+                return slot === null;
+            })
+        ) {
+            game.waitingForPlayer = otherPlayerDesignator(
+                game.waitingForPlayer,
+            );
+        } else {
+            // all cards have been placed, so advance the game to the next step
+            game.activeCardIndex = 0;
+        }
+
+        // execute the next card
+        resolveNextCard(game);
     };
 }
