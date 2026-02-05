@@ -26,6 +26,11 @@ import { handleTidalSurge } from '../actionHandlers/tidalSurgeAction';
 import { handleTidalWave } from '../actionHandlers/tidalWaveAction';
 import { handleTortoise } from '../actionHandlers/tortoiseAction';
 import { handleVolcanicEruption } from '../actionHandlers/volcanicEruptionAction';
+import { handleCrab } from '../nonActionHandlers/crab';
+import { handleIndiscretion } from '../nonActionHandlers/indiscretion';
+import { handleMeditation } from '../nonActionHandlers/meditation';
+import { handlePrayer } from '../nonActionHandlers/prayer';
+import { handleWeakness } from '../nonActionHandlers/weakness';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CardType } from './card';
 import { CharacterOperations } from './characterOperations';
@@ -112,6 +117,43 @@ export namespace GameOperations {
         return game.islands.find((island) => {
             return island.islandNumber === islandNumber;
         });
+    };
+
+    const finishResolvingCard = (game: GameSerialized) => {
+        if (game.activeCardIndex === null) {
+            throw new Error(
+                'Active card index was null while a card was resolving.',
+            );
+        }
+
+        const card = game.actionOrderTrack.cardSlots[game.activeCardIndex];
+        if (!card || card.cardType === null) {
+            throw new Error('Face-down card or no card in active card slot.');
+        }
+
+        // move the card to the appropriate zone
+        ActionOrderTrackOperations.resetSlot(
+            game.actionOrderTrack,
+            game.activeCardIndex,
+        );
+        if (
+            card.cardType === CardType.PILINGS ||
+            card.cardType === CardType.NET ||
+            card.cardType === CardType.TORTOISE
+        ) {
+            PlayerOperations.setAside(
+                game.players[card.playerDesignator],
+                card,
+            );
+        } else {
+            PlayerOperations.discardCard(
+                game.players[card.playerDesignator],
+                card,
+            );
+        }
+
+        // advance the active card index
+        game.activeCardIndex += 1;
     };
 
     /**
@@ -226,11 +268,17 @@ export namespace GameOperations {
             return;
         }
 
+        // for cards that do not require a user action (crab, indiscretion,
+        // meditation, prayer, and weakness), the next card should be
+        // immediately resolved
+        let continueResolving = false;
+
         // resolve next card
         switch (nextCardToResolve.cardType) {
             case CardType.CRAB:
-                // TODO
-                throw new Error('resolve crab');
+                continueResolving = true;
+                handleCrab(game);
+                break;
             case CardType.FLYING_FISH:
                 game.gameState = GameState.AWAIT_FLYING_FISH_MOVEMENT;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
@@ -244,11 +292,13 @@ export namespace GameOperations {
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.INDISCRETION:
-                // TODO
-                throw new Error('resolve indiscretion');
+                continueResolving = true;
+                handleIndiscretion(game);
+                break;
             case CardType.MEDITATION:
-                // TODO
-                throw new Error('resolve meditatino');
+                continueResolving = true;
+                handleMeditation(game);
+                break;
             case CardType.MOVEMENT:
                 game.gameState = GameState.AWAIT_MOVEMENT_SET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
@@ -262,8 +312,9 @@ export namespace GameOperations {
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.PRAYER:
-                // TODO
-                throw new Error('resolve prayer');
+                continueResolving = true;
+                handlePrayer(game);
+                break;
             case CardType.TIDAL_SURGE:
                 game.gameState = GameState.AWAIT_TIDAL_SURGE_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
@@ -281,8 +332,9 @@ export namespace GameOperations {
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.WEAKNESS:
-                // TODO
-                throw new Error('resolve weakness');
+                continueResolving = true;
+                handleWeakness(game);
+                break;
             case null:
                 // TODO handle somehow null card
                 break;
@@ -296,6 +348,14 @@ export namespace GameOperations {
             'and waiting for',
             game.waitingForPlayer,
         );
+
+        // if no user action was required, then the card action is done
+        if (continueResolving) {
+            // clean up after resolution
+            finishResolvingCard(game);
+            // continue to the next card
+            resolveNextCard(game);
+        }
     };
 
     /**
@@ -527,42 +587,8 @@ export namespace GameOperations {
 
         // if cards were not being placed, then a card is resolving
         if (gameAction.action !== GameActionType.CARD_PLACEMENT) {
-            if (game.activeCardIndex === null) {
-                throw new Error(
-                    'Active card index was null while a card was resolving.',
-                );
-            }
-
-            const card = game.actionOrderTrack.cardSlots[game.activeCardIndex];
-            if (!card || card.cardType === null) {
-                throw new Error(
-                    'Face-down card or no card in active card slot.',
-                );
-            }
-
-            // move the card to the appropriate zone
-            ActionOrderTrackOperations.resetSlot(
-                game.actionOrderTrack,
-                game.activeCardIndex,
-            );
-            if (
-                card.cardType === CardType.PILINGS ||
-                card.cardType === CardType.NET ||
-                card.cardType === CardType.TORTOISE
-            ) {
-                PlayerOperations.setAside(
-                    game.players[card.playerDesignator],
-                    card,
-                );
-            } else {
-                PlayerOperations.discardCard(
-                    game.players[card.playerDesignator],
-                    card,
-                );
-            }
-
-            // advance the active card index
-            game.activeCardIndex += 1;
+            // clean up after card resolution
+            finishResolvingCard(game);
 
             // execute the next card
             resolveNextCard(game);
