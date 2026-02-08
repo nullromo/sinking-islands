@@ -261,4 +261,34 @@ export namespace GameOperations {
             );
         }
     };
+
+    /**
+     * Returns the set of islands that are within a range of 3 from the given
+     * island number.
+     */
+    export const getIslandsWithinMovementRange = (
+        game: GameSerialized,
+        island: IslandSerialized,
+    ) => {
+        const withinOne = getAdjacentIslands(game, island.islandNumber);
+        const withinTwo = withinOne.reduce((islands, thisIsland) => {
+            return [
+                ...islands,
+                ...getAdjacentIslands(game, thisIsland.islandNumber),
+            ];
+        }, withinOne);
+        const withinThree = withinTwo.reduce((islands, thisIsland) => {
+            return [
+                ...islands,
+                ...getAdjacentIslands(game, thisIsland.islandNumber),
+            ];
+        }, withinTwo);
+        return [
+            ...new Set(
+                withinThree.filter((otherIsland) => {
+                    return otherIsland.islandNumber !== island.islandNumber;
+                }),
+            ),
+        ];
+    };
 }

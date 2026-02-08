@@ -10,7 +10,7 @@ import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import type { TargetCharacter } from '../gameObjects/player';
 
-const checkHarpoonTargetLegal = (
+export const checkHarpoonTargetLegal = (
     game: GameSerialized,
     playerDesignator: PlayerDesignator,
     convertedTarget: {

@@ -1,5 +1,10 @@
 import type { GameSerialized } from '../commonTypes';
-import { otherPlayerDesignator, PlayerDesignator } from '../commonTypes';
+import {
+    IslandType,
+    otherPlayerDesignator,
+    PlayerDesignator,
+} from '../commonTypes';
+import { convertTargetCharacterToIslands } from '../convertActionData';
 import type { GameAction } from '../gameActionTypes';
 import { GameActionType } from '../gameActionTypes';
 import { GameState } from '../gameState';
@@ -8,7 +13,10 @@ import { assertUnreachable } from '../util';
 import { handleCardPlacement } from './actionHandlers/cardPlacementAction';
 import { handleFlyingFish } from './actionHandlers/flyingFishAction';
 import { handleFog } from './actionHandlers/fogAction';
-import { handleHarpoon } from './actionHandlers/harpoonAction';
+import {
+    checkHarpoonTargetLegal,
+    handleHarpoon,
+} from './actionHandlers/harpoonAction';
 import { handleMovement } from './actionHandlers/movementAction';
 import { handleNet } from './actionHandlers/netAction';
 import { handlePilings } from './actionHandlers/pilingsAction';
@@ -19,6 +27,7 @@ import { handleVolcanicEruption } from './actionHandlers/volcanicEruptionAction'
 import { ActionOrderTrackOperations } from './gameObjects/actionOrderTrackOperations';
 import { CardType } from './gameObjects/card';
 import { GameOperations } from './gameObjects/gameOperations';
+import { TargetCharacter } from './gameObjects/player';
 import { PlayerOperations } from './gameObjects/playerOperations';
 import { handleCrab } from './nonActionHandlers/crab';
 import { handleIndiscretion } from './nonActionHandlers/indiscretion';
@@ -177,8 +186,8 @@ export namespace GameFlowOperations {
         }
 
         // for cards that do not require a user action (crab, indiscretion,
-        // meditation, prayer, and weakness), the next card should be
-        // immediately resolved
+        // meditation, prayer, and weakness), and for any cards that have no
+        // choices available, the next card should be immediately resolved
         let continueResolving = false;
 
         // resolve next card
@@ -188,14 +197,83 @@ export namespace GameFlowOperations {
                 handleCrab(game);
                 break;
             case CardType.FLYING_FISH:
+                // if there are no legal islands to move to, the flying
+                // fish has no effect. This can only occur if all islands
+                // are netted or are at full capacity
+                if (
+                    !game.islands.some((island) => {
+                        return !GameOperations.islandIsFull(game, island);
+                    })
+                ) {
+                    console.log('There is nowhere for a flying fish to fly.');
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_FLYING_FISH_MOVEMENT;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.FOG:
+                // if the fog has no targets then it has no effect
+                if (
+                    !game.actionOrderTrack.cardSlots.some(
+                        (otherCard, otherSlot) => {
+                            return (
+                                otherCard !== null &&
+                                otherSlot !== game.activeCardIndex
+                            );
+                        },
+                    )
+                ) {
+                    console.log('There is no card to fog.');
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_FOG_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.HARPOON:
+                // if there are no legal harpoon targets, then the harpoon
+                // has no effect. NOTE: there may be a better way to do
+                // this, but brute force here isn't really that much
+                // computation
+                if (
+                    !game.islands
+                        .reduce<TargetCharacter[]>((allCharacters, island) => {
+                            return [
+                                ...allCharacters,
+                                ...island.characters.map((character) => {
+                                    return {
+                                        character,
+                                        islandNumber: island.islandNumber,
+                                    };
+                                }),
+                            ];
+                        }, [])
+                        .some((harpoonTarget) => {
+                            try {
+                                checkHarpoonTargetLegal(
+                                    game,
+                                    nextCardToResolve.playerDesignator,
+                                    convertTargetCharacterToIslands(
+                                        game,
+                                        harpoonTarget,
+                                    ),
+                                );
+                                return true;
+                            } catch {
+                                return false;
+                            }
+                        })
+                ) {
+                    console.log(
+                        `There are no valid harpoon targets for player ${nextCardToResolve.playerDesignator}.`,
+                    );
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_HARPOON_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
@@ -208,14 +286,80 @@ export namespace GameFlowOperations {
                 handleMeditation(game);
                 break;
             case CardType.MOVEMENT:
+                // if there are no valid moves to make, then the movement does
+                // nothing
+                if (
+                    !game.islands.some((island) => {
+                        return (
+                            island.characters.some((character) => {
+                                return (
+                                    character.playerDesignator ===
+                                    nextCardToResolve.playerDesignator
+                                );
+                            }) &&
+                            GameOperations.getIslandsWithinMovementRange(
+                                game,
+                                island,
+                            ).some((otherIsland) => {
+                                return !GameOperations.islandIsFull(
+                                    game,
+                                    otherIsland,
+                                );
+                            })
+                        );
+                    })
+                ) {
+                    console.log(
+                        `No movements are possible for player ${nextCardToResolve.playerDesignator}.`,
+                    );
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_MOVEMENT_SET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.NET:
+                // if every island is already netted, then it is not possible
+                // to cast a net
+                if (
+                    game.islands.every((island) => {
+                        return GameOperations.islandIsNetted(
+                            game,
+                            island.islandNumber,
+                        );
+                    })
+                ) {
+                    console.log('There are no un-netted islands to net.');
+                    continueResolving = true;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_NET_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.PILINGS:
+                // if there are no legal pilings targets, then the card does
+                // nothing
+                if (
+                    !game.islands.some((island) => {
+                        return (
+                            island.smallCapacity &&
+                            island.islandNumber !==
+                                game.players[
+                                    otherPlayerDesignator(
+                                        nextCardToResolve.playerDesignator,
+                                    )
+                                ].pilingsIsland
+                        );
+                    })
+                ) {
+                    console.log(
+                        'There are no islands that can support pilings.',
+                    );
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_PILINGS_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
@@ -224,18 +368,39 @@ export namespace GameFlowOperations {
                 handlePrayer(game);
                 break;
             case CardType.TIDAL_SURGE:
+                // if there are no legal tidal surge targets, then the card
+                // does nothing
+                if (game.islands.length <= 1) {
+                    console.log('The tide cannot surge.');
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_TIDAL_SURGE_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.TIDAL_WAVE:
+                // a decision is required
                 game.gameState = GameState.AWAIT_TIDAL_WAVE_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.TORTOISE:
+                // a decision is required
                 game.gameState = GameState.AWAIT_TORTOISE_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
             case CardType.VOLCANIC_ERUPTION:
+                // if there are no volcanoes, the card does nothing
+                if (
+                    !game.islands.some((island) => {
+                        return island.islandType === IslandType.VOLCANO;
+                    })
+                ) {
+                    console.log('There are no volcanoes left.');
+                    continueResolving = true;
+                    break;
+                }
+                // a decision is required
                 game.gameState = GameState.AWAIT_VOLCANIC_ERUPTION_TARGET;
                 game.waitingForPlayer = nextCardToResolve.playerDesignator;
                 break;
