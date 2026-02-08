@@ -81,3 +81,11 @@
   of active games (5?) and they should see their previous games. Replays would
   be nice. Also win/loss ratio and such. Analytics.
 - Host/join public games.
+
+## things to add tests for
+
+- rising waters moves when volcano blows up
+- tortoise falls off when character moves
+- tortoise card is reclaimed when tortoise dies for any reason
+- net card is reclaimed when island sinks or erupts
+- pilings card is reclaimed when island sinks or erupts
