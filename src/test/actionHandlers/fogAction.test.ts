@@ -2,17 +2,19 @@ import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
+import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
-import { GameState } from '../../gameState';
 
 const setUpGame = () => {
     setUpRandom();
     const game = GameOperations.create();
     GameOperations.assignUserToGame(game, 'testuser');
     GameOperations.assignUserToGame(game, 'otheruser');
+
+    game.players[PlayerDesignator.PLAYER_A].hand[0].cardType = CardType.FOG;
+
     GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
@@ -30,7 +32,6 @@ const setUpGame = () => {
             },
         },
     });
-    game.players[PlayerDesignator.PLAYER_A].hand[0].cardType = CardType.FOG;
     GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
