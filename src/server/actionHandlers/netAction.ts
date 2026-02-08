@@ -1,13 +1,29 @@
-import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
+import {
+    otherPlayerDesignator,
+    type GameSerialized,
+    type PlayerDesignator,
+} from '../../commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
-const checkNetTargetLegal = (game: GameSerialized, netTarget: number) => {
+const checkNetTargetLegal = (
+    game: GameSerialized,
+    playerDesignator: PlayerDesignator,
+    netTarget: number,
+) => {
     // find the island
     const island = GameOperations.findIsland(game, netTarget);
 
     // the island must exist
     if (island === undefined) {
         throw new Error('Cannot net an island that does not exist.');
+    }
+
+    // the island must not already have a net on it
+    if (
+        netTarget ===
+        game.players[otherPlayerDesignator(playerDesignator)].netIsland
+    ) {
+        throw new Error('Cannot net an island that is already netted.');
     }
 };
 
@@ -16,7 +32,7 @@ export const handleNet = (
     playerDesignator: PlayerDesignator,
     netTarget: number,
 ) => {
-    checkNetTargetLegal(game, netTarget);
+    checkNetTargetLegal(game, playerDesignator, netTarget);
 
     // place the net
     console.log(
