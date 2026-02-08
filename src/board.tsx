@@ -8,7 +8,7 @@ import type {
 } from './commonTypes';
 import { IslandType, PlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
-import { Character } from './server/gameObjects/character';
+import { CharacterOperations } from './server/gameObjects/characterOperations';
 
 interface BoardProps {
     readonly gameState: GameSerialized;
@@ -34,7 +34,8 @@ export const Board = (props: BoardProps) => {
                         return (
                             island.islandNumber ===
                                 props.highlightCharacter?.islandNumber &&
-                            Character.deserialize(character).equals(
+                            CharacterOperations.equals(
+                                character,
                                 props.highlightCharacter.character,
                             )
                         );
