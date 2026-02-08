@@ -141,7 +141,7 @@ test('Players cannot move characters that are not present', () => {
             data: [
                 {
                     character: {
-                        playerDesignator: PlayerDesignator.PLAYER_A,
+                        playerDesignator: PlayerDesignator.PLAYER_B,
                         strength: 30,
                         tortoise: false,
                     },

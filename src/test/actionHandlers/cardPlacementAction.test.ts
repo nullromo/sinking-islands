@@ -113,6 +113,21 @@ test('Players cannot play cards twice', () => {
         );
     }).toThrow();
 
+    // temporarily change the waiting player
+    game.waitingForPlayer = PlayerDesignator.PLAYER_B;
+
+    // try the test again
+    expect(() => {
+        GameOperations.takeGameAction(
+            game,
+            PlayerDesignator.PLAYER_B,
+            basicCardPlacementDataB(),
+        );
+    }).toThrow();
+
+    // change the waiting player back
+    game.waitingForPlayer = PlayerDesignator.PLAYER_A;
+
     // the other player places cards
     GameOperations.takeGameAction(
         game,
@@ -194,6 +209,17 @@ test('Players must play cards that exist in their hands', () => {
     // modify template data
     const data = basicCardPlacementDataB();
     data.data[1].cardType = CardType.FLYING_FISH;
+
+    // playing should fail
+    expect(() => {
+        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, data);
+    }).toThrow();
+});
+
+test('Players cannot play more copies of a card than there are in their hands', () => {
+    // modify template data
+    const data = basicCardPlacementDataB();
+    data.data[5].cardType = CardType.MOVEMENT;
 
     // playing should fail
     expect(() => {

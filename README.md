@@ -81,6 +81,8 @@
   of active games (5?) and they should see their previous games. Replays would
   be nice. Also win/loss ratio and such. Analytics.
 - Host/join public games.
+- Run code coverage and tests with CI
+- Add code coverage report to README
 
 ## things to add tests for
 

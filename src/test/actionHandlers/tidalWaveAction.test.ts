@@ -89,7 +89,7 @@ test('Cannot tidal wave to a non-existent island', () => {
     // try to tidal wave to a missing island
     expect(() => {
         GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
-            action: GameActionType.TIDAL_SURGE_TARGET,
+            action: GameActionType.TIDAL_WAVE_TARGET,
             data: 20,
         });
     }).toThrow();
