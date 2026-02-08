@@ -102,5 +102,6 @@ export type GameSerialized = {
         [PlayerDesignator.PLAYER_A]: PlayerSerialized;
         [PlayerDesignator.PLAYER_B]: PlayerSerialized;
     };
+    roundsCompleted: number;
     waitingForPlayer: PlayerDesignator;
 };

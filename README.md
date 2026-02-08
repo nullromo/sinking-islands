@@ -83,6 +83,7 @@
 - Host/join public games.
 - Run code coverage and tests with CI
 - Add code coverage report to README
+- Actually use `roundsCompleted`
 
 ## things to add tests for
 

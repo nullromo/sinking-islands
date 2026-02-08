@@ -9,7 +9,7 @@ import type { GameAction } from '../gameActionTypes';
 import { GameActionType } from '../gameActionTypes';
 import { GameState } from '../gameState';
 import { mapToValues } from '../maps';
-import { assertUnreachable } from '../util';
+import { assertUnreachable, upperSnakeToTitle } from '../util';
 import { handleCardPlacement } from './actionHandlers/cardPlacementAction';
 import { handleFlyingFish } from './actionHandlers/flyingFishAction';
 import { handleFog } from './actionHandlers/fogAction';
@@ -37,6 +37,25 @@ import { handleWeakness } from './nonActionHandlers/weakness';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace GameFlowOperations {
+    /**
+     * Returns the player that has won the game, or undefined if the game is
+     * not over yet.
+     */
+    const getGameWinner = (game: GameSerialized) => {
+        return [PlayerDesignator.PLAYER_A, PlayerDesignator.PLAYER_B].find(
+            (player) => {
+                return !game.islands.some((island) => {
+                    return island.characters.some((character) => {
+                        return (
+                            character.playerDesignator ===
+                            otherPlayerDesignator(player)
+                        );
+                    });
+                });
+            },
+        );
+    };
+
     /**
      * Processes end-of-round actions and prepares the game for the next round.
      */
@@ -108,6 +127,10 @@ export namespace GameFlowOperations {
 
         // update the new game state
         game.gameState = GameState.AWAIT_CARD_PLACEMENT;
+
+        // increment rounds counter
+        game.roundsCompleted += 1;
+        console.log(`Game ${game.id} beginning next round.`);
     };
 
     /**
@@ -143,6 +166,12 @@ export namespace GameFlowOperations {
 
         // advance the active card index
         game.activeCardIndex += 1;
+
+        // check if the game is over
+        const winner = getGameWinner(game);
+        if (winner) {
+            game.gameState = GameState.FINISHED;
+        }
     };
 
     /**
@@ -183,6 +212,14 @@ export namespace GameFlowOperations {
             game.activeCardIndex += 1;
             resolveNextCard(game);
             return;
+        }
+
+        if (nextCardToResolve.cardType !== null) {
+            console.log(
+                `Executing slot ${game.activeCardIndex + 1}: ${
+                    nextCardToResolve.playerDesignator
+                }'s ${upperSnakeToTitle(nextCardToResolve.cardType)}.`,
+            );
         }
 
         // for cards that do not require a user action (crab, indiscretion,

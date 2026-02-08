@@ -21,6 +21,8 @@ export namespace GameOperations {
      * Creates a new game.
      */
     export const create = (): GameSerialized => {
+        console.log('Creating game.');
+
         // create and randomize all the islands
         const islands: IslandSerialized[] = shuffleArray([
             IslandOperations.create(1, IslandType.NORMAL, true),
@@ -141,6 +143,9 @@ export namespace GameOperations {
 
         // assign username
         game.players[availablePlayer[0]].username = username;
+        console.log(
+            `Assigned ${username} to game ${game.id} as ${availablePlayer[0]}.`,
+        );
 
         // if all players have joined, start the game
         if (
@@ -152,6 +157,10 @@ export namespace GameOperations {
 
             // set the active player
             game.waitingForPlayer = game.initiative;
+
+            console.log(
+                `Starting game ${game.id}. The starting player is ${game.initiative}.`,
+            );
         }
     };
 
