@@ -92,7 +92,7 @@ test('Flying fish actions can be taken', () => {
         game.players[PlayerDesignator.PLAYER_A].discardPile.some((card) => {
             return card.cardType === CardType.FLYING_FISH;
         }),
-    );
+    ).toBe(true);
 
     // the game state should have updated
     expect(game.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);

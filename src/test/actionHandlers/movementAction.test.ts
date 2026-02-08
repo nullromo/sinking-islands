@@ -2,11 +2,10 @@ import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
+import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
-import { fullObject } from '../../server/util';
 import { setUpRandom } from '../setUpRandom';
-import { GameState } from '../../gameState';
 
 const setUpGame = () => {
     setUpRandom();
@@ -97,7 +96,7 @@ test('Movement actions can be taken', () => {
         game.players[PlayerDesignator.PLAYER_B].discardPile.some((card) => {
             return card.cardType === CardType.MOVEMENT;
         }),
-    );
+    ).toBe(true);
 
     // the game state should have updated
     expect(game.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);

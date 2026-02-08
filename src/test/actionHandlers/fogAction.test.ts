@@ -76,12 +76,12 @@ test('Fog actions can be taken', () => {
         game.players[PlayerDesignator.PLAYER_A].discardPile.some((card) => {
             return card.cardType === CardType.MOVEMENT;
         }),
-    );
+    ).toBe(true);
     expect(
         game.players[PlayerDesignator.PLAYER_B].discardPile.some((card) => {
             return card.cardType === CardType.FOG;
         }),
-    );
+    ).toBe(true);
 
     // the game state should have updated
     expect(game.gameState).toEqual(GameState.AWAIT_FLYING_FISH_MOVEMENT);

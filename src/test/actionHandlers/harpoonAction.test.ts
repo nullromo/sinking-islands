@@ -84,7 +84,7 @@ test('Harpoon actions can be taken', () => {
         game.players[PlayerDesignator.PLAYER_B].discardPile.some((card) => {
             return card.cardType === CardType.HARPOON;
         }),
-    );
+    ).toBe(true);
 
     // the game state should have updated
     expect(game.gameState).toEqual(GameState.AWAIT_HARPOON_TARGET);
