@@ -6,6 +6,7 @@ import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
+import { fullObject } from '../../server/util';
 
 const setUpGame = () => {
     setUpRandom();
@@ -74,7 +75,7 @@ test('Fog actions can be taken', () => {
     // the cards should have been discarded
     expect(
         game.players[PlayerDesignator.PLAYER_A].discardPile.some((card) => {
-            return card.cardType === CardType.MOVEMENT;
+            return card.cardType === CardType.FOG;
         }),
     ).toBe(true);
     expect(
