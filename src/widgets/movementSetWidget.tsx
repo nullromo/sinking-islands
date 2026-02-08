@@ -2,11 +2,10 @@ import _ from 'lodash';
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
-import type { GameSerialized } from '../commonTypes';
+import type { GameSerialized, MovementSet } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
-import { Hand } from '../hand';
-import type { MovementSet } from '../server/gameObjects/player';
 import { convertMovementToIslands } from '../convertActionData';
+import { Hand } from '../hand';
 
 interface MovementSetWidgetProps {
     readonly submit: (movementSet: MovementSet) => void;

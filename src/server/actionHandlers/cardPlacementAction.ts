@@ -1,5 +1,8 @@
-import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
-import type { CardPlacement } from '../gameObjects/actionOrderTrack';
+import type {
+    CardPlacement,
+    GameSerialized,
+    PlayerDesignator,
+} from '../../commonTypes';
 import { ActionOrderTrackOperations } from '../gameObjects/actionOrderTrackOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 

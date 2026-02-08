@@ -1,11 +1,14 @@
-import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
+import type {
+    GameSerialized,
+    MovementSet,
+    PlayerDesignator,
+} from '../../commonTypes';
 import { computeMovementSteps } from '../../computeMovementSteps';
 import type { ConvertedMovementSet } from '../../convertActionData';
 import { convertMovementToIslands } from '../../convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
-import type { MovementSet } from '../gameObjects/player';
 
 const checkMovementSetLegal = (
     game: GameSerialized,

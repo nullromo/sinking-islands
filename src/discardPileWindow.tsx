@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { otherPlayerDesignator, type GameSerialized } from './commonTypes';
+import type { GameSerialized } from './commonTypes';
+import { cardTypeToString, otherPlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
-import { cardTypeToString } from './server/gameObjects/card';
 
 export const DiscardPileWindow = (props: {
     readonly gameState: GameSerialized;

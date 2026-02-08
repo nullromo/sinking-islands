@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { CardSerialized, GameSerialized } from './commonTypes';
+import { cardTypeToString } from './commonTypes';
 import { GameContext } from './gameContext';
-import { cardTypeToString } from './server/gameObjects/card';
 import { upperSnakeToTitle } from './util';
 
 interface ActionOrderTrackProps {

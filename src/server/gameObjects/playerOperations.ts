@@ -4,9 +4,10 @@ import type {
     PlayerDesignator,
     PlayerSerialized,
 } from '../../commonTypes';
+import { CardType } from '../../commonTypes';
 import { shuffleArray } from '../../util';
 import { fullObject } from '../util';
-import { Card, CardType } from './card';
+import { CardOperations } from './cardOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PlayerOperations {
@@ -17,32 +18,32 @@ export namespace PlayerOperations {
         playerDesignator: PlayerDesignator,
     ): PlayerSerialized => {
         // initialize and shuffle the player's deck
-        const deck = shuffleArray([
-            new Card(playerDesignator, CardType.CRAB),
-            new Card(playerDesignator, CardType.CRAB),
-            new Card(playerDesignator, CardType.CRAB),
-            new Card(playerDesignator, CardType.FLYING_FISH),
-            new Card(playerDesignator, CardType.FOG),
-            new Card(playerDesignator, CardType.FOG),
-            new Card(playerDesignator, CardType.HARPOON),
-            new Card(playerDesignator, CardType.HARPOON),
-            new Card(playerDesignator, CardType.INDISCRETION),
-            new Card(playerDesignator, CardType.MEDITATION),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.MOVEMENT),
-            new Card(playerDesignator, CardType.NET),
-            new Card(playerDesignator, CardType.PILINGS),
-            new Card(playerDesignator, CardType.PRAYER),
-            new Card(playerDesignator, CardType.TIDAL_SURGE),
-            new Card(playerDesignator, CardType.TIDAL_SURGE),
-            new Card(playerDesignator, CardType.TIDAL_WAVE),
-            new Card(playerDesignator, CardType.TORTOISE),
-            new Card(playerDesignator, CardType.VOLCANIC_ERUPTION),
-            new Card(playerDesignator, CardType.WEAKNESS),
+        const deck: CardSerialized[] = shuffleArray([
+            CardOperations.create(playerDesignator, CardType.CRAB),
+            CardOperations.create(playerDesignator, CardType.CRAB),
+            CardOperations.create(playerDesignator, CardType.CRAB),
+            CardOperations.create(playerDesignator, CardType.FLYING_FISH),
+            CardOperations.create(playerDesignator, CardType.FOG),
+            CardOperations.create(playerDesignator, CardType.FOG),
+            CardOperations.create(playerDesignator, CardType.HARPOON),
+            CardOperations.create(playerDesignator, CardType.HARPOON),
+            CardOperations.create(playerDesignator, CardType.INDISCRETION),
+            CardOperations.create(playerDesignator, CardType.MEDITATION),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.MOVEMENT),
+            CardOperations.create(playerDesignator, CardType.NET),
+            CardOperations.create(playerDesignator, CardType.PILINGS),
+            CardOperations.create(playerDesignator, CardType.PRAYER),
+            CardOperations.create(playerDesignator, CardType.TIDAL_SURGE),
+            CardOperations.create(playerDesignator, CardType.TIDAL_SURGE),
+            CardOperations.create(playerDesignator, CardType.TIDAL_WAVE),
+            CardOperations.create(playerDesignator, CardType.TORTOISE),
+            CardOperations.create(playerDesignator, CardType.VOLCANIC_ERUPTION),
+            CardOperations.create(playerDesignator, CardType.WEAKNESS),
         ]);
 
         return {
@@ -167,7 +168,9 @@ export namespace PlayerOperations {
         });
 
         // add the card to the discard pile
-        player.discardPile.push(new Card(player.playerDesignator, cardType));
+        player.discardPile.push(
+            CardOperations.create(player.playerDesignator, cardType),
+        );
     };
 
     /**
@@ -200,7 +203,7 @@ export namespace PlayerOperations {
 
             // draw one card
             toDraw -= 1;
-            player.hand.push(player.deck.pop() as Card);
+            player.hand.push(player.deck.pop() as CardSerialized);
         }
     };
 }

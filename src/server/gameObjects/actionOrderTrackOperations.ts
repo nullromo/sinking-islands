@@ -1,10 +1,9 @@
 import type {
     ActionOrderTrackSerialized,
+    CardPlacement,
     CardSerialized,
     PlayerDesignator,
 } from '../../commonTypes';
-import type { CardPlacement } from './actionOrderTrack';
-import { Card } from './card';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ActionOrderTrackOperations {
@@ -92,7 +91,7 @@ export namespace ActionOrderTrackOperations {
     export const placeCard = (
         actionOrderTrack: ActionOrderTrackSerialized,
         slot: number,
-        card: Card,
+        card: CardSerialized,
     ) => {
         actionOrderTrack.cardSlots[slot] = card;
     };
@@ -106,7 +105,7 @@ export namespace ActionOrderTrackOperations {
         indiscretion: boolean,
     ) => {
         Object.entries(cardPlacement).forEach(([slot, card]) => {
-            placeCard(actionOrderTrack, Number(slot), Card.deserialize(card));
+            placeCard(actionOrderTrack, Number(slot), card);
             if (indiscretion) {
                 actionOrderTrack.faceUpCards.push(Number(slot));
             }

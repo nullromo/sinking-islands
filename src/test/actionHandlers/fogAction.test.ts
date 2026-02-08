@@ -1,10 +1,9 @@
 import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
-import { PlayerDesignator } from '../../commonTypes';
+import { CardType, PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
 import { GameFlowOperations } from '../../server/gameFlowOperations';
-import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
 

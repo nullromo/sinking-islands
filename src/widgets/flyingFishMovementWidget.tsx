@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
-import type { CharacterSerialized, GameSerialized } from '../commonTypes';
+import type {
+    CharacterSerialized,
+    FlyingFishMovement,
+    GameSerialized,
+} from '../commonTypes';
 import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
-import type { FlyingFishMovement } from '../server/gameObjects/player';
 
 interface FlyingFishMovementWidgetProps {
     readonly submit: (flyingFishMovement: FlyingFishMovement) => void;

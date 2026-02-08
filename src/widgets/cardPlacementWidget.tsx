@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
-import type { CardSerialized, GameSerialized } from '../commonTypes';
-import { Hand } from '../hand';
-import type { CardPlacement } from '../server/gameObjects/actionOrderTrack';
-import type { CardType } from '../server/gameObjects/card';
+import type {
+    CardPlacement,
+    CardSerialized,
+    CardType,
+    GameSerialized,
+} from '../commonTypes';
 import { GameContext } from '../gameContext';
+import { Hand } from '../hand';
 
 interface CardPlacementWidgetProps {
     readonly submit: (cardPlacement: CardPlacement) => void;

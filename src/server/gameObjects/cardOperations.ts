@@ -1,5 +1,8 @@
-import type { CardSerialized, PlayerDesignator } from '../../commonTypes';
-import type { CardType } from './card';
+import type {
+    CardSerialized,
+    CardType,
+    PlayerDesignator,
+} from '../../commonTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace CardOperations {

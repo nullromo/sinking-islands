@@ -3,14 +3,12 @@ import express from 'express';
 import session from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
-import { PlayerDesignator } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
 import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
-import { Game } from './game';
 import { gameRouter } from './gameRouter';
 import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
@@ -126,45 +124,10 @@ class SinkingIslandsBackend {
             console.log('Listening on port', port);
         });
 
-        const games: Partial<Record<string, Game>> = {};
-
         this.io.on('connection', (socket) => {
             console.log(
                 `Client ${socket.id} connected from ${socket.handshake.address}`,
             );
-
-            socket.on('createGame', () => {
-                console.log(`Game created for socket ID ${socket.id}`);
-                //const game = new Game(socket.id);
-                const game = new Game();
-                games[socket.id] = game;
-                game.connectSocket(PlayerDesignator.PLAYER_A, socket);
-                socket.emit(
-                    'gameState',
-                    game.serialize(PlayerDesignator.PLAYER_A),
-                );
-            });
-
-            socket.on('joinGame', (id) => {
-                console.log('Join request from', socket.id, 'for game', id);
-                const game = games[id];
-                if (!game) {
-                    socket.emit('joinFail');
-                    return;
-                }
-                if (!game.isWaitingForPlayers()) {
-                    socket.emit('joinFail');
-                    return;
-                }
-                game.connectSocket(PlayerDesignator.PLAYER_B, socket);
-                games[socket.id] = game;
-                socket.emit(
-                    'gameState',
-                    game.serialize(PlayerDesignator.PLAYER_B),
-                );
-
-                game.play().catch(console.error);
-            });
 
             // log disconnects
             socket.on('disconnect', () => {

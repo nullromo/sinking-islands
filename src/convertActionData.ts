@@ -2,12 +2,10 @@ import type {
     CharacterSerialized,
     GameSerialized,
     IslandSerialized,
-} from './commonTypes';
-import { GameOperations } from './server/gameObjects/gameOperations';
-import type {
     NormalMovement,
     TargetCharacter,
-} from './server/gameObjects/player';
+} from './commonTypes';
+import { GameOperations } from './server/gameObjects/gameOperations';
 
 export type ConvertedMovement = {
     character: CharacterSerialized;

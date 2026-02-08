@@ -1,5 +1,6 @@
-import type { GameSerialized } from '../commonTypes';
+import type { GameSerialized, TargetCharacter } from '../commonTypes';
 import {
+    CardType,
     IslandType,
     otherPlayerDesignator,
     PlayerDesignator,
@@ -25,9 +26,7 @@ import { handleTidalWave } from './actionHandlers/tidalWaveAction';
 import { handleTortoise } from './actionHandlers/tortoiseAction';
 import { handleVolcanicEruption } from './actionHandlers/volcanicEruptionAction';
 import { ActionOrderTrackOperations } from './gameObjects/actionOrderTrackOperations';
-import { CardType } from './gameObjects/card';
 import { GameOperations } from './gameObjects/gameOperations';
-import type { TargetCharacter } from './gameObjects/player';
 import { PlayerOperations } from './gameObjects/playerOperations';
 import { handleCrab } from './nonActionHandlers/crab';
 import { handleIndiscretion } from './nonActionHandlers/indiscretion';

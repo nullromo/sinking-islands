@@ -1,9 +1,9 @@
-import type { CardPlacement } from './server/gameObjects/actionOrderTrack';
 import type {
+    CardPlacement,
     FlyingFishMovement,
     MovementSet,
     TargetCharacter,
-} from './server/gameObjects/player';
+} from './commonTypes';
 
 export enum GameActionType {
     CARD_PLACEMENT = 'CARD_PLACEMENT',

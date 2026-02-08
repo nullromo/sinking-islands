@@ -9,7 +9,6 @@ import { DiscardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
 import { Hand } from './hand';
 import { MessageLog } from './messageLog';
-import type { CheckResult } from './server/checkResult';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
@@ -212,7 +211,7 @@ const WidgetSelector = (props: {
 
 const GameIDBanner = (props: {
     readonly gameID: string;
-    readonly status: CheckResult;
+    readonly status: { success: boolean; message: string };
 }) => {
     const gameContext = React.use(GameContext);
 
@@ -281,10 +280,10 @@ export const GamePage = () => {
     const [interfaceState, setInterfaceState] = React.useState<
         keyof ServerToClientEvents | null
     >(null);
-    const [status, setStatus] = React.useState<CheckResult>({
-        message: '',
-        success: true,
-    });
+    const [status, setStatus] = React.useState<{
+        message: string;
+        success: boolean;
+    }>({ message: '', success: true });
 
     React.useEffect(() => {
         connectSocket();

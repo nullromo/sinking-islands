@@ -1,11 +1,11 @@
-import type { CharacterSerialized, GameSerialized } from './commonTypes';
-import type { CardPlacement } from './server/gameObjects/actionOrderTrack';
-import type { CheckResult } from './server/checkResult';
 import type {
+    CardPlacement,
+    CharacterSerialized,
     FlyingFishMovement,
-    TargetCharacter,
+    GameSerialized,
     MovementSet,
-} from './server/gameObjects/player';
+    TargetCharacter,
+} from './commonTypes';
 
 export interface ClientToServerEvents {
     createGame: () => void;
@@ -41,5 +41,5 @@ export interface ServerToClientEvents {
     requestTortoiseTarget: () => void;
     requestVolcanicEruptionTarget: () => void;
     requestFleeChoice: () => void;
-    updateStatus: (status: CheckResult) => void;
+    updateStatus: (status: { success: boolean; message: string }) => void;
 }

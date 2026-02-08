@@ -4,11 +4,11 @@ import type {
     CharacterSerialized,
     GameSerialized,
     IslandSerialized,
+    TargetCharacter,
 } from './commonTypes';
 import { IslandType, PlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
 import { Character } from './server/gameObjects/character';
-import type { TargetCharacter } from './server/gameObjects/player';
 
 interface BoardProps {
     readonly gameState: GameSerialized;

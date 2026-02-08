@@ -3,11 +3,11 @@ import type {
     GameSerialized,
     IslandSerialized,
     PlayerDesignator,
+    TargetCharacter,
 } from '../../commonTypes';
 import { convertTargetCharacterToIslands } from '../../convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
-import type { TargetCharacter } from '../gameObjects/player';
 
 const checkTortoiseTargetLegal = (
     playerDesignator: PlayerDesignator,
