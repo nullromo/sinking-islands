@@ -2,11 +2,10 @@ import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
+import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
-import { fullObject } from '../../server/util';
 import { setUpRandom } from '../setUpRandom';
-import { GameState } from '../../gameState';
 
 const setUpGame = () => {
     setUpRandom();
@@ -87,6 +86,13 @@ test('Flying fish actions can be taken', () => {
 
     // the active card index should have changed
     expect(game.activeCardIndex).toEqual(1);
+
+    // the card should have been discarded
+    expect(
+        game.players[PlayerDesignator.PLAYER_A].discardPile.some((card) => {
+            return card.cardType === CardType.FLYING_FISH;
+        }),
+    );
 
     // the game state should have updated
     expect(game.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);
