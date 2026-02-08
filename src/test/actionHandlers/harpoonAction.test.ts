@@ -2,11 +2,10 @@ import { beforeEach, expect, test } from '@jest/globals';
 import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
+import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
-import { GameState } from '../../gameState';
 
 const setUpGame = () => {
     setUpRandom();

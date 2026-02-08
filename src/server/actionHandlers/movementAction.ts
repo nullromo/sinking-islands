@@ -159,8 +159,11 @@ const checkMovementSetLegal = (
         game.islands,
         convertedMovementSet,
     );
-    if (totalMovement < 1 || totalMovement > 3) {
-        throw new Error('Too many or not enough movement points spent.');
+    if (totalMovement < 1) {
+        throw new Error('Not enough movement points spent.');
+    }
+    if (totalMovement > 3) {
+        throw new Error('Too many movement points spent.');
     }
 };
 
