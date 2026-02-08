@@ -6,7 +6,7 @@ import { GameState } from '../../gameState';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 
 const setUpGame = () => {
     setUpRandom();
@@ -17,7 +17,7 @@ const setUpGame = () => {
     game.players[PlayerDesignator.PLAYER_B].hand[0].cardType =
         CardType.VOLCANIC_ERUPTION;
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -34,7 +34,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -62,7 +62,7 @@ beforeEach(() => {
 
 test('Volcanic eruption actions can be taken', () => {
     // take volcanic eruption action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.VOLCANIC_ERUPTION_TARGET,
         data: 6,
     });
@@ -92,7 +92,7 @@ test('Volcanic eruption actions can be taken', () => {
 test('Cannot erupt a non-volcano', () => {
     // take volcanic eruption action on a normal island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.VOLCANIC_ERUPTION_TARGET,
             data: 7,
         });
@@ -100,7 +100,7 @@ test('Cannot erupt a non-volcano', () => {
 
     // take volcanic eruption action on a non-existent island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.VOLCANIC_ERUPTION_TARGET,
             data: 70,
         });

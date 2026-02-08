@@ -3,6 +3,7 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
@@ -13,7 +14,7 @@ const setUpGame = () => {
     GameOperations.assignUserToGame(game, 'testuser');
     GameOperations.assignUserToGame(game, 'otheruser');
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -30,7 +31,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -58,7 +59,7 @@ beforeEach(() => {
 
 test('Movement actions can be taken', () => {
     // take movement action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.MOVEMENT_SET,
         data: [
             {
@@ -106,7 +107,7 @@ test('Movement actions can be taken', () => {
 test('Players cannot fail to move', () => {
     // try to not move
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [],
         });
@@ -116,7 +117,7 @@ test('Players cannot fail to move', () => {
 test('Players cannot move the wrong characters', () => {
     // try to move the wrong character
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -136,7 +137,7 @@ test('Players cannot move the wrong characters', () => {
 test('Players cannot move characters that are not present', () => {
     // try to move a non-existent character
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -159,7 +160,7 @@ test('Players cannot move to or from a netted island', () => {
 
     // try to move to the netted island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -180,7 +181,7 @@ test('Players cannot move to or from a netted island', () => {
 
     // try to move from the netted island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -200,7 +201,7 @@ test('Players cannot move to or from a netted island', () => {
 test('Movements cannot be made to the same island', () => {
     // take illegal movement action
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -220,7 +221,7 @@ test('Movements cannot be made to the same island', () => {
 test('Cannot overfill an island', () => {
     // move to a small island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -241,7 +242,7 @@ test('Cannot overfill an island', () => {
 
     // try the movement again
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -261,7 +262,7 @@ test('Cannot overfill an island', () => {
 test('Cannot submit two movements for the same character', () => {
     // try to move the same character twice
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -290,7 +291,7 @@ test('Cannot submit two movements for the same character', () => {
 test('Only three movement points can be used', () => {
     // use too many movements
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -335,7 +336,7 @@ test('Only three movement points can be used', () => {
 
     // use too many points in one movement
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {
@@ -353,7 +354,7 @@ test('Only three movement points can be used', () => {
 
     // use too many points in multiple movements
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.MOVEMENT_SET,
             data: [
                 {

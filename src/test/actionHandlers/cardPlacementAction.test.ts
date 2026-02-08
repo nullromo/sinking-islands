@@ -4,6 +4,7 @@ import { PlayerDesignator } from '../../commonTypes';
 import type { CardPlacementAction } from '../../gameActionTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
@@ -64,7 +65,7 @@ const basicCardPlacementDataA = (): CardPlacementAction => {
 
 test('Cards can be placed', () => {
     // take a card placement action
-    GameOperations.takeGameAction(
+    GameFlowOperations.takeGameAction(
         game,
         PlayerDesignator.PLAYER_B,
         basicCardPlacementDataB(),
@@ -80,7 +81,7 @@ test('Cards can be placed', () => {
 
 test('The game ends up in the right state after card placement', () => {
     // take a card placement action
-    GameOperations.takeGameAction(
+    GameFlowOperations.takeGameAction(
         game,
         PlayerDesignator.PLAYER_B,
         basicCardPlacementDataB(),
@@ -98,7 +99,7 @@ test('The game ends up in the right state after card placement', () => {
 
 test('Players cannot play cards twice', () => {
     // take a card placement action
-    GameOperations.takeGameAction(
+    GameFlowOperations.takeGameAction(
         game,
         PlayerDesignator.PLAYER_B,
         basicCardPlacementDataB(),
@@ -106,7 +107,7 @@ test('Players cannot play cards twice', () => {
 
     // take the same action again and it should fail
     expect(() => {
-        GameOperations.takeGameAction(
+        GameFlowOperations.takeGameAction(
             game,
             PlayerDesignator.PLAYER_B,
             basicCardPlacementDataB(),
@@ -118,7 +119,7 @@ test('Players cannot play cards twice', () => {
 
     // try the test again
     expect(() => {
-        GameOperations.takeGameAction(
+        GameFlowOperations.takeGameAction(
             game,
             PlayerDesignator.PLAYER_B,
             basicCardPlacementDataB(),
@@ -129,7 +130,7 @@ test('Players cannot play cards twice', () => {
     game.waitingForPlayer = PlayerDesignator.PLAYER_A;
 
     // the other player places cards
-    GameOperations.takeGameAction(
+    GameFlowOperations.takeGameAction(
         game,
         PlayerDesignator.PLAYER_A,
         basicCardPlacementDataA(),
@@ -137,7 +138,7 @@ test('Players cannot play cards twice', () => {
 
     // the first player still cannot place cards again
     expect(() => {
-        GameOperations.takeGameAction(
+        GameFlowOperations.takeGameAction(
             game,
             PlayerDesignator.PLAYER_B,
             basicCardPlacementDataB(),
@@ -146,7 +147,7 @@ test('Players cannot play cards twice', () => {
 
     // the second player also cannot place cards
     expect(() => {
-        GameOperations.takeGameAction(
+        GameFlowOperations.takeGameAction(
             game,
             PlayerDesignator.PLAYER_A,
             basicCardPlacementDataA(),
@@ -157,7 +158,7 @@ test('Players cannot play cards twice', () => {
 test('Players can only play their own cards', () => {
     // take a card placement action with the wrong cards
     expect(() => {
-        GameOperations.takeGameAction(
+        GameFlowOperations.takeGameAction(
             game,
             PlayerDesignator.PLAYER_B,
             basicCardPlacementDataA(),
@@ -168,7 +169,7 @@ test('Players can only play their own cards', () => {
 test('Players must play exactly 3 cards', () => {
     // play only 1 card
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.CARD_PLACEMENT,
             data: {
                 0: {
@@ -181,7 +182,7 @@ test('Players must play exactly 3 cards', () => {
 
     // play 4 cards
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.CARD_PLACEMENT,
             data: {
                 0: {
@@ -212,7 +213,11 @@ test('Players must play cards that exist in their hands', () => {
 
     // playing should fail
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, data);
+        GameFlowOperations.takeGameAction(
+            game,
+            PlayerDesignator.PLAYER_B,
+            data,
+        );
     }).toThrow();
 });
 
@@ -223,7 +228,11 @@ test('Players cannot play more copies of a card than there are in their hands', 
 
     // playing should fail
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, data);
+        GameFlowOperations.takeGameAction(
+            game,
+            PlayerDesignator.PLAYER_B,
+            data,
+        );
     }).toThrow();
 });
 
@@ -235,13 +244,17 @@ test('Players cannot play two cards in the same area', () => {
 
     // playing should fail
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, data);
+        GameFlowOperations.takeGameAction(
+            game,
+            PlayerDesignator.PLAYER_B,
+            data,
+        );
     }).toThrow();
 });
 
 test('Cards must be placed in empty slots', () => {
     // take a card placement action
-    GameOperations.takeGameAction(
+    GameFlowOperations.takeGameAction(
         game,
         PlayerDesignator.PLAYER_B,
         basicCardPlacementDataB(),
@@ -254,6 +267,10 @@ test('Cards must be placed in empty slots', () => {
 
     // playing should fail
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, data);
+        GameFlowOperations.takeGameAction(
+            game,
+            PlayerDesignator.PLAYER_A,
+            data,
+        );
     }).toThrow();
 });

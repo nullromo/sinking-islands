@@ -3,10 +3,10 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
 
 const setUpGame = () => {
     setUpRandom();
@@ -17,7 +17,7 @@ const setUpGame = () => {
     game.players[PlayerDesignator.PLAYER_B].hand[0].cardType =
         CardType.TORTOISE;
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -34,7 +34,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -62,7 +62,7 @@ beforeEach(() => {
 
 test('Tortoise actions can be taken', () => {
     // take tortoise action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.TORTOISE_TARGET,
         data: {
             character: {
@@ -96,7 +96,7 @@ test('Tortoise actions can be taken', () => {
 test('Players can only tortoise their own characters', () => {
     // try to tortoise the wrong character
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.TORTOISE_TARGET,
             data: {
                 character: {
@@ -113,7 +113,7 @@ test('Players can only tortoise their own characters', () => {
 test('Cannot tortoise a non-existent character', () => {
     // try to tortoise a missing character
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.TORTOISE_TARGET,
             data: {
                 character: {

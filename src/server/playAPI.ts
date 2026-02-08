@@ -1,7 +1,7 @@
 import type { GameSerialized } from '../commonTypes';
 import { PlayerDesignator } from '../commonTypes';
 import type { GameAction } from '../gameActionTypes';
-import { GameOperations } from './gameObjects/gameOperations';
+import { GameFlowOperations } from './gameFlowOperations';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';
 import { fullObject } from './util';
@@ -53,7 +53,7 @@ export namespace PlayAPI {
             `${playerDesignator} (${username}) is taking the action '${fullObject(gameAction)}' on game '${gameID}'.`,
         );
 
-        GameOperations.takeGameAction(game, playerDesignator, gameAction);
+        GameFlowOperations.takeGameAction(game, playerDesignator, gameAction);
 
         return game;
     };

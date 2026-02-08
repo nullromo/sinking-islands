@@ -3,10 +3,10 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
 
 const setUpGame = () => {
     setUpRandom();
@@ -17,7 +17,7 @@ const setUpGame = () => {
     game.players[PlayerDesignator.PLAYER_B].hand[0].cardType =
         CardType.TIDAL_WAVE;
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -34,7 +34,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -62,7 +62,7 @@ beforeEach(() => {
 
 test('Tidal wave actions can be taken', () => {
     // take tidal surge action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.TIDAL_WAVE_TARGET,
         data: 6,
     });
@@ -88,7 +88,7 @@ test('Tidal wave actions can be taken', () => {
 test('Cannot tidal wave to a non-existent island', () => {
     // try to tidal wave to a missing island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.TIDAL_WAVE_TARGET,
             data: 20,
         });

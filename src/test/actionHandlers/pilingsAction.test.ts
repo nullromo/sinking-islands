@@ -3,10 +3,10 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
 
 const setUpGame = () => {
     setUpRandom();
@@ -16,7 +16,7 @@ const setUpGame = () => {
 
     game.players[PlayerDesignator.PLAYER_B].hand[0].cardType = CardType.PILINGS;
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -33,7 +33,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -61,7 +61,7 @@ beforeEach(() => {
 
 test('Pilings actions can be taken', () => {
     // take pilings action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.PILINGS_TARGET,
         data: 10,
     });
@@ -92,7 +92,7 @@ test('Can only put pilings on islands that exist', () => {
 
     // try to construct pilings on a non-existent island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.PILINGS_TARGET,
             data: 8,
         });
@@ -100,7 +100,7 @@ test('Can only put pilings on islands that exist', () => {
 
     // try to construct pilings on an out-of-range island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.PILINGS_TARGET,
             data: 80,
         });
@@ -110,7 +110,7 @@ test('Can only put pilings on islands that exist', () => {
 test('Can only put pilings on a small capacity island', () => {
     // try to put pilings on a large island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.PILINGS_TARGET,
             data: 2,
         });
@@ -123,7 +123,7 @@ test('Cannot put pilings on an island that already has pilings on it', () => {
 
     // try to put pilings on a large island
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.PILINGS_TARGET,
             data: 10,
         });

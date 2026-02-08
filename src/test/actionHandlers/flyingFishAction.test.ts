@@ -3,6 +3,7 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
@@ -12,7 +13,7 @@ const setUpGame = () => {
     const game = GameOperations.create();
     GameOperations.assignUserToGame(game, 'testuser');
     GameOperations.assignUserToGame(game, 'otheruser');
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -29,7 +30,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -69,7 +70,7 @@ const basicFlyingFishData = () => {
 
 test('Flying fish actions can be taken', () => {
     // take flying fish action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.FLYING_FISH_MOVEMENT,
         data: basicFlyingFishData(),
     });
@@ -106,7 +107,7 @@ test('Players must flying fish their own characters', () => {
 
     // cannot perform movement
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
             action: GameActionType.FLYING_FISH_MOVEMENT,
             data,
         });
@@ -120,7 +121,7 @@ test('Players cannot move to full islands', () => {
 
     // cannot perform movement
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
             action: GameActionType.FLYING_FISH_MOVEMENT,
             data,
         });
@@ -134,7 +135,7 @@ test('Players cannot move a character that is not present', () => {
 
     // cannot perform movement
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
             action: GameActionType.FLYING_FISH_MOVEMENT,
             data,
         });

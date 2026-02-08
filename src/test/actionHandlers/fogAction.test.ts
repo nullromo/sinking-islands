@@ -3,10 +3,10 @@ import type { GameSerialized } from '../../commonTypes';
 import { PlayerDesignator } from '../../commonTypes';
 import { GameActionType } from '../../gameActionTypes';
 import { GameState } from '../../gameState';
+import { GameFlowOperations } from '../../server/gameFlowOperations';
 import { CardType } from '../../server/gameObjects/card';
 import { GameOperations } from '../../server/gameObjects/gameOperations';
 import { setUpRandom } from '../setUpRandom';
-import { fullObject } from '../../server/util';
 
 const setUpGame = () => {
     setUpRandom();
@@ -16,7 +16,7 @@ const setUpGame = () => {
 
     game.players[PlayerDesignator.PLAYER_A].hand[0].cardType = CardType.FOG;
 
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             0: {
@@ -33,7 +33,7 @@ const setUpGame = () => {
             },
         },
     });
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.CARD_PLACEMENT,
         data: {
             1: {
@@ -61,7 +61,7 @@ beforeEach(() => {
 
 test('Fog actions can be taken', () => {
     // take fog action
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.FOG_TARGET,
         data: 2,
     });
@@ -92,13 +92,13 @@ test('Fog actions can be taken', () => {
 test('Players cannot select illegal fog slots', () => {
     // using slots outside the track should fail
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.FOG_TARGET,
             data: -1,
         });
     }).toThrow();
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.FOG_TARGET,
             data: 6,
         });
@@ -106,20 +106,20 @@ test('Players cannot select illegal fog slots', () => {
 
     // a fog cannot target itself
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
             action: GameActionType.FOG_TARGET,
             data: 0,
         });
     }).toThrow();
 
     // fog card 4 and advance to the next fog
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
         action: GameActionType.FOG_TARGET,
         data: 4,
     });
 
     // take the next action so we can get to the next fog
-    GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+    GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
         action: GameActionType.FLYING_FISH_MOVEMENT,
         data: {
             character: {
@@ -134,7 +134,7 @@ test('Players cannot select illegal fog slots', () => {
 
     // now try to fog the empty slot
     expect(() => {
-        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
             action: GameActionType.FOG_TARGET,
             data: 4,
         });
