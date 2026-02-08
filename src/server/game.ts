@@ -1829,17 +1829,7 @@ export class Game {
             activeCardIndex: this.activeCardIndex,
             gameState: this.gameState,
             id: this.id,
-            indiscretion: {
-                [PlayerDesignator.PLAYER_A]: this.playerA.indiscretion,
-                [PlayerDesignator.PLAYER_B]: this.playerB.indiscretion,
-            },
             initiative: this.initiative,
-            islandModifiers: {
-                playerANet: this.playerA.netIsland,
-                playerAPilings: this.playerA.pilingsIsland,
-                playerBNet: this.playerB.netIsland,
-                playerBPilings: this.playerB.pilingsIsland,
-            },
             islands: this.getIslandsSerialized(),
             messages: this.messages,
             nextIslandToSink: this.nextIslandToSink,

@@ -5,7 +5,7 @@ import type {
     GameSerialized,
     IslandSerialized,
 } from './commonTypes';
-import { IslandType } from './commonTypes';
+import { IslandType, PlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
 import { Character } from './server/gameObjects/character';
 import type { TargetCharacter } from './server/gameObjects/player';
@@ -77,16 +77,23 @@ export const Board = (props: BoardProps) => {
                                   ? '🌋'
                                   : ''}
                             {island.islandNumber ===
-                                props.gameState.islandModifiers
-                                    .playerAPilings ||
+                                props.gameState.players[
+                                    PlayerDesignator.PLAYER_A
+                                ].pilingsIsland ||
                             island.islandNumber ===
-                                props.gameState.islandModifiers.playerBPilings
+                                props.gameState.players[
+                                    PlayerDesignator.PLAYER_B
+                                ].pilingsIsland
                                 ? '🏠'
                                 : ''}
                             {island.islandNumber ===
-                                props.gameState.islandModifiers.playerANet ||
+                                props.gameState.players[
+                                    PlayerDesignator.PLAYER_A
+                                ].netIsland ||
                             island.islandNumber ===
-                                props.gameState.islandModifiers.playerBNet
+                                props.gameState.players[
+                                    PlayerDesignator.PLAYER_B
+                                ].netIsland
                                 ? '🥅'
                                 : ''}
                             {island.islandNumber ===

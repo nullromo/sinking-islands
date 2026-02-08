@@ -104,9 +104,9 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                 slotIndex,
                                             ) &&
                                                 card) ||
-                                            (props.gameState.indiscretion[
+                                            (props.gameState.players[
                                                 gameContext.you
-                                            ] &&
+                                            ].indiscretion &&
                                                 overrideCard) ? (
                                                 <div>(Face Up)</div>
                                             ) : null}

@@ -8,17 +8,7 @@ export const createBlankGame = (): GameSerialized => {
         activeCardIndex: null,
         gameState: GameState.INITIAL_STATE,
         id: '',
-        indiscretion: {
-            [PlayerDesignator.PLAYER_A]: false,
-            [PlayerDesignator.PLAYER_B]: false,
-        },
         initiative: PlayerDesignator.PLAYER_A,
-        islandModifiers: {
-            playerANet: NaN,
-            playerAPilings: NaN,
-            playerBNet: NaN,
-            playerBPilings: NaN,
-        },
         islands: [],
         messages: [],
         nextIslandToSink: 1,

@@ -76,7 +76,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 on a slot in the Action Order Track to place the card. Click
                 Submit when finished, or click Reset to start over.
             </div>
-            {props.gameState.indiscretion[gameContext.you] ? (
+            {props.gameState.players[gameContext.you].indiscretion ? (
                 <>
                     <br />
                     <div style={{ color: 'darkred', width: '600px' }}>
