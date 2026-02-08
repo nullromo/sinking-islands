@@ -106,3 +106,16 @@ test('Can only net islands that exist', () => {
         });
     }).toThrow();
 });
+
+test('Cannot net an already-netted island', () => {
+    // net an island
+    game.players[PlayerDesignator.PLAYER_A].netIsland = 10;
+
+    // try to net the same island
+    expect(() => {
+        GameOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+            action: GameActionType.NET_TARGET,
+            data: 10,
+        });
+    }).toThrow();
+});
