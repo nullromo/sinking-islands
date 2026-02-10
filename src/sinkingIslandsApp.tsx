@@ -1,10 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import { CreateAccountPage } from './createAccountPage';
-import { DashboardPage } from './dashboardPage';
 import { GamePage } from './gamePage';
 import { LogInGuard } from './logInGuard';
 import { LoggedInUserContextProvider } from './loggedInUserContext';
 import { PageRoutes } from './pageRoutes';
+import { CreateAccountPage } from './pages/createAccountPage';
+import { DashboardPage } from './pages/dashboardPage';
 import { LogInPage } from './pages/logInPage';
 import { TitlePage } from './pages/titlePage';
 

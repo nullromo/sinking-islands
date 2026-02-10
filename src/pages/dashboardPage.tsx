@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { GameListWidget } from './gameList';
-import { LoggedInUserContext } from './loggedInUserContext';
-import { TopBanner } from './topBanner';
+import { GameListWidget } from '../gameList';
+import { LoggedInUserContext } from '../loggedInUserContext';
+import { TopBanner } from '../topBanner';
 
 export const DashboardPage = () => {
     const loggedInUserContext = React.use(LoggedInUserContext);
