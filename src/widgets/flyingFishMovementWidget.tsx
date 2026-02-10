@@ -1,17 +1,12 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
-import type {
-    CharacterSerialized,
-    FlyingFishMovement,
-    GameSerialized,
-} from '../commonTypes';
+import type { CharacterSerialized, FlyingFishMovement } from '../commonTypes';
 import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
 
 interface FlyingFishMovementWidgetProps {
     readonly submit: (flyingFishMovement: FlyingFishMovement) => void;
-    readonly gameState: GameSerialized;
 }
 
 export const FlyingFishMovementWidget = (
@@ -31,7 +26,6 @@ export const FlyingFishMovementWidget = (
     return (
         <>
             <Board
-                gameState={props.gameState}
                 highlightCharacter={{
                     character: characterChoice,
                     islandNumber: fromIslandChoice,
@@ -47,8 +41,8 @@ export const FlyingFishMovementWidget = (
                     setToIslandChoice(island.islandNumber);
                 }}
             />
-            <ActionOrderTrack gameState={props.gameState} />
-            <Hand gameState={props.gameState} />
+            <ActionOrderTrack />
+            <Hand />
             <div style={{ width: '600px' }}>
                 Choose a Flying Fish movement. Click on a character to move it.
                 Click on an island to choose the movement destination. Click

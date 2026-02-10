@@ -1,111 +1,95 @@
+import * as React from 'react';
 import type { Socket } from 'socket.io-client';
 import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
-import type { GameSerialized } from './commonTypes';
+import { GameContext } from './gameContext';
+import { GameState } from './gameState';
 import { Hand } from './hand';
-import type { ServerToClientEvents } from './socketEvents';
 import { assertUnreachable } from './util';
 import { CardPlacementWidget } from './widgets/cardPlacementWidget';
 import { CharacterTargetWidget } from './widgets/characterTargetWidget';
-import { FleeChoiceWidget } from './widgets/fleeChoiceWidget';
 import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
 import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
 
-export const WidgetSelector = (props: {
-    readonly interfaceState: keyof ServerToClientEvents | null;
-    readonly setInterfaceState: (
-        value: keyof ServerToClientEvents | null,
-    ) => void;
-    readonly gameState: GameSerialized;
-    readonly socket: Socket;
-}) => {
-    const interfaceState = props.interfaceState;
-    const setInterfaceState = props.setInterfaceState;
-    const gameState = props.gameState;
-    switch (interfaceState) {
-        case 'requestCardPlacement':
+export const WidgetSelector = (props: { readonly socket: Socket }) => {
+    const gameContext = React.use(GameContext);
+
+    if (gameContext.game.waitingForPlayer !== gameContext.you) {
+        return (
+            <>
+                <div>
+                    <Board />
+                </div>
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <ActionOrderTrack />
+                    <Hand />
+                    Waiting for opponent
+                </div>
+            </>
+        );
+    }
+
+    switch (gameContext.game.gameState) {
+        case GameState.AWAIT_CARD_PLACEMENT:
             return (
                 <>
-                    <Board gameState={gameState} />
+                    <Board />
                     <CardPlacementWidget
-                        gameState={gameState}
                         submit={(cardPlacement) => {
                             props.socket.emit(
                                 'responseCardPlacement',
                                 cardPlacement,
                             );
-                            setInterfaceState(null);
                         }}
                     />
                 </>
             );
-        case 'requestFlyingFishMovement':
+        case GameState.AWAIT_FLYING_FISH_MOVEMENT:
             return (
                 <FlyingFishMovementWidget
-                    gameState={gameState}
                     submit={(flyingFishMovement) => {
                         props.socket.emit(
                             'responseFlyingFishMovement',
                             flyingFishMovement,
                         );
-                        setInterfaceState(null);
                     }}
                 />
             );
-        case 'requestFogTarget':
+        case GameState.AWAIT_FOG_TARGET:
             return (
                 <>
-                    <Board gameState={gameState} />
+                    <Board />
                     <FogTargetWidget
-                        gameState={gameState}
                         submit={(fogTarget) => {
                             props.socket.emit('responseFogTarget', fogTarget);
-                            setInterfaceState(null);
                         }}
                     />
                 </>
             );
-        case 'requestHarpoonTarget':
-        case 'requestTortoiseTarget':
+        case GameState.AWAIT_HARPOON_TARGET:
+        case GameState.AWAIT_TORTOISE_TARGET:
             return (
                 <CharacterTargetWidget
-                    enemy={interfaceState === 'requestHarpoonTarget'}
-                    gameState={gameState}
                     submit={(target) => {
-                        props.socket.emit(
-                            (() => {
-                                switch (interfaceState) {
-                                    case 'requestHarpoonTarget':
-                                        return 'responseHarpoonTarget';
-                                    case 'requestTortoiseTarget':
-                                        return 'responseTortoiseTarget';
-                                    default:
-                                        return assertUnreachable(
-                                            interfaceState,
-                                        );
-                                }
-                            })(),
-                            target,
-                        );
-                        setInterfaceState(null);
+                        //
                     }}
-                    title={
-                        interfaceState === 'requestHarpoonTarget'
-                            ? 'Choose Harpoon target.'
-                            : 'Choose Tortoise target.'
-                    }
                 />
             );
-        case 'requestNetTarget':
-        case 'requestPilingsTarget':
-        case 'requestTidalSurgeTarget':
-        case 'requestTidalWaveTarget':
-        case 'requestVolcanicEruptionTarget':
+        case GameState.AWAIT_NET_TARGET:
+        case GameState.AWAIT_PILINGS_TARGET:
+        case GameState.AWAIT_TIDAL_SURGE_TARGET:
+        case GameState.AWAIT_TIDAL_WAVE_TARGET:
+        case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
             return (
                 <IslandSelectorWidget
-                    gameState={gameState}
                     submit={(islandNumber) => {
                         props.socket.emit(
                             (() => {
@@ -128,65 +112,22 @@ export const WidgetSelector = (props: {
                             })(),
                             islandNumber,
                         );
-                        setInterfaceState(null);
-                    }}
-                    title={
-                        interfaceState === 'requestNetTarget'
-                            ? 'Choose Net target.'
-                            : interfaceState === 'requestPilingsTarget'
-                              ? 'Choose Pilings target.'
-                              : interfaceState === 'requestTidalSurgeTarget'
-                                ? 'Choose Tidal Surge target.'
-                                : interfaceState === 'requestTidalWaveTarget'
-                                  ? 'Choose Tidal Wave target.'
-                                  : 'Choose Volcanic Eruption target.'
-                    }
-                />
-            );
-        case 'requestFleeChoice':
-            return (
-                <FleeChoiceWidget
-                    gameState={gameState}
-                    submit={(character) => {
-                        props.socket.emit('responseFleeChoice', character);
-                        setInterfaceState(null);
                     }}
                 />
             );
-        case 'requestMovementSet':
+        case GameState.AWAIT_MOVEMENT_SET:
             return (
                 <MovementSetWidget
-                    gameState={gameState}
                     submit={(movementSet) => {
                         props.socket.emit('responseMovementSet', movementSet);
-                        setInterfaceState(null);
                     }}
                 />
             );
-        case 'joinFail':
+        case GameState.FINISHED:
             return <>{'j f'}</>;
-        case 'gameState':
-        case 'updateStatus':
-        case null:
-            return (
-                <>
-                    <div>
-                        <Board gameState={gameState} />
-                    </div>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}
-                    >
-                        <ActionOrderTrack gameState={gameState} />
-                        <Hand gameState={gameState} />
-                        Waiting for opponent
-                    </div>
-                </>
-            );
+        case GameState.INITIAL_STATE:
+            return <>{'i s'}</>;
         default:
-            return assertUnreachable(interfaceState);
+            return assertUnreachable(gameContext.game.gameState);
     }
 };

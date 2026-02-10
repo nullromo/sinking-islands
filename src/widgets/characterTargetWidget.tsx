@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
-import type {
-    CharacterSerialized,
-    GameSerialized,
-    TargetCharacter,
-} from '../commonTypes';
+import type { CharacterSerialized, TargetCharacter } from '../commonTypes';
 import { otherPlayerDesignator } from '../commonTypes';
 import { GameContext } from '../gameContext';
+import { GameState } from '../gameState';
 import { Hand } from '../hand';
 
 interface CharacterTargetWidgetProps {
-    readonly gameState: GameSerialized;
     readonly submit: (target: TargetCharacter) => void;
-    readonly title: string;
-    readonly enemy: boolean;
 }
-
 export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
     const gameContext = React.use(GameContext);
+
+    const enemy = gameContext.game.gameState === GameState.AWAIT_HARPOON_TARGET;
+    const title =
+        gameContext.game.gameState === GameState.AWAIT_HARPOON_TARGET
+            ? 'Choose Harpoon target.'
+            : 'Choose Tortoise target.';
 
     const [characterChoice, setCharacterChoice] =
         React.useState<CharacterSerialized>(() => {
@@ -33,16 +32,15 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
     return (
         <>
             <Board
-                gameState={props.gameState}
                 highlightCharacter={{
                     character: characterChoice,
                     islandNumber: islandNumberChoice,
                 }}
                 onCharacterClicked={(island, character) => {
                     if (
-                        (props.enemy &&
+                        (enemy &&
                             character.playerDesignator !== gameContext.you) ||
-                        (!props.enemy &&
+                        (!enemy &&
                             character.playerDesignator === gameContext.you)
                     ) {
                         setCharacterChoice(character);
@@ -50,11 +48,11 @@ export const CharacterTargetWidget = (props: CharacterTargetWidgetProps) => {
                     }
                 }}
             />
-            <ActionOrderTrack gameState={props.gameState} />
-            <Hand gameState={props.gameState} />
+            <ActionOrderTrack />
+            <Hand />
             <div
                 style={{ width: '600px' }}
-            >{`${props.title} Click on a character on the baord to select that character. Click Submit when ready.`}</div>
+            >{`${title} Click on a character on the board to select that character. Click Submit when ready.`}</div>
             <button
                 type='button'
                 onClick={() => {

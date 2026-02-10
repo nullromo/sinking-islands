@@ -1,17 +1,11 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
-import type {
-    CardPlacement,
-    CardSerialized,
-    CardType,
-    GameSerialized,
-} from '../commonTypes';
+import type { CardPlacement, CardSerialized, CardType } from '../commonTypes';
 import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
 
 interface CardPlacementWidgetProps {
     readonly submit: (cardPlacement: CardPlacement) => void;
-    readonly gameState: GameSerialized;
 }
 
 export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
@@ -34,7 +28,6 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
             }}
         >
             <ActionOrderTrack
-                gameState={props.gameState}
                 overrideCards={cardChoices.map((card) => {
                     if (card === null) {
                         return null;
@@ -47,14 +40,14 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 onSlotClicked={(slotIndex) => {
                     if (
                         clickedCardIndex !== null &&
-                        props.gameState.actionOrderTrack.cardSlots[
+                        gameContext.game.actionOrderTrack.cardSlots[
                             slotIndex
                         ] === null &&
                         cardChoices[slotIndex] === null
                     ) {
                         setCardChoices((oldCardChoices) => {
                             oldCardChoices[slotIndex] =
-                                props.gameState.players[gameContext.you].hand[
+                                gameContext.game.players[gameContext.you].hand[
                                     clickedCardIndex
                                 ].cardType;
                             return [...oldCardChoices];
@@ -67,7 +60,6 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 }}
             />
             <Hand
-                gameState={props.gameState}
                 ghostSlots={ghostSlots}
                 highlightIndex={clickedCardIndex ?? undefined}
                 onCardClicked={(_, index) => {
@@ -79,7 +71,7 @@ export const CardPlacementWidget = (props: CardPlacementWidgetProps) => {
                 on a slot in the Action Order Track to place the card. Click
                 Submit when finished, or click Reset to start over.
             </div>
-            {props.gameState.players[gameContext.you].indiscretion ? (
+            {gameContext.game.players[gameContext.you].indiscretion ? (
                 <>
                     <br />
                     <div style={{ color: 'darkred', width: '600px' }}>

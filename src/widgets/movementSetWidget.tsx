@@ -2,23 +2,24 @@ import _ from 'lodash';
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
-import type { GameSerialized, MovementSet } from '../commonTypes';
+import type { MovementSet } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
 import { convertMovementToIslands } from '../convertActionData';
+import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
 
 interface MovementSetWidgetProps {
     readonly submit: (movementSet: MovementSet) => void;
-    readonly gameState: GameSerialized;
 }
 
 export const MovementSetWidget = (props: MovementSetWidgetProps) => {
+    const gameContext = React.use(GameContext);
+
     const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
     return (
         <>
             <Board
-                gameState={props.gameState}
                 onCharacterClicked={(island, character) => {
                     if (movementSet.length <= 0) {
                         setMovementSet([
@@ -64,8 +65,8 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
                     }
                 }}
             />
-            <ActionOrderTrack gameState={props.gameState} />
-            <Hand gameState={props.gameState} />
+            <ActionOrderTrack />
+            <Hand />
             <div style={{ width: '600px' }}>
                 Click on a character, then click on an island to choose where to
                 move that character. Click Submit when finished, or click Reset
@@ -73,9 +74,9 @@ export const MovementSetWidget = (props: MovementSetWidgetProps) => {
             </div>
             {'Movement steps used:'}{' '}
             {computeMovementSteps(
-                props.gameState.islands,
+                gameContext.game.islands,
                 movementSet.map((movement) => {
-                    return convertMovementToIslands(props.gameState, movement);
+                    return convertMovementToIslands(gameContext.game, movement);
                 }),
             )}{' '}
             {'of 3'}

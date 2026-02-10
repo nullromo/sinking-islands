@@ -66,7 +66,6 @@ const GamePageInner = () => {
                 }}
             >
                 <WidgetSelector
-                    gameState={gameContext.game}
                     interfaceState={interfaceState}
                     setInterfaceState={setInterfaceState}
                     socket={socket}
