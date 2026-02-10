@@ -1,10 +1,10 @@
 import * as React from 'react';
-import type { Socket } from 'socket.io-client';
 import { ActionOrderTrack } from './actionOrderTrack';
 import { Board } from './board';
 import { GameContext } from './gameContext';
 import { GameState } from './gameState';
 import { Hand } from './hand';
+import type { SetResultProps } from './useResultMessage';
 import { assertUnreachable } from './util';
 import { CardPlacementWidget } from './widgets/cardPlacementWidget';
 import { CharacterTargetWidget } from './widgets/characterTargetWidget';
@@ -13,7 +13,7 @@ import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
 
-export const WidgetSelector = (props: { readonly socket: Socket }) => {
+export const WidgetSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
@@ -42,47 +42,21 @@ export const WidgetSelector = (props: { readonly socket: Socket }) => {
             return (
                 <>
                     <Board />
-                    <CardPlacementWidget
-                        submit={(cardPlacement) => {
-                            props.socket.emit(
-                                'responseCardPlacement',
-                                cardPlacement,
-                            );
-                        }}
-                    />
+                    <CardPlacementWidget setResult={props.setResult} />
                 </>
             );
         case GameState.AWAIT_FLYING_FISH_MOVEMENT:
-            return (
-                <FlyingFishMovementWidget
-                    submit={(flyingFishMovement) => {
-                        props.socket.emit(
-                            'responseFlyingFishMovement',
-                            flyingFishMovement,
-                        );
-                    }}
-                />
-            );
+            return <FlyingFishMovementWidget setResult={props.setResult} />;
         case GameState.AWAIT_FOG_TARGET:
             return (
                 <>
                     <Board />
-                    <FogTargetWidget
-                        submit={(fogTarget) => {
-                            props.socket.emit('responseFogTarget', fogTarget);
-                        }}
-                    />
+                    <FogTargetWidget setResult={props.setResult} />
                 </>
             );
         case GameState.AWAIT_HARPOON_TARGET:
         case GameState.AWAIT_TORTOISE_TARGET:
-            return (
-                <CharacterTargetWidget
-                    submit={(target) => {
-                        //
-                    }}
-                />
-            );
+            return <CharacterTargetWidget setResult={props.setResult} />;
         case GameState.AWAIT_NET_TARGET:
         case GameState.AWAIT_PILINGS_TARGET:
         case GameState.AWAIT_TIDAL_SURGE_TARGET:

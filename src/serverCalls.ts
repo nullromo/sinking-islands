@@ -3,6 +3,7 @@ import type { EndpointUtils } from './endpointUtils';
 import { Endpoints } from './endpoints';
 import { ServerCallsCore } from './serverCallsCore';
 import type { MakeEmptyKeysOptional } from './util';
+import { GameAction } from './gameActionTypes';
 
 type SendData<T extends EndpointUtils.EndpointInfo> = MakeEmptyKeysOptional<{
     requestBody: T['requestBody'];
@@ -74,5 +75,15 @@ export class ServerCalls {
 
     public readonly joinGame = async (gameID: string) => {
         return this.send(Endpoints.JoinGame, { urlParameters: { gameID } });
+    };
+
+    public readonly takeGameAction = async (
+        gameID: string,
+        gameAction: GameAction,
+    ) => {
+        return this.send(Endpoints.TakeGameAction, {
+            requestBody: { gameAction },
+            urlParameters: { gameID },
+        });
     };
 }

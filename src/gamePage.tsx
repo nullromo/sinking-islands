@@ -7,7 +7,7 @@ import { HandAndDeckInfo } from './handAndDeckInfo';
 import { MessageLog } from './messageLog';
 import { PageRoutes } from './pageRoutes';
 import { socket } from './socket';
-import type { ServerToClientEvents } from './socketEvents';
+import { useResultMessage } from './useResultMessage';
 import { WidgetSelector } from './widgetSelector';
 
 /**
@@ -42,17 +42,11 @@ const useGameStateSocket = (gameID: string) => {
 const GamePageInner = () => {
     const gameContext = React.use(GameContext);
 
-    const [interfaceState, setInterfaceState] = React.useState<
-        keyof ServerToClientEvents | null
-    >(null);
-    const [status, setStatus] = React.useState<{
-        message: string;
-        success: boolean;
-    }>({ message: '', success: true });
+    const [result, setResult] = useResultMessage();
 
     return (
         <div style={{ display: 'flex', height: '100%' }}>
-            <GameIDBanner gameID={gameContext.game.id} status={status} />
+            <GameIDBanner gameID={gameContext.game.id} status={result} />
             <div>
                 <HandAndDeckInfo />
                 <MessageLog gameState={gameContext.game} />
@@ -65,11 +59,7 @@ const GamePageInner = () => {
                     justifyContent: 'space-between',
                 }}
             >
-                <WidgetSelector
-                    interfaceState={interfaceState}
-                    setInterfaceState={setInterfaceState}
-                    socket={socket}
-                />
+                <WidgetSelector setResult={setResult} />
             </div>
         </div>
     );
