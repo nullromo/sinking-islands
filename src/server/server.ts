@@ -3,6 +3,7 @@ import express from 'express';
 import session from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
+import type { GameSerialized } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
 import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 import type {
@@ -12,6 +13,7 @@ import type {
 import { gameRouter } from './gameRouter';
 import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
+import { RedisKeys } from './redisKeys';
 import { usersRouter } from './usersRouter';
 
 class SinkingIslandsBackend {
@@ -128,6 +130,24 @@ class SinkingIslandsBackend {
             console.log(
                 `Client ${socket.id} connected from ${socket.handshake.address}`,
             );
+
+            // when the client subscribes to a game, they get put into a
+            // socket.io room with that game's ID as the room name
+            socket.on('subscribeToGame', (gameID) => {
+                console.log(`Socket ${socket.id} is subscribing to ${gameID}.`);
+                (async () => {
+                    await socket.join(gameID);
+                    const game = (await redis.json.get(
+                        RedisKeys.createGameKey(gameID),
+                    )) as GameSerialized | null;
+                    if (game === null) {
+                        throw new Error(
+                            `Failed to find game with ID ${gameID}.`,
+                        );
+                    }
+                    socket.emit('gameState', game);
+                })().catch(console.error);
+            });
 
             // log disconnects
             socket.on('disconnect', () => {
