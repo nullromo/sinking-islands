@@ -1,11 +1,10 @@
 import * as React from 'react';
-import type { CardSerialized, GameSerialized } from './commonTypes';
+import type { CardSerialized } from './commonTypes';
 import { cardTypeToString } from './commonTypes';
 import { GameContext } from './gameContext';
 import { upperSnakeToTitle } from './util';
 
 interface ActionOrderTrackProps {
-    readonly gameState: GameSerialized;
     readonly onSlotClicked?: (slotIndex: number) => void;
     readonly overrideCards?: Array<CardSerialized | null>;
     readonly highlightIndex?: number;
@@ -38,13 +37,13 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                 </thead>
                 <tbody>
                     <tr>
-                        {props.gameState.actionOrderTrack.cardSlots.map(
+                        {gameContext.game.actionOrderTrack.cardSlots.map(
                             (card, slotIndex) => {
                                 const overrideCard =
                                     props.overrideCards?.[slotIndex];
                                 const activeCard =
                                     slotIndex ===
-                                    props.gameState.activeCardIndex;
+                                    gameContext.game.activeCardIndex;
                                 return (
                                     <td
                                         key={slotIndex}
@@ -100,11 +99,11 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                                         )
                                                       : 'Empty'}
                                             </div>
-                                            {(props.gameState.actionOrderTrack.faceUpCards.includes(
+                                            {(gameContext.game.actionOrderTrack.faceUpCards.includes(
                                                 slotIndex,
                                             ) &&
                                                 card) ||
-                                            (props.gameState.players[
+                                            (gameContext.game.players[
                                                 gameContext.you
                                             ].indiscretion &&
                                                 overrideCard) ? (

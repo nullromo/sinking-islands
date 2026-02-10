@@ -1,10 +1,9 @@
 import * as React from 'react';
-import type { CardSerialized, GameSerialized } from './commonTypes';
+import type { CardSerialized } from './commonTypes';
 import { GameContext } from './gameContext';
 import { upperSnakeToTitle } from './util';
 
 interface HandProps {
-    readonly gameState: GameSerialized;
     readonly onCardClicked?: (card: CardSerialized, index: number) => void;
     readonly highlightIndex?: number;
     readonly ghostSlots?: number[];
@@ -31,7 +30,7 @@ export const Hand = (props: HandProps) => {
                     textAlign: 'center',
                 }}
             >
-                {props.gameState.players[gameContext.you].hand.map(
+                {gameContext.game.players[gameContext.you].hand.map(
                     (card, index) => {
                         if (props.ghostSlots?.includes(index)) {
                             return null;

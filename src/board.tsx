@@ -2,7 +2,6 @@ import * as React from 'react';
 import { CircularContainer } from './circularContainer';
 import type {
     CharacterSerialized,
-    GameSerialized,
     IslandSerialized,
     TargetCharacter,
 } from './commonTypes';
@@ -11,7 +10,6 @@ import { GameContext } from './gameContext';
 import { CharacterOperations } from './server/gameObjects/characterOperations';
 
 interface BoardProps {
-    readonly gameState: GameSerialized;
     readonly onCharacterClicked?: (
         island: IslandSerialized,
         character: CharacterSerialized,
@@ -28,7 +26,7 @@ export const Board = (props: BoardProps) => {
 
     return (
         <CircularContainer
-            items={props.gameState.islands.map((island) => {
+            items={gameContext.game.islands.map((island) => {
                 const highlightCharacterIndex = island.characters.findIndex(
                     (character) => {
                         return (
@@ -78,27 +76,27 @@ export const Board = (props: BoardProps) => {
                                   ? '🌋'
                                   : ''}
                             {island.islandNumber ===
-                                props.gameState.players[
+                                gameContext.game.players[
                                     PlayerDesignator.PLAYER_A
                                 ].pilingsIsland ||
                             island.islandNumber ===
-                                props.gameState.players[
+                                gameContext.game.players[
                                     PlayerDesignator.PLAYER_B
                                 ].pilingsIsland
                                 ? '🏠'
                                 : ''}
                             {island.islandNumber ===
-                                props.gameState.players[
+                                gameContext.game.players[
                                     PlayerDesignator.PLAYER_A
                                 ].netIsland ||
                             island.islandNumber ===
-                                props.gameState.players[
+                                gameContext.game.players[
                                     PlayerDesignator.PLAYER_B
                                 ].netIsland
                                 ? '🥅'
                                 : ''}
                             {island.islandNumber ===
-                            props.gameState.nextIslandToSink
+                            gameContext.game.nextIslandToSink
                                 ? '⛈️'
                                 : ''}
                         </div>
