@@ -3,9 +3,9 @@ import { CreateAccountPage } from './createAccountPage';
 import { DashboardPage } from './dashboardPage';
 import { GamePage } from './gamePage';
 import { LogInGuard } from './logInGuard';
-import { LogInPage } from './logInPage';
 import { LoggedInUserContextProvider } from './loggedInUserContext';
 import { PageRoutes } from './pageRoutes';
+import { LogInPage } from './pages/logInPage';
 import { TitlePage } from './pages/titlePage';
 
 export const SinkingIslandsApp = () => {
