@@ -19,7 +19,7 @@ export const GameListWidget = withServerCalls(
         const refreshGameList = React.useCallback(() => {
             setResult(null, '');
             props.serverCalls
-                .getGamesForUser()
+                .getGameList()
                 .then((response) => {
                     setResult(true, '');
                     setGames(response);
@@ -112,6 +112,7 @@ export const GameListWidget = withServerCalls(
                                     <GameListRow
                                         key={game.id}
                                         game={game}
+                                        refresh={refreshGameList}
                                         setResult={setResult}
                                     />
                                 );

@@ -67,7 +67,7 @@ export namespace Endpoints {
     }
     export const CreateGame = { instance: new CreateGameInfo() };
 
-    class GetGamesForUserInfo implements EndpointUtils.EndpointInfo {
+    class GetGameListInfo implements EndpointUtils.EndpointInfo {
         public readonly path = '/backend/games' as const;
         public readonly method = HTTPMethod.GET;
         public readonly urlParameters = {};
@@ -75,17 +75,24 @@ export namespace Endpoints {
         public readonly requestBody = {};
         public readonly responseBody: GameSerialized[] = [];
     }
-    export const GetGamesForUser = { instance: new GetGamesForUserInfo() };
+    export const GetGameList = { instance: new GetGameListInfo() };
+
+    class JoinGameInfo implements EndpointUtils.EndpointInfo {
+        public readonly path = '/backend/game/:gameID' as const;
+        public readonly method = HTTPMethod.POST;
+        public readonly urlParameters: { gameID?: string } = {};
+        public readonly queryParameters = {};
+        public readonly requestBody = {};
+        public readonly responseBody = DefaultTypes.message;
+    }
+    export const JoinGame = { instance: new JoinGameInfo() };
 
     class TakeGameActionInfo implements EndpointUtils.EndpointInfo {
-        public readonly path = '/backend/game/action' as const;
+        public readonly path = '/backend/game/:gameID/action' as const;
         public readonly method = HTTPMethod.POST;
-        public readonly urlParameters = {};
+        public readonly urlParameters: { gameID?: string } = {};
         public readonly queryParameters = {};
-        public readonly requestBody: {
-            gameID?: string;
-            gameAction?: GameAction;
-        } = {};
+        public readonly requestBody: { gameAction?: GameAction } = {};
         public readonly responseBody: GameSerialized = GameOperations.create();
     }
     export const TakeGameAction = { instance: new TakeGameActionInfo() };

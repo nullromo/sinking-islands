@@ -23,7 +23,7 @@ test('Games can be created', async () => {
 
 test('Games for user can be obtained', async () => {
     const id = await GameAPI.createGame('testuser');
-    const games = await GameAPI.getGamesForUser('testuser');
+    const games = await GameAPI.getGameList('testuser');
     expect(
         games.some((game) => {
             return game.id === id;

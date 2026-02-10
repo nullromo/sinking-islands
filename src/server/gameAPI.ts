@@ -31,12 +31,7 @@ export namespace GameAPI {
         return game.id;
     };
 
-    export const getGamesForUser = async (username: string | undefined) => {
-        // validate arguments
-        if (username === undefined) {
-            throw new Error("Getting a user's requires a username.");
-        }
-
+    export const getGameList = async () => {
         // connect to redis
         const redis = await getRedis();
 
@@ -53,21 +48,49 @@ export namespace GameAPI {
             return game !== null;
         });
 
-        // get list of games that the user is in
-        const userGames = allGames.filter((game) => {
-            return Object.values(game.players).some((player) => {
-                return player.username === username;
-            });
-        });
-
         console.log(
-            `User '${username}' is part of the following games: ${fullObject(
-                userGames.map((game) => {
+            `The following games exist: ${fullObject(
+                allGames.map((game) => {
                     return game.id;
                 }),
             )}`,
         );
 
-        return userGames;
+        return allGames;
+    };
+
+    export const joinGame = async (
+        gameID: string | undefined,
+        username: string | undefined,
+    ) => {
+        // validate arguments
+        if (gameID === undefined) {
+            throw new Error('Joining a game requires a game ID.');
+        }
+        if (username === undefined) {
+            throw new Error('Joining a game requires a username.');
+        }
+
+        // connect to redis
+        const redis = await getRedis();
+
+        // create redis key
+        const key = RedisKeys.createGameKey(gameID);
+
+        // get the game from redis
+        const game = (await redis.json.get(key)) as GameSerialized | null;
+        if (game === null) {
+            throw new Error(`Could not find game with ID ${gameID}`);
+        }
+
+        // assign user to game
+        GameOperations.assignUserToGame(game, username);
+
+        // save game back to redis
+        await redis.json.set(key, '$', game);
+
+        const message = `User ${username} joined game ${gameID}.`;
+        console.log(message);
+        return { message };
     };
 }

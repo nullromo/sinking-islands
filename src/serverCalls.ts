@@ -68,7 +68,11 @@ export class ServerCalls {
         return this.send(Endpoints.CreateGame, {});
     };
 
-    public readonly getGamesForUser = async () => {
-        return this.send(Endpoints.GetGamesForUser, {});
+    public readonly getGameList = async () => {
+        return this.send(Endpoints.GetGameList, {});
+    };
+
+    public readonly joinGame = async (gameID: string) => {
+        return this.send(Endpoints.JoinGame, { urlParameters: { gameID } });
     };
 }

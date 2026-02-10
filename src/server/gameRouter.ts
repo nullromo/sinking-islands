@@ -14,11 +14,18 @@ export const gameRouter = (() => {
         },
     );
 
+    EndpointUtils.registerEndpoint(router, Endpoints.GetGameList, async () => {
+        return GameAPI.getGameList();
+    });
+
     EndpointUtils.registerEndpoint(
         router,
-        Endpoints.GetGamesForUser,
+        Endpoints.JoinGame,
         async (request) => {
-            return GameAPI.getGamesForUser(request.session.username);
+            return GameAPI.joinGame(
+                request.params.gameID,
+                request.session.username,
+            );
         },
     );
 
