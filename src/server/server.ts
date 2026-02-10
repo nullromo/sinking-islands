@@ -43,6 +43,7 @@ class SinkingIslandsBackend {
             { cors: { origin: '*' } },
         );
 
+        // TODO: cors
         //const whitelist = [
         //'http://localhost:3000',
         //`http://localhost:${port}`,
@@ -136,17 +137,26 @@ class SinkingIslandsBackend {
             socket.on('subscribeToGame', (gameID) => {
                 console.log(`Socket ${socket.id} is subscribing to ${gameID}.`);
                 (async () => {
+                    // join the room
                     await socket.join(gameID);
+
+                    // find the game state for this game
                     const game = (await redis.json.get(
                         RedisKeys.createGameKey(gameID),
                     )) as GameSerialized | null;
                     if (game === null) {
+                        // TODO: need to handle this better
                         throw new Error(
                             `Failed to find game with ID ${gameID}.`,
                         );
                     }
+
+                    // send the user the initial game state
                     socket.emit('gameState', game);
-                })().catch(console.error);
+                })().catch((error: unknown) => {
+                    // TODO: need to handle this better
+                    console.error(error);
+                });
             });
 
             // log disconnects
