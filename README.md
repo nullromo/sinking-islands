@@ -4,15 +4,15 @@
 
 1. ✅ Create users and store in redis.
 1. ✅ User sessions.
-1. Re-structure backend to be state-based. REST API operates on game states that
-   are stored in localhost Redis. Backend associates user IDs with players A and
-   B. Each request includes
+1. ✅ Re-structure backend to be state-based. REST API operates on game states
+   that are stored in localhost Redis. Backend associates user IDs with players
+   A and B. Each request includes
     - User token to validate identity
     - Game ID to select the game to operate on
     - Action (same as current socket event name)
     - Data (same as socket payload)
-1. When a user connects, they still need to get a socket that the server can use
-   to update the game state.
+1. ✅ When a user connects, they still need to get a socket that the server can
+   use to update the game state.
 1. Put everything into a docker container and try to run it like that.
 1. Get started with Hetzner with 2 VMs (application and build)
 1. Make a Dokploy instance in Hetzner that will push to the application VM
@@ -65,6 +65,7 @@
 1. Do I need to use tailscale for DNS? Do I need to get a domain with Namecheap
    or Cloudflare?
 1. Clean up all the visuals so that it looks nice when you are playing.
+   Including not skipping ahead. Animations one at a time.
 1. Build a tutorial that explains the game.
 
 ## Visual
