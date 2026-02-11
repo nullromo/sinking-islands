@@ -75,6 +75,7 @@
 - similar to how it shows staged selections on the islands/characters, it should
   also show that for movement and any other input that doesn't really indicate
 - make everything pretty. Get some good AI art going.
+- Make curved arrows that point to where things are being targeted. (try `M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10` at https://yqnn.github.io/svg-path-editor/ for an example of arrows that can cross a circular board properly).
 
 ## Later Features
 
