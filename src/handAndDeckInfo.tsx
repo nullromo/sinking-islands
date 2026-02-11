@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { otherPlayerDesignator } from './commonTypes';
-import { DiscardPileWindow } from './discardPileWindow';
+import { CardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
 
 export const HandAndDeckInfo = () => {
@@ -18,13 +18,29 @@ export const HandAndDeckInfo = () => {
             <div>{`Cards in your opponent's deck: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].deck.length}`}</div>
             <div>{`Cards in your opponent's hand: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].hand.length}`}</div>
             <div>
-                <DiscardPileWindow
+                <CardPileWindow
+                    cardPile='discardPile'
                     gameState={gameContext.game}
                     opponent={false}
                 />
             </div>
             <div>
-                <DiscardPileWindow
+                <CardPileWindow
+                    cardPile='discardPile'
+                    gameState={gameContext.game}
+                    opponent={true}
+                />
+            </div>
+            <div>
+                <CardPileWindow
+                    cardPile='setAsideCards'
+                    gameState={gameContext.game}
+                    opponent={false}
+                />
+            </div>
+            <div>
+                <CardPileWindow
+                    cardPile='setAsideCards'
                     gameState={gameContext.game}
                     opponent={true}
                 />

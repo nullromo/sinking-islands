@@ -161,7 +161,7 @@ export const cardTypeToString = (cardType: CardType) => {
         case CardType.HARPOON:
             return 'Harpoon';
         case CardType.INDISCRETION:
-            return 'indiscretion';
+            return 'Indiscretion';
         case CardType.MEDITATION:
             return 'Meditation';
         case CardType.MOVEMENT:
