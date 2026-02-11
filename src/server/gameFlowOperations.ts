@@ -194,6 +194,7 @@ export namespace GameFlowOperations {
         if (game.activeCardIndex > 5) {
             console.log('Ending the round now');
             endRound(game);
+            return;
         }
 
         // find the next card that needs to resolve
