@@ -89,7 +89,7 @@ export namespace GameOperations {
 
     export const log = (game: GameSerialized, message: string) => {
         game.messages.push(message);
-        console.log(message);
+        console.log(`[GAME ${game.id}] ${message}`);
     };
 
     /**
