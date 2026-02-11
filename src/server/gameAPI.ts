@@ -2,6 +2,7 @@ import type { GameSerialized } from '../commonTypes';
 import { GameOperations } from './gameObjects/gameOperations';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';
+import { BackendServer } from './server';
 import { fullObject } from './util';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -26,6 +27,9 @@ export namespace GameAPI {
 
         // add the game to redis
         await redis.json.set(key, '$', game);
+
+        // send the updated game to all connected clients
+        BackendServer.broadcastGame(game);
 
         GameOperations.log(game, 'Game created.');
         return game.id;
@@ -88,6 +92,9 @@ export namespace GameAPI {
 
         // save game back to redis
         await redis.json.set(key, '$', game);
+
+        // send the updated game to all connected clients
+        BackendServer.broadcastGame(game);
 
         const message = `User ${username} joined game ${gameID}.`;
         GameOperations.log(game, message);
