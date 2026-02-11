@@ -27,7 +27,7 @@ export namespace GameAPI {
         // add the game to redis
         await redis.json.set(key, '$', game);
 
-        console.log('Game created.');
+        GameOperations.log(game, 'Game created.');
         return game.id;
     };
 
@@ -90,7 +90,7 @@ export namespace GameAPI {
         await redis.json.set(key, '$', game);
 
         const message = `User ${username} joined game ${gameID}.`;
-        console.log(message);
+        GameOperations.log(game, message);
         return { message };
     };
 }

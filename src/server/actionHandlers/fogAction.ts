@@ -1,5 +1,6 @@
 import type { GameSerialized } from '../../commonTypes';
 import { ActionOrderTrackOperations } from '../gameObjects/actionOrderTrackOperations';
+import { GameOperations } from '../gameObjects/gameOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 
 const checkFogTargetLegal = (game: GameSerialized, fogTarget: number) => {
@@ -21,7 +22,7 @@ export const handleFog = (game: GameSerialized, fogTarget: number) => {
     checkFogTargetLegal(game, fogTarget);
 
     // fog the target
-    console.log(`Fogging slot ${fogTarget + 1}.`);
+    GameOperations.log(game, `Fogging slot ${fogTarget + 1}.`);
     const foggedCard = ActionOrderTrackOperations.resetSlot(
         game.actionOrderTrack,
         fogTarget,

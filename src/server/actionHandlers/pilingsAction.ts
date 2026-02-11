@@ -39,7 +39,8 @@ export const handlePilings = (
     checkPilingsTargetLegal(game, playerDesignator, pilingsTarget);
 
     // construct the pilings
-    console.log(
+    GameOperations.log(
+        game,
         `Player ${playerDesignator} constructs pilings on island ${pilingsTarget}.`,
     );
     game.players[playerDesignator].pilingsIsland = pilingsTarget;

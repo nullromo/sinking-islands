@@ -36,7 +36,8 @@ export const handleCrab = (game: GameSerialized) => {
 
         // kill necessary characters
         if (playerStrength > opponentStrength && opponentStrength > 0) {
-            console.log(
+            GameOperations.log(
+                game,
                 `Player ${opponent}'s characters are crabbed on island ${island.islandNumber}.`,
             );
 

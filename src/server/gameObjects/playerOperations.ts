@@ -1,6 +1,7 @@
 import type {
     CardSerialized,
     FaceDownCard,
+    GameSerialized,
     PlayerDesignator,
     PlayerSerialized,
 } from '../../commonTypes';
@@ -8,6 +9,7 @@ import { CardType } from '../../commonTypes';
 import { shuffleArray } from '../../util';
 import { fullObject } from '../util';
 import { CardOperations } from './cardOperations';
+import { GameOperations } from './gameOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PlayerOperations {
@@ -176,8 +178,14 @@ export namespace PlayerOperations {
     /**
      * Shuffles the player's discard pile into their deck.
      */
-    export const reshuffle = (player: PlayerSerialized) => {
-        console.log(`Reshuffling player ${player.playerDesignator}'s deck.`);
+    export const reshuffle = (
+        game: GameSerialized,
+        player: PlayerSerialized,
+    ) => {
+        GameOperations.log(
+            game,
+            `Reshuffling player ${player.playerDesignator}'s deck.`,
+        );
         player.deck = shuffleArray([...player.deck, ...player.discardPile]);
         player.discardPile = [];
     };
@@ -185,16 +193,19 @@ export namespace PlayerOperations {
     /**
      * Causes this player to draw the given number of cards.
      */
-    export const draw = (player: PlayerSerialized, cards: number) => {
+    export const draw = (
+        game: GameSerialized,
+        player: PlayerSerialized,
+        cards: number,
+    ) => {
         let toDraw = cards;
 
         // draw cards while cards still need to be drawn
-        console.log('Starting card draw loop');
         while (toDraw > 0) {
             // if the deck is empty, reshuffle
             if (player.deck.length <= 0) {
                 if (player.discardPile.length > 0) {
-                    reshuffle(player);
+                    reshuffle(game, player);
                 } else {
                     // if the discard pile is also empty, just be done with it
                     return;
@@ -205,5 +216,9 @@ export namespace PlayerOperations {
             toDraw -= 1;
             player.hand.push(player.deck.pop() as CardSerialized);
         }
+        GameOperations.log(
+            game,
+            `${player.playerDesignator} draws ${cards} cards.`,
+        );
     };
 }

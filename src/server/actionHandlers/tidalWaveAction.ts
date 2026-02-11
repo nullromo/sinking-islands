@@ -21,6 +21,9 @@ export const handleTidalWave = (
     checkTidalWaveTargetLegal(game, tidalWaveTarget);
 
     // move the rising waters marker
-    console.log(`A tidal wave moves upon island ${tidalWaveTarget}.`);
+    GameOperations.log(
+        game,
+        `A tidal wave moves upon island ${tidalWaveTarget}.`,
+    );
     game.nextIslandToSink = tidalWaveTarget;
 };

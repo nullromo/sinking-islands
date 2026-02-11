@@ -71,7 +71,8 @@ export const handleHarpoon = (
     checkHarpoonTargetLegal(game, playerDesignator, convertedTarget);
 
     // kill the target
-    console.log(
+    GameOperations.log(
+        game,
         `Player ${harpoonTarget.character.playerDesignator}'s ${harpoonTarget.character.strength}-strength character on island ${harpoonTarget.islandNumber} is harpooned.`,
     );
     IslandOperations.removeCharacter(

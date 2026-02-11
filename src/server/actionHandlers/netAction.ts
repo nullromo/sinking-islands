@@ -35,7 +35,8 @@ export const handleNet = (
     checkNetTargetLegal(game, playerDesignator, netTarget);
 
     // place the net
-    console.log(
+    GameOperations.log(
+        game,
         `Player ${playerDesignator} casts a net over island ${netTarget}.`,
     );
     game.players[playerDesignator].netIsland = netTarget;

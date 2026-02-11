@@ -21,10 +21,11 @@ export const handlePrayer = (game: GameSerialized) => {
         }, 0);
 
     // draw the cards
-    console.log(
+    GameOperations.log(
+        game,
         `Player ${player} prays for ${cardsToDraw} card${
             cardsToDraw === 1 ? '' : 's'
         }.`,
     );
-    PlayerOperations.draw(game.players[player], cardsToDraw);
+    PlayerOperations.draw(game, game.players[player], cardsToDraw);
 };

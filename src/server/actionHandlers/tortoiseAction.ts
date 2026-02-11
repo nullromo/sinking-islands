@@ -7,6 +7,7 @@ import type {
 } from '../../commonTypes';
 import { convertTargetCharacterToIslands } from '../../convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
+import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 
 const checkTortoiseTargetLegal = (
@@ -46,7 +47,8 @@ export const handleTortoise = (
     checkTortoiseTargetLegal(playerDesignator, convertedTarget);
 
     // make the target a tortoise
-    console.log(
+    GameOperations.log(
+        game,
         `Player ${tortoiseTarget.character.playerDesignator}'s ${tortoiseTarget.character.strength}-strength character on island ${tortoiseTarget.islandNumber} turns into a tortoise.`,
     );
     (

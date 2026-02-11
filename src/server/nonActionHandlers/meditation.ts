@@ -6,6 +6,6 @@ export const handleMeditation = (game: GameSerialized) => {
     const card = GameOperations.getCurrentlyResolvingCard(game);
     const player = card.playerDesignator;
 
-    console.log(`Player ${player} meditates.`);
-    PlayerOperations.reshuffle(game.players[player]);
+    GameOperations.log(game, `Player ${player} meditates.`);
+    PlayerOperations.reshuffle(game, game.players[player]);
 };

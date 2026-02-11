@@ -6,6 +6,9 @@ export const handleIndiscretion = (game: GameSerialized) => {
     const player = card.playerDesignator;
     const opponent = otherPlayerDesignator(player);
 
-    console.log(`Player ${opponent} is put under the effects of indiscretion.`);
+    GameOperations.log(
+        game,
+        `Player ${opponent} is put under the effects of indiscretion.`,
+    );
     game.players[opponent].indiscretion = true;
 };

@@ -6,6 +6,9 @@ export const handleWeakness = (game: GameSerialized) => {
     const player = card.playerDesignator;
     const opponent = otherPlayerDesignator(player);
 
-    console.log(`Player ${player}'s characters are afflicted with weakness.`);
+    GameOperations.log(
+        game,
+        `Player ${player}'s characters are afflicted with weakness.`,
+    );
     game.players[opponent].weakness = true;
 };

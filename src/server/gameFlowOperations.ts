@@ -96,7 +96,7 @@ export namespace GameFlowOperations {
         });
 
         // sink the lowest island
-        console.log(`Island ${game.nextIslandToSink} sinks.`);
+        GameOperations.log(game, `Island ${game.nextIslandToSink} sinks.`);
         game.islands = game.islands.filter((island) => {
             return island.islandNumber !== game.nextIslandToSink;
         });
@@ -108,7 +108,7 @@ export namespace GameFlowOperations {
         }
 
         // advance the rising waters marker
-        console.log('Starting rising water loop');
+        GameOperations.log(game, 'Starting rising water loop');
         while (!GameOperations.findIsland(game, game.nextIslandToSink)) {
             game.nextIslandToSink = (game.nextIslandToSink % 16) + 1;
         }
@@ -118,7 +118,7 @@ export namespace GameFlowOperations {
 
         // players draw new cards
         mapToValues(game.players).forEach((player) => {
-            PlayerOperations.draw(player, 3);
+            PlayerOperations.draw(game, player, 3);
         });
 
         // update the active card index
@@ -129,7 +129,7 @@ export namespace GameFlowOperations {
 
         // increment rounds counter
         game.roundsCompleted += 1;
-        console.log(`Game ${game.id} beginning next round.`);
+        GameOperations.log(game, `Game ${game.id} beginning next round.`);
     };
 
     /**
@@ -184,15 +184,14 @@ export namespace GameFlowOperations {
      *   in the waiting for card placement state.
      */
     const resolveNextCard = (game: GameSerialized) => {
-        console.log('Resolving next card');
         // in card placement step, there is nothing to resolve
         if (game.activeCardIndex === null) {
-            console.log('No cards. Nothing to resolve');
+            GameOperations.log(game, 'No cards. Nothing to resolve.');
             return;
         }
 
         if (game.activeCardIndex > 5) {
-            console.log('Ending the round now');
+            GameOperations.log(game, 'Ending the round.');
             endRound(game);
             return;
         }
@@ -204,10 +203,9 @@ export namespace GameFlowOperations {
         // if there is no card to resolve (because of fog), advance to the next
         // card
         if (nextCardToResolve === null) {
-            console.log(
-                'The card in slot',
-                game.activeCardIndex + 1,
-                'was fogged.',
+            GameOperations.log(
+                game,
+                `The card in slot ${game.activeCardIndex + 1} was fogged.`,
             );
             game.activeCardIndex += 1;
             resolveNextCard(game);
@@ -215,7 +213,8 @@ export namespace GameFlowOperations {
         }
 
         if (nextCardToResolve.cardType !== null) {
-            console.log(
+            GameOperations.log(
+                game,
                 `Executing slot ${game.activeCardIndex + 1}: ${
                     nextCardToResolve.playerDesignator
                 }'s ${upperSnakeToTitle(nextCardToResolve.cardType)}.`,
@@ -242,7 +241,10 @@ export namespace GameFlowOperations {
                         return !GameOperations.islandIsFull(game, island);
                     })
                 ) {
-                    console.log('There is nowhere for a flying fish to fly.');
+                    GameOperations.log(
+                        game,
+                        'There is nowhere for a flying fish to fly.',
+                    );
                     continueResolving = true;
                     break;
                 }
@@ -262,7 +264,7 @@ export namespace GameFlowOperations {
                         },
                     )
                 ) {
-                    console.log('There is no card to fog.');
+                    GameOperations.log(game, 'There is no card to fog.');
                     continueResolving = true;
                     break;
                 }
@@ -304,7 +306,8 @@ export namespace GameFlowOperations {
                             }
                         })
                 ) {
-                    console.log(
+                    GameOperations.log(
+                        game,
                         `There are no valid harpoon targets for player ${nextCardToResolve.playerDesignator}.`,
                     );
                     continueResolving = true;
@@ -346,7 +349,8 @@ export namespace GameFlowOperations {
                         );
                     })
                 ) {
-                    console.log(
+                    GameOperations.log(
+                        game,
                         `No movements are possible for player ${nextCardToResolve.playerDesignator}.`,
                     );
                     continueResolving = true;
@@ -367,7 +371,10 @@ export namespace GameFlowOperations {
                         );
                     })
                 ) {
-                    console.log('There are no un-netted islands to net.');
+                    GameOperations.log(
+                        game,
+                        'There are no un-netted islands to net.',
+                    );
                     continueResolving = true;
                 }
                 // a decision is required
@@ -390,7 +397,8 @@ export namespace GameFlowOperations {
                         );
                     })
                 ) {
-                    console.log(
+                    GameOperations.log(
+                        game,
                         'There are no islands that can support pilings.',
                     );
                     continueResolving = true;
@@ -408,7 +416,7 @@ export namespace GameFlowOperations {
                 // if there are no legal tidal surge targets, then the card
                 // does nothing
                 if (game.islands.length <= 1) {
-                    console.log('The tide cannot surge.');
+                    GameOperations.log(game, 'The tide cannot surge.');
                     continueResolving = true;
                     break;
                 }
@@ -433,7 +441,7 @@ export namespace GameFlowOperations {
                         return island.islandType === IslandType.VOLCANO;
                     })
                 ) {
-                    console.log('There are no volcanoes left.');
+                    GameOperations.log(game, 'There are no volcanoes left.');
                     continueResolving = true;
                     break;
                 }
@@ -452,11 +460,9 @@ export namespace GameFlowOperations {
                 assertUnreachable(nextCardToResolve);
         }
 
-        console.log(
-            'Game is now in state',
-            game.gameState,
-            'and waiting for',
-            game.waitingForPlayer,
+        GameOperations.log(
+            game,
+            `Game is now in state ${game.gameState} and waiting for ${game.waitingForPlayer}`,
         );
 
         // if no user action was required, then the card action is done

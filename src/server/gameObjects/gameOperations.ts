@@ -20,8 +20,6 @@ export namespace GameOperations {
      * Creates a new game.
      */
     export const create = (): GameSerialized => {
-        console.log('Creating game.');
-
         // create and randomize all the islands
         const islands: IslandSerialized[] = shuffleArray([
             IslandOperations.create(1, IslandType.NORMAL, true),
@@ -89,6 +87,11 @@ export namespace GameOperations {
         };
     };
 
+    export const log = (game: GameSerialized, message: string) => {
+        game.messages.push(message);
+        console.log(message);
+    };
+
     /**
      * Attempts to find an island matching the given island number.
      */
@@ -142,7 +145,8 @@ export namespace GameOperations {
 
         // assign username
         game.players[availablePlayer[0]].username = username;
-        console.log(
+        log(
+            game,
             `Assigned ${username} to game ${game.id} as ${availablePlayer[0]}.`,
         );
 
@@ -157,7 +161,8 @@ export namespace GameOperations {
             // set the active player
             game.waitingForPlayer = game.initiative;
 
-            console.log(
+            log(
+                game,
                 `Starting game ${game.id}. The starting player is ${game.initiative}.`,
             );
         }
@@ -248,7 +253,8 @@ export namespace GameOperations {
         toIsland: IslandSerialized,
         verb: string,
     ) => {
-        console.log(
+        log(
+            game,
             `Player ${
                 character.playerDesignator
             }'s ${character.strength}-strength ${

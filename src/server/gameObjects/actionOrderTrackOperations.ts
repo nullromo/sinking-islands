@@ -2,8 +2,10 @@ import type {
     ActionOrderTrackSerialized,
     CardPlacement,
     CardSerialized,
+    GameSerialized,
     PlayerDesignator,
 } from '../../commonTypes';
+import { GameOperations } from './gameOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ActionOrderTrackOperations {
@@ -65,19 +67,19 @@ export namespace ActionOrderTrackOperations {
      * Returns true if the given fog target is legal.
      */
     export const checkFogTargetLegal = (
-        actionOrderTrack: ActionOrderTrackSerialized,
+        game: GameSerialized,
         slot: number,
         fogTarget: number,
     ) => {
         // if there is no card, that card cannot be fogged
-        if (actionOrderTrack.cardSlots[fogTarget] === null) {
-            console.log('Cannot fog a card that does not exist');
+        if (game.actionOrderTrack.cardSlots[fogTarget] === null) {
+            GameOperations.log(game, 'Cannot fog a card that does not exist');
             return false;
         }
 
         // a fog cannot fog itself
         if (slot === fogTarget) {
-            console.log('A fog cannot fog itself');
+            GameOperations.log(game, 'A fog cannot fog itself');
             return false;
         }
 

@@ -30,7 +30,7 @@ export const handleVolcanicEruption = (
     checkVolcanicEruptionTargetLegal(game, volcanicEruptionTarget);
 
     // start to erupt the volcano
-    console.log(`Island ${volcanicEruptionTarget} erupts.`);
+    GameOperations.log(game, `Island ${volcanicEruptionTarget} erupts.`);
 
     // find islands affected by lava flows
     const lavaFlowIslands = GameOperations.getAdjacentIslands(
@@ -149,7 +149,8 @@ export const handleVolcanicEruption = (
     lavaFlowIslands.forEach((lavaFlowIsland) => {
         lavaFlowIsland.characters.forEach((character) => {
             // remove the character
-            console.log(
+            GameOperations.log(
+                game,
                 `Player ${character.playerDesignator}'s ${
                     character.strength
                 }-strength ${
@@ -170,7 +171,10 @@ export const handleVolcanicEruption = (
     });
 
     // remove the volcano itself
-    console.log(`Island ${volcanicEruptionTarget} erupts and sinks.`);
+    GameOperations.log(
+        game,
+        `Island ${volcanicEruptionTarget} erupts and sinks.`,
+    );
     game.islands = game.islands.filter((island) => {
         return island.islandNumber !== volcanicEruptionTarget;
     });
@@ -184,7 +188,7 @@ export const handleVolcanicEruption = (
     // if the rising waters marker was on the volcano, move it to
     // the next island
     if (game.nextIslandToSink === volcanicEruptionTarget) {
-        console.log('Starting sink loop');
+        GameOperations.log(game, 'Starting sink loop');
         while (!GameOperations.findIsland(game, game.nextIslandToSink)) {
             game.nextIslandToSink = (game.nextIslandToSink % 16) + 1;
         }

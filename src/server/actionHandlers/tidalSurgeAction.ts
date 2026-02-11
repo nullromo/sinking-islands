@@ -23,6 +23,6 @@ export const handleTidalSurge = (
     checkTidalSurgeTargetLegal(game, tidalSurgeTarget);
 
     // move the rising waters marker
-    console.log(`The tide surges to island ${tidalSurgeTarget}.`);
+    GameOperations.log(game, `The tide surges to island ${tidalSurgeTarget}.`);
     game.nextIslandToSink = tidalSurgeTarget;
 };
