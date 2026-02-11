@@ -13,8 +13,7 @@ import { withServerCalls } from '../withServerCalls';
 import { GameActionType } from '../gameActionTypes';
 
 interface MovementSetWidgetProps
-    extends InjectedServerCallsProps,
-        SetResultProps {
+    extends InjectedServerCallsProps, SetResultProps {
     //
 }
 
@@ -28,42 +27,33 @@ export const MovementSetWidget = withServerCalls(
             <>
                 <Board
                     onCharacterClicked={(island, character) => {
+                        const newMovement = {
+                            character,
+                            fromIslandNumber: island.islandNumber,
+                            toIslandNumber: island.islandNumber,
+                        };
                         if (movementSet.length <= 0) {
-                            setMovementSet([
-                                {
-                                    character,
-                                    fromIslandNumber: island.islandNumber,
-                                    toIslandNumber: 0,
-                                },
-                            ]);
+                            setMovementSet([newMovement]);
                         } else if (
                             movementSet[movementSet.length - 1]
-                                .toIslandNumber === 0
+                                .fromIslandNumber ===
+                            movementSet[movementSet.length - 1].toIslandNumber
                         ) {
                             setMovementSet([
                                 ...movementSet.slice(0, movementSet.length - 2),
-                                {
-                                    character,
-                                    fromIslandNumber: island.islandNumber,
-                                    toIslandNumber: 0,
-                                },
+                                newMovement,
                             ]);
                         } else {
-                            setMovementSet([
-                                ...movementSet,
-                                {
-                                    character,
-                                    fromIslandNumber: island.islandNumber,
-                                    toIslandNumber: 0,
-                                },
-                            ]);
+                            setMovementSet([...movementSet, newMovement]);
                         }
                     }}
                     onIslandClicked={(island) => {
                         if (
                             movementSet.length > 0 &&
                             movementSet[movementSet.length - 1]
-                                .toIslandNumber === 0
+                                .fromIslandNumber ===
+                                movementSet[movementSet.length - 1]
+                                    .toIslandNumber
                         ) {
                             setMovementSet((oldSet) => {
                                 const newSet = _.cloneDeep(oldSet);
