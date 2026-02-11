@@ -4,6 +4,7 @@ import type { GameAction } from '../gameActionTypes';
 import { GameFlowOperations } from './gameFlowOperations';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';
+import { BackendServer } from './server';
 import { fullObject } from './util';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -53,8 +54,16 @@ export namespace PlayAPI {
             `${playerDesignator} (${username}) is taking the action '${fullObject(gameAction)}' on game '${gameID}'.`,
         );
 
+        // take the game action on the game
         GameFlowOperations.takeGameAction(game, playerDesignator, gameAction);
 
+        // store the result in redis
+        await redis.json.set(key, '$', game);
+
+        // send the updated game to all connected clients
+        BackendServer.broadcastGame(game);
+
+        // return the resulting game
         return game;
     };
 }

@@ -166,6 +166,10 @@ class SinkingIslandsBackend {
         });
     };
 
+    public readonly broadcastGame = (game: GameSerialized) => {
+        this.io?.to(game.id).emit('gameState', game);
+    };
+
     public readonly stop = () => {
         if (!this.running) {
             return;
