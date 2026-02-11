@@ -12,7 +12,7 @@ export const playRouter = () => {
         async (request) => {
             return PlayAPI.takeGameAction(
                 request.session.username,
-                request.body.gameID,
+                request.params.gameID,
                 request.body.gameAction,
             );
         },

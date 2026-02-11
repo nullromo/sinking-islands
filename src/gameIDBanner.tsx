@@ -3,7 +3,7 @@ import { GameContext } from './gameContext';
 
 export const GameIDBanner = (props: {
     readonly gameID: string;
-    readonly status: { success: boolean; message: string };
+    readonly status: { success: boolean | null; message: string };
 }) => {
     const gameContext = React.use(GameContext);
 

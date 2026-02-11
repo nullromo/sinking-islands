@@ -1,9 +1,9 @@
 import type { AxiosRequestConfig } from 'axios';
 import type { EndpointUtils } from './endpointUtils';
 import { Endpoints } from './endpoints';
+import type { GameAction } from './gameActionTypes';
 import { ServerCallsCore } from './serverCallsCore';
 import type { MakeEmptyKeysOptional } from './util';
-import { GameAction } from './gameActionTypes';
 
 type SendData<T extends EndpointUtils.EndpointInfo> = MakeEmptyKeysOptional<{
     requestBody: T['requestBody'];
