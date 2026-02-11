@@ -463,6 +463,12 @@ export namespace GameFlowOperations {
         if (continueResolving) {
             // clean up after resolution
             finishResolvingCard(game);
+
+            // exit if the game is over
+            if (game.gameState === GameState.FINISHED) {
+                return;
+            }
+
             // continue to the next card
             resolveNextCard(game);
         }
@@ -548,6 +554,11 @@ export namespace GameFlowOperations {
         if (gameAction.action !== GameActionType.CARD_PLACEMENT) {
             // clean up after card resolution
             finishResolvingCard(game);
+
+            // exit if the game is over
+            if (game.gameState === GameState.FINISHED) {
+                return;
+            }
 
             // execute the next card
             resolveNextCard(game);

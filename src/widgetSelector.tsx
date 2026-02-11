@@ -16,6 +16,16 @@ import { MovementSetWidget } from './widgets/movementSetWidget';
 export const WidgetSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
 
+    if (gameContext.game.gameState === GameState.FINISHED) {
+        return (
+            <>{`The game is over. ${gameContext.game.players[gameContext.game.waitingForPlayer].username} wins!`}</>
+        );
+    }
+
+    if (gameContext.game.gameState === GameState.INITIAL_STATE) {
+        return <>{'The game has not started yet.'}</>;
+    }
+
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
         return (
             <>
@@ -65,10 +75,6 @@ export const WidgetSelector = (props: SetResultProps) => {
             return <IslandSelectorWidget setResult={props.setResult} />;
         case GameState.AWAIT_MOVEMENT_SET:
             return <MovementSetWidget setResult={props.setResult} />;
-        case GameState.FINISHED:
-            return <>{'The game is over.'}</>;
-        case GameState.INITIAL_STATE:
-            return <>{'The game has not started yet.'}</>;
         default:
             return assertUnreachable(gameContext.game.gameState);
     }
