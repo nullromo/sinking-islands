@@ -3,7 +3,7 @@ import { Endpoints } from '../endpoints';
 import { EndpointUtils } from '../endpointUtils';
 import { PlayAPI } from './playAPI';
 
-export const playRouter = () => {
+export const playRouter = (() => {
     const router = express.Router();
 
     EndpointUtils.registerEndpoint(
@@ -19,4 +19,4 @@ export const playRouter = () => {
     );
 
     return router;
-};
+})();
