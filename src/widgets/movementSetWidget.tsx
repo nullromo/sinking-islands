@@ -7,116 +7,137 @@ import { computeMovementSteps } from '../computeMovementSteps';
 import { convertMovementToIslands } from '../convertActionData';
 import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
+import type { SetResultProps } from '../useResultMessage';
+import type { InjectedServerCallsProps } from '../withServerCalls';
+import { withServerCalls } from '../withServerCalls';
+import { GameActionType } from '../gameActionTypes';
 
-interface MovementSetWidgetProps {
-    readonly submit: (movementSet: MovementSet) => void;
+interface MovementSetWidgetProps
+    extends InjectedServerCallsProps,
+        SetResultProps {
+    //
 }
 
-export const MovementSetWidget = (props: MovementSetWidgetProps) => {
-    const gameContext = React.use(GameContext);
+export const MovementSetWidget = withServerCalls(
+    (props: MovementSetWidgetProps) => {
+        const gameContext = React.use(GameContext);
 
-    const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
+        const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
-    return (
-        <>
-            <Board
-                onCharacterClicked={(island, character) => {
-                    if (movementSet.length <= 0) {
-                        setMovementSet([
-                            {
-                                character,
-                                fromIslandNumber: island.islandNumber,
-                                toIslandNumber: 0,
-                            },
-                        ]);
-                    } else if (
-                        movementSet[movementSet.length - 1].toIslandNumber === 0
-                    ) {
-                        setMovementSet([
-                            ...movementSet.slice(0, movementSet.length - 2),
-                            {
-                                character,
-                                fromIslandNumber: island.islandNumber,
-                                toIslandNumber: 0,
-                            },
-                        ]);
-                    } else {
-                        setMovementSet([
-                            ...movementSet,
-                            {
-                                character,
-                                fromIslandNumber: island.islandNumber,
-                                toIslandNumber: 0,
-                            },
-                        ]);
-                    }
-                }}
-                onIslandClicked={(island) => {
-                    if (
-                        movementSet.length > 0 &&
-                        movementSet[movementSet.length - 1].toIslandNumber === 0
-                    ) {
-                        setMovementSet((oldSet) => {
-                            const newSet = _.cloneDeep(oldSet);
-                            newSet[newSet.length - 1].toIslandNumber =
-                                island.islandNumber;
-                            return newSet;
-                        });
-                    }
-                }}
-            />
-            <ActionOrderTrack />
-            <Hand />
-            <div style={{ width: '600px' }}>
-                Click on a character, then click on an island to choose where to
-                move that character. Click Submit when finished, or click Reset
-                to start over.
-            </div>
-            {'Movement steps used:'}{' '}
-            {computeMovementSteps(
-                gameContext.game.islands,
-                movementSet.map((movement) => {
-                    return convertMovementToIslands(gameContext.game, movement);
-                }),
-            )}{' '}
-            {'of 3'}
-            {movementSet.map((movement, index) => {
-                return (
-                    <React.Fragment key={index}>
-                        <br />
-                        {`Character: ${
-                            movement.character.tortoise ? '🐢' : '🧍'
-                        }${movement.character.strength}`}
-                        <br />
-                        {`from ${movement.fromIslandNumber}`}
-                        <br />
-                        {`to ${
-                            movement.toIslandNumber === 0
-                                ? '?'
-                                : movement.toIslandNumber
-                        }`}
-                        <br />
-                    </React.Fragment>
-                );
-            })}
-            <div>
-                <button
-                    type='button'
-                    onClick={() => {
-                        setMovementSet([]);
+        return (
+            <>
+                <Board
+                    onCharacterClicked={(island, character) => {
+                        if (movementSet.length <= 0) {
+                            setMovementSet([
+                                {
+                                    character,
+                                    fromIslandNumber: island.islandNumber,
+                                    toIslandNumber: 0,
+                                },
+                            ]);
+                        } else if (
+                            movementSet[movementSet.length - 1]
+                                .toIslandNumber === 0
+                        ) {
+                            setMovementSet([
+                                ...movementSet.slice(0, movementSet.length - 2),
+                                {
+                                    character,
+                                    fromIslandNumber: island.islandNumber,
+                                    toIslandNumber: 0,
+                                },
+                            ]);
+                        } else {
+                            setMovementSet([
+                                ...movementSet,
+                                {
+                                    character,
+                                    fromIslandNumber: island.islandNumber,
+                                    toIslandNumber: 0,
+                                },
+                            ]);
+                        }
                     }}
-                >
-                    Reset
-                </button>
-                <button
-                    type='button'
-                    onClick={() => {
-                        props.submit(movementSet);
+                    onIslandClicked={(island) => {
+                        if (
+                            movementSet.length > 0 &&
+                            movementSet[movementSet.length - 1]
+                                .toIslandNumber === 0
+                        ) {
+                            setMovementSet((oldSet) => {
+                                const newSet = _.cloneDeep(oldSet);
+                                newSet[newSet.length - 1].toIslandNumber =
+                                    island.islandNumber;
+                                return newSet;
+                            });
+                        }
                     }}
-                >
-                    Submit
-                </button>
-            </div>
-        </>
-    );
-};
+                />
+                <ActionOrderTrack />
+                <Hand />
+                <div style={{ width: '600px' }}>
+                    Click on a character, then click on an island to choose
+                    where to move that character. Click Submit when finished, or
+                    click Reset to start over.
+                </div>
+                {'Movement steps used:'}{' '}
+                {computeMovementSteps(
+                    gameContext.game.islands,
+                    movementSet.map((movement) => {
+                        return convertMovementToIslands(
+                            gameContext.game,
+                            movement,
+                        );
+                    }),
+                )}{' '}
+                {'of 3'}
+                {movementSet.map((movement, index) => {
+                    return (
+                        <React.Fragment key={index}>
+                            <br />
+                            {`Character: ${
+                                movement.character.tortoise ? '🐢' : '🧍'
+                            }${movement.character.strength}`}
+                            <br />
+                            {`from ${movement.fromIslandNumber}`}
+                            <br />
+                            {`to ${
+                                movement.toIslandNumber === 0
+                                    ? '?'
+                                    : movement.toIslandNumber
+                            }`}
+                            <br />
+                        </React.Fragment>
+                    );
+                })}
+                <div>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setMovementSet([]);
+                        }}
+                    >
+                        Reset
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            props.serverCalls
+                                .takeGameAction(gameContext.game.id, {
+                                    action: GameActionType.MOVEMENT_SET,
+                                    data: movementSet,
+                                })
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                });
+                        }}
+                    >
+                        Submit
+                    </button>
+                </div>
+            </>
+        );
+    },
+    'MovementSetWidget',
+);

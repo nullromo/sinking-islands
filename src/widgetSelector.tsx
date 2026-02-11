@@ -62,45 +62,13 @@ export const WidgetSelector = (props: SetResultProps) => {
         case GameState.AWAIT_TIDAL_SURGE_TARGET:
         case GameState.AWAIT_TIDAL_WAVE_TARGET:
         case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
-            return (
-                <IslandSelectorWidget
-                    submit={(islandNumber) => {
-                        props.socket.emit(
-                            (() => {
-                                switch (interfaceState) {
-                                    case 'requestNetTarget':
-                                        return 'responseNetTarget';
-                                    case 'requestPilingsTarget':
-                                        return 'responsePilingsTarget';
-                                    case 'requestTidalSurgeTarget':
-                                        return 'responseTidalSurgeTarget';
-                                    case 'requestTidalWaveTarget':
-                                        return 'responseTidalWaveTarget';
-                                    case 'requestVolcanicEruptionTarget':
-                                        return 'responseVolcanicEruptionTarget';
-                                    default:
-                                        return assertUnreachable(
-                                            interfaceState,
-                                        );
-                                }
-                            })(),
-                            islandNumber,
-                        );
-                    }}
-                />
-            );
+            return <IslandSelectorWidget setResult={props.setResult} />;
         case GameState.AWAIT_MOVEMENT_SET:
-            return (
-                <MovementSetWidget
-                    submit={(movementSet) => {
-                        props.socket.emit('responseMovementSet', movementSet);
-                    }}
-                />
-            );
+            return <MovementSetWidget setResult={props.setResult} />;
         case GameState.FINISHED:
-            return <>{'j f'}</>;
+            return <>{'The game is over.'}</>;
         case GameState.INITIAL_STATE:
-            return <>{'i s'}</>;
+            return <>{'The game has not started yet.'}</>;
         default:
             return assertUnreachable(gameContext.game.gameState);
     }
