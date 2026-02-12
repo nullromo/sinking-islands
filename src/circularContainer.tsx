@@ -46,3 +46,60 @@ export const CircularContainer = (props: CircularContainerProps) => {
         </div>
     );
 };
+
+export const CircularContainer2 = (props: CircularContainerProps) => {
+    // number of items to spread evenly
+    const N = props.items.length;
+    // overall width of the container (diameter of the island circle)
+    const D = 500;
+    // radius of the container
+    const r = D / 2;
+    // main angle to spread each item by
+    const theta = (2 * Math.PI) / N;
+    // radius of the zone of each item (r prime)
+    const rp = r * Math.sin(theta / 2);
+    // width of inscribed square in the zone
+    const W = (2 * rp) / Math.sqrt(2);
+
+    return (
+        <div
+            style={{
+                border: '1px solid',
+                borderRadius: `${D / 2}px`,
+                height: `${D}px`,
+                position: 'relative',
+                width: `${D}px`,
+            }}
+        >
+            {props.items.map((item, i) => {
+                const rotationAmount = i * theta;
+                return (
+                    <div
+                        key={i}
+                        style={{
+                            alignItems: 'center',
+                            border: '1px solid',
+                            borderRadius: `${rp}px`,
+                            display: 'flex',
+                            height: `${rp * 2}px`,
+                            justifyContent: 'center',
+                            left: `calc(50% - ${rp}px)`,
+                            position: 'absolute',
+                            top: `calc(50% - ${rp}px)`,
+                            transform: `rotate(${rotationAmount}rad) translate(${r}px) rotate(-${rotationAmount}rad)`,
+                            width: `${rp * 2}px`,
+                        }}
+                    >
+                        <div
+                            style={{
+                                border: '1px solid',
+                                height: `${W}px`,
+                                width: `${W}px`,
+                            }}
+                        />
+                    </div>
+                );
+            })}
+        </div>
+    );
+};

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CircularContainer } from './circularContainer';
+import { CircularContainer, CircularContainer2 } from './circularContainer';
 import type {
     CharacterSerialized,
     IslandSerialized,
@@ -25,7 +25,7 @@ export const Board = (props: BoardProps) => {
     const fontSize = '18px';
 
     return (
-        <CircularContainer
+        <CircularContainer2
             items={gameContext.game.islands.map((island) => {
                 const islandColor =
                     island.islandType === IslandType.SACRED
