@@ -11,6 +11,7 @@ export const HandAndDeckInfo = () => {
                 background: 'tan',
                 display: 'flex',
                 flexDirection: 'column',
+                minWidth: '270px',
                 padding: '4px',
             }}
         >

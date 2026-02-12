@@ -57,6 +57,7 @@ export const CharacterTargetWidget = withServerCalls(
                         }
                     }}
                 />
+                {/*
                 <ActionOrderTrack />
                 <Hand />
                 <div
@@ -96,6 +97,7 @@ export const CharacterTargetWidget = withServerCalls(
                 >
                     Submit
                 </button>
+                */}
             </>
         );
     },

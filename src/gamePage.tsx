@@ -54,9 +54,13 @@ const GamePageInner = () => {
             <div
                 style={{
                     alignItems: 'center',
+                    background: 'yellow',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    maxHeight: '90vh',
+                    maxWidth: '90vh',
+                    width: '100%',
                 }}
             >
                 <WidgetSelector setResult={setResult} />
