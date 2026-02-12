@@ -8,7 +8,7 @@ import type {
 import { IslandType, PlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
 import { CharacterOperations } from './server/gameObjects/characterOperations';
-
+import { getIslandImage } from './images/islandImages';
 interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
@@ -27,6 +27,13 @@ export const Board = (props: BoardProps) => {
     return (
         <CircularContainer
             items={gameContext.game.islands.map((island) => {
+                const islandColor =
+                    island.islandType === IslandType.SACRED
+                        ? 'gold'
+                        : island.islandType === IslandType.VOLCANO
+                          ? 'sandybrown'
+                          : 'mediumseagreen';
+
                 const highlightCharacterIndex = island.characters.findIndex(
                     (character) => {
                         return (
@@ -43,24 +50,25 @@ export const Board = (props: BoardProps) => {
                     <div key={island.islandNumber}>
                         <div
                             style={{
-                                alignItems: 'center',
-                                background:
-                                    island.islandType === IslandType.SACRED
-                                        ? 'gold'
-                                        : island.islandType ===
-                                            IslandType.VOLCANO
-                                          ? 'sandybrown'
-                                          : 'mediumseagreen',
+                                alignItems: 'flex-start',
+                                backgroundImage: getIslandImage(
+                                    island.islandNumber,
+                                ),
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'cover',
+                                //background: islandColor,
                                 border:
                                     island.islandNumber ===
                                     props.highlightIslandNumber
-                                        ? '3px solid'
-                                        : '1px solid',
+                                        ? `6px solid ${islandColor}`
+                                        : `3px solid ${islandColor}`,
                                 boxSizing: 'border-box',
                                 cursor: props.onIslandClicked ? 'pointer' : '',
                                 display: 'flex',
                                 fontSize,
-                                height: '28px',
+                                height: '120px',
+                                width: '120px',
                             }}
                             onClick={() => {
                                 if (props.onIslandClicked) {
@@ -68,37 +76,45 @@ export const Board = (props: BoardProps) => {
                                 }
                             }}
                         >
-                            <b>{`${island.islandNumber}`}</b>
-                            {island.smallCapacity ? '👤' : '👥'}
-                            {island.islandType === IslandType.SACRED
-                                ? '🙏'
-                                : island.islandType === IslandType.VOLCANO
-                                  ? '🌋'
-                                  : ''}
-                            {island.islandNumber ===
-                                gameContext.game.players[
-                                    PlayerDesignator.PLAYER_A
-                                ].pilingsIsland ||
-                            island.islandNumber ===
-                                gameContext.game.players[
-                                    PlayerDesignator.PLAYER_B
-                                ].pilingsIsland
-                                ? '🏠'
-                                : ''}
-                            {island.islandNumber ===
-                                gameContext.game.players[
-                                    PlayerDesignator.PLAYER_A
-                                ].netIsland ||
-                            island.islandNumber ===
-                                gameContext.game.players[
-                                    PlayerDesignator.PLAYER_B
-                                ].netIsland
-                                ? '🥅'
-                                : ''}
-                            {island.islandNumber ===
-                            gameContext.game.nextIslandToSink
-                                ? '⛈️'
-                                : ''}
+                            <div
+                                style={{
+                                    background: islandColor,
+                                    borderBottom: `3px solid ${islandColor}`,
+                                    borderRight: `3px solid ${islandColor}`,
+                                }}
+                            >
+                                <b>{`${island.islandNumber}`}</b>
+                                {island.smallCapacity ? '👤' : '👥'}
+                                {island.islandType === IslandType.SACRED
+                                    ? '🙏'
+                                    : island.islandType === IslandType.VOLCANO
+                                      ? '🌋'
+                                      : ''}
+                                {island.islandNumber ===
+                                    gameContext.game.players[
+                                        PlayerDesignator.PLAYER_A
+                                    ].pilingsIsland ||
+                                island.islandNumber ===
+                                    gameContext.game.players[
+                                        PlayerDesignator.PLAYER_B
+                                    ].pilingsIsland
+                                    ? '🏠'
+                                    : ''}
+                                {island.islandNumber ===
+                                    gameContext.game.players[
+                                        PlayerDesignator.PLAYER_A
+                                    ].netIsland ||
+                                island.islandNumber ===
+                                    gameContext.game.players[
+                                        PlayerDesignator.PLAYER_B
+                                    ].netIsland
+                                    ? '🥅'
+                                    : ''}
+                                {island.islandNumber ===
+                                gameContext.game.nextIslandToSink
+                                    ? '⛈️'
+                                    : ''}
+                            </div>
                         </div>
                         <div
                             style={{
