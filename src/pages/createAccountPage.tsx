@@ -1,5 +1,5 @@
 import { CenteredPage } from '../centeredPage';
-import createAccountBackground from '../images/createAccountBackground.jpg';
+import createAccountBackground from '../images/backgrounds/createAccountBackground.jpg';
 import { LogInOrCreateAccountWidget } from '../logInOrCreateAccount';
 
 export const CreateAccountPage = () => {
