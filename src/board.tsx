@@ -100,114 +100,164 @@ const TypeAndCapacityChip = (props: { readonly island: IslandSerialized }) => {
     );
 };
 
-export const Board = (props: BoardProps) => {
+const Character = (props: {
+    readonly character: CharacterSerialized;
+    readonly onClick: (() => void) | undefined;
+    readonly highlight: boolean;
+}) => {
     const gameContext = React.use(GameContext);
 
-    const fontSize = '18px';
+    return (
+        <div
+            style={{
+                alignItems: 'center',
+                background:
+                    props.character.playerDesignator === gameContext.you
+                        ? 'skyblue'
+                        : 'indianred',
+                border: props.highlight ? '3px solid' : '',
+                boxSizing: 'border-box',
+                cursor: props.onClick ? 'pointer' : '',
+                display: 'flex',
+                fontSize: '18px',
+                height: '27px',
+                width: '50px',
+            }}
+            onClick={() => {
+                if (props.onClick) {
+                    props.onClick();
+                }
+            }}
+        >
+            {props.character.tortoise ? Emoji.tortoise : Emoji.person}
+            {props.character.strength}
+        </div>
+    );
+};
+
+const Island = (props: {
+    readonly island: IslandSerialized;
+    readonly highlight: boolean;
+    readonly highlightCharacter: TargetCharacter | undefined;
+    readonly onClick: (() => void) | undefined;
+    readonly onCharacterClicked:
+        | ((character: CharacterSerialized) => void)
+        | undefined;
+}) => {
+    const colors = getIslandColors(props.island);
+
+    const highlightCharacterIndex = props.island.characters.findIndex(
+        (character) => {
+            return (
+                props.island.islandNumber ===
+                    props.highlightCharacter?.islandNumber &&
+                CharacterOperations.equals(
+                    character,
+                    props.highlightCharacter.character,
+                )
+            );
+        },
+    );
+    return (
+        <div
+            key={props.island.islandNumber}
+            style={{ height: '100%', width: '100%' }}
+        >
+            <div
+                style={{
+                    alignItems: 'flex-start',
+                    backgroundImage: getIslandImage(props.island.islandNumber),
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    border: props.highlight
+                        ? `6px solid ${colors.island}`
+                        : `3px solid ${colors.island}`,
+                    boxSizing: 'border-box',
+                    cursor: props.onClick ? 'pointer' : '',
+                    display: 'flex',
+                    fontSize: '18px',
+                    height: '100%',
+                    position: 'relative',
+                    width: '100%',
+                }}
+                onClick={() => {
+                    if (props.onClick) {
+                        props.onClick();
+                    }
+                }}
+            >
+                <IslandNumberChip island={props.island} />
+                <TypeAndCapacityChip island={props.island} />
+            </div>
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                }}
+            >
+                {props.island.characters.map((character, index) => {
+                    return (
+                        <Character
+                            key={index}
+                            character={character}
+                            highlight={index === highlightCharacterIndex}
+                            onClick={
+                                props.onCharacterClicked
+                                    ? () => {
+                                          if (props.onCharacterClicked) {
+                                              props.onCharacterClicked(
+                                                  character,
+                                              );
+                                          }
+                                      }
+                                    : undefined
+                            }
+                        />
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+export const Board = (props: BoardProps) => {
+    const gameContext = React.use(GameContext);
 
     return (
         <CircularContainer
             items={gameContext.game.islands.map((island) => {
-                const colors = getIslandColors(island);
-
-                const highlightCharacterIndex = island.characters.findIndex(
-                    (character) => {
-                        return (
-                            island.islandNumber ===
-                                props.highlightCharacter?.islandNumber &&
-                            CharacterOperations.equals(
-                                character,
-                                props.highlightCharacter.character,
-                            )
-                        );
-                    },
-                );
                 return (
-                    <div
+                    <Island
                         key={island.islandNumber}
-                        style={{ height: '100%', width: '100%' }}
-                    >
-                        <div
-                            style={{
-                                alignItems: 'flex-start',
-                                backgroundImage: getIslandImage(
-                                    island.islandNumber,
-                                ),
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                backgroundSize: 'cover',
-                                border:
-                                    island.islandNumber ===
-                                    props.highlightIslandNumber
-                                        ? `6px solid ${colors.island}`
-                                        : `3px solid ${colors.island}`,
-                                boxSizing: 'border-box',
-                                cursor: props.onIslandClicked ? 'pointer' : '',
-                                display: 'flex',
-                                fontSize,
-                                height: '100%',
-                                position: 'relative',
-                                width: '100%',
-                            }}
-                            onClick={() => {
-                                if (props.onIslandClicked) {
-                                    props.onIslandClicked(island);
-                                }
-                            }}
-                        >
-                            <IslandNumberChip island={island} />
-                            <TypeAndCapacityChip island={island} />
-                        </div>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            {island.characters.map((character, index) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            alignItems: 'center',
-                                            background:
-                                                character.playerDesignator ===
-                                                gameContext.you
-                                                    ? 'skyblue'
-                                                    : 'indianred',
-                                            border:
-                                                index ===
-                                                highlightCharacterIndex
-                                                    ? '3px solid'
-                                                    : '',
-                                            boxSizing: 'border-box',
-                                            cursor: props.onCharacterClicked
-                                                ? 'pointer'
-                                                : '',
-                                            display: 'flex',
-                                            fontSize,
-                                            height: '27px',
-                                            width: '50px',
-                                        }}
-                                        onClick={() => {
-                                            if (props.onCharacterClicked) {
-                                                props.onCharacterClicked(
-                                                    island,
-                                                    character,
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {character.tortoise
-                                            ? Emoji.tortoise
-                                            : Emoji.person}
-                                        {character.strength}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                        highlight={
+                            props.highlightIslandNumber === island.islandNumber
+                        }
+                        highlightCharacter={props.highlightCharacter}
+                        island={island}
+                        onCharacterClicked={
+                            props.onCharacterClicked
+                                ? (character: CharacterSerialized) => {
+                                      if (props.onCharacterClicked) {
+                                          props.onCharacterClicked(
+                                              island,
+                                              character,
+                                          );
+                                      }
+                                  }
+                                : undefined
+                        }
+                        onClick={
+                            props.onIslandClicked
+                                ? () => {
+                                      if (props.onIslandClicked) {
+                                          props.onIslandClicked(island);
+                                      }
+                                  }
+                                : undefined
+                        }
+                    />
                 );
             })}
         />
