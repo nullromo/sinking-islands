@@ -147,7 +147,7 @@ export const Board = (props: BoardProps) => {
                                                 : '',
                                             display: 'flex',
                                             fontSize,
-                                            height: '28px',
+                                            height: '27px',
                                             width: '50px',
                                         }}
                                         onClick={() => {

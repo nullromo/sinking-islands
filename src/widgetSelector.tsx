@@ -28,40 +28,27 @@ export const WidgetSelector = (props: SetResultProps) => {
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
         return (
-            <>
-                <Board />
-                <div
-                    style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
-                    <ActionOrderTrack />
-                    <Hand />
-                    Waiting for opponent
-                </div>
-            </>
+            <div
+                style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <ActionOrderTrack />
+                <Hand />
+                Waiting for opponent
+            </div>
         );
     }
 
     switch (gameContext.game.gameState) {
         case GameState.AWAIT_CARD_PLACEMENT:
-            return (
-                <>
-                    <Board />
-                    <CardPlacementWidget setResult={props.setResult} />
-                </>
-            );
+            return <CardPlacementWidget setResult={props.setResult} />;
         case GameState.AWAIT_FLYING_FISH_MOVEMENT:
             return <FlyingFishMovementWidget setResult={props.setResult} />;
         case GameState.AWAIT_FOG_TARGET:
-            return (
-                <>
-                    <Board />
-                    <FogTargetWidget setResult={props.setResult} />
-                </>
-            );
+            return <FogTargetWidget setResult={props.setResult} />;
         case GameState.AWAIT_HARPOON_TARGET:
         case GameState.AWAIT_TORTOISE_TARGET:
             return <CharacterTargetWidget setResult={props.setResult} />;
