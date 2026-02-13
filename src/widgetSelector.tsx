@@ -29,9 +29,7 @@ export const WidgetSelector = (props: SetResultProps) => {
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
         return (
             <>
-                <div>
-                    <Board />
-                </div>
+                <Board />
                 <div
                     style={{
                         alignItems: 'center',

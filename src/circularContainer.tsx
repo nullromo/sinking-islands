@@ -48,16 +48,30 @@ export const CircularContainer = (props: CircularContainerProps) => {
     );
 };
 
+/**
+ * See the drawing in the repo for calculations.
+ *
+ * Variable names
+ *   outerWidth    = D
+ *   outerRadius   = R
+ *   numberOfItems = N
+ *   angle         = θ
+ *   layoutRadius  = r
+ *   itemRadius    = r'
+ *   itemWidth     = W
+ */
 export const CircularContainer2 = (props: CircularContainerProps) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     // overall width of the container (diameter of the island circle)
-    const [d, setD] = React.useState(0);
+    const [outerWidth, setOuterWidth] = React.useState(0);
 
     React.useEffect(() => {
         const updateD = () => {
             if (containerRef.current) {
-                setD(containerRef.current.getBoundingClientRect().width);
+                setOuterWidth(
+                    containerRef.current.getBoundingClientRect().width,
+                );
             }
         };
 
@@ -72,16 +86,18 @@ export const CircularContainer2 = (props: CircularContainerProps) => {
         };
     });
 
+    // radius of outer circle
+    const outerRadius = outerWidth / 2;
     // number of items to spread evenly
-    const N = props.items.length;
+    const numberOfItems = props.items.length;
     // main angle to spread each item by
-    const theta = (2 * Math.PI) / N;
+    const angle = (2 * Math.PI) / numberOfItems;
     // radius of the container
-    const r = d / 2 / (1 + Math.sin(theta / 2));
+    const layoutRadius = outerRadius / (1 + Math.sin(angle / 2));
     // radius of the zone of each item (r prime)
-    const rp = r * Math.sin(theta / 2);
+    const itemRadius = layoutRadius * Math.sin(angle / 2);
     // width of inscribed square in the zone
-    const W = (2 * rp) / Math.sqrt(2);
+    const itemWidth = (2 * itemRadius) / Math.sqrt(2);
 
     const containerStyle: CSSWithVariables = {
         aspectRatio: 1,
@@ -96,27 +112,27 @@ export const CircularContainer2 = (props: CircularContainerProps) => {
     return (
         <div ref={containerRef} style={containerStyle}>
             {props.items.map((item, i) => {
-                const rotationAmount = i * theta;
+                const rotationAmount = i * angle;
                 const itemContainerStyle: CSSWithVariables = {
                     alignItems: 'center',
                     border: '1px solid',
                     borderRadius: '50%',
                     display: 'flex',
-                    height: `${rp * 2}px`,
+                    height: `${itemRadius * 2}px`,
                     justifyContent: 'center',
-                    left: `calc(50% - ${rp}px)`,
+                    left: `calc(50% - ${itemRadius}px)`,
                     position: 'absolute',
-                    top: `calc(50% - ${rp}px)`,
-                    transform: `rotate(${rotationAmount}rad) translate(${r}px) rotate(-${rotationAmount}rad)`,
-                    width: `${rp * 2}px`,
+                    top: `calc(50% - ${itemRadius}px)`,
+                    transform: `rotate(${rotationAmount}rad) translate(${layoutRadius}px) rotate(-${rotationAmount}rad)`,
+                    width: `${itemRadius * 2}px`,
                 };
                 return (
                     <div key={i} style={itemContainerStyle}>
                         <div
                             style={{
                                 border: '1px solid',
-                                height: `${W}px`,
-                                width: `${W}px`,
+                                height: `${itemWidth}px`,
+                                width: `${itemWidth}px`,
                             }}
                         />
                     </div>
