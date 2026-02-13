@@ -10,6 +10,7 @@ import { GameContext } from './gameContext';
 import { CharacterOperations } from './server/gameObjects/characterOperations';
 import { getIslandImage } from './images/islandImages';
 import { assertUnreachable } from './util';
+import { Emoji } from './emoji';
 interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
@@ -20,6 +21,85 @@ interface BoardProps {
     readonly highlightIslandNumber?: number;
 }
 
+const getIslandColors = (island: IslandSerialized) => {
+    switch (island.islandType) {
+        case IslandType.SACRED:
+            return { island: '#ffc532', text: 'black' };
+        case IslandType.VOLCANO:
+            return { island: 'crimson', text: 'black' };
+        case IslandType.NORMAL:
+            return { island: 'deepskyblue', text: 'black' };
+        default:
+            return assertUnreachable(island.islandType);
+    }
+};
+
+const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
+    const gameContext = React.use(GameContext);
+
+    const colors = getIslandColors(props.island);
+
+    return (
+        <div
+            style={{
+                background: colors.island,
+                borderBottom: `3px solid ${colors.island}`,
+                borderRadius: '4px',
+                borderRight: `3px solid ${colors.island}`,
+                color: colors.text,
+                fontSize: '14pt',
+                left: '-10px',
+                padding: '3px 3px 0px 6px',
+                position: 'absolute',
+                top: '-12px',
+            }}
+        >
+            <b>{`${props.island.islandNumber} `}</b>
+            {props.island.islandNumber ===
+                gameContext.game.players[PlayerDesignator.PLAYER_A]
+                    .pilingsIsland ||
+            props.island.islandNumber ===
+                gameContext.game.players[PlayerDesignator.PLAYER_B]
+                    .pilingsIsland
+                ? Emoji.house
+                : ''}
+            {props.island.islandNumber ===
+                gameContext.game.players[PlayerDesignator.PLAYER_A].netIsland ||
+            props.island.islandNumber ===
+                gameContext.game.players[PlayerDesignator.PLAYER_B].netIsland
+                ? Emoji.net
+                : ''}
+            {props.island.islandNumber === gameContext.game.nextIslandToSink
+                ? Emoji.storm
+                : ''}
+        </div>
+    );
+};
+
+const TypeAndCapacityChip = (props: { readonly island: IslandSerialized }) => {
+    return (
+        <div
+            style={{
+                background: getIslandColors(props.island).island,
+                bottom: '-3px',
+                fontSize: '12pt',
+                padding: '0 1px 3px 0',
+                position: 'absolute',
+                right: '-3px',
+            }}
+        >
+            <span style={{ color: 'transparent', textShadow: '0 0 0 black' }}>
+                {props.island.smallCapacity ? Emoji.alone : Emoji.together}
+            </span>
+            {props.island.islandType === IslandType.SACRED
+                ? Emoji.pray
+                : props.island.islandType === IslandType.VOLCANO
+                  ? Emoji.volcano
+                  : ''}
+        </div>
+    );
+};
+
 export const Board = (props: BoardProps) => {
     const gameContext = React.use(GameContext);
 
@@ -28,18 +108,7 @@ export const Board = (props: BoardProps) => {
     return (
         <CircularContainer
             items={gameContext.game.islands.map((island) => {
-                const [islandColor, textColor] = (() => {
-                    switch (island.islandType) {
-                        case IslandType.SACRED:
-                            return ['#ffc532', 'black'];
-                        case IslandType.VOLCANO:
-                            return ['crimson', 'black'];
-                        case IslandType.NORMAL:
-                            return ['deepskyblue', 'black'];
-                        default:
-                            return assertUnreachable(island.islandType);
-                    }
-                })();
+                const colors = getIslandColors(island);
 
                 const highlightCharacterIndex = island.characters.findIndex(
                     (character) => {
@@ -70,8 +139,8 @@ export const Board = (props: BoardProps) => {
                                 border:
                                     island.islandNumber ===
                                     props.highlightIslandNumber
-                                        ? `6px solid ${islandColor}`
-                                        : `3px solid ${islandColor}`,
+                                        ? `6px solid ${colors.island}`
+                                        : `3px solid ${colors.island}`,
                                 boxSizing: 'border-box',
                                 cursor: props.onIslandClicked ? 'pointer' : '',
                                 display: 'flex',
@@ -86,70 +155,8 @@ export const Board = (props: BoardProps) => {
                                 }
                             }}
                         >
-                            <div
-                                style={{
-                                    background: islandColor,
-                                    borderBottom: `3px solid ${islandColor}`,
-                                    borderRadius: '4px',
-                                    borderRight: `3px solid ${islandColor}`,
-                                    color: textColor,
-                                    fontSize: '14pt',
-                                    left: '-10px',
-                                    padding: '3px 3px 0px 6px',
-                                    position: 'absolute',
-                                    top: '-12px',
-                                }}
-                            >
-                                <b>{`${island.islandNumber} `}</b>
-                                {island.islandNumber ===
-                                    gameContext.game.players[
-                                        PlayerDesignator.PLAYER_A
-                                    ].pilingsIsland ||
-                                island.islandNumber ===
-                                    gameContext.game.players[
-                                        PlayerDesignator.PLAYER_B
-                                    ].pilingsIsland
-                                    ? '🏠'
-                                    : ''}
-                                {island.islandNumber ===
-                                    gameContext.game.players[
-                                        PlayerDesignator.PLAYER_A
-                                    ].netIsland ||
-                                island.islandNumber ===
-                                    gameContext.game.players[
-                                        PlayerDesignator.PLAYER_B
-                                    ].netIsland
-                                    ? '🥅'
-                                    : ''}
-                                {island.islandNumber ===
-                                gameContext.game.nextIslandToSink
-                                    ? '⛈️'
-                                    : ''}
-                            </div>
-                            <div
-                                style={{
-                                    background: islandColor,
-                                    bottom: '-3px',
-                                    fontSize: '12pt',
-                                    padding: '0 1px 3px 0',
-                                    position: 'absolute',
-                                    right: '-3px',
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        color: 'transparent',
-                                        textShadow: '0 0 0 black',
-                                    }}
-                                >
-                                    {island.smallCapacity ? '👤' : '👥'}
-                                </span>
-                                {island.islandType === IslandType.SACRED
-                                    ? '🙏🏼'
-                                    : island.islandType === IslandType.VOLCANO
-                                      ? '🌋'
-                                      : ''}
-                            </div>
+                            <IslandNumberChip island={island} />
+                            <TypeAndCapacityChip island={island} />
                         </div>
                         <div
                             style={{
@@ -192,7 +199,9 @@ export const Board = (props: BoardProps) => {
                                             }
                                         }}
                                     >
-                                        {character.tortoise ? '🐢' : '🧍'}
+                                        {character.tortoise
+                                            ? Emoji.tortoise
+                                            : Emoji.person}
                                         {character.strength}
                                     </div>
                                 );
