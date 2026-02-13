@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CircularContainer, CircularContainer2 } from './circularContainer';
+import { CircularContainer } from './circularContainer';
 import type {
     CharacterSerialized,
     IslandSerialized,
@@ -25,7 +25,7 @@ export const Board = (props: BoardProps) => {
     const fontSize = '18px';
 
     return (
-        <CircularContainer2
+        <CircularContainer
             items={gameContext.game.islands.map((island) => {
                 const islandColor =
                     island.islandType === IslandType.SACRED
@@ -47,7 +47,10 @@ export const Board = (props: BoardProps) => {
                     },
                 );
                 return (
-                    <div key={island.islandNumber}>
+                    <div
+                        key={island.islandNumber}
+                        style={{ height: '100%', width: '100%' }}
+                    >
                         <div
                             style={{
                                 alignItems: 'flex-start',
@@ -57,7 +60,6 @@ export const Board = (props: BoardProps) => {
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: 'cover',
-                                //background: islandColor,
                                 border:
                                     island.islandNumber ===
                                     props.highlightIslandNumber
@@ -67,8 +69,8 @@ export const Board = (props: BoardProps) => {
                                 cursor: props.onIslandClicked ? 'pointer' : '',
                                 display: 'flex',
                                 fontSize,
-                                height: '120px',
-                                width: '120px',
+                                height: '100%',
+                                width: '100%',
                             }}
                             onClick={() => {
                                 if (props.onIslandClicked) {

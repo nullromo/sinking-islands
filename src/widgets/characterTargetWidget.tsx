@@ -12,8 +12,7 @@ import { withServerCalls } from '../withServerCalls';
 import { GameActionType } from '../gameActionTypes';
 
 interface CharacterTargetWidgetProps
-    extends InjectedServerCallsProps,
-        SetResultProps {
+    extends InjectedServerCallsProps, SetResultProps {
     //
 }
 export const CharacterTargetWidget = withServerCalls(
@@ -57,7 +56,6 @@ export const CharacterTargetWidget = withServerCalls(
                         }
                     }}
                 />
-                {/*
                 <ActionOrderTrack />
                 <Hand />
                 <div
@@ -97,7 +95,6 @@ export const CharacterTargetWidget = withServerCalls(
                 >
                     Submit
                 </button>
-                */}
             </>
         );
     },

@@ -54,12 +54,11 @@ const GamePageInner = () => {
             <div
                 style={{
                     alignItems: 'center',
-                    background: 'yellow',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    maxHeight: '90vh',
-                    maxWidth: '90vh',
+                    maxHeight: '100vh',
+                    maxWidth: '100vh',
                     width: '100%',
                 }}
             >
