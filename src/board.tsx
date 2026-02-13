@@ -9,6 +9,7 @@ import { IslandType, PlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
 import { CharacterOperations } from './server/gameObjects/characterOperations';
 import { getIslandImage } from './images/islandImages';
+import { assertUnreachable } from './util';
 interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
@@ -27,12 +28,18 @@ export const Board = (props: BoardProps) => {
     return (
         <CircularContainer
             items={gameContext.game.islands.map((island) => {
-                const islandColor =
-                    island.islandType === IslandType.SACRED
-                        ? 'gold'
-                        : island.islandType === IslandType.VOLCANO
-                          ? 'sandybrown'
-                          : 'mediumseagreen';
+                const [islandColor, textColor] = (() => {
+                    switch (island.islandType) {
+                        case IslandType.SACRED:
+                            return ['#ffc532', 'black'];
+                        case IslandType.VOLCANO:
+                            return ['crimson', 'black'];
+                        case IslandType.NORMAL:
+                            return ['deepskyblue', 'black'];
+                        default:
+                            return assertUnreachable(island.islandType);
+                    }
+                })();
 
                 const highlightCharacterIndex = island.characters.findIndex(
                     (character) => {
@@ -70,6 +77,7 @@ export const Board = (props: BoardProps) => {
                                 display: 'flex',
                                 fontSize,
                                 height: '100%',
+                                position: 'relative',
                                 width: '100%',
                             }}
                             onClick={() => {
@@ -82,16 +90,17 @@ export const Board = (props: BoardProps) => {
                                 style={{
                                     background: islandColor,
                                     borderBottom: `3px solid ${islandColor}`,
+                                    borderRadius: '4px',
                                     borderRight: `3px solid ${islandColor}`,
+                                    color: textColor,
+                                    fontSize: '14pt',
+                                    left: '-10px',
+                                    padding: '3px 3px 0px 6px',
+                                    position: 'absolute',
+                                    top: '-12px',
                                 }}
                             >
-                                <b>{`${island.islandNumber}`}</b>
-                                {island.smallCapacity ? '👤' : '👥'}
-                                {island.islandType === IslandType.SACRED
-                                    ? '🙏'
-                                    : island.islandType === IslandType.VOLCANO
-                                      ? '🌋'
-                                      : ''}
+                                <b>{`${island.islandNumber} `}</b>
                                 {island.islandNumber ===
                                     gameContext.game.players[
                                         PlayerDesignator.PLAYER_A
@@ -116,6 +125,30 @@ export const Board = (props: BoardProps) => {
                                 gameContext.game.nextIslandToSink
                                     ? '⛈️'
                                     : ''}
+                            </div>
+                            <div
+                                style={{
+                                    background: islandColor,
+                                    bottom: '-3px',
+                                    fontSize: '12pt',
+                                    padding: '0 1px 3px 0',
+                                    position: 'absolute',
+                                    right: '-3px',
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        color: 'transparent',
+                                        textShadow: '0 0 0 black',
+                                    }}
+                                >
+                                    {island.smallCapacity ? '👤' : '👥'}
+                                </span>
+                                {island.islandType === IslandType.SACRED
+                                    ? '🙏🏼'
+                                    : island.islandType === IslandType.VOLCANO
+                                      ? '🌋'
+                                      : ''}
                             </div>
                         </div>
                         <div
