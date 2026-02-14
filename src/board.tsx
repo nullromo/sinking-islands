@@ -42,36 +42,50 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
     return (
         <div
             style={{
-                background: colors.island,
-                borderBottom: `3px solid ${colors.island}`,
+                border: '1px solid',
                 borderRadius: '4px',
-                borderRight: `3px solid ${colors.island}`,
-                color: colors.text,
-                fontSize: '14pt',
+                height: '30px',
                 left: '-10px',
-                padding: '3px 3px 0px 6px',
                 position: 'absolute',
+                textAlign: 'center',
                 top: '-12px',
+                width: '30px',
             }}
         >
-            <b>{`${props.island.islandNumber} `}</b>
-            {props.island.islandNumber ===
-                gameContext.game.players[PlayerDesignator.PLAYER_A]
-                    .pilingsIsland ||
-            props.island.islandNumber ===
-                gameContext.game.players[PlayerDesignator.PLAYER_B]
-                    .pilingsIsland
-                ? Emoji.house
-                : ''}
-            {props.island.islandNumber ===
-                gameContext.game.players[PlayerDesignator.PLAYER_A].netIsland ||
-            props.island.islandNumber ===
-                gameContext.game.players[PlayerDesignator.PLAYER_B].netIsland
-                ? Emoji.net
-                : ''}
-            {props.island.islandNumber === gameContext.game.nextIslandToSink
-                ? Emoji.storm
-                : ''}
+            <div
+                style={{
+                    alignItems: 'center',
+                    background: colors.island,
+                    borderRadius: '2px',
+                    color: colors.text,
+                    display: 'flex',
+                    fontSize: '14pt',
+                    height: '100%',
+                    justifyContent: 'center',
+                    width: '100%',
+                }}
+            >
+                <b>{`${props.island.islandNumber} `}</b>
+                {props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_A]
+                        .pilingsIsland ||
+                props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_B]
+                        .pilingsIsland
+                    ? Emoji.house
+                    : ''}
+                {props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_A]
+                        .netIsland ||
+                props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_B]
+                        .netIsland
+                    ? Emoji.net
+                    : ''}
+                {props.island.islandNumber === gameContext.game.nextIslandToSink
+                    ? Emoji.storm
+                    : ''}
+            </div>
         </div>
     );
 };
