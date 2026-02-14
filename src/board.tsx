@@ -11,6 +11,7 @@ import { CharacterOperations } from './server/gameObjects/characterOperations';
 import { getIslandImage } from './images/islandImages';
 import { assertUnreachable } from './util';
 import { Emoji } from './emoji';
+import { getCharacterImage } from './images/characterImages';
 interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
@@ -125,11 +126,20 @@ const Character = (props: {
         <div
             style={{
                 alignItems: 'center',
-                background:
+                backgroundImage: getCharacterImage(
+                    gameContext.you,
+                    props.character,
+                ),
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                border: '4px solid',
+                borderColor:
                     props.character.playerDesignator === gameContext.you
                         ? 'skyblue'
                         : 'indianred',
-                border: props.highlight ? '3px solid' : '',
+                borderRadius: '50%',
+                //border: props.highlight ? '3px solid' : '',
                 boxSizing: 'border-box',
                 cursor: props.onClick ? 'pointer' : '',
                 display: 'flex',
