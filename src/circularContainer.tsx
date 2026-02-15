@@ -1,10 +1,15 @@
 import * as React from 'react';
+import type { IslandSerialized } from './commonTypes';
 import './gamePage.css';
 
 type CSSWithVariables = React.CSSProperties & Record<string, number | string>;
 
 interface CircularContainerProps {
-    readonly items: React.ReactNode[];
+    readonly items: IslandSerialized[];
+    readonly renderItem: (
+        item: IslandSerialized,
+        itemWidth: number,
+    ) => React.JSX.Element;
 }
 
 /**
@@ -45,6 +50,15 @@ export const CircularContainer = (props: CircularContainerProps) => {
         };
     });
 
+    // After doing all the calculations, there is still just kind of a gap
+    // between the islands. This is because the circumscribed buffer zone
+    // circle method is not the most optimal for packing squares. So because of
+    // this, all the calculations are done and then there's just a scaling
+    // factor applied to all the items afterwards. This makes it scale and
+    // arrange properly, but still minimize space between and maximize
+    // individual item size.
+    const adjustmentFactor = 1;
+
     // radius of outer circle
     const outerRadius = outerWidth / 2;
     // number of items to spread evenly
@@ -54,7 +68,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
     // radius of the container
     const layoutRadius = outerRadius / (1 + Math.sin(angle / 2));
     // radius of the zone of each item (r prime)
-    const itemRadius = layoutRadius * Math.sin(angle / 2);
+    const itemRadius = layoutRadius * Math.sin(angle / 2) * adjustmentFactor;
     // width of inscribed square in the zone
     const itemWidth = (2 * itemRadius) / Math.sqrt(2);
 
@@ -71,6 +85,8 @@ export const CircularContainer = (props: CircularContainerProps) => {
                 const rotationAmount = i * angle;
                 const itemContainerStyle: CSSWithVariables = {
                     alignItems: 'center',
+                    border: '1px solid',
+                    borderRadius: '50%',
                     display: 'flex',
                     height: `${itemRadius * 2}px`,
                     justifyContent: 'center',
@@ -88,7 +104,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
                                 width: `${itemWidth}px`,
                             }}
                         >
-                            {item}
+                            {props.renderItem(item, itemWidth)}
                         </div>
                     </div>
                 );

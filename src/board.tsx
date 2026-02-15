@@ -12,6 +12,7 @@ import { getIslandImage } from './images/islandImages';
 import { assertUnreachable } from './util';
 import { Emoji } from './emoji';
 import { getCharacterImage } from './images/characterImages';
+
 interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
@@ -45,12 +46,12 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
             style={{
                 border: '1px solid',
                 borderRadius: '4px',
-                height: '30px',
-                left: '-10px',
+                height: '20px',
+                left: '-6px',
                 position: 'absolute',
                 textAlign: 'center',
-                top: '-12px',
-                width: '30px',
+                top: '-7px',
+                width: '20px',
             }}
         >
             <div
@@ -60,7 +61,7 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
                     borderRadius: '2px',
                     color: colors.text,
                     display: 'flex',
-                    fontSize: '14pt',
+                    fontSize: '12pt',
                     height: '100%',
                     justifyContent: 'center',
                     width: '100%',
@@ -116,36 +117,31 @@ const TypeAndCapacityChip = (props: { readonly island: IslandSerialized }) => {
 };
 
 const Character = (props: {
+    readonly width: number;
     readonly character: CharacterSerialized;
     readonly onClick: (() => void) | undefined;
     readonly highlight: boolean;
 }) => {
     const gameContext = React.use(GameContext);
 
+    const characterColor =
+        props.character.playerDesignator === gameContext.you
+            ? 'dodgerblue'
+            : 'red';
+
     return (
         <div
             style={{
                 alignItems: 'center',
-                backgroundImage: getCharacterImage(
-                    gameContext.you,
-                    props.character,
-                ),
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover',
-                border: '4px solid',
-                borderColor:
-                    props.character.playerDesignator === gameContext.you
-                        ? 'skyblue'
-                        : 'indianred',
+                background: characterColor,
+                border: `2px solid ${characterColor}`,
                 borderRadius: '50%',
-                //border: props.highlight ? '3px solid' : '',
-                boxSizing: 'border-box',
-                cursor: props.onClick ? 'pointer' : '',
+                boxShadow: '2px 2px',
                 display: 'flex',
-                fontSize: '18px',
-                height: '27px',
-                width: '50px',
+                flexDirection: 'column',
+                height: props.width,
+                position: 'relative',
+                width: props.width,
             }}
             onClick={() => {
                 if (props.onClick) {
@@ -153,13 +149,48 @@ const Character = (props: {
                 }
             }}
         >
-            {props.character.tortoise ? Emoji.tortoise : Emoji.person}
-            {props.character.strength}
+            <div
+                style={{
+                    alignItems: 'center',
+                    backgroundImage: getCharacterImage(
+                        gameContext.you,
+                        props.character,
+                    ),
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    borderRadius: '50%',
+                    boxSizing: 'border-box',
+                    cursor: props.onClick ? 'pointer' : '',
+                    display: 'flex',
+                    height: props.width,
+                    width: props.width,
+                }}
+            />
+            <div
+                style={{
+                    alignItems: 'center',
+                    background: 'black',
+                    borderRadius: '50%',
+                    color: 'white',
+                    display: 'flex',
+                    height: '20px',
+                    justifyContent: 'center',
+                    left: 0,
+                    position: 'absolute',
+                    top: 0,
+                    width: '20px',
+                }}
+            >
+                {props.character.tortoise ? Emoji.tortoise : ''}
+                {props.character.strength / 10}
+            </div>
         </div>
     );
 };
 
 const Island = (props: {
+    readonly width: number;
     readonly island: IslandSerialized;
     readonly highlight: boolean;
     readonly highlightCharacter: TargetCharacter | undefined;
@@ -189,7 +220,7 @@ const Island = (props: {
         >
             <div
                 style={{
-                    alignItems: 'flex-start',
+                    alignItems: 'flex-end',
                     backgroundImage: getIslandImage(props.island.islandNumber),
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -213,34 +244,42 @@ const Island = (props: {
             >
                 <IslandNumberChip island={props.island} />
                 <TypeAndCapacityChip island={props.island} />
-            </div>
-            <div
-                style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                }}
-            >
-                {props.island.characters.map((character, index) => {
-                    return (
-                        <Character
-                            key={index}
-                            character={character}
-                            highlight={index === highlightCharacterIndex}
-                            onClick={
-                                props.onCharacterClicked
-                                    ? () => {
-                                          if (props.onCharacterClicked) {
-                                              props.onCharacterClicked(
-                                                  character,
-                                              );
+                <div
+                    style={{
+                        alignContent: 'flex-start',
+                        background: '#abcd2399',
+                        bottom: '-12px',
+                        display: 'flex',
+                        flexDirection: 'column-reverse',
+                        flexWrap: 'wrap',
+                        height: `${(props.width * 3) / 4}px`,
+                        left: '-12px',
+                        position: 'absolute',
+                        width: `${props.width}px`,
+                    }}
+                >
+                    {props.island.characters.map((character, index) => {
+                        return (
+                            <Character
+                                key={index}
+                                character={character}
+                                highlight={index === highlightCharacterIndex}
+                                width={props.width / 3}
+                                onClick={
+                                    props.onCharacterClicked
+                                        ? () => {
+                                              if (props.onCharacterClicked) {
+                                                  props.onCharacterClicked(
+                                                      character,
+                                                  );
+                                              }
                                           }
-                                      }
-                                    : undefined
-                            }
-                        />
-                    );
-                })}
+                                        : undefined
+                                }
+                            />
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
@@ -251,7 +290,8 @@ export const Board = (props: BoardProps) => {
 
     return (
         <CircularContainer
-            items={gameContext.game.islands.map((island) => {
+            items={gameContext.game.islands}
+            renderItem={(island, itemWidth) => {
                 return (
                     <Island
                         key={island.islandNumber}
@@ -260,6 +300,7 @@ export const Board = (props: BoardProps) => {
                         }
                         highlightCharacter={props.highlightCharacter}
                         island={island}
+                        width={itemWidth}
                         onCharacterClicked={
                             props.onCharacterClicked
                                 ? (character: CharacterSerialized) => {
@@ -283,7 +324,7 @@ export const Board = (props: BoardProps) => {
                         }
                     />
                 );
-            })}
+            }}
         />
     );
 };
