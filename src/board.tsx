@@ -128,6 +128,7 @@ const Character = (props: {
     readonly character: CharacterSerialized;
     readonly onClick: (() => void) | undefined;
     readonly highlight: boolean;
+    readonly shift: number;
 }) => {
     const gameContext = React.use(GameContext);
 
@@ -147,7 +148,8 @@ const Character = (props: {
                 display: 'flex',
                 flexDirection: 'column',
                 height: props.width,
-                position: 'relative',
+                position: 'absolute',
+                transform: `translatex(${props.shift}px)`,
                 width: props.width,
             }}
             onClick={() => {
@@ -221,6 +223,46 @@ const Island = (props: {
             );
         },
     );
+
+    const characterRowStyle: React.CSSProperties = {
+        alignContent: 'flex-start',
+        bottom: `${props.width / 6}px`,
+        display: 'flex',
+        flexDirection: 'column-reverse',
+        flexWrap: 'wrap',
+        height: `${props.width / 3}px`,
+        justifyContent: 'center',
+        left: `-${(props.width * 2) / 11}px`,
+        position: 'absolute',
+    };
+
+    const renderCharacters = (playerDesignator: PlayerDesignator) => {
+        return props.island.characters
+            .filter((character) => {
+                return character.playerDesignator === playerDesignator;
+            })
+            .map((character, index) => {
+                return (
+                    <Character
+                        key={index}
+                        character={character}
+                        highlight={index === highlightCharacterIndex}
+                        shift={(index * props.width) / 7}
+                        width={(props.width * 91) / 300}
+                        onClick={
+                            props.onCharacterClicked
+                                ? () => {
+                                      if (props.onCharacterClicked) {
+                                          props.onCharacterClicked(character);
+                                      }
+                                  }
+                                : undefined
+                        }
+                    />
+                );
+            });
+    };
+
     return (
         <div
             key={props.island.islandNumber}
@@ -256,42 +298,16 @@ const Island = (props: {
                     island={props.island}
                     islandWidth={props.width}
                 />
+                <div style={characterRowStyle}>
+                    {renderCharacters(PlayerDesignator.PLAYER_A)}
+                </div>
                 <div
                     style={{
-                        alignContent: 'flex-start',
-                        background: '#abcd2399',
-                        bottom: `${props.width / 6}px`,
-                        display: 'flex',
-                        flexDirection: 'column-reverse',
-                        flexWrap: 'wrap',
-                        height: `${(props.width * 2) / 3}px`,
-                        justifyContent: 'center',
-                        left: `-${props.width / 11}px`,
-                        position: 'absolute',
-                        width: `${(props.width * 13) / 11}px`,
+                        ...characterRowStyle,
+                        bottom: `${(props.width / 6) * 3}px`,
                     }}
                 >
-                    {props.island.characters.map((character, index) => {
-                        return (
-                            <Character
-                                key={index}
-                                character={character}
-                                highlight={index === highlightCharacterIndex}
-                                width={(props.width * 91) / 300}
-                                onClick={
-                                    props.onCharacterClicked
-                                        ? () => {
-                                              if (props.onCharacterClicked) {
-                                                  props.onCharacterClicked(
-                                                      character,
-                                                  );
-                                              }
-                                          }
-                                        : undefined
-                                }
-                            />
-                        );
-                    })}
+                    {renderCharacters(PlayerDesignator.PLAYER_B)}
                 </div>
             </div>
         </div>
