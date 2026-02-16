@@ -42,22 +42,22 @@ export namespace GameOperations {
 
         // create and randomize all the characters
         const characters: CharacterSerialized[] = shuffleArray([
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_A, 40),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 20),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 30),
-            CharacterOperations.create(PlayerDesignator.PLAYER_B, 40),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_A, 4),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+            CharacterOperations.create(PlayerDesignator.PLAYER_B, 4),
         ]);
 
         // add one character to each island

@@ -191,7 +191,7 @@ const Character = (props: {
                 }}
             >
                 {props.character.tortoise ? Emoji.tortoise : ''}
-                {props.character.strength / 10}
+                {props.character.strength}
             </div>
         </div>
     );
