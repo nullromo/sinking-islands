@@ -134,7 +134,7 @@ const Character = (props: {
             style={{
                 alignItems: 'center',
                 background: characterColor,
-                border: `2px solid ${characterColor}`,
+                border: `${0.05 * props.width}px solid ${characterColor}`,
                 borderRadius: '50%',
                 boxShadow: '2px 2px',
                 display: 'flex',
@@ -174,12 +174,13 @@ const Character = (props: {
                     borderRadius: '50%',
                     color: 'white',
                     display: 'flex',
-                    height: '20px',
+                    fontSize: `${props.width / 2.8}px`,
+                    height: `${props.width / 2.4}px`,
                     justifyContent: 'center',
                     left: 0,
                     position: 'absolute',
                     top: 0,
-                    width: '20px',
+                    width: `${props.width / 2.4}px`,
                 }}
             >
                 {props.character.tortoise ? Emoji.tortoise : ''}
@@ -248,12 +249,12 @@ const Island = (props: {
                     style={{
                         alignContent: 'flex-start',
                         background: '#abcd2399',
-                        bottom: '-12px',
+                        bottom: `-${props.width / 11}px`,
                         display: 'flex',
                         flexDirection: 'column-reverse',
                         flexWrap: 'wrap',
                         height: `${(props.width * 3) / 4}px`,
-                        left: '-12px',
+                        left: `-${props.width / 11}px`,
                         position: 'absolute',
                         width: `${props.width}px`,
                     }}
