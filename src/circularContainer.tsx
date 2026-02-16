@@ -85,7 +85,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
                 const rotationAmount = i * angle;
                 const itemContainerStyle: CSSWithVariables = {
                     alignItems: 'center',
-                    border: '1px solid',
+                    //border: '1px solid',
                     borderRadius: '50%',
                     display: 'flex',
                     height: `${itemRadius * 2}px`,
