@@ -36,7 +36,10 @@ const getIslandColors = (island: IslandSerialized) => {
     }
 };
 
-const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
+const IslandNumberChip = (props: {
+    readonly island: IslandSerialized;
+    readonly islandWidth: number;
+}) => {
     const gameContext = React.use(GameContext);
 
     const colors = getIslandColors(props.island);
@@ -46,12 +49,12 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
             style={{
                 border: '1px solid',
                 borderRadius: '4px',
-                height: '20px',
-                left: '-6px',
+                height: `${props.islandWidth / 7}px`,
+                left: `-${(props.islandWidth * 3) / 70}px`,
                 position: 'absolute',
                 textAlign: 'center',
-                top: '-7px',
-                width: '20px',
+                top: `-${props.islandWidth / 20}px`,
+                width: `${props.islandWidth / 7}px`,
             }}
         >
             <div
@@ -61,7 +64,7 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
                     borderRadius: '2px',
                     color: colors.text,
                     display: 'flex',
-                    fontSize: '12pt',
+                    fontSize: `${props.islandWidth / 8.75}px`,
                     height: '100%',
                     justifyContent: 'center',
                     width: '100%',
@@ -92,13 +95,17 @@ const IslandNumberChip = (props: { readonly island: IslandSerialized }) => {
     );
 };
 
-const TypeAndCapacityChip = (props: { readonly island: IslandSerialized }) => {
+const TypeAndCapacityChip = (props: {
+    readonly island: IslandSerialized;
+    readonly islandWidth: number;
+}) => {
     return (
         <div
             style={{
                 background: getIslandColors(props.island).island,
                 bottom: '-3px',
-                fontSize: '12pt',
+                fontSize: `${props.islandWidth / 8.75}px`,
+                height: `${props.islandWidth / 6}px`,
                 padding: '0 1px 3px 0',
                 position: 'absolute',
                 right: '-3px',
@@ -226,9 +233,7 @@ const Island = (props: {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
-                    border: props.highlight
-                        ? `6px solid ${colors.island}`
-                        : `3px solid ${colors.island}`,
+                    border: `${(props.width * 3) / 140}px solid ${colors.island}`,
                     boxSizing: 'border-box',
                     cursor: props.onClick ? 'pointer' : '',
                     display: 'flex',
@@ -243,20 +248,27 @@ const Island = (props: {
                     }
                 }}
             >
-                <IslandNumberChip island={props.island} />
-                <TypeAndCapacityChip island={props.island} />
+                <IslandNumberChip
+                    island={props.island}
+                    islandWidth={props.width}
+                />
+                <TypeAndCapacityChip
+                    island={props.island}
+                    islandWidth={props.width}
+                />
                 <div
                     style={{
                         alignContent: 'flex-start',
                         background: '#abcd2399',
-                        bottom: `-${props.width / 11}px`,
+                        bottom: `${props.width / 6}px`,
                         display: 'flex',
                         flexDirection: 'column-reverse',
                         flexWrap: 'wrap',
-                        height: `${(props.width * 3) / 4}px`,
+                        height: `${(props.width * 2) / 3}px`,
+                        justifyContent: 'center',
                         left: `-${props.width / 11}px`,
                         position: 'absolute',
-                        width: `${props.width}px`,
+                        width: `${(props.width * 13) / 11}px`,
                     }}
                 >
                     {props.island.characters.map((character, index) => {
@@ -265,7 +277,7 @@ const Island = (props: {
                                 key={index}
                                 character={character}
                                 highlight={index === highlightCharacterIndex}
-                                width={props.width / 3}
+                                width={(props.width * 91) / 300}
                                 onClick={
                                     props.onCharacterClicked
                                         ? () => {
