@@ -1,3 +1,6 @@
 FROM node:latest
 
-RUN npm i run-p
+COPY . /work
+WORKDIR /work
+
+RUN npm i npm-run-all
