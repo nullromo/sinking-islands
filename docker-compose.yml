@@ -1,0 +1,10 @@
+services:
+    sinking-islands-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+    sinking-islands-redis:
+        image: redis:7
