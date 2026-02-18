@@ -35,3 +35,4 @@ CMD ["nginx", "-g", "daemon off;"]
 
 # set up backend
 RUN pm2 start sinking-islands-ecosystem.config.js
+RUN pm2 save
