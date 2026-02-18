@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     nginx \
     nodejs \
     npm \
+    redis-tools \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
