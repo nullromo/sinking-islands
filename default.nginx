@@ -1,13 +1,9 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-
     root /sinking-islands/build;
-
-    index index.html index.htm index.nginx-debian.html;
-
+    index index.html;
     server_name _;
-
     location / {
         try_files $uri $uri/ =404;
     }

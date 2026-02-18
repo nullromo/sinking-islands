@@ -26,6 +26,6 @@ COPY . /sinking-islands
 RUN npm run build
 
 # set up nginx
-RUN chmod 644 nginx.config
-RUN mv nginx.config /etc/nginx/sites-available/default
+RUN chmod 644 default.nginx
+RUN mv default.nginx /etc/nginx/sites-available/default
 CMD ["nginx", "-g", "daemon off;"]
