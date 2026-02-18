@@ -1,0 +1,6 @@
+Session.vim
+node_modules
+.eslintcache
+build
+coverage
+dist
