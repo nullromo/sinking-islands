@@ -16,6 +16,9 @@ WORKDIR /sinking-islands
 # copy package.json and package-lock.json
 COPY package*.json .
 
+# install PM2
+RUN npm install -g pm2
+
 # install dependencies from npm
 RUN npm install-clean
 
@@ -29,3 +32,6 @@ RUN npm run build
 RUN chmod 644 default.nginx
 RUN mv default.nginx /etc/nginx/sites-available/default
 CMD ["nginx", "-g", "daemon off;"]
+
+# set up backend
+RUN pm2 start sinking-islands-ecosystem.config.js
