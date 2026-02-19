@@ -1,6 +1,6 @@
 # primary function is to serve the frontend application and proxy backend
 # requests to the backend container
-FROM nginx:latest
+FROM ubuntu/nginx
 
 # install dependencies from apt
 ENV DEBIAN_FRONTEND=noninteractive

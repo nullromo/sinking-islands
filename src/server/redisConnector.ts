@@ -1,7 +1,7 @@
 import type { RedisClientType } from 'redis';
 import { createClient } from 'redis';
 
-const REDIS_IP_ADDRESS = 'localhost';
+const REDIS_IP_ADDRESS = process.env.REDIS_IP_ADDRESS ?? 'localhost';
 const REDIS_PORT = 6379;
 const REDIS_DATABASE_NUMBER = 7;
 const REDIS_TEST_DATABASE_NUMBER = 6;
