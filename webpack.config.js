@@ -23,10 +23,7 @@ module.exports = [
         },
         resolve: { extensions: ['.tsx', '.ts', '.js'], mainFields: ['main'] },
         mode: 'production',
-        externals: {
-            bcrypt: 'require("bcrypt")',
-            externalsPresets: { node: true },
-        },
+        externals: { externalsPresets: { node: true } },
         optimization: { minimize: true },
     },
 ];

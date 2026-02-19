@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import type { Session, SessionData } from 'express-session';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';
@@ -31,14 +31,20 @@ export namespace UsersAPI {
         }
 
         // create a password hash
-        const passwordHash = await new Promise<string>((resolve, reject) => {
-            bcrypt.hash(password, 10, (error, hash) => {
-                if (error) {
-                    reject(error);
-                }
-                resolve(hash);
-            });
-        });
+        const passwordHash = await new Promise<string | undefined>(
+            (resolve, reject) => {
+                bcrypt.hash(password, 10, (error, hash) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    resolve(hash);
+                });
+            },
+        );
+
+        if (passwordHash === undefined) {
+            throw new Error('Unable to create password hash.');
+        }
 
         // add the user to redis
         await redis.set(key, passwordHash);
@@ -75,7 +81,7 @@ export namespace UsersAPI {
         }
 
         // make sure the given password is correct
-        const passwordCorrect = await new Promise<boolean>(
+        const passwordCorrect = await new Promise<boolean | undefined>(
             (resolve, reject) => {
                 bcrypt.compare(password, passwordHash, (error, result) => {
                     if (error) {
@@ -85,6 +91,9 @@ export namespace UsersAPI {
                 });
             },
         );
+        if (passwordCorrect === undefined) {
+            throw new Error('Unable to check password.');
+        }
         if (!passwordCorrect) {
             throw new Error('Incorrect password.');
         }
