@@ -11,20 +11,12 @@ RUN apt-get update && apt-get install -y \
 # set working directory
 WORKDIR /sinking-islands
 
-# copy package.json and package-lock.json
-COPY package*.json .
-
 # install PM2
 RUN npm install -g pm2
 
-# install dependencies from npm
-RUN npm install-clean
-
-# copy the rest of the repo
-COPY . /sinking-islands
-
-# build application
-RUN npm run build-backend
+# copy and install files
+COPY ./dist /sinking-islands/dist
+COPY ./sinking-islands-ecosystem.config.js /sinking-islands
 
 # run the backend
 CMD ["pm2-runtime", "start", "sinking-islands-ecosystem.config.js"]

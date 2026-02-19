@@ -12,19 +12,10 @@ RUN apt-get update && apt-get install -y \
 # set working directory
 WORKDIR /sinking-islands
 
-# copy package.json and package-lock.json
-COPY package*.json .
+# copy and install files
+COPY ./build /sinking-islands/build
+COPY ./default.nginx /etc/nginx/sites-available/default
+RUN chmod 644 /etc/nginx/sites-available/default
 
-# install dependencies from npm
-RUN npm install-clean
-
-# copy the rest of the repo
-COPY . /sinking-islands
-
-# build application
-RUN npm run build-frontend
-
-# set up nginx
-RUN chmod 644 default.nginx
-RUN mv default.nginx /etc/nginx/sites-available/default
+# run nginx
 CMD ["nginx", "-g", "daemon off;"]
