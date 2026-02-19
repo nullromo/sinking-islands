@@ -1,0 +1,30 @@
+# primary function is to serve the frontend application and proxy backend
+# requests to the backend container
+FROM nginx:latest
+
+# install dependencies from apt
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    vim \
+    redis-tools \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# set working directory
+WORKDIR /sinking-islands
+
+# copy package.json and package-lock.json
+COPY package*.json .
+
+# install dependencies from npm
+RUN npm install-clean
+
+# copy the rest of the repo
+COPY . /sinking-islands
+
+# build application
+RUN npm run build-frontend
+
+# set up nginx
+RUN chmod 644 default.nginx
+RUN mv default.nginx /etc/nginx/sites-available/default
+CMD ["nginx", "-g", "daemon off;"]

@@ -8,10 +8,10 @@ server {
         try_files $uri $uri/ =404;
     }
     location /backend {
-        proxy_pass http://localhost:5151;
+        proxy_pass http://sinking-islands-backend:5151;
     }
     location /socket.io {
-        proxy_pass http://localhost:5151;
+        proxy_pass http://sinking-islands-backend:5151;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }

@@ -1,12 +1,9 @@
-FROM ubuntu:24.04
+FROM node:24
 
 # install dependencies from apt
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     vim \
-    nginx \
-    nodejs \
-    npm \
     redis-tools \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -27,13 +24,7 @@ RUN npm install-clean
 COPY . /sinking-islands
 
 # build application
-RUN npm run build
+RUN npm run build-backend
 
-# set up nginx
-RUN chmod 644 default.nginx
-RUN mv default.nginx /etc/nginx/sites-available/default
-CMD ["nginx", "-g", "daemon off;"]
-
-# set up backend
-RUN pm2 start sinking-islands-ecosystem.config.js
-RUN pm2 save
+# run the backend
+CMD ["pm2-runtime", "start", "sinking-islands-ecosystem.config.js"]
