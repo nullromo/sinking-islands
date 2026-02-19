@@ -25,25 +25,29 @@ export const getCharacterImage = (
     const image = (() => {
         if (character.playerDesignator === you) {
             switch (character.strength) {
-                case 20:
+                case 2:
                     return blue20;
-                case 30:
+                case 3:
                     return blue30;
-                case 40:
+                case 4:
                     return blue40;
                 default:
-                    throw new Error('Invalid strength value');
+                    throw new Error(
+                        `Invalid strength value: ${character.strength}`,
+                    );
             }
         }
         switch (character.strength) {
-            case 20:
+            case 2:
                 return red20;
-            case 30:
+            case 3:
                 return red30;
-            case 40:
+            case 4:
                 return red40;
             default:
-                throw new Error('Invalid strength value');
+                throw new Error(
+                    `Invalid strength value: ${character.strength}`,
+                );
         }
     })();
     return `url(${image})`;
