@@ -13,9 +13,9 @@
     - Data (same as socket payload)
 1. ✅ When a user connects, they still need to get a socket that the server can
    use to update the game state.
-1. Put everything into a docker container and try to run it like that.
-1. Get started with Hetzner with 2 VMs (application and build)
-1. Make a Dokploy instance in Hetzner that will push to the application VM
+1. ✅ Put everything into a docker container and try to run it like that.
+1. ✅ Get started with Hetzner with 2 VMs (application and build)
+1. ✅ Make a Dokploy instance in Hetzner that will push to the application VM
 1. Make a github action that spins up the build server, runs the build, then
    shuts down the build server
     1. AI response:
@@ -62,11 +62,11 @@
               HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
     ```
 
-1. Do I need to use tailscale for DNS? Do I need to get a domain with Namecheap
-   or Cloudflare?
+1. ✅ Get a domain with Namecheap
 1. Clean up all the visuals so that it looks nice when you are playing.
    Including not skipping ahead. Animations one at a time.
 1. Build a tutorial that explains the game.
+1. Do I need to use tailscale for DNS?
 
 ## Visual
 
@@ -82,6 +82,7 @@
     ```
       <svg x="30" y="30" width="100" height="100"><path d="M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10" style="fill:none;stroke:red;stroke-width:3" transform="translate(30, 30) scale(3)"></path></svg>
     ```
+- Should have hover stuff
 
 ## Later Features
 
@@ -92,6 +93,7 @@
 - Run code coverage and tests with CI
 - Add code coverage report to README
 - Actually use `roundsCompleted`
+- Need some way to limit people from creating 1000 accounts or 1000 games
 
 ## things to add tests for
 
