@@ -5,7 +5,7 @@ server {
     index index.html;
     server_name _;
     location / {
-        try_files $uri $uri/ =404;
+        try_files $uri $uri/ /index.html;
     }
     location /backend {
         proxy_pass http://sinking-islands-backend:5151;
