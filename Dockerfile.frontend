@@ -1,4 +1,4 @@
-# use node image to build frontend
+# use node image to build the frontend
 FROM node:24 AS builder
 WORKDIR /sinking-islands
 COPY package*.json /sinking-islands
