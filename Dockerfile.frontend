@@ -1,3 +1,11 @@
+# use node image to build frontend
+FROM node:24 AS builder
+WORKDIR /sinking-islands
+COPY package*.json /sinking-islands
+RUN npm install-clean
+COPY . /sinking-islands
+RUN npm run build-frontend
+
 # primary function is to serve the frontend application and proxy backend
 # requests to the backend container
 FROM ubuntu/nginx
@@ -13,8 +21,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /sinking-islands
 
 # copy and install files
-COPY ./build /sinking-islands/build
-COPY ./default.nginx /etc/nginx/sites-available/default
+COPY --from=builder /sinking-islands/build /sinking-islands/build
+COPY --from=builder /sinking-islands/default.nginx /etc/nginx/sites-available/default
 RUN chmod 644 /etc/nginx/sites-available/default
 
 # run nginx

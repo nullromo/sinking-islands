@@ -1,3 +1,13 @@
+# use node image to build the backend
+FROM node:24 AS builder
+WORKDIR /sinking-islands
+COPY package*.json /sinking-islands
+RUN npm install-clean
+COPY . /sinking-islands
+RUN npm run build-backend
+
+# primary function is to serve requests for the frontend and to interact with
+# the redis container as a database
 FROM node:24
 
 # install dependencies from apt
@@ -16,8 +26,8 @@ WORKDIR /sinking-islands
 RUN npm install -g pm2
 
 # copy and install files
-COPY ./dist /sinking-islands/dist
-COPY ./sinking-islands-ecosystem.config.js /sinking-islands
+COPY --from=builder /sinking-islands/dist /sinking-islands/dist
+COPY --from=builder /sinking-islands/sinking-islands-ecosystem.config.js /sinking-islands
 
 # run the backend
 CMD ["pm2-runtime", "start", "sinking-islands-ecosystem.config.js"]
