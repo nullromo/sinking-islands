@@ -45,12 +45,12 @@ class SinkingIslandsBackend {
 
         // TODO: cors
         //const whitelist = [
-        //'http://localhost:3000',
+        //'http://localhost:4000',
         //`http://localhost:${port}`,
-        //'http://192.168.0.16:3000',
-        //'http://10.0.0.163:3000',
-        //'http://192.168.42.2:3000',
-        //'http://135.180.0.49:3000',
+        //'http://192.168.0.16:4000',
+        //'http://10.0.0.163:4000',
+        //'http://192.168.42.2:4000',
+        //'http://135.180.0.49:4000',
         //];
         //app.use(
         //cors({

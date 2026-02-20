@@ -16,7 +16,7 @@ export default defineConfig(() => {
             //richSvg(),
         ],
         server: {
-            port: 3000,
+            port: 4000,
             proxy: {
                 '/backend': { changeOrigin: true, target: proxyTarget },
                 '/socket.io': {

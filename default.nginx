@@ -1,6 +1,6 @@
 server {
-    listen 3000 default_server;
-    listen [::]:3000 default_server;
+    listen 4000 default_server;
+    listen [::]:4000 default_server;
     root /sinking-islands/build;
     index index.html;
     server_name _;
