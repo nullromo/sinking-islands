@@ -5,11 +5,11 @@ import http from 'http';
 import { Server } from 'socket.io';
 import type { GameSerialized } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
-import { BACKEND_PORT, TEST_BACKEND_PORT } from '../ports';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
 } from '../socketEvents';
+import { TEST_BACKEND_PORT } from '../test/ports';
 import { gameRouter } from './gameRouter';
 import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
@@ -32,7 +32,9 @@ class SinkingIslandsBackend {
         }
         this.running = true;
 
-        const port = test ? TEST_BACKEND_PORT : BACKEND_PORT;
+        const port = test
+            ? TEST_BACKEND_PORT
+            : (process.env.BACKEND_PORT ?? 5151);
 
         const app = express();
 

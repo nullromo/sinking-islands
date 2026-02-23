@@ -3,9 +3,9 @@ import axios, { AxiosError } from 'axios';
 import type { EndpointUtils } from './endpointUtils';
 import { HTTPMethod } from './endpointUtils';
 import { HTTPResponseCodes } from './httpResponseCodes';
+import { TEST_BACKEND_PORT } from './test/ports';
 import type { MakeEmptyKeysOptional } from './util';
 import { assertUnreachable } from './util';
-import { TEST_BACKEND_PORT } from './ports';
 
 const replaceURLWithParameters = (
     path: string,
