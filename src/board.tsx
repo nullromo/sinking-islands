@@ -127,7 +127,7 @@ const Character = (props: {
     readonly width: number;
     readonly character: CharacterSerialized;
     readonly onClick: (() => void) | undefined;
-    readonly highlight: boolean;
+    //readonly highlight: boolean;
     readonly shift: number;
 }) => {
     const gameContext = React.use(GameContext);
@@ -202,7 +202,7 @@ const Character = (props: {
 const Island = (props: {
     readonly width: number;
     readonly island: IslandSerialized;
-    readonly highlight: boolean;
+    //readonly highlight: boolean;
     readonly highlightCharacter: TargetCharacter | undefined;
     readonly onClick: (() => void) | undefined;
     readonly onCharacterClicked:

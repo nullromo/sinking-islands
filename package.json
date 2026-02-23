@@ -64,7 +64,7 @@
         "build-frontend": "vite build",
         "build-backend": "webpack",
         "build": "run-p build-backend build-frontend",
-        "server": "cd ./src/server && BACKEND_PORT=5150 npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./serverLauncher.ts",
+        "server": "cd ./src/server && FRONTEND_PORT=3000 BACKEND_PORT=5150 npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./serverLauncher.ts",
         "lint": "eslint src/",
         "typecheck": "tsc --noemit || true",
         "check": "run-p typecheck lint",
