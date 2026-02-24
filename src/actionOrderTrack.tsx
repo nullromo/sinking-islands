@@ -1,8 +1,7 @@
 import * as React from 'react';
 import type { CardSerialized } from './commonTypes';
-import { cardTypeToString } from './commonTypes';
 import { GameContext } from './gameContext';
-import { upperSnakeToTitle } from './util';
+import { OnScreenCard } from './onScreenCard';
 
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;
@@ -12,6 +11,95 @@ interface ActionOrderTrackProps {
 
 export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
     const gameContext = React.use(GameContext);
+
+    const slots = gameContext.game.actionOrderTrack.cardSlots.map(
+        (gameStateCard, slotIndex) => {
+            const overrideCard = props.overrideCards?.[slotIndex];
+            const card = overrideCard ?? gameStateCard;
+            const activeCard = slotIndex === gameContext.game.activeCardIndex;
+
+            const emptySlot = (
+                <div
+                    style={{
+                        alignItems: 'center',
+                        background:
+                            card?.playerDesignator === gameContext.you
+                                ? 'skyblue'
+                                : card
+                                  ? 'indianred'
+                                  : 'lightgray',
+                        color:
+                            activeCard || gameStateCard === null
+                                ? 'black'
+                                : '#777',
+                        display: 'flex',
+                        height: '126px',
+                        justifyContent: 'center',
+                        width: '100px',
+                    }}
+                    onClick={() => {
+                        if (props.onSlotClicked) {
+                            props.onSlotClicked(slotIndex);
+                        }
+                    }}
+                >
+                    Empty
+                    {(gameContext.game.actionOrderTrack.faceUpCards.includes(
+                        slotIndex,
+                    ) &&
+                        gameStateCard) ||
+                    (gameContext.game.players[gameContext.you].indiscretion &&
+                        overrideCard) ? (
+                        <div>(Face Up)</div>
+                    ) : null}
+                </div>
+            );
+
+            return (
+                <td
+                    key={slotIndex}
+                    style={{
+                        border:
+                            props.highlightIndex === slotIndex
+                                ? '3px solid'
+                                : '',
+                        boxSizing: 'border-box',
+                        cursor: props.onSlotClicked ? 'pointer' : '',
+                        width: '100px',
+                    }}
+                >
+                    {card === null ? (
+                        emptySlot
+                    ) : (
+                        <OnScreenCard
+                            card={card}
+                            highlight={false}
+                            onClick={
+                                props.onSlotClicked
+                                    ? () => {
+                                          if (props.onSlotClicked) {
+                                              props.onSlotClicked(slotIndex);
+                                          }
+                                      }
+                                    : undefined
+                            }
+                        />
+                    )}
+                    <div>
+                        <span
+                            style={{
+                                color: 'transparent',
+                                textShadow: '0 0 0 #000000',
+                                visibility: activeCard ? 'visible' : 'hidden',
+                            }}
+                        >
+                            {'🔺'}
+                        </span>
+                    </div>
+                </td>
+            );
+        },
+    );
 
     return (
         <div
@@ -36,98 +124,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        {gameContext.game.actionOrderTrack.cardSlots.map(
-                            (card, slotIndex) => {
-                                const overrideCard =
-                                    props.overrideCards?.[slotIndex];
-                                const activeCard =
-                                    slotIndex ===
-                                    gameContext.game.activeCardIndex;
-                                return (
-                                    <td
-                                        key={slotIndex}
-                                        style={{
-                                            border:
-                                                props.highlightIndex ===
-                                                slotIndex
-                                                    ? '3px solid'
-                                                    : '',
-                                            boxSizing: 'border-box',
-                                            cursor: props.onSlotClicked
-                                                ? 'pointer'
-                                                : '',
-                                            width: '100px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                alignItems: 'center',
-                                                background:
-                                                    overrideCard?.playerDesignator ===
-                                                        gameContext.you ||
-                                                    card?.playerDesignator ===
-                                                        gameContext.you
-                                                        ? 'skyblue'
-                                                        : overrideCard || card
-                                                          ? 'indianred'
-                                                          : 'lightgray',
-                                                color:
-                                                    activeCard || card === null
-                                                        ? 'black'
-                                                        : '#777',
-                                                display: 'flex',
-                                                height: '40px',
-                                                justifyContent: 'center',
-                                            }}
-                                            onClick={() => {
-                                                if (props.onSlotClicked) {
-                                                    props.onSlotClicked(
-                                                        slotIndex,
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            <div>
-                                                {overrideCard
-                                                    ? cardTypeToString(
-                                                          overrideCard.cardType,
-                                                      )
-                                                    : card
-                                                      ? upperSnakeToTitle(
-                                                            card.cardType ?? '',
-                                                        )
-                                                      : 'Empty'}
-                                            </div>
-                                            {(gameContext.game.actionOrderTrack.faceUpCards.includes(
-                                                slotIndex,
-                                            ) &&
-                                                card) ||
-                                            (gameContext.game.players[
-                                                gameContext.you
-                                            ].indiscretion &&
-                                                overrideCard) ? (
-                                                <div>(Face Up)</div>
-                                            ) : null}
-                                        </div>
-                                        <div>
-                                            <span
-                                                style={{
-                                                    color: 'transparent',
-                                                    textShadow: '0 0 0 #000000',
-                                                    visibility: activeCard
-                                                        ? 'visible'
-                                                        : 'hidden',
-                                                }}
-                                            >
-                                                {'🔺'}
-                                            </span>
-                                        </div>
-                                    </td>
-                                );
-                            },
-                        )}
-                    </tr>
+                    <tr>{slots}</tr>
                 </tbody>
             </table>
         </div>
