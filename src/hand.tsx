@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { CardSerialized } from './commonTypes';
 import { GameContext } from './gameContext';
-import { upperSnakeToTitle } from './util';
+import { OnScreenCard } from './onScreenCard';
 
 interface HandProps {
     readonly onCardClicked?: (card: CardSerialized, index: number) => void;
@@ -35,33 +35,20 @@ export const Hand = (props: HandProps) => {
                         if (props.ghostSlots?.includes(index)) {
                             return null;
                         }
+                        const onClick = props.onCardClicked
+                            ? () => {
+                                  if (props.onCardClicked) {
+                                      props.onCardClicked(card, index);
+                                  }
+                              }
+                            : undefined;
                         return (
-                            <div
+                            <OnScreenCard
                                 key={index}
-                                style={{
-                                    alignItems: 'center',
-                                    background: 'lightblue',
-                                    border:
-                                        props.highlightIndex === index
-                                            ? '3px solid'
-                                            : '',
-                                    boxSizing: 'border-box',
-                                    cursor: props.onCardClicked
-                                        ? 'pointer'
-                                        : '',
-                                    display: 'flex',
-                                    height: '40px',
-                                    justifyContent: 'center',
-                                    width: '100px',
-                                }}
-                                onClick={() => {
-                                    if (props.onCardClicked) {
-                                        props.onCardClicked(card, index);
-                                    }
-                                }}
-                            >
-                                <span>{upperSnakeToTitle(card.cardType)}</span>
-                            </div>
+                                card={card}
+                                highlight={props.highlightIndex === index}
+                                onClick={onClick}
+                            />
                         );
                     },
                 )}
