@@ -1,10 +1,10 @@
 import { RedisStore } from 'connect-redis';
-import cookie from 'cookie';
+import * as cookie from 'cookie';
 import express from 'express';
-import session from 'express-session';
+import session, { SessionData } from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
-import type { GameSerialized } from '../commonTypes';
+import { PlayerDesignator, type GameSerialized } from '../commonTypes';
 import { HTTPResponseCodes } from '../httpResponseCodes';
 import type {
     ClientToServerEvents,
@@ -14,8 +14,11 @@ import { TEST_BACKEND_PORT } from '../test/ports';
 import { gameRouter } from './gameRouter';
 import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
-import { RedisKeys } from './redisKeys';
+import { RedisKeys, sessionPrefix } from './redisKeys';
 import { usersRouter } from './usersRouter';
+import { GameOperations } from './gameObjects/gameOperations';
+
+const cookieName = 'sinking-islands';
 
 class SinkingIslandsBackend {
     private server: http.Server | null = null;
@@ -57,7 +60,7 @@ class SinkingIslandsBackend {
 
         const redisStore = new RedisStore({
             client: redis,
-            prefix: 'session:sinking-islands:',
+            prefix: sessionPrefix,
         });
         app.use((request, response, next) => {
             session({
@@ -65,7 +68,7 @@ class SinkingIslandsBackend {
                     maxAge: 1000 * 60 * 10, // 10 minutes
                     // secure: true // TODO enable this when https is set up. See https://github.com/expressjs/session?tab=readme-ov-file#cookiesecure
                 },
-                name: 'sinking-islands',
+                name: cookieName,
                 resave: false,
                 rolling: true,
                 saveUninitialized: true,
@@ -111,10 +114,9 @@ class SinkingIslandsBackend {
             try {
                 const rawCookie = socket.request.headers.cookie;
                 if (rawCookie) {
-                    const match = cookie.parse(rawCookie)[
-                        //
-                        'sinking-islands'
-                    ].match(/s:(?<id>.*)\./);
+                    const match = cookie
+                        .parse(rawCookie)
+                        [cookieName].match(/s:(?<id>.*)\./);
                     if (match) {
                         socket.data.sessionID = match.groups?.id;
                     }
@@ -139,8 +141,13 @@ class SinkingIslandsBackend {
             socket.on('subscribeToGame', (gameID) => {
                 console.log(`Socket ${socket.id} is subscribing to ${gameID}.`);
                 (async () => {
-                    // join the room
-                    await socket.join(gameID);
+                    // get the session ID from the socket
+                    const sessionID = socket.data.sessionID;
+                    if (sessionID === undefined) {
+                        throw new Error(
+                            'Not logged in. Unable to subscribe to game.',
+                        );
+                    }
 
                     // find the game state for this game
                     const game = (await redis.json.get(
@@ -153,8 +160,53 @@ class SinkingIslandsBackend {
                         );
                     }
 
+                    // find the username based on the session data from the
+                    // socket
+                    const sessionRedisData = await redis.get(
+                        RedisKeys.createSessionKey(sessionID),
+                    );
+                    if (sessionRedisData === null) {
+                        throw new Error('Invalid session ID.');
+                    }
+                    const session = JSON.parse(sessionRedisData) as SessionData;
+                    const username = session.username;
+                    if (username === undefined) {
+                        throw new Error('No user attached to session.');
+                    }
+
+                    // find the player designator assigned to the user
+                    const playerDesignator = (() => {
+                        if (
+                            game.players[PlayerDesignator.PLAYER_A].username ===
+                            username
+                        ) {
+                            return PlayerDesignator.PLAYER_A;
+                        }
+                        if (
+                            game.players[PlayerDesignator.PLAYER_B].username ===
+                            username
+                        ) {
+                            return PlayerDesignator.PLAYER_B;
+                        }
+                        return null;
+                    })();
+                    if (playerDesignator === null) {
+                        throw new Error(
+                            `User ${username} is not a part of game ${gameID}.`,
+                        );
+                    }
+
+                    // room ID is the game ID + the player designator
+                    const room = `${gameID}-${playerDesignator}`;
+
+                    // join the room
+                    await socket.join(room);
+
                     // send the user the initial game state
-                    socket.emit('gameState', game);
+                    socket.emit(
+                        'gameState',
+                        GameOperations.obscureCards(game, playerDesignator),
+                    );
                 })().catch((error: unknown) => {
                     // TODO: need to handle this better
                     console.error(error);
@@ -169,7 +221,18 @@ class SinkingIslandsBackend {
     };
 
     public readonly broadcastGame = (game: GameSerialized) => {
-        this.io?.to(game.id).emit('gameState', game);
+        this.io
+            ?.to(`${game.id}-${PlayerDesignator.PLAYER_A}`)
+            .emit(
+                'gameState',
+                GameOperations.obscureCards(game, PlayerDesignator.PLAYER_A),
+            );
+        this.io
+            ?.to(`${game.id}-${PlayerDesignator.PLAYER_B}`)
+            .emit(
+                'gameState',
+                GameOperations.obscureCards(game, PlayerDesignator.PLAYER_B),
+            );
     };
 
     public readonly stop = () => {

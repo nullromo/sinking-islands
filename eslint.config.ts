@@ -126,6 +126,7 @@ export default defineConfig([
             'no-shadow': 'off',
             'no-ternary': 'off',
             'no-undefined': 'off',
+            'no-unexpected-multiline': 'off',
             'no-unused-vars': 'off',
             'no-useless-assignment': 'off',
             'no-warning-comments': 'off',

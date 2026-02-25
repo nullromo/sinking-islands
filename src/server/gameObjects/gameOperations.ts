@@ -305,4 +305,19 @@ export namespace GameOperations {
             ),
         ];
     };
+
+    export const obscureCards = (
+        game: GameSerialized,
+        playerToShow: PlayerDesignator,
+    ) => {
+        game.actionOrderTrack.cardSlots = game.actionOrderTrack.cardSlots.map(
+            (card) => {
+                if (card && card.playerDesignator !== playerToShow) {
+                    return { ...card, cardType: null };
+                }
+                return card;
+            },
+        );
+        return game;
+    };
 }
