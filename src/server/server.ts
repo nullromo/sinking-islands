@@ -1,4 +1,5 @@
 import { RedisStore } from 'connect-redis';
+import cookie from 'cookie';
 import express from 'express';
 import session from 'express-session';
 import http from 'http';
@@ -19,8 +20,12 @@ import { usersRouter } from './usersRouter';
 class SinkingIslandsBackend {
     private server: http.Server | null = null;
 
-    private io: Server<ClientToServerEvents, ServerToClientEvents> | null =
-        null;
+    private io: Server<
+        ClientToServerEvents,
+        ServerToClientEvents,
+        Record<string, never>,
+        { sessionID: string | undefined }
+    > | null = null;
 
     private running = false;
 
@@ -100,6 +105,28 @@ class SinkingIslandsBackend {
 
         this.server.listen(port, () => {
             console.log('Listening on port', port);
+        });
+
+        this.io.use((socket, next) => {
+            try {
+                const rawCookie = socket.request.headers.cookie;
+                if (rawCookie) {
+                    const match = cookie.parse(rawCookie)[
+                        //
+                        'sinking-islands'
+                    ].match(/s:(?<id>.*)\./);
+                    if (match) {
+                        socket.data.sessionID = match.groups?.id;
+                    }
+                }
+                next();
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    next(error);
+                } else {
+                    next(new Error(`Unknown error: ${error}`));
+                }
+            }
         });
 
         this.io.on('connection', (socket) => {
