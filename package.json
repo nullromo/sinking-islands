@@ -6,7 +6,6 @@
         "axios": "^1.13.2",
         "bcryptjs": "^3.0.3",
         "connect-redis": "^9.0.0",
-        "cors": "^2.8.6",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
         "express": "^5.2.1",
@@ -60,7 +59,7 @@
         "webpack-cli": "^6.0.1"
     },
     "scripts": {
-        "start": "BROWSER=none FRONTEND_PORT=3333 BACKEND_PORT=5150 VITE_BACKEND_PORT=5150 vite",
+        "start": "BROWSER=none FRONTEND_PORT=3333 BACKEND_PORT=5150 VITE_FRONTEND_PORT=3333 VITE_BACKEND_PORT=5150 vite",
         "build-frontend": "vite build",
         "build-backend": "webpack",
         "build": "run-p build-backend build-frontend",

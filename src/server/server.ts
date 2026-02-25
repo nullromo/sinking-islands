@@ -45,33 +45,6 @@ class SinkingIslandsBackend {
             { cors: { origin: '*' } },
         );
 
-        // TODO: cors
-        //const whitelist = [
-        //'http://localhost:4000',
-        //`http://localhost:${port}`,
-        //'http://192.168.0.16:4000',
-        //'http://10.0.0.163:4000',
-        //'http://192.168.42.2:4000',
-        //'http://135.180.0.49:4000',
-        //];
-        //app.use(
-        //cors({
-        //credentials: true,
-        //origin: (origin, callback) => {
-        //if (origin && whitelist.includes(origin)) {
-        //console.log(`CORS is accepting ${origin} as a valid origin.`);
-        //callback(null, true);
-        //} else {
-        //callback(
-        //new Error(
-        //`Origin (${origin}) not whitelisted by CORS policy.`,
-        //),
-        //);
-        //}
-        //},
-        //}),
-        //);
-
         app.use(express.urlencoded({ extended: false }));
         app.use(express.json());
 

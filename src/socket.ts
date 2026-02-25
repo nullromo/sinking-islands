@@ -4,6 +4,6 @@ import { io } from 'socket.io-client';
 const URL =
     process.env.NODE_ENV === 'production'
         ? undefined
-        : `http://localhost:${process.env.BACKEND_PORT ?? import.meta.env.VITE_BACKEND_PORT ?? 5151}`;
+        : `http://localhost:${import.meta.env.VITE_FRONTEND_PORT ?? 4000}`;
 
-export const socket = io(URL, { autoConnect: false });
+export const socket = io(URL, { autoConnect: false, withCredentials: true });
