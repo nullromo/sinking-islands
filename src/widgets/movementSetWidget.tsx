@@ -24,7 +24,7 @@ export const MovementSetWidget = withServerCalls(
         const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
         return (
-            <>
+            <div>
                 <Board
                     onCharacterClicked={(island, character) => {
                         const newMovement = {
@@ -126,7 +126,7 @@ export const MovementSetWidget = withServerCalls(
                         Submit
                     </button>
                 </div>
-            </>
+            </div>
         );
     },
     'MovementSetWidget',

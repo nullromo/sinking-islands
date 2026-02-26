@@ -311,8 +311,13 @@ export namespace GameOperations {
         playerToShow: PlayerDesignator,
     ) => {
         game.actionOrderTrack.cardSlots = game.actionOrderTrack.cardSlots.map(
-            (card) => {
-                if (card && card.playerDesignator !== playerToShow) {
+            (card, index) => {
+                if (
+                    game.activeCardIndex !== null &&
+                    index > game.activeCardIndex &&
+                    card &&
+                    card.playerDesignator !== playerToShow
+                ) {
                     return { ...card, cardType: null };
                 }
                 return card;

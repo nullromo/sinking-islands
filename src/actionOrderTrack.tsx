@@ -33,7 +33,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                                 ? 'black'
                                 : '#777',
                         display: 'flex',
-                        height: '126px',
+                        height: '125px',
                         justifyContent: 'center',
                         width: '100px',
                     }}
@@ -59,10 +59,6 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                 <td
                     key={slotIndex}
                     style={{
-                        border:
-                            props.highlightIndex === slotIndex
-                                ? '3px solid'
-                                : '',
                         boxSizing: 'border-box',
                         cursor: props.onSlotClicked ? 'pointer' : '',
                         width: '100px',
@@ -73,7 +69,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                     ) : (
                         <OnScreenCard
                             card={card}
-                            highlight={false}
+                            highlight={props.highlightIndex === slotIndex}
                             onClick={
                                 props.onSlotClicked
                                     ? () => {

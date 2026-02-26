@@ -25,7 +25,7 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
 
     const makeCardTitle = (short: boolean) => {
         return (
-            <span style={{ verticalAlign: 'middle' }}>
+            <span style={{ userSelect: 'none', verticalAlign: 'middle' }}>
                 {props.card.cardType === null
                     ? 'Face Down'
                     : short &&
@@ -67,7 +67,7 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
                 cursor: props.onClick ? 'pointer' : '',
                 display: 'flex',
                 flexDirection: 'column',
-                height: '126px',
+                height: '125px',
                 justifyContent: 'center',
                 outline: props.highlight ? '4px solid gold' : '',
                 width: '100px',

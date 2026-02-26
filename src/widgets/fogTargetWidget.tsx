@@ -8,8 +8,7 @@ import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
 
 interface FogTargetWidgetProps
-    extends InjectedServerCallsProps,
-        SetResultProps {
+    extends InjectedServerCallsProps, SetResultProps {
     //
 }
 
@@ -20,7 +19,7 @@ export const FogTargetWidget = withServerCalls(
         const [slotChoice, setSlotChoice] = React.useState(0);
 
         return (
-            <>
+            <div>
                 <ActionOrderTrack
                     highlightIndex={slotChoice}
                     onSlotClicked={(slotIndex) => {
@@ -47,7 +46,7 @@ export const FogTargetWidget = withServerCalls(
                 >
                     Submit
                 </button>
-            </>
+            </div>
         );
     },
     'FogTargetWidget',
