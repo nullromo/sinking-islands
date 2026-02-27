@@ -11,11 +11,13 @@ export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
         <div
             style={{
                 border: '1px solid',
+                boxSizing: 'border-box',
                 height: '100%',
-                maxHeight: '80vh',
+                maxHeight: '20vh',
                 minWidth: '200px',
                 overflowY: 'auto',
                 padding: '4px',
+                width: '100%',
             }}
         >
             <div

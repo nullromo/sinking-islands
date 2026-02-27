@@ -20,7 +20,6 @@ export const CardPileWindow = (props: {
 
     return (
         <span>
-            {`Your ${props.opponent ? "opponent's " : ''}`}
             <span
                 style={{ cursor: 'help', textDecoration: 'underline dotted' }}
                 onMouseEnter={() => {
@@ -31,8 +30,8 @@ export const CardPileWindow = (props: {
                 }}
             >
                 {props.cardPile === 'discardPile'
-                    ? 'discard pile'
-                    : 'set aside cards'}
+                    ? 'Discard pile'
+                    : 'Set aside cards'}
             </span>
             <span
                 style={{

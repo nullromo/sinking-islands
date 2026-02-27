@@ -47,15 +47,11 @@ const GamePageInner = () => {
     return (
         <div style={{ display: 'flex', height: '100%' }}>
             <GameIDBanner gameID={gameContext.game.id} status={result} />
-            <div>
-                <HandAndDeckInfo />
-                <MessageLog gameState={gameContext.game} />
-            </div>
             <div
                 style={{
                     alignItems: 'center',
                     display: 'flex',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     width: '100%',
                 }}
             >

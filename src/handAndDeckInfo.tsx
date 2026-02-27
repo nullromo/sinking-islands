@@ -9,43 +9,80 @@ export const HandAndDeckInfo = () => {
         <div
             style={{
                 background: 'tan',
+                boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
                 minWidth: '270px',
                 padding: '4px',
+                width: '100%',
             }}
         >
-            <div>{`Cards in your deck: ${gameContext.game.players[gameContext.you].deck.length}`}</div>
-            <div>{`Cards in your opponent's deck: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].deck.length}`}</div>
-            <div>{`Cards in your opponent's hand: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].hand.length}`}</div>
-            <div>
-                <CardPileWindow
-                    cardPile='discardPile'
-                    gameState={gameContext.game}
-                    opponent={false}
-                />
-            </div>
-            <div>
-                <CardPileWindow
-                    cardPile='discardPile'
-                    gameState={gameContext.game}
-                    opponent={true}
-                />
-            </div>
-            <div>
-                <CardPileWindow
-                    cardPile='setAsideCards'
-                    gameState={gameContext.game}
-                    opponent={false}
-                />
-            </div>
-            <div>
-                <CardPileWindow
-                    cardPile='setAsideCards'
-                    gameState={gameContext.game}
-                    opponent={true}
-                />
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>You</th>
+                        <th>Your Opponent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div>{`Cards in deck: ${gameContext.game.players[gameContext.you].deck.length}`}</div>
+                        </td>
+                        <td>
+                            <div>{`Cards in deck: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].deck.length}`}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>{`Cards in hand: ${gameContext.game.players[gameContext.you].hand.length}`}</div>
+                        </td>
+                        <td>
+                            <div>{`Cards in hand: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].hand.length}`}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <CardPileWindow
+                                    cardPile='discardPile'
+                                    gameState={gameContext.game}
+                                    opponent={false}
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <CardPileWindow
+                                    cardPile='discardPile'
+                                    gameState={gameContext.game}
+                                    opponent={true}
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <CardPileWindow
+                                    cardPile='setAsideCards'
+                                    gameState={gameContext.game}
+                                    opponent={false}
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <CardPileWindow
+                                    cardPile='setAsideCards'
+                                    gameState={gameContext.game}
+                                    opponent={true}
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     );
 };
