@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { ActionOrderTrack } from './actionOrderTrack';
 import { GameContext } from './gameContext';
 import { GameState } from './gameState';
-import { Hand } from './hand';
 import type { SetResultProps } from './useResultMessage';
 import { assertUnreachable } from './util';
 import { CardPlacementWidget } from './widgets/cardPlacementWidget';
@@ -11,6 +9,7 @@ import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
 import { FogTargetWidget } from './widgets/fogTargetWidget';
 import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
 import { MovementSetWidget } from './widgets/movementSetWidget';
+import { WaitingForPlayerWidget } from './widgets/waitingForPlayerWidget';
 
 export const WidgetSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
@@ -26,19 +25,7 @@ export const WidgetSelector = (props: SetResultProps) => {
     }
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
-        return (
-            <div
-                style={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <ActionOrderTrack />
-                <Hand />
-                Waiting for opponent
-            </div>
-        );
+        return <WaitingForPlayerWidget />;
     }
 
     switch (gameContext.game.gameState) {

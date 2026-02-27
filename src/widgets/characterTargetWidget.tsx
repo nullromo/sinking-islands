@@ -56,45 +56,47 @@ export const CharacterTargetWidget = withServerCalls(
                         }
                     }}
                 />
-                <ActionOrderTrack />
-                <Hand />
-                <div
-                    style={{ width: '600px' }}
-                >{`${title} Click on a character on the board to select that character. Click Submit when ready.`}</div>
-                <button
-                    type='button'
-                    onClick={() => {
-                        props.serverCalls
-                            .takeGameAction(gameContext.game.id, {
-                                action: (() => {
-                                    if (
-                                        gameContext.game.gameState ===
-                                        GameState.AWAIT_HARPOON_TARGET
-                                    ) {
-                                        return GameActionType.HARPOON_TARGET;
-                                    }
-                                    if (
-                                        gameContext.game.gameState ===
-                                        GameState.AWAIT_TORTOISE_TARGET
-                                    ) {
-                                        return GameActionType.TORTOISE_TARGET;
-                                    }
-                                    throw new Error(
-                                        'Invalid game state for this kind of action.',
-                                    );
-                                })(),
-                                data: {
-                                    character: characterChoice,
-                                    islandNumber: islandNumberChoice,
-                                },
-                            })
-                            .catch((error: unknown) => {
-                                props.setResult(false, error);
-                            });
-                    }}
-                >
-                    Submit
-                </button>
+                <div>
+                    <ActionOrderTrack />
+                    <Hand />
+                    <div
+                        style={{ width: '600px' }}
+                    >{`${title} Click on a character on the board to select that character. Click Submit when ready.`}</div>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            props.serverCalls
+                                .takeGameAction(gameContext.game.id, {
+                                    action: (() => {
+                                        if (
+                                            gameContext.game.gameState ===
+                                            GameState.AWAIT_HARPOON_TARGET
+                                        ) {
+                                            return GameActionType.HARPOON_TARGET;
+                                        }
+                                        if (
+                                            gameContext.game.gameState ===
+                                            GameState.AWAIT_TORTOISE_TARGET
+                                        ) {
+                                            return GameActionType.TORTOISE_TARGET;
+                                        }
+                                        throw new Error(
+                                            'Invalid game state for this kind of action.',
+                                        );
+                                    })(),
+                                    data: {
+                                        character: characterChoice,
+                                        islandNumber: islandNumberChoice,
+                                    },
+                                })
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                });
+                        }}
+                    >
+                        Submit
+                    </button>
+                </div>
             </>
         );
     },

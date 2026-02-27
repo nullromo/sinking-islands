@@ -318,42 +318,55 @@ export const Board = (props: BoardProps) => {
     const gameContext = React.use(GameContext);
 
     return (
-        <CircularContainer
-            items={gameContext.game.islands}
-            renderItem={(island, itemWidth) => {
-                return (
-                    <Island
-                        key={island.islandNumber}
-                        highlight={
-                            props.highlightIslandNumber === island.islandNumber
-                        }
-                        highlightCharacter={props.highlightCharacter}
-                        island={island}
-                        width={itemWidth}
-                        onCharacterClicked={
-                            props.onCharacterClicked
-                                ? (character: CharacterSerialized) => {
-                                      if (props.onCharacterClicked) {
-                                          props.onCharacterClicked(
-                                              island,
-                                              character,
-                                          );
-                                      }
-                                  }
-                                : undefined
-                        }
-                        onClick={
-                            props.onIslandClicked
-                                ? () => {
-                                      if (props.onIslandClicked) {
-                                          props.onIslandClicked(island);
-                                      }
-                                  }
-                                : undefined
-                        }
-                    />
-                );
+        <div
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                maxHeight: '100vh',
+                maxWidth: '100vh',
+                width: '100%',
             }}
-        />
+        >
+            <CircularContainer
+                items={gameContext.game.islands}
+                renderItem={(island, itemWidth) => {
+                    return (
+                        <Island
+                            key={island.islandNumber}
+                            highlight={
+                                props.highlightIslandNumber ===
+                                island.islandNumber
+                            }
+                            highlightCharacter={props.highlightCharacter}
+                            island={island}
+                            width={itemWidth}
+                            onCharacterClicked={
+                                props.onCharacterClicked
+                                    ? (character: CharacterSerialized) => {
+                                          if (props.onCharacterClicked) {
+                                              props.onCharacterClicked(
+                                                  island,
+                                                  character,
+                                              );
+                                          }
+                                      }
+                                    : undefined
+                            }
+                            onClick={
+                                props.onIslandClicked
+                                    ? () => {
+                                          if (props.onIslandClicked) {
+                                              props.onIslandClicked(island);
+                                          }
+                                      }
+                                    : undefined
+                            }
+                        />
+                    );
+                }}
+            />
+        </div>
     );
 };

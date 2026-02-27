@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
+import { Board } from '../board';
 import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
 import { Hand } from '../hand';
@@ -19,34 +20,37 @@ export const FogTargetWidget = withServerCalls(
         const [slotChoice, setSlotChoice] = React.useState(0);
 
         return (
-            <div>
-                <ActionOrderTrack
-                    highlightIndex={slotChoice}
-                    onSlotClicked={(slotIndex) => {
-                        setSlotChoice(slotIndex);
-                    }}
-                />
-                <Hand />
-                <div style={{ width: '600px' }}>
-                    Choose a Fog target. Click on a card in the Action Order
-                    Track to select it. Click Submit when ready.
+            <>
+                <Board />
+                <div>
+                    <ActionOrderTrack
+                        highlightIndex={slotChoice}
+                        onSlotClicked={(slotIndex) => {
+                            setSlotChoice(slotIndex);
+                        }}
+                    />
+                    <Hand />
+                    <div style={{ width: '600px' }}>
+                        Choose a Fog target. Click on a card in the Action Order
+                        Track to select it. Click Submit when ready.
+                    </div>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            props.serverCalls
+                                .takeGameAction(gameContext.game.id, {
+                                    action: GameActionType.FOG_TARGET,
+                                    data: slotChoice,
+                                })
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                });
+                        }}
+                    >
+                        Submit
+                    </button>
                 </div>
-                <button
-                    type='button'
-                    onClick={() => {
-                        props.serverCalls
-                            .takeGameAction(gameContext.game.id, {
-                                action: GameActionType.FOG_TARGET,
-                                data: slotChoice,
-                            })
-                            .catch((error: unknown) => {
-                                props.setResult(false, error);
-                            });
-                    }}
-                >
-                    Submit
-                </button>
-            </div>
+            </>
         );
     },
     'FogTargetWidget',

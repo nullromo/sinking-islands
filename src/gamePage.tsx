@@ -9,7 +9,6 @@ import { PageRoutes } from './pageRoutes';
 import { socket } from './socket';
 import { useResultMessage } from './useResultMessage';
 import { WidgetSelector } from './widgetSelector';
-import { Board } from './board';
 
 /**
  * Attach a socket that subscribes to state changes of a given game on mount
@@ -56,16 +55,10 @@ const GamePageInner = () => {
                 style={{
                     alignItems: 'center',
                     display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    maxHeight: '100vh',
-                    maxWidth: '100vh',
+                    justifyContent: 'center',
                     width: '100%',
                 }}
             >
-                <Board />
-            </div>
-            <div style={{ alignItems: 'center', display: 'flex' }}>
                 <WidgetSelector setResult={setResult} />
             </div>
         </div>

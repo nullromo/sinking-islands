@@ -10,8 +10,7 @@ import { withServerCalls } from '../withServerCalls';
 import { GameActionType } from '../gameActionTypes';
 
 interface IslandSelectorWidgetProps
-    extends InjectedServerCallsProps,
-        SetResultProps {
+    extends InjectedServerCallsProps, SetResultProps {
     //
 }
 
@@ -63,29 +62,31 @@ export const IslandSelectorWidget = withServerCalls(
                         setIslandChoice(island.islandNumber);
                     }}
                 />
-                <ActionOrderTrack />
-                <Hand />
-                <div style={{ width: '600px' }}>
-                    {`${title} Click on an island to select it. Click Submit when ready.`}
+                <div>
+                    <ActionOrderTrack />
+                    <Hand />
+                    <div style={{ width: '600px' }}>
+                        {`${title} Click on an island to select it. Click Submit when ready.`}
+                    </div>
+                    <br />
+                    {`Island: ${islandChoice}`}
+                    <br />
+                    <button
+                        type='button'
+                        onClick={() => {
+                            props.serverCalls
+                                .takeGameAction(gameContext.game.id, {
+                                    action,
+                                    data: islandChoice,
+                                })
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                });
+                        }}
+                    >
+                        Submit
+                    </button>
                 </div>
-                <br />
-                {`Island: ${islandChoice}`}
-                <br />
-                <button
-                    type='button'
-                    onClick={() => {
-                        props.serverCalls
-                            .takeGameAction(gameContext.game.id, {
-                                action,
-                                data: islandChoice,
-                            })
-                            .catch((error: unknown) => {
-                                props.setResult(false, error);
-                            });
-                    }}
-                >
-                    Submit
-                </button>
             </>
         );
     },

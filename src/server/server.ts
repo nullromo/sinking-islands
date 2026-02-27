@@ -1,7 +1,8 @@
 import { RedisStore } from 'connect-redis';
 import * as cookie from 'cookie';
 import express from 'express';
-import session, { SessionData } from 'express-session';
+import type { SessionData } from 'express-session';
+import session from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
 import { PlayerDesignator, type GameSerialized } from '../commonTypes';
@@ -11,12 +12,12 @@ import type {
     ServerToClientEvents,
 } from '../socketEvents';
 import { TEST_BACKEND_PORT } from '../test/ports';
+import { GameOperations } from './gameObjects/gameOperations';
 import { gameRouter } from './gameRouter';
 import { playRouter } from './playRouter';
 import { destroyRedis, getRedis } from './redisConnector';
 import { RedisKeys, sessionPrefix } from './redisKeys';
 import { usersRouter } from './usersRouter';
-import { GameOperations } from './gameObjects/gameOperations';
 
 const cookieName = 'sinking-islands';
 
