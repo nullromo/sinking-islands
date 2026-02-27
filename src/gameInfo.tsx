@@ -3,12 +3,15 @@ import { otherPlayerDesignator } from './commonTypes';
 import { CardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
 
-export const HandAndDeckInfo = () => {
+export const GameInfo = () => {
     const gameContext = React.use(GameContext);
+
+    const you = gameContext.you;
+    const opponent = otherPlayerDesignator(gameContext.you);
+
     return (
         <div
             style={{
-                background: 'tan',
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
@@ -17,28 +20,57 @@ export const HandAndDeckInfo = () => {
                 width: '100%',
             }}
         >
-            <table>
+            <div
+                style={{
+                    fontSize: '10px',
+                    marginBottom: '6px',
+                    textAlign: 'right',
+                    width: '100%',
+                }}
+            >
+                Game ID: <b>{gameContext.game.id}</b>
+            </div>
+            <table style={{ border: '1px solid' }}>
                 <thead>
                     <tr>
-                        <th>You</th>
-                        <th>Your Opponent</th>
+                        <th
+                            style={{
+                                background: 'lightblue',
+                                textAlign: 'left',
+                                width: '50%',
+                            }}
+                        >
+                            You — {gameContext.game.players[you].username} (
+                            {you})
+                        </th>
+                        <th
+                            style={{
+                                background: 'indianred',
+                                textAlign: 'left',
+                                width: '50%',
+                            }}
+                        >
+                            Opponent —{' '}
+                            {gameContext.game.players[opponent].username} (
+                            {opponent})
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <div>{`Cards in deck: ${gameContext.game.players[gameContext.you].deck.length}`}</div>
+                            <div>{`Cards in deck: ${gameContext.game.players[you].deck.length}`}</div>
                         </td>
                         <td>
-                            <div>{`Cards in deck: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].deck.length}`}</div>
+                            <div>{`Cards in deck: ${gameContext.game.players[opponent].deck.length}`}</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div>{`Cards in hand: ${gameContext.game.players[gameContext.you].hand.length}`}</div>
+                            <div>{`Cards in hand: ${gameContext.game.players[you].hand.length}`}</div>
                         </td>
                         <td>
-                            <div>{`Cards in hand: ${gameContext.game.players[otherPlayerDesignator(gameContext.you)].hand.length}`}</div>
+                            <div>{`Cards in hand: ${gameContext.game.players[opponent].hand.length}`}</div>
                         </td>
                     </tr>
                     <tr>

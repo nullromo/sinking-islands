@@ -10,26 +10,17 @@ export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
     return (
         <div
             style={{
+                background: 'linear-gradient(180deg, darkgray 0%, white 100%)',
                 border: '1px solid',
                 boxSizing: 'border-box',
-                height: '100%',
-                maxHeight: '20vh',
+                marginBottom: '20px',
                 minWidth: '200px',
                 overflowY: 'auto',
                 padding: '4px',
                 width: '100%',
             }}
         >
-            <div
-                style={{
-                    background:
-                        'linear-gradient(180deg, #00000044 0%, #FFFFFF00 100%)',
-                    height: '80vh',
-                    position: 'sticky',
-                    top: '-10px',
-                    width: '100%',
-                }}
-            />
+            <div style={{ position: 'sticky', top: '-10px', width: '100%' }} />
             {props.gameState.messages.map((message, index) => {
                 return (
                     <React.Fragment key={index}>

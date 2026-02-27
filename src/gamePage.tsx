@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { Navigate, useParams } from 'react-router';
+import gameBackground from './images/backgrounds/gameBackground.png';
 import type { GameSerialized } from './commonTypes';
 import { GameContext, GameContextProvider } from './gameContext';
-import { GameIDBanner } from './gameIDBanner';
-import { HandAndDeckInfo } from './handAndDeckInfo';
-import { MessageLog } from './messageLog';
 import { PageRoutes } from './pageRoutes';
 import { socket } from './socket';
 import { useResultMessage } from './useResultMessage';
@@ -45,8 +43,14 @@ const GamePageInner = () => {
     const [result, setResult] = useResultMessage();
 
     return (
-        <div style={{ display: 'flex', height: '100%' }}>
-            <GameIDBanner gameID={gameContext.game.id} status={result} />
+        <div
+            style={{
+                backgroundColor: '#EEEEEE',
+                backgroundImage: `url(${gameBackground})`,
+                display: 'flex',
+                height: '100%',
+            }}
+        >
             <div
                 style={{
                     alignItems: 'center',
