@@ -94,17 +94,7 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
                     width: '100%',
                 }}
             />
-            <div
-                style={{
-                    height: 0,
-                    left: 0,
-                    position: 'absolute',
-                    top: 0,
-                    width: 0,
-                }}
-            >
-                {cardTooltip}
-            </div>
+            {cardTooltip}
         </div>
     );
 };
