@@ -2,6 +2,7 @@ import * as React from 'react';
 import { otherPlayerDesignator } from './commonTypes';
 import { CardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
+import { getPlayerColor } from './playerColors';
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -35,7 +36,7 @@ export const GameInfo = () => {
                     <tr>
                         <th
                             style={{
-                                background: 'lightblue',
+                                background: getPlayerColor(you, you).dim,
                                 textAlign: 'left',
                                 width: '50%',
                             }}
@@ -45,7 +46,7 @@ export const GameInfo = () => {
                         </th>
                         <th
                             style={{
-                                background: 'indianred',
+                                background: getPlayerColor(opponent, you).dim,
                                 textAlign: 'left',
                                 width: '50%',
                             }}

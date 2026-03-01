@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { CardSerialized } from './commonTypes';
 import { GameContext } from './gameContext';
 import { OnScreenCard } from './onScreenCard';
+import { getPlayerColor } from './playerColors';
 
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;
@@ -23,11 +24,12 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                     style={{
                         alignItems: 'center',
                         background:
-                            card?.playerDesignator === gameContext.you
-                                ? 'skyblue'
-                                : card
-                                  ? 'indianred'
-                                  : 'lightgray',
+                            card?.playerDesignator === undefined
+                                ? 'lightgray'
+                                : getPlayerColor(
+                                      card.playerDesignator,
+                                      gameContext.you,
+                                  ).dim,
                         color:
                             activeCard || gameStateCard === null
                                 ? 'black'

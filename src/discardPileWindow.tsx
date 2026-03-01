@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { GameSerialized } from './commonTypes';
 import { cardTypeToString, otherPlayerDesignator } from './commonTypes';
 import { GameContext } from './gameContext';
+import { getPlayerColor } from './playerColors';
 
 export const CardPileWindow = (props: {
     readonly gameState: GameSerialized;
@@ -35,7 +36,12 @@ export const CardPileWindow = (props: {
             </span>
             <span
                 style={{
-                    background: props.opponent ? 'indianred' : 'lightskyblue',
+                    background: getPlayerColor(
+                        props.opponent
+                            ? otherPlayerDesignator(gameContext.you)
+                            : gameContext.you,
+                        gameContext.you,
+                    ).dim,
                     position: 'absolute',
                     visibility: hover ? 'visible' : 'hidden',
                 }}

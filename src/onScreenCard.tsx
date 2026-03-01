@@ -4,6 +4,7 @@ import type { CardSerialized, FaceDownCard } from './commonTypes';
 import { CardType, cardTypeToString } from './commonTypes';
 import { GameContext } from './gameContext';
 import { getCardImage } from './images/cardImages';
+import { getPlayerColor } from './playerColors';
 import { Tooltip } from './tooltip';
 
 interface OnScreenCardProps {
@@ -17,10 +18,10 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
 
     const [hover, setHover] = React.useState(false);
 
-    const backgroundColor =
-        props.card.playerDesignator === gameContext.you
-            ? 'lightblue'
-            : 'indianred';
+    const backgroundColor = getPlayerColor(
+        props.card.playerDesignator,
+        gameContext.you,
+    ).dim;
 
     const makeCardTitle = (short: boolean) => {
         return (
