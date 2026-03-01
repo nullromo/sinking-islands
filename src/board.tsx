@@ -352,7 +352,6 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
 
     return (
         <Tooltip
-            hover={true}
             style={{ background: islandColors.island, width: 'fit-content' }}
         >
             <div style={{ borderBottom: '2px solid', textAlign: 'center' }}>
@@ -435,7 +434,6 @@ const CharacterTooltip = (props: {
 
     return (
         <Tooltip
-            hover={true}
             style={{
                 background: getPlayerColor(
                     props.character.playerDesignator,

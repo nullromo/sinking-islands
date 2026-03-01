@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MousePositionContext } from './mousePositionContext';
 
 interface TooltipProps extends React.PropsWithChildren {
-    readonly hover: boolean;
+    readonly hover?: boolean;
     readonly style?: React.CSSProperties;
 }
 
@@ -31,7 +31,7 @@ export const Tooltip = (props: TooltipProps) => {
                     ...(mouseQuadrant === 1 || mouseQuadrant === 2
                         ? { top: mousePosition.y }
                         : { bottom: -mousePosition.y }),
-                    visibility: props.hover ? 'visible' : 'hidden',
+                    visibility: props.hover === false ? 'hidden' : 'visible',
                     ...props.style,
                 }}
             >
