@@ -6,7 +6,7 @@ import { GameContext, GameContextProvider } from './gameContext';
 import { PageRoutes } from './pageRoutes';
 import { socket } from './socket';
 import { useResultMessage } from './useResultMessage';
-import { WidgetSelector } from './widgetSelector';
+import { LayoutSelector } from './layoutSelector';
 
 /**
  * Attach a socket that subscribes to state changes of a given game on mount
@@ -59,7 +59,7 @@ const GamePageInner = () => {
                     width: '100%',
                 }}
             >
-                <WidgetSelector setResult={setResult} />
+                <LayoutSelector setResult={setResult} />
             </div>
         </div>
     );

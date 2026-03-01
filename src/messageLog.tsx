@@ -1,7 +1,9 @@
 import * as React from 'react';
-import type { GameSerialized } from './commonTypes';
+import { GameContext } from './gameContext';
 
-export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
+export const MessageLog = () => {
+    const gameContext = React.use(GameContext);
+
     const messageLogRef = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
         messageLogRef.current?.scrollIntoView();
@@ -22,7 +24,7 @@ export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
             }}
         >
             <div style={{ position: 'sticky', top: '-10px', width: '100%' }} />
-            {props.gameState.messages.map((message, index) => {
+            {gameContext.game.messages.map((message, index) => {
                 return (
                     <React.Fragment key={index}>
                         <div>{message}</div>

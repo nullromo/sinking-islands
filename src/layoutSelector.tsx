@@ -3,15 +3,15 @@ import { GameContext } from './gameContext';
 import { GameState } from './gameState';
 import type { SetResultProps } from './useResultMessage';
 import { assertUnreachable } from './util';
-import { CardPlacementWidget } from './widgets/cardPlacementWidget';
-import { CharacterTargetWidget } from './widgets/characterTargetWidget';
-import { FlyingFishMovementWidget } from './widgets/flyingFishMovementWidget';
-import { FogTargetWidget } from './widgets/fogTargetWidget';
-import { IslandSelectorWidget } from './widgets/islandSelectorWidget';
-import { MovementSetWidget } from './widgets/movementSetWidget';
-import { WaitingForPlayerWidget } from './widgets/waitingForPlayerWidget';
+import { CardPlacementLayout } from './layouts/cardPlacementLayout';
+import { CharacterTargetLayout } from './layouts/characterTargetLayout';
+import { FlyingFishMovementLayout } from './layouts/flyingFishMovementLayout';
+import { FogTargetLayout } from './layouts/fogTargetLayout';
+import { IslandSelectorLayout } from './layouts/islandSelectorLayout';
+import { MovementSetLayout } from './layouts/movementSetLayout';
+import { WaitingForPlayerLayout } from './layouts/waitingForPlayerLayout';
 
-export const WidgetSelector = (props: SetResultProps) => {
+export const LayoutSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
 
     if (gameContext.game.gameState === GameState.FINISHED) {
@@ -25,27 +25,27 @@ export const WidgetSelector = (props: SetResultProps) => {
     }
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
-        return <WaitingForPlayerWidget />;
+        return <WaitingForPlayerLayout />;
     }
 
     switch (gameContext.game.gameState) {
         case GameState.AWAIT_CARD_PLACEMENT:
-            return <CardPlacementWidget setResult={props.setResult} />;
+            return <CardPlacementLayout setResult={props.setResult} />;
         case GameState.AWAIT_FLYING_FISH_MOVEMENT:
-            return <FlyingFishMovementWidget setResult={props.setResult} />;
+            return <FlyingFishMovementLayout setResult={props.setResult} />;
         case GameState.AWAIT_FOG_TARGET:
-            return <FogTargetWidget setResult={props.setResult} />;
+            return <FogTargetLayout setResult={props.setResult} />;
         case GameState.AWAIT_HARPOON_TARGET:
         case GameState.AWAIT_TORTOISE_TARGET:
-            return <CharacterTargetWidget setResult={props.setResult} />;
+            return <CharacterTargetLayout setResult={props.setResult} />;
         case GameState.AWAIT_NET_TARGET:
         case GameState.AWAIT_PILINGS_TARGET:
         case GameState.AWAIT_TIDAL_SURGE_TARGET:
         case GameState.AWAIT_TIDAL_WAVE_TARGET:
         case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
-            return <IslandSelectorWidget setResult={props.setResult} />;
+            return <IslandSelectorLayout setResult={props.setResult} />;
         case GameState.AWAIT_MOVEMENT_SET:
-            return <MovementSetWidget setResult={props.setResult} />;
+            return <MovementSetLayout setResult={props.setResult} />;
         default:
             return assertUnreachable(gameContext.game.gameState);
     }

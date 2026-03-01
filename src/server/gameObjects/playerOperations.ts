@@ -218,7 +218,7 @@ export namespace PlayerOperations {
         }
         GameOperations.log(
             game,
-            `${player.playerDesignator} draws ${cards} cards.`,
+            `${player.playerDesignator} draws ${cards} card${cards === 1 ? '' : 's'}.`,
         );
     };
 }
