@@ -12,6 +12,7 @@ import { getIslandImage } from './images/islandImages';
 import { assertUnreachable } from './util';
 import { Emoji } from './emoji';
 import { getCharacterImage } from './images/characterImages';
+import { Tooltip } from './tooltip';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -208,6 +209,7 @@ const Island = (props: {
     readonly onCharacterClicked:
         | ((character: CharacterSerialized) => void)
         | undefined;
+    readonly setIslandHover: (hover: boolean) => void;
 }) => {
     const colors = getIslandColors(props.island);
 
@@ -267,6 +269,12 @@ const Island = (props: {
         <div
             key={props.island.islandNumber}
             style={{ height: '100%', width: '100%' }}
+            onMouseEnter={() => {
+                props.setIslandHover(true);
+            }}
+            onMouseLeave={() => {
+                props.setIslandHover(false);
+            }}
         >
             <div
                 style={{
@@ -317,6 +325,19 @@ const Island = (props: {
 export const Board = (props: BoardProps) => {
     const gameContext = React.use(GameContext);
 
+    const [hoveredIsland, setHoveredIsland] =
+        React.useState<IslandSerialized | null>(null);
+
+    const islandTooltip =
+        hoveredIsland === null ? null : (
+            <Tooltip
+                hover={true}
+                style={{ background: getIslandColors(hoveredIsland).island }}
+            >
+                This is an island
+            </Tooltip>
+        );
+
     return (
         <div
             style={{
@@ -341,6 +362,13 @@ export const Board = (props: BoardProps) => {
                             }
                             highlightCharacter={props.highlightCharacter}
                             island={island}
+                            setIslandHover={(hover) => {
+                                if (hover) {
+                                    setHoveredIsland(island);
+                                } else {
+                                    setHoveredIsland(null);
+                                }
+                            }}
                             width={itemWidth}
                             onCharacterClicked={
                                 props.onCharacterClicked
@@ -367,6 +395,7 @@ export const Board = (props: BoardProps) => {
                     );
                 }}
             />
+            {islandTooltip}
         </div>
     );
 };
