@@ -16,5 +16,18 @@ export const useMousePosition = () => {
         };
     }, []);
 
-    return mousePosition;
+    const mouseQuadrant = (() => {
+        if (mousePosition.x > window.innerWidth / 2) {
+            if (mousePosition.y > window.innerHeight / 2) {
+                return 4;
+            }
+            return 1;
+        }
+        if (mousePosition.y > window.innerHeight / 2) {
+            return 3;
+        }
+        return 2;
+    })();
+
+    return { mousePosition, mouseQuadrant };
 };

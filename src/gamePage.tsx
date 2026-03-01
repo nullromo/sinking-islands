@@ -38,8 +38,6 @@ const useGameStateSocket = (gameID: string) => {
 };
 
 const GamePageInner = () => {
-    const gameContext = React.use(GameContext);
-
     const [result, setResult] = useResultMessage();
 
     return (

@@ -16,7 +16,7 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
     const gameContext = React.use(GameContext);
 
     const [hover, setHover] = React.useState(false);
-    const mousePosition = useMousePosition();
+    const { mousePosition, mouseQuadrant } = useMousePosition();
 
     const backgroundColor =
         props.card.playerDesignator === gameContext.you
@@ -42,9 +42,14 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
                 background: backgroundColor,
                 border: '2px solid',
                 borderRadius: '4px',
-                left: mousePosition.x - 4 - 200,
+                left:
+                    mouseQuadrant === 1 || mouseQuadrant === 4
+                        ? mousePosition.x - 4 - 200
+                        : mousePosition.x + 4,
                 position: 'absolute',
-                top: mousePosition.y + 4,
+                ...(mouseQuadrant === 1 || mouseQuadrant === 2
+                    ? { top: mousePosition.y + 4 }
+                    : { bottom: -mousePosition.y - 4 }),
                 visibility: hover ? 'visible' : 'hidden',
                 width: '200px',
             }}
