@@ -7,6 +7,7 @@ import { PageRoutes } from './pageRoutes';
 import { socket } from './socket';
 import { useResultMessage } from './useResultMessage';
 import { LayoutSelector } from './layoutSelector';
+import { MousePositionContextProvider } from './mousePositionContext';
 
 /**
  * Attach a socket that subscribes to state changes of a given game on mount
@@ -93,8 +94,10 @@ export const GamePage = () => {
     }
 
     return (
-        <GameContextProvider>
-            <GamePageLoader gameID={gameID} />
-        </GameContextProvider>
+        <MousePositionContextProvider>
+            <GameContextProvider>
+                <GamePageLoader gameID={gameID} />
+            </GameContextProvider>
+        </MousePositionContextProvider>
     );
 };

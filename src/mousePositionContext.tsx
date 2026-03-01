@@ -1,6 +1,22 @@
 import * as React from 'react';
 
-export const useMousePosition = () => {
+type MouseQuadrant = 1 | 2 | 3 | 4;
+
+type MousePositionContextData = {
+    mousePosition: { x: number; y: number };
+    mouseQuadrant: MouseQuadrant;
+};
+
+export const MousePositionContext =
+    React.createContext<MousePositionContextData>({
+        mousePosition: { x: 0, y: 0 },
+        mouseQuadrant: 2,
+    });
+MousePositionContext.displayName = 'MousePositionContext';
+
+export const MousePositionContextProvider = (
+    props: React.PropsWithChildren,
+) => {
     const [mousePosition, setMousePosition] = React.useState<{
         x: number;
         y: number;
@@ -16,7 +32,7 @@ export const useMousePosition = () => {
         };
     }, []);
 
-    const mouseQuadrant = (() => {
+    const mouseQuadrant: MouseQuadrant = (() => {
         if (mousePosition.x > window.innerWidth / 2) {
             if (mousePosition.y > window.innerHeight / 2) {
                 return 4;
@@ -29,5 +45,13 @@ export const useMousePosition = () => {
         return 2;
     })();
 
-    return { mousePosition, mouseQuadrant };
+    const value = React.useMemo(() => {
+        return { mousePosition, mouseQuadrant };
+    }, [mousePosition, mouseQuadrant]);
+
+    return (
+        <MousePositionContext value={value}>
+            {props.children}
+        </MousePositionContext>
+    );
 };

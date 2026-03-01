@@ -1,4 +1,5 @@
-import { useMousePosition } from './useMousePosition';
+import * as React from 'react';
+import { MousePositionContext } from './mousePositionContext';
 
 interface TooltipProps extends React.PropsWithChildren {
     readonly hover: boolean;
@@ -6,7 +7,7 @@ interface TooltipProps extends React.PropsWithChildren {
 }
 
 export const Tooltip = (props: TooltipProps) => {
-    const { mousePosition, mouseQuadrant } = useMousePosition();
+    const { mousePosition, mouseQuadrant } = React.use(MousePositionContext);
 
     return (
         <div
