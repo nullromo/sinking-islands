@@ -4,7 +4,7 @@ import type { CardSerialized, FaceDownCard } from './commonTypes';
 import { CardType, cardTypeToString } from './commonTypes';
 import { GameContext } from './gameContext';
 import { getCardImage } from './images/cardImages';
-import { useMousePosition } from './useMousePosition';
+import { Tooltip } from './tooltip';
 
 interface OnScreenCardProps {
     readonly card: CardSerialized | FaceDownCard;
@@ -16,7 +16,6 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
     const gameContext = React.use(GameContext);
 
     const [hover, setHover] = React.useState(false);
-    const { mousePosition, mouseQuadrant } = useMousePosition();
 
     const backgroundColor =
         props.card.playerDesignator === gameContext.you
@@ -37,28 +36,15 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
     };
 
     const cardTooltip = (
-        <div
-            style={{
-                background: backgroundColor,
-                border: '2px solid',
-                borderRadius: '4px',
-                left:
-                    mouseQuadrant === 1 || mouseQuadrant === 4
-                        ? mousePosition.x - 4 - 200
-                        : mousePosition.x + 4,
-                position: 'absolute',
-                ...(mouseQuadrant === 1 || mouseQuadrant === 2
-                    ? { top: mousePosition.y + 4 }
-                    : { bottom: -mousePosition.y - 4 }),
-                visibility: hover ? 'visible' : 'hidden',
-                width: '200px',
-            }}
+        <Tooltip
+            hover={hover}
+            style={{ background: backgroundColor, width: '200px' }}
         >
             <div style={{ borderBottom: '2px solid' }}>
                 {makeCardTitle(false)}
             </div>
             <div>{getCardDescription(props.card.cardType)}</div>
-        </div>
+        </Tooltip>
     );
 
     return (
