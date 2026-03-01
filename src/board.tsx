@@ -348,13 +348,12 @@ const headerStyle: React.CSSProperties = {
 const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
     const gameContext = React.use(GameContext);
 
+    const islandColors = getIslandColors(props.island);
+
     return (
         <Tooltip
             hover={true}
-            style={{
-                background: getIslandColors(props.island).island,
-                width: 'fit-content',
-            }}
+            style={{ background: islandColors.island, width: 'fit-content' }}
         >
             <div style={{ borderBottom: '2px solid', textAlign: 'center' }}>
                 Island {props.island.islandNumber}
@@ -364,7 +363,17 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
                     <tbody>
                         <tr>
                             <th style={headerStyle}>Type</th>
-                            <td>{props.island.islandType}</td>
+                            <td>
+                                <b
+                                    style={{
+                                        background: islandColors.island,
+                                        boxShadow: `0px 0px 6px 1px ${islandColors.island}`,
+                                        padding: '0px 4px 0px 4px',
+                                    }}
+                                >
+                                    {props.island.islandType}
+                                </b>
+                            </td>
                         </tr>
                         <tr>
                             <th style={headerStyle}>Capacity</th>
