@@ -13,6 +13,7 @@ import { assertUnreachable } from './util';
 import { Emoji } from './emoji';
 import { getCharacterImage } from './images/characterImages';
 import { Tooltip } from './tooltip';
+import { getPlayerColor } from './playerColors';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -130,20 +131,20 @@ const Character = (props: {
     readonly onClick: (() => void) | undefined;
     readonly highlight: boolean;
     readonly shift: number;
+    readonly setCharacterHover: (hover: boolean) => void;
 }) => {
     const gameContext = React.use(GameContext);
 
-    const characterColor =
-        props.character.playerDesignator === gameContext.you
-            ? 'dodgerblue'
-            : 'red';
+    const characterColor = getPlayerColor(
+        props.character.playerDesignator,
+        gameContext.you,
+    );
 
     return (
         <div
             style={{
                 alignItems: 'center',
-                background: characterColor,
-                border: `${0.05 * props.width}px solid ${characterColor}`,
+                border: `${0.05 * props.width}px solid ${characterColor.bright}`,
                 borderRadius: '50%',
                 boxShadow: '2px 2px',
                 display: 'flex',
@@ -157,6 +158,12 @@ const Character = (props: {
                 if (props.onClick) {
                     props.onClick();
                 }
+            }}
+            onMouseEnter={() => {
+                props.setCharacterHover(true);
+            }}
+            onMouseLeave={() => {
+                props.setCharacterHover(false);
             }}
         >
             <div
@@ -210,6 +217,9 @@ const Island = (props: {
         | ((character: CharacterSerialized) => void)
         | undefined;
     readonly setIslandHover: (hover: boolean) => void;
+    readonly setHoveredCharacter: (
+        character: CharacterSerialized | null,
+    ) => void;
 }) => {
     const colors = getIslandColors(props.island);
 
@@ -249,6 +259,13 @@ const Island = (props: {
                         key={index}
                         character={character}
                         highlight={index === highlightCharacterIndex}
+                        setCharacterHover={(hover) => {
+                            if (hover) {
+                                props.setHoveredCharacter(character);
+                            } else {
+                                props.setHoveredCharacter(null);
+                            }
+                        }}
                         shift={(index * props.width) / 7}
                         width={(props.width * 91) / 300}
                         onClick={
@@ -322,21 +339,137 @@ const Island = (props: {
     );
 };
 
+const headerStyle: React.CSSProperties = {
+    paddingRight: '10px',
+    textAlign: 'left',
+    whiteSpace: 'nowrap',
+};
+
+const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
+    const gameContext = React.use(GameContext);
+
+    return (
+        <Tooltip
+            hover={true}
+            style={{
+                background: getIslandColors(props.island).island,
+                width: 'fit-content',
+            }}
+        >
+            <div style={{ borderBottom: '2px solid', textAlign: 'center' }}>
+                Island {props.island.islandNumber}
+            </div>
+            <div style={{ background: 'lightgray', padding: '4px' }}>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th style={headerStyle}>Type</th>
+                            <td>{props.island.islandType}</td>
+                        </tr>
+                        <tr>
+                            <th style={headerStyle}>Capacity</th>
+                            <td>
+                                {props.island.smallCapacity
+                                    ? 'Limited'
+                                    : 'Unlimited'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={headerStyle}>Your strength</th>
+                            <td>
+                                {props.island.characters.reduce(
+                                    (total, character) => {
+                                        return character.playerDesignator ===
+                                            gameContext.you
+                                            ? total + character.strength
+                                            : total;
+                                    },
+                                    0,
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={headerStyle}>Enemy strength</th>
+                            <td>
+                                {props.island.characters.reduce(
+                                    (total, character) => {
+                                        return character.playerDesignator !==
+                                            gameContext.you
+                                            ? total + character.strength
+                                            : total;
+                                    },
+                                    0,
+                                )}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style={{ marginTop: '2px', textAlign: 'center' }}>
+                    {gameContext.game.nextIslandToSink ===
+                    props.island.islandNumber ? (
+                        <em style={{ color: '#c72727' }}>
+                            <b>This island is sinking!</b>
+                        </em>
+                    ) : (
+                        <em>This island is not sinking.</em>
+                    )}
+                </div>
+            </div>
+        </Tooltip>
+    );
+};
+
+const CharacterTooltip = (props: {
+    readonly character: CharacterSerialized;
+}) => {
+    const gameContext = React.use(GameContext);
+
+    return (
+        <Tooltip
+            hover={true}
+            style={{
+                background: getPlayerColor(
+                    props.character.playerDesignator,
+                    gameContext.you,
+                ).dim,
+                width: 'fit-content',
+            }}
+        >
+            <div style={{ borderBottom: '2px solid', textAlign: 'center' }}>
+                {props.character.playerDesignator === gameContext.you
+                    ? 'Your'
+                    : 'Enemy'}{' '}
+                Character
+            </div>
+            <div style={{ background: 'lightgray', padding: '4px' }}>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th style={headerStyle}>Strength</th>
+                            <td>{props.character.strength}</td>
+                        </tr>
+                        <tr>
+                            <th style={headerStyle}>Type</th>
+                            <td>
+                                {props.character.tortoise
+                                    ? 'Tortoise'
+                                    : 'Human'}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Tooltip>
+    );
+};
+
 export const Board = (props: BoardProps) => {
     const gameContext = React.use(GameContext);
 
     const [hoveredIsland, setHoveredIsland] =
         React.useState<IslandSerialized | null>(null);
-
-    const islandTooltip =
-        hoveredIsland === null ? null : (
-            <Tooltip
-                hover={true}
-                style={{ background: getIslandColors(hoveredIsland).island }}
-            >
-                This is an island
-            </Tooltip>
-        );
+    const [hoveredCharacter, setHoveredCharacter] =
+        React.useState<CharacterSerialized | null>(null);
 
     return (
         <div
@@ -362,6 +495,7 @@ export const Board = (props: BoardProps) => {
                             }
                             highlightCharacter={props.highlightCharacter}
                             island={island}
+                            setHoveredCharacter={setHoveredCharacter}
                             setIslandHover={(hover) => {
                                 if (hover) {
                                     setHoveredIsland(island);
@@ -395,7 +529,11 @@ export const Board = (props: BoardProps) => {
                     );
                 }}
             />
-            {islandTooltip}
+            {hoveredCharacter ? (
+                <CharacterTooltip character={hoveredCharacter} />
+            ) : hoveredIsland === null ? null : (
+                <IslandTooltip island={hoveredIsland} />
+            )}
         </div>
     );
 };
