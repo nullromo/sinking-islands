@@ -14,6 +14,7 @@ export const MessageLog = (props: { readonly gameState: GameSerialized }) => {
                 border: '1px solid',
                 boxSizing: 'border-box',
                 marginBottom: '20px',
+                maxHeight: '300px',
                 minWidth: '200px',
                 overflowY: 'auto',
                 padding: '4px',

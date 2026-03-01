@@ -16,7 +16,7 @@ export const GameInfo = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 minWidth: '270px',
-                padding: '4px',
+                paddingBottom: '4px',
                 width: '100%',
             }}
         >
@@ -30,7 +30,7 @@ export const GameInfo = () => {
             >
                 Game ID: <b>{gameContext.game.id}</b>
             </div>
-            <table style={{ border: '1px solid' }}>
+            <table style={{ background: 'darkgray', border: '1px solid' }}>
                 <thead>
                     <tr>
                         <th

@@ -45,7 +45,7 @@ const GamePageInner = () => {
     return (
         <div
             style={{
-                backgroundColor: '#EEEEEE',
+                backgroundColor: '#ddb76430',
                 backgroundImage: `url(${gameBackground})`,
                 display: 'flex',
                 height: '100%',
