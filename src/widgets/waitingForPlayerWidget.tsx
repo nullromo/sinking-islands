@@ -2,35 +2,24 @@ import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import { GameContext } from '../gameContext';
-import { Hand } from '../hand';
 import { GameInfo } from '../gameInfo';
+import { Hand } from '../hand';
 import { MessageLog } from '../messageLog';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 export const WaitingForPlayerWidget = () => {
     const gameContext = React.use(GameContext);
 
     return (
-        <>
+        <GameLayout>
             <Board />
-            <div
-                style={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    justifyContent: 'flex-start',
-                }}
-            >
-                <div>
-                    <GameInfo />
-                    <MessageLog gameState={gameContext.game} />
-                </div>
-                <div>
-                    <ActionOrderTrack />
-                    <Hand />
-                </div>
+            <RightSidePanelLayout>
+                <GameInfo />
+                <MessageLog gameState={gameContext.game} />
+                <ActionOrderTrack />
+                <Hand />
                 Waiting for opponent
-            </div>
-        </>
+            </RightSidePanelLayout>
+        </GameLayout>
     );
 };

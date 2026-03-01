@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
+import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
+import { GameInfo } from '../gameInfo';
 import { GameState } from '../gameState';
 import { Hand } from '../hand';
+import { MessageLog } from '../messageLog';
 import type { SetResultProps } from '../useResultMessage';
 import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
-import { GameActionType } from '../gameActionTypes';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 interface IslandSelectorWidgetProps
     extends InjectedServerCallsProps, SetResultProps {
@@ -52,7 +55,7 @@ export const IslandSelectorWidget = withServerCalls(
         const [islandChoice, setIslandChoice] = React.useState(1);
 
         return (
-            <>
+            <GameLayout>
                 <Board
                     highlightIslandNumber={islandChoice}
                     onCharacterClicked={(island, _) => {
@@ -62,7 +65,9 @@ export const IslandSelectorWidget = withServerCalls(
                         setIslandChoice(island.islandNumber);
                     }}
                 />
-                <div>
+                <RightSidePanelLayout>
+                    <GameInfo />
+                    <MessageLog gameState={gameContext.game} />
                     <ActionOrderTrack />
                     <Hand />
                     <div style={{ width: '600px' }}>
@@ -86,8 +91,8 @@ export const IslandSelectorWidget = withServerCalls(
                     >
                         Submit
                     </button>
-                </div>
-            </>
+                </RightSidePanelLayout>
+            </GameLayout>
         );
     },
     'IslandSelectorWidget',

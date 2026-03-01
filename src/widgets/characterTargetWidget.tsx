@@ -3,13 +3,16 @@ import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import type { CharacterSerialized } from '../commonTypes';
 import { otherPlayerDesignator } from '../commonTypes';
+import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
+import { GameInfo } from '../gameInfo';
 import { GameState } from '../gameState';
 import { Hand } from '../hand';
+import { MessageLog } from '../messageLog';
 import type { SetResultProps } from '../useResultMessage';
 import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
-import { GameActionType } from '../gameActionTypes';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 interface CharacterTargetWidgetProps
     extends InjectedServerCallsProps, SetResultProps {
@@ -37,7 +40,7 @@ export const CharacterTargetWidget = withServerCalls(
         const [islandNumberChoice, setIslandNumberChoice] = React.useState(1);
 
         return (
-            <>
+            <GameLayout>
                 <Board
                     highlightCharacter={{
                         character: characterChoice,
@@ -56,7 +59,9 @@ export const CharacterTargetWidget = withServerCalls(
                         }
                     }}
                 />
-                <div>
+                <RightSidePanelLayout>
+                    <GameInfo />
+                    <MessageLog gameState={gameContext.game} />
                     <ActionOrderTrack />
                     <Hand />
                     <div
@@ -96,8 +101,8 @@ export const CharacterTargetWidget = withServerCalls(
                     >
                         Submit
                     </button>
-                </div>
-            </>
+                </RightSidePanelLayout>
+            </GameLayout>
         );
     },
     'CharacterTargetWidget',

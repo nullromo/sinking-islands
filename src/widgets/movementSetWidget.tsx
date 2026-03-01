@@ -5,12 +5,15 @@ import { Board } from '../board';
 import type { MovementSet } from '../commonTypes';
 import { computeMovementSteps } from '../computeMovementSteps';
 import { convertMovementToIslands } from '../convertActionData';
+import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
+import { GameInfo } from '../gameInfo';
 import { Hand } from '../hand';
+import { MessageLog } from '../messageLog';
 import type { SetResultProps } from '../useResultMessage';
 import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
-import { GameActionType } from '../gameActionTypes';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 interface MovementSetWidgetProps
     extends InjectedServerCallsProps, SetResultProps {
@@ -24,7 +27,7 @@ export const MovementSetWidget = withServerCalls(
         const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
         return (
-            <>
+            <GameLayout>
                 <Board
                     onCharacterClicked={(island, character) => {
                         const newMovement = {
@@ -64,7 +67,9 @@ export const MovementSetWidget = withServerCalls(
                         }
                     }}
                 />
-                <div>
+                <RightSidePanelLayout>
+                    <GameInfo />
+                    <MessageLog gameState={gameContext.game} />
                     <ActionOrderTrack />
                     <Hand />
                     <div style={{ width: '600px' }}>
@@ -127,8 +132,8 @@ export const MovementSetWidget = withServerCalls(
                             Submit
                         </button>
                     </div>
-                </div>
-            </>
+                </RightSidePanelLayout>
+            </GameLayout>
         );
     },
     'MovementSetWidget',

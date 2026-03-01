@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
+import { Board } from '../board';
 import type { CardSerialized, CardType } from '../commonTypes';
 import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
+import { GameInfo } from '../gameInfo';
 import { Hand } from '../hand';
+import { MessageLog } from '../messageLog';
 import type { SetResultProps } from '../useResultMessage';
 import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
-import { Board } from '../board';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 interface CardPlacementWidgetProps
     extends InjectedServerCallsProps, SetResultProps {
@@ -27,15 +30,11 @@ export const CardPlacementWidget = withServerCalls(
         const [ghostSlots, setGhostSlots] = React.useState<number[]>([]);
 
         return (
-            <>
+            <GameLayout>
                 <Board />
-                <div
-                    style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}
-                >
+                <RightSidePanelLayout>
+                    <GameInfo />
+                    <MessageLog gameState={gameContext.game} />
                     <ActionOrderTrack
                         overrideCards={cardChoices.map((card) => {
                             if (card === null) {
@@ -148,8 +147,8 @@ export const CardPlacementWidget = withServerCalls(
                             Submit
                         </button>
                     </div>
-                </div>
-            </>
+                </RightSidePanelLayout>
+            </GameLayout>
         );
     },
     'CardPlacementWidget',

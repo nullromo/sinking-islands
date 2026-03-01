@@ -3,10 +3,13 @@ import { ActionOrderTrack } from '../actionOrderTrack';
 import { Board } from '../board';
 import { GameActionType } from '../gameActionTypes';
 import { GameContext } from '../gameContext';
+import { GameInfo } from '../gameInfo';
 import { Hand } from '../hand';
+import { MessageLog } from '../messageLog';
 import type { SetResultProps } from '../useResultMessage';
 import type { InjectedServerCallsProps } from '../withServerCalls';
 import { withServerCalls } from '../withServerCalls';
+import { GameLayout, RightSidePanelLayout } from './gameLayoutContainers';
 
 interface FogTargetWidgetProps
     extends InjectedServerCallsProps, SetResultProps {
@@ -20,9 +23,11 @@ export const FogTargetWidget = withServerCalls(
         const [slotChoice, setSlotChoice] = React.useState(0);
 
         return (
-            <>
+            <GameLayout>
                 <Board />
-                <div>
+                <RightSidePanelLayout>
+                    <GameInfo />
+                    <MessageLog gameState={gameContext.game} />
                     <ActionOrderTrack
                         highlightIndex={slotChoice}
                         onSlotClicked={(slotIndex) => {
@@ -49,8 +54,8 @@ export const FogTargetWidget = withServerCalls(
                     >
                         Submit
                     </button>
-                </div>
-            </>
+                </RightSidePanelLayout>
+            </GameLayout>
         );
     },
     'FogTargetWidget',
