@@ -45,8 +45,6 @@ const IslandNumberChip = (props: {
     readonly island: IslandSerialized;
     readonly islandWidth: number;
 }) => {
-    const gameContext = React.use(GameContext);
-
     const colors = getIslandColors(props.island);
 
     return (
@@ -76,14 +74,6 @@ const IslandNumberChip = (props: {
                 }}
             >
                 <b>{`${props.island.islandNumber} `}</b>
-                {props.island.islandNumber ===
-                    gameContext.game.players[PlayerDesignator.PLAYER_A]
-                        .pilingsIsland ||
-                props.island.islandNumber ===
-                    gameContext.game.players[PlayerDesignator.PLAYER_B]
-                        .pilingsIsland
-                    ? Emoji.house
-                    : ''}
             </div>
         </div>
     );
@@ -93,6 +83,14 @@ const TypeAndCapacityChip = (props: {
     readonly island: IslandSerialized;
     readonly islandWidth: number;
 }) => {
+    const gameContext = React.use(GameContext);
+
+    const hasPilings = Object.values(gameContext.game.players).some(
+        (player) => {
+            return player.pilingsIsland === props.island.islandNumber;
+        },
+    );
+
     return (
         <div
             style={{
@@ -105,14 +103,12 @@ const TypeAndCapacityChip = (props: {
                 right: '-3px',
             }}
         >
+            {hasPilings ? <span style={{ paddingLeft: '4px' }}>*</span> : null}
             <span style={{ color: 'transparent', textShadow: '0 0 0 black' }}>
-                {props.island.smallCapacity ? Emoji.alone : Emoji.together}
+                {props.island.smallCapacity && !hasPilings
+                    ? Emoji.alone
+                    : Emoji.together}
             </span>
-            {props.island.islandType === IslandType.SACRED
-                ? Emoji.pray
-                : props.island.islandType === IslandType.VOLCANO
-                  ? Emoji.volcano
-                  : ''}
         </div>
     );
 };
@@ -183,8 +179,12 @@ const Character = (props: {
             <div
                 style={{
                     alignItems: 'center',
-                    background: 'black',
+                    background: props.character.tortoise ? 'green' : 'black',
+                    border: props.character.tortoise
+                        ? '3px solid darkgreen'
+                        : '',
                     borderRadius: '50%',
+                    boxSizing: 'border-box',
                     color: 'white',
                     display: 'flex',
                     fontSize: `${props.width / 2.8}px`,
@@ -196,7 +196,6 @@ const Character = (props: {
                     width: `${props.width / 2.4}px`,
                 }}
             >
-                {props.character.tortoise ? Emoji.tortoise : ''}
                 {props.character.strength}
             </div>
         </div>
@@ -379,6 +378,12 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
     const playerBNetted =
         gameContext.game.players[PlayerDesignator.PLAYER_B].netIsland ===
         props.island.islandNumber;
+    const playerAPilings =
+        gameContext.game.players[PlayerDesignator.PLAYER_A].pilingsIsland ===
+        props.island.islandNumber;
+    const playerBPilings =
+        gameContext.game.players[PlayerDesignator.PLAYER_B].pilingsIsland ===
+        props.island.islandNumber;
 
     return (
         <Tooltip
@@ -449,6 +454,21 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
                         whiteSpace: 'nowrap',
                     }}
                 >
+                    {playerAPilings || playerBPilings ? (
+                        <em style={{ color: 'saddlebrown' }}>
+                            <b>
+                                {`Pilings constructed by Player ${playerAPilings ? 'A' : 'B'}.`}
+                            </b>
+                        </em>
+                    ) : null}
+                </div>
+                <div
+                    style={{
+                        marginTop: '2px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }}
+                >
                     {playerANetted || playerBNetted ? (
                         <em style={{ color: 'saddlebrown' }}>
                             <b>
@@ -457,7 +477,13 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
                         </em>
                     ) : null}
                 </div>
-                <div style={{ marginTop: '2px', textAlign: 'center' }}>
+                <div
+                    style={{
+                        marginTop: '2px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }}
+                >
                     {gameContext.game.nextIslandToSink ===
                     props.island.islandNumber ? (
                         <em style={{ color: '#c72727' }}>

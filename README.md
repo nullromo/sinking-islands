@@ -65,8 +65,6 @@
 1. ✅ Get a domain with Namecheap
 1. Clean up all the visuals so that it looks nice when you are playing.
     1. Movements selections more clear
-    1. Pilings designation more clear
-    1. Tortoise designation more clear
     1. Island selection more clear
     1. Character selection more clear
 1. Do not skip ahead. Animations one at a time of game events.
