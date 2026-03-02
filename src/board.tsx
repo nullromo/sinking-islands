@@ -6,16 +6,17 @@ import type {
     TargetCharacter,
 } from './commonTypes';
 import { IslandType, PlayerDesignator } from './commonTypes';
-import { GameContext } from './gameContext';
-import { CharacterOperations } from './server/gameObjects/characterOperations';
-import { getIslandImage } from './images/islandImages';
-import { assertUnreachable } from './util';
 import { Emoji } from './emoji';
-import { getCharacterImage } from './images/characterImages';
-import { Tooltip } from './tooltip';
-import { getPlayerColor } from './playerColors';
+import { GameContext } from './gameContext';
 import { hoverHighlightStyle } from './hoverHighlightStyle';
+import { getCharacterImage } from './images/characterImages';
+import { getIslandImage } from './images/islandImages';
+import { NetOverlay } from './netOverlay';
+import { getPlayerColor } from './playerColors';
 import { RisingWaterSpinner } from './risingWaterSpinner';
+import { CharacterOperations } from './server/gameObjects/characterOperations';
+import { Tooltip } from './tooltip';
+import { assertUnreachable } from './util';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -82,17 +83,6 @@ const IslandNumberChip = (props: {
                     gameContext.game.players[PlayerDesignator.PLAYER_B]
                         .pilingsIsland
                     ? Emoji.house
-                    : ''}
-                {props.island.islandNumber ===
-                    gameContext.game.players[PlayerDesignator.PLAYER_A]
-                        .netIsland ||
-                props.island.islandNumber ===
-                    gameContext.game.players[PlayerDesignator.PLAYER_B]
-                        .netIsland
-                    ? Emoji.net
-                    : ''}
-                {props.island.islandNumber === gameContext.game.nextIslandToSink
-                    ? Emoji.storm
                     : ''}
             </div>
         </div>
@@ -302,14 +292,7 @@ const Island = (props: {
     return (
         <div
             key={props.island.islandNumber}
-            style={{
-                boxShadow:
-                    props.hoverHighlight && !props.hoveredCharacter
-                        ? hoverHighlightStyle
-                        : '',
-                height: '100%',
-                width: '100%',
-            }}
+            style={{ height: '100%', width: '100%' }}
             onMouseEnter={() => {
                 props.setIslandHover(true);
             }}
@@ -325,6 +308,10 @@ const Island = (props: {
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
                     border: `${(props.width * 3) / 140}px solid ${colors.island}`,
+                    boxShadow:
+                        props.hoverHighlight && !props.hoveredCharacter
+                            ? hoverHighlightStyle
+                            : '',
                     cursor: props.onClick ? 'pointer' : '',
                     display: 'flex',
                     fontSize: '18px',
@@ -342,6 +329,15 @@ const Island = (props: {
                 props.island.islandNumber ? (
                     <RisingWaterSpinner width={props.width} />
                 ) : null}
+                {props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_A]
+                        .netIsland ||
+                props.island.islandNumber ===
+                    gameContext.game.players[PlayerDesignator.PLAYER_B]
+                        .netIsland ? (
+                    <NetOverlay width={props.width} />
+                ) : null}
+
                 <IslandNumberChip
                     island={props.island}
                     islandWidth={props.width}
@@ -376,6 +372,13 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
     const gameContext = React.use(GameContext);
 
     const islandColors = getIslandColors(props.island);
+
+    const playerANetted =
+        gameContext.game.players[PlayerDesignator.PLAYER_A].netIsland ===
+        props.island.islandNumber;
+    const playerBNetted =
+        gameContext.game.players[PlayerDesignator.PLAYER_B].netIsland ===
+        props.island.islandNumber;
 
     return (
         <Tooltip
@@ -439,15 +442,28 @@ const IslandTooltip = (props: { readonly island: IslandSerialized }) => {
                         </tr>
                     </tbody>
                 </table>
+                <div
+                    style={{
+                        marginTop: '2px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {playerANetted || playerBNetted ? (
+                        <em style={{ color: 'saddlebrown' }}>
+                            <b>
+                                {`Island ensnared by Player ${playerANetted ? 'A' : 'B'}'s net.`}
+                            </b>
+                        </em>
+                    ) : null}
+                </div>
                 <div style={{ marginTop: '2px', textAlign: 'center' }}>
                     {gameContext.game.nextIslandToSink ===
                     props.island.islandNumber ? (
                         <em style={{ color: '#c72727' }}>
                             <b>This island is sinking!</b>
                         </em>
-                    ) : (
-                        <em>This island is not sinking.</em>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </Tooltip>
