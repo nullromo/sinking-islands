@@ -64,7 +64,12 @@
 
 1. ✅ Get a domain with Namecheap
 1. Clean up all the visuals so that it looks nice when you are playing.
-   Including not skipping ahead. Animations one at a time.
+    1. Movements selections more clear
+    1. Pilings designation more clear
+    1. Tortoise designation more clear
+    1. Island selection more clear
+    1. Character selection more clear
+1. Do not skip ahead. Animations one at a time of game events.
 1. Build a tutorial that explains the game.
 1. Do I need to use tailscale for DNS?
 
@@ -89,7 +94,7 @@
 - Users want to see their game history. They should be able to have some number
   of active games (5?) and they should see their previous games. Replays would
   be nice. Also win/loss ratio and such. Analytics.
-- Host/join public games.
+- Spectate games implementation.
 - Run code coverage and tests with CI
 - Add code coverage report to README
 - Actually use `roundsCompleted`
