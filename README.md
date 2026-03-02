@@ -1,21 +1,17 @@
 # Sinking Islands
 
-## Plan
+## Main stuff
 
-1. ✅ Create users and store in redis.
-1. ✅ User sessions.
-1. ✅ Re-structure backend to be state-based. REST API operates on game states
-   that are stored in localhost Redis. Backend associates user IDs with players
-   A and B. Each request includes
-    - User token to validate identity
-    - Game ID to select the game to operate on
-    - Action (same as current socket event name)
-    - Data (same as socket payload)
-1. ✅ When a user connects, they still need to get a socket that the server can
-   use to update the game state.
-1. ✅ Put everything into a docker container and try to run it like that.
-1. ✅ Get started with Hetzner with 2 VMs (application and build)
-1. ✅ Make a Dokploy instance in Hetzner that will push to the application VM
+1. Movements selections more clear
+1. Island selection more clear
+1. Character selection more clear
+1. Build a tutorial that explains the game.
+1. Clean up top-right corner visual stuff. Icons for card piles. Ability to see
+   the cards in the piles as a pop-up with OnScreenCard items and hoverable.
+1. Ability to read rules manual any time as a pop-up.
+
+## Setup stuff
+
 1. Make a github action that spins up the build server, runs the build, then
    shuts down the build server
     1. AI response:
@@ -62,13 +58,6 @@
               HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
     ```
 
-1. ✅ Get a domain with Namecheap
-1. Clean up all the visuals so that it looks nice when you are playing.
-    1. Movements selections more clear
-    1. Island selection more clear
-    1. Character selection more clear
-1. Do not skip ahead. Animations one at a time of game events.
-1. Build a tutorial that explains the game.
 1. Do I need to use tailscale for DNS?
 
 ## Visual
@@ -77,7 +66,7 @@
   show that for all the other types of input
 - similar to how it shows staged selections on the islands/characters, it should
   also show that for movement and any other input that doesn't really indicate
-- make everything pretty. Get some good AI art going.
+- make everything pretty. Get some good AI art going. Borders and stuff.
 - Make curved arrows that point to where things are being targeted. (try
   `M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10`
   at https://yqnn.github.io/svg-path-editor/ for an example of arrows that can
@@ -85,7 +74,7 @@
     ```
       <svg x="30" y="30" width="100" height="100"><path d="M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10" style="fill:none;stroke:red;stroke-width:3" transform="translate(30, 30) scale(3)"></path></svg>
     ```
-- Should have hover stuff
+- Do not skip ahead. Animations one at a time of game events.
 
 ## Later Features
 
