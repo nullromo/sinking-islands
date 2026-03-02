@@ -15,6 +15,7 @@ import { getCharacterImage } from './images/characterImages';
 import { Tooltip } from './tooltip';
 import { getPlayerColor } from './playerColors';
 import { hoverHighlightStyle } from './hoverHighlightStyle';
+import { RisingWaterSpinner } from './risingWaterSpinner';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -228,6 +229,8 @@ const Island = (props: {
     readonly hoverHighlight: boolean;
     readonly hoveredCharacter: CharacterSerialized | null;
 }) => {
+    const gameContext = React.use(GameContext);
+
     const colors = getIslandColors(props.island);
 
     const highlightCharacterIndex = props.island.characters.findIndex(
@@ -322,7 +325,6 @@ const Island = (props: {
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
                     border: `${(props.width * 3) / 140}px solid ${colors.island}`,
-                    boxSizing: 'border-box',
                     cursor: props.onClick ? 'pointer' : '',
                     display: 'flex',
                     fontSize: '18px',
@@ -336,6 +338,10 @@ const Island = (props: {
                     }
                 }}
             >
+                {gameContext.game.nextIslandToSink ===
+                props.island.islandNumber ? (
+                    <RisingWaterSpinner width={props.width} />
+                ) : null}
                 <IslandNumberChip
                     island={props.island}
                     islandWidth={props.width}
