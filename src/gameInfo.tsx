@@ -3,6 +3,8 @@ import { otherPlayerDesignator } from './commonTypes';
 import { CardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
 import { getPlayerColor } from './playerColors';
+import { Link } from 'react-router';
+import { PageRoutes } from './pageRoutes';
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -23,13 +25,24 @@ export const GameInfo = () => {
         >
             <div
                 style={{
-                    fontSize: '10px',
-                    marginBottom: '6px',
-                    textAlign: 'right',
-                    width: '100%',
+                    alignItems: 'flex-end',
+                    display: 'flex',
+                    flexDirection: 'column-reverse',
                 }}
             >
-                Game ID: <b>{gameContext.game.id}</b>
+                <Link to={PageRoutes.DASHBOARD}>
+                    <button type='button'>Exit to Dashboard</button>
+                </Link>
+                <div
+                    style={{
+                        fontSize: '10px',
+                        marginBottom: '6px',
+                        textAlign: 'right',
+                        width: '100%',
+                    }}
+                >
+                    Game ID: <b>{gameContext.game.id}</b>
+                </div>
             </div>
             <table style={{ background: 'darkgray', border: '1px solid' }}>
                 <thead>
