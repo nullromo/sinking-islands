@@ -14,6 +14,7 @@ import { Emoji } from './emoji';
 import { getCharacterImage } from './images/characterImages';
 import { Tooltip } from './tooltip';
 import { getPlayerColor } from './playerColors';
+import { hoverHighlightStyle } from './hoverHighlightStyle';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -132,6 +133,7 @@ const Character = (props: {
     readonly highlight: boolean;
     readonly shift: number;
     readonly setCharacterHover: (hover: boolean) => void;
+    readonly hoverHighlight: boolean;
 }) => {
     const gameContext = React.use(GameContext);
 
@@ -146,13 +148,16 @@ const Character = (props: {
                 alignItems: 'center',
                 border: `${0.05 * props.width}px solid ${characterColor.bright}`,
                 borderRadius: '50%',
-                boxShadow: '2px 2px',
+                boxShadow: props.hoverHighlight
+                    ? hoverHighlightStyle
+                    : '2px 2px',
                 display: 'flex',
                 flexDirection: 'column',
                 height: props.width,
                 position: 'absolute',
                 transform: `translatex(${props.shift}px)`,
                 width: props.width,
+                zIndex: props.hoverHighlight ? 2 : 1,
             }}
             onClick={() => {
                 if (props.onClick) {
@@ -220,6 +225,8 @@ const Island = (props: {
     readonly setHoveredCharacter: (
         character: CharacterSerialized | null,
     ) => void;
+    readonly hoverHighlight: boolean;
+    readonly hoveredCharacter: CharacterSerialized | null;
 }) => {
     const colors = getIslandColors(props.island);
 
@@ -254,11 +261,18 @@ const Island = (props: {
                 return character.playerDesignator === playerDesignator;
             })
             .map((character, index) => {
+                const hoverHighlight =
+                    props.hoverHighlight &&
+                    CharacterOperations.equals(
+                        character,
+                        props.hoveredCharacter,
+                    );
                 return (
                     <Character
                         key={index}
                         character={character}
                         highlight={index === highlightCharacterIndex}
+                        hoverHighlight={hoverHighlight}
                         setCharacterHover={(hover) => {
                             if (hover) {
                                 props.setHoveredCharacter(character);
@@ -285,7 +299,14 @@ const Island = (props: {
     return (
         <div
             key={props.island.islandNumber}
-            style={{ height: '100%', width: '100%' }}
+            style={{
+                boxShadow:
+                    props.hoverHighlight && !props.hoveredCharacter
+                        ? hoverHighlightStyle
+                        : '',
+                height: '100%',
+                width: '100%',
+            }}
             onMouseEnter={() => {
                 props.setIslandHover(true);
             }}
@@ -501,6 +522,11 @@ export const Board = (props: BoardProps) => {
                                 island.islandNumber
                             }
                             highlightCharacter={props.highlightCharacter}
+                            hoverHighlight={
+                                hoveredIsland?.islandNumber ===
+                                island.islandNumber
+                            }
+                            hoveredCharacter={hoveredCharacter}
                             island={island}
                             setHoveredCharacter={setHoveredCharacter}
                             setIslandHover={(hover) => {

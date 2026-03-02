@@ -6,6 +6,7 @@ import { GameContext } from './gameContext';
 import { getCardImage } from './images/cardImages';
 import { getPlayerColor } from './playerColors';
 import { Tooltip } from './tooltip';
+import { hoverHighlightStyle } from './hoverHighlightStyle';
 
 interface OnScreenCardProps {
     readonly card: CardSerialized | FaceDownCard;
@@ -55,6 +56,7 @@ export const OnScreenCard = (props: OnScreenCardProps) => {
                 background: backgroundColor,
                 border: '2px solid',
                 borderRadius: '4px',
+                boxShadow: hover ? hoverHighlightStyle : '',
                 boxSizing: 'border-box',
                 cursor: props.onClick ? 'pointer' : '',
                 display: 'flex',

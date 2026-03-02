@@ -18,10 +18,9 @@ export namespace CharacterOperations {
     export const equals = (
         character: CharacterSerialized,
         other?: CharacterSerialized | null,
-    ) => {
+    ): boolean => {
         return (
-            other &&
-            character.playerDesignator === other.playerDesignator &&
+            character.playerDesignator === other?.playerDesignator &&
             character.strength === other.strength &&
             character.tortoise === other.tortoise
         );
