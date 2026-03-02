@@ -117,7 +117,7 @@ class SinkingIslandsBackend {
                 if (rawCookie) {
                     const match = cookie
                         .parse(rawCookie)
-                        [cookieName].match(/s:(?<id>.*)\./);
+                        [cookieName]?.match(/s:(?<id>.*)\./);
                     if (match) {
                         socket.data.sessionID = match.groups?.id;
                     }
