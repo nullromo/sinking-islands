@@ -41,6 +41,10 @@ export const SinkingIslandsApp = () => {
                         />
                         <Route element={<GamePage />} path={PageRoutes.PLAY} />
                         <Route
+                            element={<>tutorial page</>}
+                            path={PageRoutes.TUTORIAL}
+                        />
+                        <Route
                             element={<Navigate to={PageRoutes.DASHBOARD} />}
                             path='/*'
                         />

@@ -4,6 +4,7 @@ export enum PageRoutes {
     LOG_IN = '/log-in',
     CREATE_ACCOUNT = '/create-account',
     DASHBOARD = '/dashboard',
+    TUTORIAL = '/tutorial',
 }
 
 export const buildPlayRoute = (id: string) => {

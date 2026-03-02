@@ -4,6 +4,8 @@ import { GameListRow } from './gameListRow';
 import { useResultMessage } from './useResultMessage';
 import type { InjectedServerCallsProps } from './withServerCalls';
 import { withServerCalls } from './withServerCalls';
+import { Link } from 'react-router';
+import { PageRoutes } from './pageRoutes';
 
 export const cellStyle: React.CSSProperties = {
     border: '1px solid',
@@ -55,6 +57,9 @@ export const GameListWidget = withServerCalls(
                         marginBottom: '10px',
                     }}
                 >
+                    <Link to={PageRoutes.TUTORIAL}>
+                        <button type='button'>Tutorial</button>
+                    </Link>
                     <button
                         type='button'
                         onClick={() => {
