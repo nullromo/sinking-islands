@@ -38,29 +38,31 @@ const useGameStateSocket = (gameID: string) => {
     }, []);
 };
 
-const GamePageInner = () => {
+export const GamePageInner = () => {
     const [result, setResult] = useResultMessage();
 
     return (
-        <div
-            style={{
-                backgroundColor: '#ddb76430',
-                backgroundImage: `url(${gameBackground})`,
-                display: 'flex',
-                height: '100%',
-            }}
-        >
+        <MousePositionContextProvider>
             <div
                 style={{
-                    alignItems: 'center',
+                    backgroundColor: '#ddb76430',
+                    backgroundImage: `url(${gameBackground})`,
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
+                    height: '100%',
                 }}
             >
-                <LayoutSelector setResult={setResult} />
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                    }}
+                >
+                    <LayoutSelector setResult={setResult} />
+                </div>
             </div>
-        </div>
+        </MousePositionContextProvider>
     );
 };
 
@@ -94,10 +96,8 @@ export const GamePage = () => {
     }
 
     return (
-        <MousePositionContextProvider>
-            <GameContextProvider>
-                <GamePageLoader gameID={gameID} />
-            </GameContextProvider>
-        </MousePositionContextProvider>
+        <GameContextProvider>
+            <GamePageLoader gameID={gameID} />
+        </GameContextProvider>
     );
 };
