@@ -28,7 +28,7 @@ interface BoardProps {
     readonly highlightIslandNumber?: number;
 }
 
-const getIslandColors = (island: IslandSerialized) => {
+export const getIslandColors = (island: IslandSerialized) => {
     switch (island.islandType) {
         case IslandType.SACRED:
             return { island: '#ffc532', text: 'black' };

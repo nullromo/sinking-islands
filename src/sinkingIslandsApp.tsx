@@ -7,7 +7,7 @@ import { CreateAccountPage } from './pages/createAccountPage';
 import { DashboardPage } from './pages/dashboardPage';
 import { LogInPage } from './pages/logInPage';
 import { TitlePage } from './pages/titlePage';
-import { TutorialPage } from './tutorial/tutorialPage';
+import { Tutorial } from './tutorial/tutorial';
 
 export const SinkingIslandsApp = () => {
     return (
@@ -42,7 +42,7 @@ export const SinkingIslandsApp = () => {
                         />
                         <Route element={<GamePage />} path={PageRoutes.PLAY} />
                         <Route
-                            element={<TutorialPage />}
+                            element={<Tutorial />}
                             path={PageRoutes.TUTORIAL}
                         />
                         <Route
