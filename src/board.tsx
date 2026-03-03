@@ -5,18 +5,18 @@ import type {
     IslandSerialized,
     TargetCharacter,
 } from './commonTypes';
-import { IslandType, PlayerDesignator } from './commonTypes';
+import { PlayerDesignator } from './commonTypes';
 import { Emoji } from './emoji';
 import { GameContext } from './gameContext';
 import { hoverHighlightStyle } from './hoverHighlightStyle';
 import { getCharacterImage } from './images/characterImages';
 import { getIslandImage } from './images/islandImages';
+import { getIslandColors } from './islandColors';
 import { NetOverlay } from './netOverlay';
 import { getPlayerColor } from './playerColors';
 import { RisingWaterSpinner } from './risingWaterSpinner';
 import { CharacterOperations } from './server/gameObjects/characterOperations';
 import { Tooltip } from './tooltip';
-import { assertUnreachable } from './util';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -27,19 +27,6 @@ interface BoardProps {
     readonly highlightCharacter?: TargetCharacter;
     readonly highlightIslandNumber?: number;
 }
-
-export const getIslandColors = (island: IslandSerialized) => {
-    switch (island.islandType) {
-        case IslandType.SACRED:
-            return { island: '#ffc532', text: 'black' };
-        case IslandType.VOLCANO:
-            return { island: 'crimson', text: 'black' };
-        case IslandType.NORMAL:
-            return { island: 'deepskyblue', text: 'black' };
-        default:
-            return assertUnreachable(island.islandType);
-    }
-};
 
 const IslandNumberChip = (props: {
     readonly island: IslandSerialized;

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router';
-import { getIslandColors } from '../board';
 import { CircularContainer } from '../circularContainer';
 import { getIslandImage } from '../images/islandImages';
+import { getIslandColors } from '../islandColors';
 import type { NumberMap } from '../maps';
 import { PageRoutes } from '../pageRoutes';
 import { GameOperations } from '../server/gameObjects/gameOperations';
@@ -40,7 +40,8 @@ const pages: NumberMap<React.JSX.Element> & { length: number } = [
                     flexDirection: 'column',
                     flexGrow: 1,
                     justifyContent: 'space-evenly',
-                    padding: '12px 25%',
+                    padding: '12px 30%',
+                    textAlign: 'center',
                 }}
             >
                 <div>
@@ -190,7 +191,9 @@ export const Tutorial = () => {
                                 background: 'black',
                                 borderRadius: '4px',
                                 color: 'white',
+                                fontSize: '16pt',
                                 margin: '12px',
+                                padding: '0 12px',
                             }}
                             type='button'
                         >
