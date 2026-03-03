@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { IslandSerialized } from './commonTypes';
 import './gamePage.css';
+import { useDynamicSize } from './useDynamicSize';
 
 type CSSWithVariables = React.CSSProperties & Record<string, number | string>;
 
@@ -25,30 +26,12 @@ interface CircularContainerProps {
  *   itemWidth     = W
  */
 export const CircularContainer = (props: CircularContainerProps) => {
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
     // overall width of the container (diameter of the island circle)
-    const [outerWidth, setOuterWidth] = React.useState(0);
-
-    React.useEffect(() => {
-        const updateD = () => {
-            if (containerRef.current) {
-                setOuterWidth(
-                    containerRef.current.getBoundingClientRect().width,
-                );
-            }
-        };
-
-        updateD();
-
-        const observer = new ResizeObserver(updateD);
-        if (containerRef.current) {
-            observer.observe(containerRef.current);
-        }
-        return () => {
-            observer.disconnect();
-        };
-    });
+    const { ref: containerRef, size: outerWidth } = useDynamicSize(
+        (element) => {
+            return element.getBoundingClientRect().width;
+        },
+    );
 
     // After doing all the calculations, there is still just kind of a gap
     // between the islands. This is because the circumscribed buffer zone
