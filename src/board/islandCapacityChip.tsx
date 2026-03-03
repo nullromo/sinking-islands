@@ -26,6 +26,7 @@ export const IslandCapacityChip = (props: {
                 padding: '0 1px 3px 0',
                 position: 'absolute',
                 right: '-3px',
+                userSelect: 'none',
             }}
         >
             {hasPilings ? <span style={{ paddingLeft: '4px' }}>*</span> : null}

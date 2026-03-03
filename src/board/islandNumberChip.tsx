@@ -17,6 +17,7 @@ export const IslandNumberChip = (props: {
                 position: 'absolute',
                 textAlign: 'center',
                 top: `-${props.islandWidth / 20}px`,
+                userSelect: 'none',
                 width: `${props.islandWidth / 7}px`,
             }}
         >

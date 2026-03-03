@@ -157,7 +157,7 @@ export const TutorialPage = () => {
 
     return (
         <GameContext value={screenData.gameContextData}>
-            <div style={{ margin: '12px', position: 'absolute' }}>
+            <div style={{ margin: '12px', position: 'absolute', zIndex: 100 }}>
                 <Link to={PageRoutes.DASHBOARD}>
                     <button
                         style={{ ...buttonStyle, height: '32px' }}
