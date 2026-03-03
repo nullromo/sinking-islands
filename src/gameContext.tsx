@@ -4,7 +4,7 @@ import { PlayerDesignator } from './commonTypes';
 import { createBlankGame } from './createBlankGame';
 import { LoggedInUserContext } from './loggedInUserContext';
 
-type GameContextData = {
+export type GameContextData = {
     game: GameSerialized;
     gameLoaded: boolean;
     setGame: (value: GameSerialized) => void;
