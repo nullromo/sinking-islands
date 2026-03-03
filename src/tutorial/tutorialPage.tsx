@@ -5,9 +5,10 @@ import { PlayerDesignator } from '../commonTypes';
 import type { GameContextData } from '../gameContext';
 import { GameContext } from '../gameContext';
 import { GamePageInner } from '../gamePage';
-import { GameState } from '../gameState';
 import { PageRoutes } from '../pageRoutes';
-import { GameOperations } from '../server/gameObjects/gameOperations';
+import { useDynamicSize } from '../useDynamicSize';
+import { IntroductionScreenData } from './introductionScreen';
+import { TheArchipelagoScreenData } from './theArchipelagoScreen';
 
 /**
  * Each tutorial screen has a function that sets up the game state for that
@@ -15,24 +16,7 @@ import { GameOperations } from '../server/gameObjects/gameOperations';
  */
 const screens: Partial<
     Array<{ createGame: () => GameSerialized; overlay: React.JSX.Element }>
-> = [
-    {
-        createGame: () => {
-            const game = GameOperations.create();
-            game.gameState = GameState.AWAIT_CARD_PLACEMENT;
-            game.nextIslandToSink = 0;
-            game.islands.forEach((island) => {
-                island.characters = [];
-            });
-            game.messages = [
-                'Welcome to the tutorial.',
-                'Game messages will appear here.',
-            ];
-            return game;
-        },
-        overlay: <>a</>,
-    },
-];
+> = [IntroductionScreenData, TheArchipelagoScreenData];
 
 export const TutorialPage = () => {
     const [screenID, setScreenID] = React.useState(1);
@@ -58,6 +42,12 @@ export const TutorialPage = () => {
         };
         return { gameContextData, overlay: item.overlay };
     }, [screenID]);
+
+    const { ref: gamePageRef, size: gamePageHeight } = useDynamicSize(
+        (element) => {
+            return element.getBoundingClientRect().height;
+        },
+    );
 
     // if there is no data for the screen ID, just go back to the dashboard
     if (screenData === null) {
@@ -167,7 +157,20 @@ export const TutorialPage = () => {
                     </button>
                 </Link>
             </div>
-            <GamePageInner />
+            <div ref={gamePageRef}>
+                <GamePageInner />
+            </div>
+            <div
+                style={{
+                    background: '#00000088',
+                    height: gamePageHeight,
+                    position: 'fixed',
+                    top: 0,
+                    width: '100vw',
+                }}
+            >
+                {screenData.overlay}
+            </div>
             {tutorialNavbar}
         </GameContext>
     );

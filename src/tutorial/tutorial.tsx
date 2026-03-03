@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+import type { IslandProps } from '../board/island';
+import { Island } from '../board/island';
 import { CircularContainer } from '../circularContainer';
+import { IslandType } from '../commonTypes';
 import { getIslandImage } from '../images/islandImages';
 import { getIslandColors } from '../islandColors';
 import type { NumberMap } from '../maps';
 import { PageRoutes } from '../pageRoutes';
 import { GameOperations } from '../server/gameObjects/gameOperations';
-import { CharacterSerialized, IslandType } from '../commonTypes';
-import type { IslandProps } from '../board/island';
-import { Island } from '../board/island';
 
 const TutorialPage = (
     props: { readonly title: string } & React.PropsWithChildren,
@@ -56,62 +56,6 @@ const dummyIslandProps: IslandProps = {
 /* eslint-disable react/jsx-key */
 /* eslint-disable @eslint-react/no-missing-key */
 const pages: NumberMap<React.JSX.Element> & { length: number } = [
-    <TutorialPage title='Introduction'>
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: 1,
-                justifyContent: 'space-evenly',
-                padding: '12px 30%',
-                textAlign: 'center',
-            }}
-        >
-            <div
-                style={{
-                    background: '#444444',
-                    borderRadius: '16px',
-                    color: 'white',
-                    padding: '8px',
-                }}
-            >
-                <em>
-                    {
-                        "The gods are displeased! This petty human war has gone on far too long, and it's time for it to end!"
-                    }
-                </em>
-            </div>
-            <div
-                style={{
-                    background: '#444444',
-                    borderRadius: '16px',
-                    color: 'white',
-                    padding: '8px',
-                }}
-            >
-                {
-                    "In Sinking Islands, battle ensues on an ever-shrinking archipelago. The gods have begun to sink the islands one at a time, and they won't stop until one army eliminates the other."
-                }
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div
-                    style={{
-                        background: '#444444',
-                        borderRadius: '16px',
-                        color: 'white',
-                        padding: '8px 12px',
-                        width: 'fit-content',
-                    }}
-                >
-                    <em>
-                        {
-                            'Fight for survival, lest everyone sink into the stormy sea!'
-                        }
-                    </em>
-                </div>
-            </div>
-        </div>
-    </TutorialPage>,
     <TutorialPage title='The Archipelago'>
         <div
             style={{
