@@ -1,0 +1,95 @@
+import * as React from 'react';
+import type { CharacterSerialized } from '../commonTypes';
+import { GameContext } from '../gameContext';
+import { hoverHighlightStyle } from '../hoverHighlightStyle';
+import { getCharacterImage } from '../images/characterImages';
+import { getPlayerColor } from '../playerColors';
+
+export const Character = (props: {
+    readonly width: number;
+    readonly character: CharacterSerialized;
+    readonly onClick: (() => void) | undefined;
+    readonly highlight: boolean;
+    readonly shift: number;
+    readonly setCharacterHover: (hover: boolean) => void;
+    readonly hoverHighlight: boolean;
+}) => {
+    const gameContext = React.use(GameContext);
+
+    const characterColor = getPlayerColor(
+        props.character.playerDesignator,
+        gameContext.you,
+    );
+
+    return (
+        <div
+            style={{
+                alignItems: 'center',
+                border: `${0.05 * props.width}px solid ${characterColor.bright}`,
+                borderRadius: '50%',
+                boxShadow: props.hoverHighlight
+                    ? hoverHighlightStyle
+                    : '2px 2px',
+                display: 'flex',
+                flexDirection: 'column',
+                height: props.width,
+                position: 'absolute',
+                transform: `translatex(${props.shift}px)`,
+                width: props.width,
+                zIndex: props.hoverHighlight ? 2 : 1,
+            }}
+            onClick={() => {
+                if (props.onClick) {
+                    props.onClick();
+                }
+            }}
+            onMouseEnter={() => {
+                props.setCharacterHover(true);
+            }}
+            onMouseLeave={() => {
+                props.setCharacterHover(false);
+            }}
+        >
+            <div
+                style={{
+                    alignItems: 'center',
+                    backgroundImage: getCharacterImage(
+                        gameContext.you,
+                        props.character,
+                    ),
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    borderRadius: '50%',
+                    boxSizing: 'border-box',
+                    cursor: props.onClick ? 'pointer' : '',
+                    display: 'flex',
+                    height: props.width,
+                    width: props.width,
+                }}
+            />
+            <div
+                style={{
+                    alignItems: 'center',
+                    background: props.character.tortoise ? 'green' : 'black',
+                    border: props.character.tortoise
+                        ? '3px solid darkgreen'
+                        : '',
+                    borderRadius: '50%',
+                    boxSizing: 'border-box',
+                    color: 'white',
+                    display: 'flex',
+                    fontSize: `${props.width / 2.8}px`,
+                    height: `${props.width / 2.4}px`,
+                    justifyContent: 'center',
+                    left: 0,
+                    position: 'absolute',
+                    top: 0,
+                    width: `${props.width / 2.4}px`,
+                }}
+            >
+                {props.character.strength}
+            </div>
+        </div>
+    );
+};

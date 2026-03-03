@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ActionOrderTrack } from '../actionOrderTrack';
-import { Board } from '../board';
+import { Board } from '../board/board';
 import { GameInfo } from '../gameInfo';
 import { Hand } from '../hand';
 import { MessageLog } from '../messageLog';
