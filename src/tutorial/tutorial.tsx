@@ -6,6 +6,9 @@ import { getIslandColors } from '../islandColors';
 import type { NumberMap } from '../maps';
 import { PageRoutes } from '../pageRoutes';
 import { GameOperations } from '../server/gameObjects/gameOperations';
+import { CharacterSerialized, IslandType } from '../commonTypes';
+import type { IslandProps } from '../board/island';
+import { Island } from '../board/island';
 
 const TutorialPage = (
     props: { readonly title: string } & React.PropsWithChildren,
@@ -28,6 +31,28 @@ const TutorialPage = (
     );
 };
 
+const dummyIslandProps: IslandProps = {
+    highlight: false,
+    highlightCharacter: undefined,
+    hoverHighlight: false,
+    hoveredCharacter: null,
+    island: {
+        characters: [],
+        islandNumber: 1,
+        islandType: IslandType.NORMAL,
+        smallCapacity: true,
+    },
+    onCharacterClicked: undefined,
+    onClick: undefined,
+    setHoveredCharacter: () => {
+        //
+    },
+    setIslandHover: () => {
+        //
+    },
+    width: 200,
+};
+
 /* eslint-disable react/jsx-key */
 /* eslint-disable @eslint-react/no-missing-key */
 const pages: NumberMap<React.JSX.Element> & { length: number } = [
@@ -42,24 +67,48 @@ const pages: NumberMap<React.JSX.Element> & { length: number } = [
                 textAlign: 'center',
             }}
         >
-            <div>
+            <div
+                style={{
+                    background: '#444444',
+                    borderRadius: '16px',
+                    color: 'white',
+                    padding: '8px',
+                }}
+            >
                 <em>
                     {
                         "The gods are displeased! This petty human war has gone on far too long, and it's time for it to end!"
                     }
                 </em>
             </div>
-            <div>
+            <div
+                style={{
+                    background: '#444444',
+                    borderRadius: '16px',
+                    color: 'white',
+                    padding: '8px',
+                }}
+            >
                 {
                     "In Sinking Islands, battle ensues on an ever-shrinking archipelago. The gods have begun to sink the islands one at a time, and they won't stop until one army eliminates the other."
                 }
             </div>
-            <div>
-                <em>
-                    {
-                        'Fight for survival, lest everyone sink into the stormy sea!'
-                    }
-                </em>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div
+                    style={{
+                        background: '#444444',
+                        borderRadius: '16px',
+                        color: 'white',
+                        padding: '8px 12px',
+                        width: 'fit-content',
+                    }}
+                >
+                    <em>
+                        {
+                            'Fight for survival, lest everyone sink into the stormy sea!'
+                        }
+                    </em>
+                </div>
             </div>
         </div>
     </TutorialPage>,
@@ -104,14 +153,149 @@ const pages: NumberMap<React.JSX.Element> & { length: number } = [
                     }}
                 />
                 <div style={{ padding: '0 80px' }}>
-                    {
-                        'Welcome to the Archipelago. This ring of 16 islands is all the ground your people have to stand on. The islands begin the game in a random order.'
-                    }
+                    <div
+                        style={{
+                            background: '#444444',
+                            borderRadius: '16px',
+                            color: 'white',
+                            padding: '8px 8px 8px 20px',
+                        }}
+                    >
+                        {
+                            'Welcome to the Archipelago. This ring of 16 islands is all the ground your people have to stand on. The islands begin the game in a random order.'
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </TutorialPage>,
-    <TutorialPage title='Islands'>TODO</TutorialPage>,
+    <TutorialPage title='Islands'>
+        <div
+            style={{ display: 'flex', flexDirection: 'column', rowGap: '20px' }}
+        >
+            <div
+                style={{
+                    alignItems: 'center',
+                    columnGap: '6px',
+                    display: 'flex',
+                }}
+            >
+                <div style={{ height: '200px', width: '200px' }}>
+                    <Island {...dummyIslandProps} />
+                </div>
+                <div
+                    style={{
+                        background: '#444444',
+                        borderRadius: '0 16px 16px 0',
+                        color: 'white',
+                        padding: '8px 8px 8px 12px',
+                        width: '300px',
+                    }}
+                >
+                    <b>
+                        <span
+                            style={{
+                                color: getIslandColors({
+                                    islandType: IslandType.NORMAL,
+                                }).island,
+                            }}
+                        >
+                            Normal
+                        </span>{' '}
+                        Island
+                    </b>
+                    <hr />A normal island that can have limited or unlimited
+                    capacity.
+                </div>
+            </div>
+            <div
+                style={{
+                    alignItems: 'center',
+                    columnGap: '6px',
+                    display: 'flex',
+                }}
+            >
+                <div style={{ height: '200px', width: '200px' }}>
+                    <Island
+                        {...dummyIslandProps}
+                        island={{
+                            characters: [],
+                            islandNumber: 11,
+                            islandType: IslandType.SACRED,
+                            smallCapacity: false,
+                        }}
+                    />
+                </div>
+                <div
+                    style={{
+                        background: '#444444',
+                        borderRadius: '0 16px 16px 0',
+                        color: 'white',
+                        padding: '8px 8px 8px 12px',
+                        width: '300px',
+                    }}
+                >
+                    <b>
+                        <span
+                            style={{
+                                color: getIslandColors({
+                                    islandType: IslandType.SACRED,
+                                }).island,
+                            }}
+                        >
+                            Sacred
+                        </span>{' '}
+                        Island
+                    </b>
+                    <hr />
+                    An island with a temple at which your characters can pray.
+                </div>
+            </div>
+            <div
+                style={{
+                    alignItems: 'center',
+                    columnGap: '6px',
+                    display: 'flex',
+                }}
+            >
+                <div style={{ height: '200px', width: '200px' }}>
+                    <Island
+                        {...dummyIslandProps}
+                        island={{
+                            characters: [],
+                            islandNumber: 9,
+                            islandType: IslandType.VOLCANO,
+                            smallCapacity: false,
+                        }}
+                    />
+                </div>
+                <div
+                    style={{
+                        background: '#444444',
+                        borderRadius: '0 16px 16px 0',
+                        color: 'white',
+                        padding: '8px 8px 8px 12px',
+                        width: '300px',
+                    }}
+                >
+                    <b>
+                        <span
+                            style={{
+                                color: getIslandColors({
+                                    islandType: IslandType.VOLCANO,
+                                }).island,
+                            }}
+                        >
+                            Volcanic
+                        </span>{' '}
+                        Island
+                    </b>
+                    <hr />
+                    An unstable island that could erupt (and sink).
+                </div>
+            </div>
+        </div>
+    </TutorialPage>,
     <TutorialPage title='Characters'>TODO</TutorialPage>,
     <TutorialPage title='Rising Waters'>TODO</TutorialPage>,
     <TutorialPage title='Archipelago Overview'>TODO</TutorialPage>,

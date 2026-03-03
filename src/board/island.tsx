@@ -16,7 +16,7 @@ import { Character } from './character';
 import { IslandCapacityChip } from './islandCapacityChip';
 import { IslandNumberChip } from './islandNumberChip';
 
-export const Island = (props: {
+export interface IslandProps {
     readonly width: number;
     readonly island: IslandSerialized;
     readonly highlight: boolean;
@@ -31,7 +31,9 @@ export const Island = (props: {
     ) => void;
     readonly hoverHighlight: boolean;
     readonly hoveredCharacter: CharacterSerialized | null;
-}) => {
+}
+
+export const Island = (props: IslandProps) => {
     const gameContext = React.use(GameContext);
 
     const colors = getIslandColors(props.island);

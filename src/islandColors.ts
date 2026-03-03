@@ -2,7 +2,9 @@ import type { IslandSerialized } from './commonTypes';
 import { IslandType } from './commonTypes';
 import { assertUnreachable } from './util';
 
-export const getIslandColors = (island: IslandSerialized) => {
+export const getIslandColors = (
+    island: Pick<IslandSerialized, 'islandType'>,
+) => {
     switch (island.islandType) {
         case IslandType.SACRED:
             return { island: '#ffc532', text: 'black' };
