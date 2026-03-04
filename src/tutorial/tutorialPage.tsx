@@ -162,7 +162,6 @@ export const TutorialPage = () => {
             </div>
             <div
                 style={{
-                    background: '#00000088',
                     height: gamePageHeight,
                     position: 'fixed',
                     top: 0,

@@ -4,6 +4,8 @@ import { GameContext } from './gameContext';
 import { OnScreenCard } from './onScreenCard';
 import { getPlayerColor } from './playerColors';
 
+export const actionOrderTrackElementID = 'action-order-track';
+
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;
     readonly overrideCards?: Array<CardSerialized | null>;
@@ -101,6 +103,7 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
 
     return (
         <div
+            id={actionOrderTrackElementID}
             style={{
                 display: 'flex',
                 marginBottom: '20px',

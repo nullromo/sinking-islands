@@ -5,6 +5,7 @@ const IntroductionScreen = () => {
         <div
             style={{
                 alignItems: 'center',
+                background: '#00000088',
                 display: 'flex',
                 flexDirection: 'column',
                 flexGrow: 1,
