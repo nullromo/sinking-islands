@@ -1,6 +1,10 @@
 import { actionOrderTrackElementID } from '../actionOrderTrack';
 import { createBasicGame } from './pageData';
 
+const buildCutout = (box: DOMRect, pad: number) => {
+    return `polygon(0% 0%, 0% 100%, ${box.left - pad}px 100%, ${box.left - pad}px ${box.top - pad}px, ${box.right + pad}px ${box.top - pad}px, ${box.right + pad}px ${box.bottom + pad}px, ${box.left - pad}px ${box.bottom + pad}px, ${box.left - pad}px 100%, 100% 100%, 100% 0%)`;
+};
+
 const getElementBoundingRect = (id: string) => {
     const element = document.getElementById(id);
     const boundingRect = element?.getBoundingClientRect();
@@ -22,12 +26,14 @@ const getElementBoundingRect = (id: string) => {
 };
 
 const TheArchipelagoScreen = () => {
-    const x = getElementBoundingRect(actionOrderTrackElementID);
+    const actionOrderTrackBox = getElementBoundingRect(
+        actionOrderTrackElementID,
+    );
     return (
         <div
             style={{
                 background: '#00000088',
-                clipPath: `polygon(0% 0%, 0% 100%, ${x.left}px 100%, ${x.left}px ${x.top}px, ${x.right}px ${x.top}px, ${x.right}px ${x.bottom}px, ${x.left}px ${x.bottom}px, ${x.left}px 100%, 100% 100%, 100% 0%)`,
+                clipPath: buildCutout(actionOrderTrackBox, 20),
                 height: '100%',
                 width: '100%',
             }}
