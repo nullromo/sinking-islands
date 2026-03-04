@@ -1,4 +1,5 @@
 import { createBasicGame } from './pageData';
+import { TutorialTextBox } from './styles';
 
 const IntroductionScreen = () => {
     return (
@@ -9,8 +10,7 @@ const IntroductionScreen = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 flexGrow: 1,
-                fontSize: '16pt',
-                height: '100%',
+                height: '100vh',
                 justifyContent: 'space-around',
             }}
         >
@@ -24,15 +24,7 @@ const IntroductionScreen = () => {
                     textAlign: 'center',
                 }}
             >
-                <div
-                    style={{
-                        background: '#444444',
-                        borderRadius: '16px',
-                        color: 'white',
-                        padding: '20px 12px',
-                        width: 'fit-content',
-                    }}
-                >
+                <TutorialTextBox>
                     <div style={{ fontStyle: 'italic' }}>
                         {
                             "The gods are displeased! This petty human war has gone on far too long, and it's time for it to end!"
@@ -50,7 +42,7 @@ const IntroductionScreen = () => {
                             'Fight for survival, lest everyone sink into the stormy sea!'
                         }
                     </div>
-                </div>
+                </TutorialTextBox>
             </div>
         </div>
     );

@@ -3,8 +3,7 @@ import type { CardSerialized } from './commonTypes';
 import { GameContext } from './gameContext';
 import { OnScreenCard } from './onScreenCard';
 import { getPlayerColor } from './playerColors';
-
-export const actionOrderTrackElementID = 'action-order-track';
+import { actionOrderTrackElementID } from './tutorial/elementIDs';
 
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;

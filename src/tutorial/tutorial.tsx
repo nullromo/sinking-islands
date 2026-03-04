@@ -56,63 +56,6 @@ const dummyIslandProps: IslandProps = {
 /* eslint-disable react/jsx-key */
 /* eslint-disable @eslint-react/no-missing-key */
 const pages: NumberMap<React.JSX.Element> & { length: number } = [
-    <TutorialPage title='The Archipelago'>
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                width: '100%',
-            }}
-        >
-            <div
-                style={{ alignItems: 'center', display: 'flex', width: '80%' }}
-            >
-                <CircularContainer
-                    items={GameOperations.create().islands}
-                    renderItem={(island, itemWidth) => {
-                        return (
-                            <div
-                                key={island.islandNumber}
-                                style={{ height: '100%', width: '100%' }}
-                            >
-                                <div
-                                    style={{
-                                        alignItems: 'flex-end',
-                                        backgroundImage: getIslandImage(
-                                            island.islandNumber,
-                                        ),
-                                        backgroundPosition: 'center',
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundSize: 'cover',
-                                        border: `${(itemWidth * 3) / 140}px solid ${getIslandColors(island).island}`,
-                                        display: 'flex',
-                                        fontSize: '18px',
-                                        height: '100%',
-                                        position: 'relative',
-                                        width: '100%',
-                                    }}
-                                />
-                            </div>
-                        );
-                    }}
-                />
-                <div style={{ padding: '0 80px' }}>
-                    <div
-                        style={{
-                            background: '#444444',
-                            borderRadius: '16px',
-                            color: 'white',
-                            padding: '8px 8px 8px 20px',
-                        }}
-                    >
-                        {
-                            'Welcome to the Archipelago. This ring of 16 islands is all the ground your people have to stand on. The islands begin the game in a random order.'
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    </TutorialPage>,
     <TutorialPage title='Islands'>
         <div
             style={{ display: 'flex', flexDirection: 'column', rowGap: '20px' }}
@@ -252,15 +195,6 @@ const pages: NumberMap<React.JSX.Element> & { length: number } = [
 ];
 /* eslint-enable react/jsx-key */
 /* eslint-enable @eslint-react/no-missing-key */
-
-const buttonStyle: React.CSSProperties = {
-    background: 'black',
-    borderRadius: '4px',
-    color: 'white',
-    cursor: 'pointer',
-    fontSize: '16pt',
-    padding: '0 12px',
-};
 
 export const Tutorial = () => {
     const navigate = useNavigate();

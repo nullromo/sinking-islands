@@ -6,6 +6,7 @@ import type {
     TargetCharacter,
 } from '../commonTypes';
 import { GameContext } from '../gameContext';
+import { boardElementID } from '../tutorial/elementIDs';
 import { CharacterTooltip } from './characterTooltip';
 import { Island } from './island';
 import { IslandTooltip } from './islandTooltip';
@@ -30,6 +31,7 @@ export const Board = (props: BoardProps) => {
 
     return (
         <div
+            id={boardElementID}
             style={{
                 alignItems: 'center',
                 display: 'flex',
