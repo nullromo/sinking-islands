@@ -1,7 +1,7 @@
 import { CardType } from './commonTypes';
 import { assertUnreachable } from './util';
 
-const getText = (cardType: CardType | null) => {
+export const getCardText = (cardType: CardType | null): [string, string] => {
     switch (cardType) {
         case CardType.CRAB:
             return [
@@ -86,7 +86,7 @@ const getText = (cardType: CardType | null) => {
 };
 
 export const getCardDescription = (cardType: CardType | null) => {
-    const [flavor, rules] = getText(cardType);
+    const [flavor, rules] = getCardText(cardType);
 
     return (
         <div>

@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { Link } from 'react-router';
 import { otherPlayerDesignator } from './commonTypes';
 import { CardPileWindow } from './discardPileWindow';
 import { GameContext } from './gameContext';
-import { getPlayerColor } from './playerColors';
-import { Link } from 'react-router';
 import { PageRoutes } from './pageRoutes';
+import { getPlayerColor } from './playerColors';
+import { gameInfoElementID } from './tutorial/elementIDs';
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -14,6 +15,7 @@ export const GameInfo = () => {
 
     return (
         <div
+            id={gameInfoElementID}
             style={{
                 boxSizing: 'border-box',
                 display: 'flex',

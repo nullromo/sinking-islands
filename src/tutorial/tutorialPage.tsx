@@ -7,11 +7,15 @@ import { GameContext } from '../gameContext';
 import { GamePageInner } from '../gamePage';
 import { PageRoutes } from '../pageRoutes';
 import { useDynamicSize } from '../useDynamicSize';
-import { IntroductionScreenData } from './introductionScreen';
-import { TheArchipelagoScreenData } from './theArchipelagoScreen';
-import { IslandsScreenData } from './islandsScreen';
+import { ActionOrderTrackScreenData } from './actionOrderTrackScreen';
+import { CardsScreenData } from './cardsScreen';
 import { CharactersScreenData } from './charactersScreen';
+import { DeckCompositionScreenData } from './deckCompositionScreen';
+import { IntroductionScreenData } from './introductionScreen';
+import { IslandsScreenData } from './islandsScreen';
 import { RisingWatersScreenData } from './risingWatersScreen';
+import { RoundStructureScreenData } from './roundStructureScreen';
+import { TheArchipelagoScreenData } from './theArchipelagoScreen';
 
 /**
  * Each tutorial screen has a function that sets up the game state for that
@@ -25,6 +29,10 @@ const screens: Partial<
     IslandsScreenData,
     CharactersScreenData,
     RisingWatersScreenData,
+    RoundStructureScreenData,
+    ActionOrderTrackScreenData,
+    CardsScreenData,
+    DeckCompositionScreenData,
 ];
 
 export const TutorialPage = () => {

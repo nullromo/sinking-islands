@@ -2,6 +2,7 @@ export const boardElementID = 'board';
 export const actionOrderTrackElementID = 'action-order-track';
 export const island3ElementID = 'island-3';
 export const island1ElementID = 'island-1';
+export const gameInfoElementID = 'game-info';
 
 export const getElementBoundingRect = (id: string) => {
     const element = document.getElementById(id);

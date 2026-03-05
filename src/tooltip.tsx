@@ -18,6 +18,7 @@ export const Tooltip = (props: TooltipProps) => {
                 position: 'fixed',
                 top: 0,
                 width: 0,
+                zIndex: 100,
             }}
         >
             <div
