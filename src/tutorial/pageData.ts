@@ -36,9 +36,9 @@ export const createBasicGame = () => {
         },
         {
             characters: [],
-            islandNumber: 1,
+            islandNumber: 8,
             islandType: IslandType.NORMAL,
-            smallCapacity: true,
+            smallCapacity: false,
         },
         {
             characters: [],
@@ -60,9 +60,9 @@ export const createBasicGame = () => {
         },
         {
             characters: [],
-            islandNumber: 13,
+            islandNumber: 2,
             islandType: IslandType.NORMAL,
-            smallCapacity: true,
+            smallCapacity: false,
         },
         {
             characters: [],
@@ -84,9 +84,9 @@ export const createBasicGame = () => {
         },
         {
             characters: [],
-            islandNumber: 8,
+            islandNumber: 1,
             islandType: IslandType.NORMAL,
-            smallCapacity: false,
+            smallCapacity: true,
         },
         {
             characters: [],
@@ -108,9 +108,9 @@ export const createBasicGame = () => {
         },
         {
             characters: [],
-            islandNumber: 2,
+            islandNumber: 13,
             islandType: IslandType.NORMAL,
-            smallCapacity: false,
+            smallCapacity: true,
         },
     ];
 
@@ -124,6 +124,7 @@ export const createBasicGame = () => {
 
 export const createBasicGameWithCharacters = () => {
     const game = createBasicGame();
+    game.nextIslandToSink = 1;
     const characters = [
         CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
         CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),

@@ -11,6 +11,7 @@ import { IntroductionScreenData } from './introductionScreen';
 import { TheArchipelagoScreenData } from './theArchipelagoScreen';
 import { IslandsScreenData } from './islandsScreen';
 import { CharactersScreenData } from './charactersScreen';
+import { RisingWatersScreenData } from './risingWatersScreen';
 
 /**
  * Each tutorial screen has a function that sets up the game state for that
@@ -23,6 +24,7 @@ const screens: Partial<
     TheArchipelagoScreenData,
     IslandsScreenData,
     CharactersScreenData,
+    RisingWatersScreenData,
 ];
 
 export const TutorialPage = () => {

@@ -12,7 +12,7 @@ import { getIslandColors } from '../islandColors';
 import { NetOverlay } from '../netOverlay';
 import { RisingWaterSpinner } from '../risingWaterSpinner';
 import { CharacterOperations } from '../server/gameObjects/characterOperations';
-import { island3ElementID } from '../tutorial/elementIDs';
+import { island1ElementID, island3ElementID } from '../tutorial/elementIDs';
 import { Character } from './character';
 import { IslandCapacityChip } from './islandCapacityChip';
 import { IslandNumberChip } from './islandNumberChip';
@@ -108,7 +108,13 @@ export const Island = (props: IslandProps) => {
     return (
         <div
             key={props.island.islandNumber}
-            id={props.island.islandNumber === 3 ? island3ElementID : ''}
+            id={
+                props.island.islandNumber === 1
+                    ? island1ElementID
+                    : props.island.islandNumber === 3
+                      ? island3ElementID
+                      : ''
+            }
             style={{ height: '100%', width: '100%' }}
             onMouseEnter={() => {
                 props.setIslandHover(true);
