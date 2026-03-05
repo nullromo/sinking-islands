@@ -31,7 +31,7 @@ export const Character = (props: CharacterProps) => {
                 borderRadius: '50%',
                 boxShadow: props.hoverHighlight
                     ? hoverHighlightStyle
-                    : '2px 2px',
+                    : `${props.width * 0.04}px ${props.width * 0.04}px black`,
                 display: 'flex',
                 flexDirection: 'column',
                 height: props.width,

@@ -10,7 +10,7 @@ export const IslandNumberChip = (props: {
     return (
         <div
             style={{
-                border: '1px solid',
+                border: '1px solid black',
                 borderRadius: '4px',
                 height: `${props.islandWidth / 7}px`,
                 left: `-${(props.islandWidth * 3) / 70}px`,
@@ -25,7 +25,7 @@ export const IslandNumberChip = (props: {
                 style={{
                     alignItems: 'center',
                     background: colors.island,
-                    borderRadius: '2px',
+                    borderRadius: '4px',
                     color: colors.text,
                     display: 'flex',
                     fontSize: `${props.islandWidth / 8.75}px`,
