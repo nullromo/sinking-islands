@@ -11,6 +11,7 @@ import { ActionOrderTrackScreenData } from './actionOrderTrackScreen';
 import { CardsScreenData } from './cardsScreen';
 import { CharactersScreenData } from './charactersScreen';
 import { DeckCompositionScreenData } from './deckCompositionScreen';
+import { GameEndScreenData } from './gameEndScreen';
 import { IntroductionScreenData } from './introductionScreen';
 import { IslandsScreenData } from './islandsScreen';
 import { RisingWatersScreenData } from './risingWatersScreen';
@@ -33,6 +34,7 @@ const screens: Partial<
     ActionOrderTrackScreenData,
     CardsScreenData,
     DeckCompositionScreenData,
+    GameEndScreenData,
 ];
 
 export const TutorialPage = () => {
