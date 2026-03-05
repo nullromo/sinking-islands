@@ -1,5 +1,6 @@
 import { IslandType, PlayerDesignator } from '../commonTypes';
 import { GameState } from '../gameState';
+import { CharacterOperations } from '../server/gameObjects/characterOperations';
 import { GameOperations } from '../server/gameObjects/gameOperations';
 
 export const createBasicGame = () => {
@@ -7,6 +8,13 @@ export const createBasicGame = () => {
     game.gameState = GameState.AWAIT_CARD_PLACEMENT;
     game.waitingForPlayer = PlayerDesignator.PLAYER_B;
     game.nextIslandToSink = 0;
+    [PlayerDesignator.PLAYER_A, PlayerDesignator.PLAYER_B].forEach(
+        (playerIdentifier) => {
+            const player = game.players[playerIdentifier];
+            player.deck = [...player.deck, ...player.hand];
+            player.hand = [];
+        },
+    );
     game.islands = [
         {
             characters: [],
@@ -109,7 +117,33 @@ export const createBasicGame = () => {
     game.messages = [
         'Welcome to the tutorial!',
         'Game messages will appear here.',
-        'For the tutorial, there are no messages to show.',
+        'For the tutorial, there are no real messages to show.',
     ];
+    return game;
+};
+
+export const createBasicGameWithCharacters = () => {
+    const game = createBasicGame();
+    const characters = [
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 4),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 4),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 3),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_B, 2),
+        CharacterOperations.create(PlayerDesignator.PLAYER_A, 2),
+    ];
+    game.islands.forEach((island, index) => {
+        island.characters = [characters[index]];
+    });
     return game;
 };

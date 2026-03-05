@@ -1,7 +1,9 @@
 import type { IslandProps } from '../board/island';
 import { Island } from '../board/island';
+import type { IslandSerialized } from '../commonTypes';
 import { IslandType } from '../commonTypes';
 import { Emoji } from '../emoji';
+import { getIslandColors } from '../islandColors';
 import { buildCutout } from './buildCutout';
 import { getElementBoundingRect, island3ElementID } from './elementIDs';
 import { createBasicGame } from './pageData';
@@ -27,6 +29,39 @@ const dummyIslandProps: IslandProps = {
         //
     },
     width: 200,
+};
+
+const IslandTypeBox = (props: {
+    readonly island: IslandSerialized;
+    readonly description: string;
+}) => {
+    return (
+        <div
+            style={{ alignItems: 'center', columnGap: '6px', display: 'flex' }}
+        >
+            <div style={{ height: '200px', width: '200px' }}>
+                <Island {...dummyIslandProps} island={props.island} />
+            </div>
+            <div style={{ padding: '8px 8px 8px 12px', width: '300px' }}>
+                <b>
+                    <span
+                        style={{
+                            color: getIslandColors({
+                                islandType: props.island.islandType,
+                            }).island,
+                        }}
+                    >
+                        {props.island.islandType === IslandType.VOLCANO
+                            ? 'Volcanic'
+                            : props.island.islandType}
+                    </span>{' '}
+                    Island
+                </b>
+                <hr />
+                {props.description}
+            </div>
+        </div>
+    );
 };
 
 const IslandsScreen = () => {
@@ -144,6 +179,54 @@ const IslandsScreen = () => {
                         = The island is only large enough for 1 character at a
                         time.
                     </div>
+                </div>
+            </TutorialTextBox>
+            <TutorialTextBox
+                style={{
+                    height: 'fit-content',
+                    left: islandBox.left + islandBox.width + 580,
+                    padding: '20px 20px 24px 20px',
+                    position: 'absolute',
+                    top: islandBox.top + islandBox.height - 120,
+                    width: '540px',
+                }}
+            >
+                Island Types
+                <hr />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        rowGap: '20px',
+                    }}
+                >
+                    <IslandTypeBox
+                        description='A normal island that can have limited or unlimited capacity.'
+                        island={{
+                            characters: [],
+                            islandNumber: 2,
+                            islandType: IslandType.NORMAL,
+                            smallCapacity: false,
+                        }}
+                    />
+                    <IslandTypeBox
+                        description='An island with a temple at which your characters can pray.'
+                        island={{
+                            characters: [],
+                            islandNumber: 14,
+                            islandType: IslandType.SACRED,
+                            smallCapacity: false,
+                        }}
+                    />
+                    <IslandTypeBox
+                        description='An unstable island that could erupt (and sink).'
+                        island={{
+                            characters: [],
+                            islandNumber: 9,
+                            islandType: IslandType.VOLCANO,
+                            smallCapacity: false,
+                        }}
+                    />
                 </div>
             </TutorialTextBox>
         </div>
