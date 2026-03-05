@@ -2,13 +2,24 @@
 
 ## Main stuff
 
+1. Tutorial looks bad after resizing the screen
+1. Re-organize files
 1. Movements selections more clear
+    - Make curved arrows that point to where things are being targeted. (try
+      `M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10`
+      at https://yqnn.github.io/svg-path-editor/ for an example of arrows that
+      can cross a circular board properly).
+    ```
+      <svg x="30" y="30" width="100" height="100"><path d="M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10" style="fill:none;stroke:red;stroke-width:3" transform="translate(30, 30) scale(3)"></path></svg>
+    ```
 1. Island selection more clear
 1. Character selection more clear
-1. Build a tutorial that explains the game.
 1. Clean up top-right corner visual stuff. Icons for card piles. Ability to see
    the cards in the piles as a pop-up with OnScreenCard items and hoverable.
 1. Ability to read rules manual any time as a pop-up.
+1. Implement game end, cleanup, abandon, etc.
+1. Preload images so that it doesn't look bad when loading.
+1. Do not skip ahead. Do some kind of animations one at a time of game events.
 
 ## Setup stuff
 
@@ -60,22 +71,6 @@
 
 1. Do I need to use tailscale for DNS?
 
-## Visual
-
-- similar to how it shows staged movement state before submit, it should also
-  show that for all the other types of input
-- similar to how it shows staged selections on the islands/characters, it should
-  also show that for movement and any other input that doesn't really indicate
-- make everything pretty. Get some good AI art going. Borders and stuff.
-- Make curved arrows that point to where things are being targeted. (try
-  `M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10`
-  at https://yqnn.github.io/svg-path-editor/ for an example of arrows that can
-  cross a circular board properly).
-    ```
-      <svg x="30" y="30" width="100" height="100"><path d="M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10" style="fill:none;stroke:red;stroke-width:3" transform="translate(30, 30) scale(3)"></path></svg>
-    ```
-- Do not skip ahead. Animations one at a time of game events.
-
 ## Later Features
 
 - Users want to see their game history. They should be able to have some number
@@ -83,9 +78,14 @@
   be nice. Also win/loss ratio and such. Analytics.
 - Spectate games implementation.
 - Run code coverage and tests with CI
+- Figure out why the deployment crashes
+- Control deployment process more strictly once things get up and running for
+  real
 - Add code coverage report to README
 - Actually use `roundsCompleted`
 - Need some way to limit people from creating 1000 accounts or 1000 games
+- Make some kind of bug reporting form and also a donation link. Provide my
+  e-mail address.
 
 ## things to add tests for
 
@@ -94,11 +94,3 @@
 - tortoise card is reclaimed when tortoise dies for any reason
 - net card is reclaimed when island sinks or erupts
 - pilings card is reclaimed when island sinks or erupts
-
-## Tutorial ideas
-
-- The gods are displeased! This petty human war has gone on far too long, and
-  it's time for it to end! In Sinking Islands, battle ensues on an
-  ever-shrinking archipelago. The gods have begun to sink the islands one at a
-  time, and they won't stop until one army eliminates the other. Fight for
-  survival, lest everyone sink into the stormy sea!
