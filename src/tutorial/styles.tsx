@@ -18,13 +18,14 @@ export const TutorialTextBox = (
     );
 };
 
-export const TutorialDimOverlay = (props: { readonly clipPath: string }) => {
+export const TutorialDimOverlay = (props: { readonly clipPath?: string }) => {
     return (
         <div
             style={{
                 background: '#00000088',
                 clipPath: props.clipPath,
                 height: '100vh',
+                position: 'absolute',
                 width: '100vw',
             }}
         />

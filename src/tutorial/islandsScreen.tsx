@@ -43,7 +43,7 @@ const IslandsScreen = () => {
                     width: '540px',
                 }}
             >
-                This is an island
+                Parts of an Island
                 <hr />
                 <div
                     style={{

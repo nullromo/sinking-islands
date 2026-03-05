@@ -10,6 +10,7 @@ import { useDynamicSize } from '../useDynamicSize';
 import { IntroductionScreenData } from './introductionScreen';
 import { TheArchipelagoScreenData } from './theArchipelagoScreen';
 import { IslandsScreenData } from './islandsScreen';
+import { CharactersScreenData } from './charactersScreen';
 
 /**
  * Each tutorial screen has a function that sets up the game state for that
@@ -17,7 +18,12 @@ import { IslandsScreenData } from './islandsScreen';
  */
 const screens: Partial<
     Array<{ createGame: () => GameSerialized; overlay: React.JSX.Element }>
-> = [IntroductionScreenData, TheArchipelagoScreenData, IslandsScreenData];
+> = [
+    IntroductionScreenData,
+    TheArchipelagoScreenData,
+    IslandsScreenData,
+    CharactersScreenData,
+];
 
 export const TutorialPage = () => {
     const [screenID, setScreenID] = React.useState(1);

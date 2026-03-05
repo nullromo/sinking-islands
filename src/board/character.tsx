@@ -5,7 +5,7 @@ import { hoverHighlightStyle } from '../hoverHighlightStyle';
 import { getCharacterImage } from '../images/characterImages';
 import { getPlayerColor } from '../playerColors';
 
-export const Character = (props: {
+export interface CharacterProps {
     readonly width: number;
     readonly character: CharacterSerialized;
     readonly onClick: (() => void) | undefined;
@@ -13,7 +13,9 @@ export const Character = (props: {
     readonly shift: number;
     readonly setCharacterHover: (hover: boolean) => void;
     readonly hoverHighlight: boolean;
-}) => {
+}
+
+export const Character = (props: CharacterProps) => {
     const gameContext = React.use(GameContext);
 
     const characterColor = getPlayerColor(
