@@ -2,12 +2,40 @@ import _ from 'lodash';
 import * as React from 'react';
 import { withServerCalls } from '../../../communication/withServerCalls';
 import { GameContext } from '../../../contexts/gameContext';
-import type { MovementSet } from '../../../info/commonTypes';
+import { PlayerDesignator, type MovementSet } from '../../../info/commonTypes';
 import { computeMovementSteps } from '../../../info/computeMovementSteps';
 import { convertMovementToIslands } from '../../../info/convertActionData';
 import { GameActionType } from '../../../info/gameActionTypes';
+import { useBoundingBox } from '../../../tutorial/useBoundingBox';
+import { buildCharacterElementID } from '../buildCharacterElementID';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
+import { MousePositionContext } from '../../../contexts/mousePositionContext';
+
+const Arrow = () => {
+    const characterBox = useBoundingBox(
+        buildCharacterElementID(10, PlayerDesignator.PLAYER_A, 0),
+    );
+    const { mousePosition } = React.use(MousePositionContext);
+
+    return (
+        <div
+            style={{
+                left: characterBox.left,
+                position: 'fixed',
+                top: characterBox.top,
+                zIndex: 1000,
+            }}
+        >
+            <svg>
+                <path
+                    d={`M 0 0 L ${mousePosition.x - characterBox.left} ${mousePosition.y - characterBox.top}`}
+                    style={{ fill: 'none', stroke: 'red', strokeWidth: 3 }}
+                />
+            </svg>
+        </div>
+    );
+};
 
 export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
     const gameContext = React.use(GameContext);
@@ -18,6 +46,9 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
         <GamePageLayout
             boardProps={{
                 onCharacterClicked: (island, character) => {
+                    if (character.playerDesignator !== gameContext.you) {
+                        return;
+                    }
                     const newMovement = {
                         character,
                         fromIslandNumber: island.islandNumber,
@@ -110,6 +141,16 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                     Submit
                 </button>
             </div>
+            <div
+                style={{
+                    fontFamily: 'consolas',
+                    height: '200px',
+                    width: '600px',
+                }}
+            >
+                {JSON.stringify(movementSet, null, 4)}
+            </div>
+            <Arrow />
         </GamePageLayout>
     );
 }, 'MovementSetLayout');

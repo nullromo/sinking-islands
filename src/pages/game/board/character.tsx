@@ -13,6 +13,7 @@ export interface CharacterProps {
     readonly shift: number;
     readonly setCharacterHover: (hover: boolean) => void;
     readonly hoverHighlight: boolean;
+    readonly id: string;
 }
 
 export const Character = (props: CharacterProps) => {
@@ -25,6 +26,7 @@ export const Character = (props: CharacterProps) => {
 
     return (
         <div
+            id={props.id}
             style={{
                 alignItems: 'center',
                 border: `${0.05 * props.width}px solid ${characterColor.bright}`,

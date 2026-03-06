@@ -19,6 +19,7 @@ import { RisingWaterSpinner } from '../risingWaterSpinner';
 import { Character } from './character';
 import { IslandCapacityChip } from './islandCapacityChip';
 import { IslandNumberChip } from './islandNumberChip';
+import { buildCharacterElementID } from '../buildCharacterElementID';
 
 export interface IslandProps {
     readonly width: number;
@@ -79,12 +80,18 @@ export const Island = (props: IslandProps) => {
                         character,
                         props.hoveredCharacter,
                     );
+                const id = buildCharacterElementID(
+                    props.island.islandNumber,
+                    character.playerDesignator,
+                    index,
+                );
                 return (
                     <Character
                         key={index}
                         character={character}
                         highlight={index === highlightCharacterIndex}
                         hoverHighlight={hoverHighlight}
+                        id={id}
                         setCharacterHover={(hover) => {
                             if (hover) {
                                 props.setHoveredCharacter(character);
