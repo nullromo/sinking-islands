@@ -1,5 +1,5 @@
-import { createBasicGame } from './pageData';
-import { TutorialTextBox } from './styles';
+import { createBasicGame } from '../pageData';
+import { TutorialTextBox } from '../styles';
 
 const IntroductionScreen = () => {
     return (

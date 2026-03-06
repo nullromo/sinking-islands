@@ -1,10 +1,12 @@
-import { buildCutout } from './buildCutout';
-import { getElementBoundingRect, island1ElementID } from './elementIDs';
-import { createBasicGameWithCharacters } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { buildCutout } from '../buildCutout';
+import { island1ElementID } from '../elementIDs';
+import { createBasicGameWithCharacters } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
+import { useBoundingBox } from '../useBoundingBox';
 
 const RisingWatersScreen = () => {
-    const islandBox = getElementBoundingRect(island1ElementID);
+    const islandBox = useBoundingBox(island1ElementID);
+
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(islandBox, 30)} />

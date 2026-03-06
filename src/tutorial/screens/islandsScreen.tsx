@@ -1,13 +1,14 @@
-import type { IslandProps } from '../board/island';
-import { Island } from '../board/island';
-import type { IslandSerialized } from '../commonTypes';
-import { IslandType } from '../commonTypes';
-import { Emoji } from '../emoji';
-import { getIslandColors } from '../islandColors';
-import { buildCutout } from './buildCutout';
-import { getElementBoundingRect, island3ElementID } from './elementIDs';
-import { createBasicGame } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import type { IslandProps } from '../../board/island';
+import { Island } from '../../board/island';
+import type { IslandSerialized } from '../../commonTypes';
+import { IslandType } from '../../commonTypes';
+import { Emoji } from '../../emoji';
+import { getIslandColors } from '../../islandColors';
+import { buildCutout } from '../buildCutout';
+import { island3ElementID } from '../elementIDs';
+import { createBasicGame } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
+import { useBoundingBox } from '../useBoundingBox';
 
 const dummyIslandProps: IslandProps = {
     highlight: false,
@@ -65,7 +66,7 @@ const IslandTypeBox = (props: {
 };
 
 const IslandsScreen = () => {
-    const islandBox = getElementBoundingRect(island3ElementID);
+    const islandBox = useBoundingBox(island3ElementID);
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(islandBox, 20)} />

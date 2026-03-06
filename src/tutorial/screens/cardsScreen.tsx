@@ -1,10 +1,11 @@
-import { buildCutout } from './buildCutout';
-import { gameInfoElementID, getElementBoundingRect } from './elementIDs';
-import { createBasicGameWithCharacters } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { buildCutout } from '../buildCutout';
+import { gameInfoElementID } from '../elementIDs';
+import { createBasicGameWithCharacters } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
+import { useBoundingBox } from '../useBoundingBox';
 
 const CardsScreen = () => {
-    const gameInfoBox = getElementBoundingRect(gameInfoElementID);
+    const gameInfoBox = useBoundingBox(gameInfoElementID);
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(gameInfoBox, 10)} />

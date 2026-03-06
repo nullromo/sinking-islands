@@ -1,10 +1,11 @@
-import { buildCutout } from './buildCutout';
-import { boardElementID, getElementBoundingRect } from './elementIDs';
-import { createBasicGame } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { buildCutout } from '../buildCutout';
+import { boardElementID } from '../elementIDs';
+import { createBasicGame } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
+import { useBoundingBox } from '../useBoundingBox';
 
 const TheArchipelagoScreen = () => {
-    const boardBox = getElementBoundingRect(boardElementID);
+    const boardBox = useBoundingBox(boardElementID);
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(boardBox, 20)} />

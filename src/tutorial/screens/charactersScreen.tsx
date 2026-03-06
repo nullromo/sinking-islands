@@ -1,8 +1,8 @@
-import type { CharacterProps } from '../board/character';
-import { Character } from '../board/character';
-import { PlayerDesignator } from '../commonTypes';
-import { createBasicGame } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import type { CharacterProps } from '../../board/character';
+import { Character } from '../../board/character';
+import { PlayerDesignator } from '../../commonTypes';
+import { createBasicGame } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 
 const baseCharacterProps: CharacterProps = {
     character: {

@@ -7,16 +7,16 @@ import { GameContext } from '../gameContext';
 import { GamePageInner } from '../gamePage';
 import { PageRoutes } from '../pageRoutes';
 import { useDynamicSize } from '../useDynamicSize';
-import { ActionOrderTrackScreenData } from './actionOrderTrackScreen';
-import { CardsScreenData } from './cardsScreen';
-import { CharactersScreenData } from './charactersScreen';
-import { DeckCompositionScreenData } from './deckCompositionScreen';
-import { GameEndScreenData } from './gameEndScreen';
-import { IntroductionScreenData } from './introductionScreen';
-import { IslandsScreenData } from './islandsScreen';
-import { RisingWatersScreenData } from './risingWatersScreen';
-import { RoundStructureScreenData } from './roundStructureScreen';
-import { TheArchipelagoScreenData } from './theArchipelagoScreen';
+import { ActionOrderTrackScreenData } from './screens/actionOrderTrackScreen';
+import { CardsScreenData } from './screens/cardsScreen';
+import { CharactersScreenData } from './screens/charactersScreen';
+import { DeckCompositionScreenData } from './screens/deckCompositionScreen';
+import { GameEndScreenData } from './screens/gameEndScreen';
+import { IntroductionScreenData } from './screens/introductionScreen';
+import { IslandsScreenData } from './screens/islandsScreen';
+import { RisingWatersScreenData } from './screens/risingWatersScreen';
+import { RoundStructureScreenData } from './screens/roundStructureScreen';
+import { TheArchipelagoScreenData } from './screens/theArchipelagoScreen';
 
 /**
  * Each tutorial screen has a function that sets up the game state for that

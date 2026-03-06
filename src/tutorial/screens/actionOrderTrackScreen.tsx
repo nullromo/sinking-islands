@@ -1,10 +1,8 @@
-import { buildCutout } from './buildCutout';
-import {
-    actionOrderTrackElementID,
-    getElementBoundingRect,
-} from './elementIDs';
-import { createBasicGameWithCharacters } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { buildCutout } from '../buildCutout';
+import { actionOrderTrackElementID } from '../elementIDs';
+import { createBasicGameWithCharacters } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
+import { useBoundingBox } from '../useBoundingBox';
 
 const SlotSpan = (
     props: { readonly section: 1 | 2 | 3 } & React.PropsWithChildren,
@@ -29,9 +27,7 @@ const SlotSpan = (
 };
 
 const ActionOrderTrackScreen = () => {
-    const actionOrderTrackBox = getElementBoundingRect(
-        actionOrderTrackElementID,
-    );
+    const actionOrderTrackBox = useBoundingBox(actionOrderTrackElementID);
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay

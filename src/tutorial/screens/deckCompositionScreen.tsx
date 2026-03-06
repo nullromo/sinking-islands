@@ -1,9 +1,9 @@
-import { getCardText } from '../cardDescription';
-import { CardType, PlayerDesignator } from '../commonTypes';
-import { MousePositionContextProvider } from '../mousePositionContext';
-import { OnScreenCard } from '../onScreenCard';
-import { createBasicGameWithCharacters } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { getCardText } from '../../cardDescription';
+import { CardType, PlayerDesignator } from '../../commonTypes';
+import { MousePositionContextProvider } from '../../mousePositionContext';
+import { OnScreenCard } from '../../onScreenCard';
+import { createBasicGameWithCharacters } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 
 const CardBox = (props: {
     readonly cardType: CardType;

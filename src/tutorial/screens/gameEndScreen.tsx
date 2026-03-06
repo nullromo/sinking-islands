@@ -1,5 +1,5 @@
-import { createBasicGameWithCharacters } from './pageData';
-import { TutorialDimOverlay, TutorialTextBox } from './styles';
+import { createBasicGameWithCharacters } from '../pageData';
+import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 
 const GameEndScreen = () => {
     return (
