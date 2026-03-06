@@ -1,4 +1,5 @@
-import { otherPlayerDesignator, type GameSerialized } from '../../commonTypes';
+import type { GameSerialized } from '../../info/commonTypes';
+import { otherPlayerDesignator } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
 export const handleWeakness = (game: GameSerialized) => {

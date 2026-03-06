@@ -1,6 +1,6 @@
 import { beforeAll, expect, test } from '@jest/globals';
+import { customRandom } from '../util/random';
 import { setUpRandom } from './setUpRandom';
-import { customRandom } from '../random';
 
 beforeAll(() => {
     setUpRandom();

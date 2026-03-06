@@ -1,5 +1,5 @@
-import { CardType } from '../commonTypes';
-import { assertUnreachable } from '../util';
+import { CardType } from '../info/commonTypes';
+import { assertUnreachable } from '../util/util';
 import crab from './cards/crab.jpg';
 import flyingFish from './cards/flying-fish.jpg';
 import fog from './cards/fog.jpg';

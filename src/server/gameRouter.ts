@@ -1,6 +1,6 @@
 import express from 'express';
-import { EndpointUtils } from '../endpointUtils';
-import { Endpoints } from '../endpoints';
+import { Endpoints } from '../communication/endpoints';
+import { EndpointUtils } from '../communication/endpointUtils';
 import { GameAPI } from './gameAPI';
 
 export const gameRouter = (() => {

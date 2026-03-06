@@ -1,4 +1,5 @@
-import { IslandType, type GameSerialized } from '../../commonTypes';
+import type { GameSerialized } from '../../info/commonTypes';
+import { IslandType } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 

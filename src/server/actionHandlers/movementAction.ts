@@ -2,10 +2,10 @@ import type {
     GameSerialized,
     MovementSet,
     PlayerDesignator,
-} from '../../commonTypes';
-import { computeMovementSteps } from '../../computeMovementSteps';
-import type { ConvertedMovementSet } from '../../convertActionData';
-import { convertMovementToIslands } from '../../convertActionData';
+} from '../../info/commonTypes';
+import { computeMovementSteps } from '../../info/computeMovementSteps';
+import type { ConvertedMovementSet } from '../../info/convertActionData';
+import { convertMovementToIslands } from '../../info/convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';

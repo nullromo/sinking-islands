@@ -1,6 +1,6 @@
-import type { CharacterProps } from '../../board/character';
-import { Character } from '../../board/character';
-import { PlayerDesignator } from '../../commonTypes';
+import { PlayerDesignator } from '../../info/commonTypes';
+import type { CharacterProps } from '../../pages/game/board/character';
+import { Character } from '../../pages/game/board/character';
 import { createBasicGame } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 

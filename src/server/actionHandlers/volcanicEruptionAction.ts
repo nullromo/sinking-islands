@@ -1,5 +1,9 @@
-import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
-import { CardType, IslandType, otherPlayerDesignator } from '../../commonTypes';
+import type { GameSerialized, PlayerDesignator } from '../../info/commonTypes';
+import {
+    CardType,
+    IslandType,
+    otherPlayerDesignator,
+} from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';

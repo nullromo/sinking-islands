@@ -1,9 +1,9 @@
-import type { IslandProps } from '../../board/island';
-import { Island } from '../../board/island';
-import type { IslandSerialized } from '../../commonTypes';
-import { IslandType } from '../../commonTypes';
-import { Emoji } from '../../emoji';
-import { getIslandColors } from '../../islandColors';
+import type { IslandSerialized } from '../../info/commonTypes';
+import { IslandType } from '../../info/commonTypes';
+import { getIslandColors } from '../../info/islandColors';
+import type { IslandProps } from '../../pages/game/board/island';
+import { Island } from '../../pages/game/board/island';
+import { Emoji } from '../../util/emoji';
 import { buildCutout } from '../buildCutout';
 import { island3ElementID } from '../elementIDs';
 import { createBasicGame } from '../pageData';

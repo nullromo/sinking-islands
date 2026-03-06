@@ -1,5 +1,5 @@
-import type { GameSerialized, PlayerDesignator } from '../../commonTypes';
-import { otherPlayerDesignator } from '../../commonTypes';
+import type { GameSerialized, PlayerDesignator } from '../../info/commonTypes';
+import { otherPlayerDesignator } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
 const checkPilingsTargetLegal = (

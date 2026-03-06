@@ -1,6 +1,6 @@
 import express from 'express';
-import { Endpoints } from '../endpoints';
-import { EndpointUtils } from '../endpointUtils';
+import { EndpointUtils } from '../communication/endpointUtils';
+import { Endpoints } from '../communication/endpoints';
 import { UsersAPI } from './usersAPI';
 
 // determine the data type for user sessions

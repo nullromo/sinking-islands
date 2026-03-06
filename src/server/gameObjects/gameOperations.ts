@@ -3,12 +3,12 @@ import type {
     GameSerialized,
     IslandSerialized,
     PlayerSerialized,
-} from '../../commonTypes';
-import { CardType, IslandType, PlayerDesignator } from '../../commonTypes';
-import { createBlankGame } from '../../createBlankGame';
-import { GameState } from '../../gameState';
-import { randomUUID } from '../../random';
-import { shuffleArray } from '../../util';
+} from '../../info/commonTypes';
+import { CardType, IslandType, PlayerDesignator } from '../../info/commonTypes';
+import { createBlankGame } from '../../info/createBlankGame';
+import { GameState } from '../../info/gameState';
+import { randomUUID } from '../../util/random';
+import { shuffleArray } from '../../util/util';
 import { ActionOrderTrackOperations } from './actionOrderTrackOperations';
 import { CharacterOperations } from './characterOperations';
 import { IslandOperations } from './islandOperations';

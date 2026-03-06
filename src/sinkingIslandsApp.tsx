@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import { GamePage } from './gamePage';
-import { LogInGuard } from './logInGuard';
-import { LoggedInUserContextProvider } from './loggedInUserContext';
-import { PageRoutes } from './pageRoutes';
-import { CreateAccountPage } from './pages/createAccountPage';
-import { DashboardPage } from './pages/dashboardPage';
-import { LogInPage } from './pages/logInPage';
+import { LoggedInUserContextProvider } from './contexts/loggedInUserContext';
+import { DashboardPage } from './pages/dashboard/dashboardPage';
+import { GamePage } from './pages/game/gamePage';
+import { CreateAccountPage } from './pages/logInOrCreateAccount/createAccountPage';
+import { LogInPage } from './pages/logInOrCreateAccount/logInPage';
 import { TitlePage } from './pages/titlePage';
+import { LogInGuard } from './router/logInGuard';
+import { PageRoutes } from './router/pageRoutes';
 import { TutorialPage } from './tutorial/tutorialPage';
 
 export const SinkingIslandsApp = () => {

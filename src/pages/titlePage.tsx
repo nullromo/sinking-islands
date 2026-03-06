@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
-import { CenteredPage } from '../centeredPage';
 import titleBackground from '../images/backgrounds/titleBackground.png';
-import { PageRoutes } from '../pageRoutes';
+import { PageRoutes } from '../router/pageRoutes';
+import { CenteredPage } from './centeredPage';
 
 export const TitlePage = () => {
     return (

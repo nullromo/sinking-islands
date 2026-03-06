@@ -1,5 +1,5 @@
-import { IslandType, PlayerDesignator } from '../commonTypes';
-import { GameState } from '../gameState';
+import { IslandType, PlayerDesignator } from '../info/commonTypes';
+import { GameState } from '../info/gameState';
 import { CharacterOperations } from '../server/gameObjects/characterOperations';
 import { GameOperations } from '../server/gameObjects/gameOperations';
 

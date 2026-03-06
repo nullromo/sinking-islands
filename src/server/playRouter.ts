@@ -1,6 +1,6 @@
 import express from 'express';
-import { Endpoints } from '../endpoints';
-import { EndpointUtils } from '../endpointUtils';
+import { Endpoints } from '../communication/endpoints';
+import { EndpointUtils } from '../communication/endpointUtils';
 import { PlayAPI } from './playAPI';
 
 export const playRouter = (() => {

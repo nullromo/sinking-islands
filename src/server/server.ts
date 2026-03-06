@@ -5,12 +5,13 @@ import type { SessionData } from 'express-session';
 import session from 'express-session';
 import http from 'http';
 import { Server } from 'socket.io';
-import { PlayerDesignator, type GameSerialized } from '../commonTypes';
-import { HTTPResponseCodes } from '../httpResponseCodes';
+import { HTTPResponseCodes } from '../communication/httpResponseCodes';
 import type {
     ClientToServerEvents,
     ServerToClientEvents,
-} from '../socketEvents';
+} from '../communication/socketEvents';
+import type { GameSerialized } from '../info/commonTypes';
+import { PlayerDesignator } from '../info/commonTypes';
 import { TEST_BACKEND_PORT } from '../test/ports';
 import { GameOperations } from './gameObjects/gameOperations';
 import { gameRouter } from './gameRouter';

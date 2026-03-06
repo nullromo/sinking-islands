@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, expect, test } from '@jest/globals';
-import type { GameSerialized } from '../commonTypes';
+import type { GameSerialized } from '../info/commonTypes';
 import { GameAPI } from '../server/gameAPI';
 import { getRedis } from '../server/redisConnector';
 import { RedisKeys } from '../server/redisKeys';

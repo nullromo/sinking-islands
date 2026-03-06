@@ -1,7 +1,7 @@
-import { getCardText } from '../../cardDescription';
-import { CardType, PlayerDesignator } from '../../commonTypes';
-import { MousePositionContextProvider } from '../../mousePositionContext';
-import { OnScreenCard } from '../../onScreenCard';
+import { MousePositionContextProvider } from '../../contexts/mousePositionContext';
+import { getCardText } from '../../info/cardDescription';
+import { CardType, PlayerDesignator } from '../../info/commonTypes';
+import { OnScreenCard } from '../../pages/game/onScreenCard';
 import { createBasicGameWithCharacters } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 

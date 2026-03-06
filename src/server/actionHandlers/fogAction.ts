@@ -1,4 +1,4 @@
-import type { GameSerialized } from '../../commonTypes';
+import type { GameSerialized } from '../../info/commonTypes';
 import { ActionOrderTrackOperations } from '../gameObjects/actionOrderTrackOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';

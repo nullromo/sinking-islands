@@ -4,7 +4,7 @@ import type {
     CardSerialized,
     GameSerialized,
     PlayerDesignator,
-} from '../../commonTypes';
+} from '../../info/commonTypes';
 import { GameOperations } from './gameOperations';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

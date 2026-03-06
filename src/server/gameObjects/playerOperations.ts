@@ -4,9 +4,9 @@ import type {
     GameSerialized,
     PlayerDesignator,
     PlayerSerialized,
-} from '../../commonTypes';
-import { CardType } from '../../commonTypes';
-import { shuffleArray } from '../../util';
+} from '../../info/commonTypes';
+import { CardType } from '../../info/commonTypes';
+import { shuffleArray } from '../../util/util';
 import { fullObject } from '../util';
 import { CardOperations } from './cardOperations';
 import { GameOperations } from './gameOperations';

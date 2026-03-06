@@ -1,4 +1,4 @@
-import type { GameSerialized } from '../../commonTypes';
+import type { GameSerialized } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
 const checkTidalWaveTargetLegal = (

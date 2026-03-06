@@ -4,8 +4,8 @@ import type {
     IslandSerialized,
     PlayerDesignator,
     TargetCharacter,
-} from '../../commonTypes';
-import { convertTargetCharacterToIslands } from '../../convertActionData';
+} from '../../info/commonTypes';
+import { convertTargetCharacterToIslands } from '../../info/convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';

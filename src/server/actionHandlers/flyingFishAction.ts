@@ -2,9 +2,9 @@ import type {
     FlyingFishMovement,
     GameSerialized,
     PlayerDesignator,
-} from '../../commonTypes';
-import type { ConvertedMovement } from '../../convertActionData';
-import { convertMovementToIslands } from '../../convertActionData';
+} from '../../info/commonTypes';
+import type { ConvertedMovement } from '../../info/convertActionData';
+import { convertMovementToIslands } from '../../info/convertActionData';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 

@@ -1,6 +1,6 @@
-import type { GameSerialized } from '../commonTypes';
-import { PlayerDesignator } from '../commonTypes';
-import type { GameAction } from '../gameActionTypes';
+import type { GameSerialized } from '../info/commonTypes';
+import { PlayerDesignator } from '../info/commonTypes';
+import type { GameAction } from '../info/gameActionTypes';
 import { GameFlowOperations } from './gameFlowOperations';
 import { getRedis } from './redisConnector';
 import { RedisKeys } from './redisKeys';

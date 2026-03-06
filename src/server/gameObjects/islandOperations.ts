@@ -3,7 +3,7 @@ import type {
     IslandSerialized,
     IslandType,
     PlayerDesignator,
-} from '../../commonTypes';
+} from '../../info/commonTypes';
 import { fullObject } from '../util';
 import { CharacterOperations } from './characterOperations';
 

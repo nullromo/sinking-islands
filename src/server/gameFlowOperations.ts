@@ -1,16 +1,16 @@
-import type { GameSerialized, TargetCharacter } from '../commonTypes';
+import type { GameSerialized, TargetCharacter } from '../info/commonTypes';
 import {
     CardType,
     IslandType,
-    otherPlayerDesignator,
     PlayerDesignator,
-} from '../commonTypes';
-import { convertTargetCharacterToIslands } from '../convertActionData';
-import type { GameAction } from '../gameActionTypes';
-import { GameActionType } from '../gameActionTypes';
-import { GameState } from '../gameState';
-import { mapToValues } from '../maps';
-import { assertUnreachable, upperSnakeToTitle } from '../util';
+    otherPlayerDesignator,
+} from '../info/commonTypes';
+import { convertTargetCharacterToIslands } from '../info/convertActionData';
+import type { GameAction } from '../info/gameActionTypes';
+import { GameActionType } from '../info/gameActionTypes';
+import { GameState } from '../info/gameState';
+import { mapToValues } from '../util/maps';
+import { assertUnreachable, upperSnakeToTitle } from '../util/util';
 import { handleCardPlacement } from './actionHandlers/cardPlacementAction';
 import { handleFlyingFish } from './actionHandlers/flyingFishAction';
 import { handleFog } from './actionHandlers/fogAction';

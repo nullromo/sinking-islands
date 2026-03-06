@@ -2,7 +2,7 @@ import type {
     CardPlacement,
     GameSerialized,
     PlayerDesignator,
-} from '../../commonTypes';
+} from '../../info/commonTypes';
 import { ActionOrderTrackOperations } from '../gameObjects/actionOrderTrackOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 

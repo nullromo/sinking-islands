@@ -1,8 +1,5 @@
-import {
-    otherPlayerDesignator,
-    type GameSerialized,
-    type PlayerDesignator,
-} from '../../commonTypes';
+import type { GameSerialized, PlayerDesignator } from '../../info/commonTypes';
+import { otherPlayerDesignator } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
 const checkNetTargetLegal = (

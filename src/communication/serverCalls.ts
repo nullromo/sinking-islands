@@ -1,0 +1,89 @@
+import type { AxiosRequestConfig } from 'axios';
+import type { GameAction } from '../info/gameActionTypes';
+import type { MakeEmptyKeysOptional } from '../util/util';
+import type { EndpointUtils } from './endpointUtils';
+import { Endpoints } from './endpoints';
+import { ServerCallsCore } from './serverCallsCore';
+
+type SendData<T extends EndpointUtils.EndpointInfo> = MakeEmptyKeysOptional<{
+    requestBody: T['requestBody'];
+    queryParameters: T['queryParameters'];
+    urlParameters: T['urlParameters'];
+}>;
+
+type SendConfig = Omit<
+    AxiosRequestConfig,
+    'body' | 'cancelToken' | 'params' | 'url'
+>;
+
+export class ServerCalls {
+    private readonly serverCallsCore: ServerCallsCore;
+
+    public constructor(
+        test: boolean,
+        onUnauthorized = () => {
+            //
+        },
+    ) {
+        this.serverCallsCore = new ServerCallsCore(test, onUnauthorized);
+    }
+
+    public readonly abort = () => {
+        this.serverCallsCore.abort();
+    };
+
+    private readonly send = async <T extends EndpointUtils.EndpointInfo>(
+        endpointConstructor: EndpointUtils.EndpointConstructor<T>,
+        data: SendData<T>,
+        config: SendConfig = {},
+    ) => {
+        return this.serverCallsCore.doSend<T, T['responseBody']>(
+            endpointConstructor.instance.method,
+            endpointConstructor.instance.path,
+            data,
+            config,
+        );
+    };
+
+    public readonly createUser = async (username: string, password: string) => {
+        return this.send(Endpoints.CreateUser, {
+            requestBody: { password, username },
+        });
+    };
+
+    public readonly logIn = async (username: string, password: string) => {
+        return this.send(Endpoints.LogIn, {
+            requestBody: { password, username },
+        });
+    };
+
+    public readonly logOut = async () => {
+        return this.send(Endpoints.LogOut, {});
+    };
+
+    public readonly whoAmI = async () => {
+        return this.send(Endpoints.WhoAmI, {});
+    };
+
+    public readonly createGame = async () => {
+        return this.send(Endpoints.CreateGame, {});
+    };
+
+    public readonly getGameList = async () => {
+        return this.send(Endpoints.GetGameList, {});
+    };
+
+    public readonly joinGame = async (gameID: string) => {
+        return this.send(Endpoints.JoinGame, { urlParameters: { gameID } });
+    };
+
+    public readonly takeGameAction = async (
+        gameID: string,
+        gameAction: GameAction,
+    ) => {
+        return this.send(Endpoints.TakeGameAction, {
+            requestBody: { gameAction },
+            urlParameters: { gameID },
+        });
+    };
+}

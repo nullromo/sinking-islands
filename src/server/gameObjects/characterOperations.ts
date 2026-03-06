@@ -1,4 +1,7 @@
-import type { CharacterSerialized, PlayerDesignator } from '../../commonTypes';
+import type {
+    CharacterSerialized,
+    PlayerDesignator,
+} from '../../info/commonTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace CharacterOperations {

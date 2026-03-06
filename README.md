@@ -2,8 +2,6 @@
 
 ## Main stuff
 
-1. Tutorial looks bad after resizing the screen
-1. Re-organize files
 1. Movements selections more clear
     - Make curved arrows that point to where things are being targeted. (try
       `M 10 0 S 0 0 -8 6 M 10 0 S 10 -10 0 -10 M 0 -10 S -10 -10 -10 0 M 10 0 S 10 10 0 10 M -10 0 S -10 10 0 10`

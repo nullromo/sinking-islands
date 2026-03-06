@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import { HTTPResponseCodes } from '../httpResponseCodes';
+import { HTTPResponseCodes } from '../communication/httpResponseCodes';
 
 export const NOT_LOGGED_IN_ERROR_MESSAGE = 'Not logged in.';
 

@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, expect, test } from '@jest/globals';
+import { ServerCalls } from '../communication/serverCalls';
 import { NOT_LOGGED_IN_ERROR_MESSAGE } from '../server/requireSession';
-import { ServerCalls } from '../serverCalls';
 import { setUpBackend, tearDownBackend } from './setUpBackend';
 
 beforeAll(async () => {

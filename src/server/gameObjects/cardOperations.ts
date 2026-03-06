@@ -2,7 +2,7 @@ import type {
     CardSerialized,
     CardType,
     PlayerDesignator,
-} from '../../commonTypes';
+} from '../../info/commonTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace CardOperations {

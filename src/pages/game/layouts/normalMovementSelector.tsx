@@ -1,0 +1,32 @@
+import type { CharacterSerialized } from '../../../info/commonTypes';
+import { CharacterSelector } from './characterSelector';
+import { IslandSelector } from './islandSelector';
+
+interface NormalMovementSelectorProps {
+    readonly fromIsland: number;
+    readonly setFromIsland: (islandNumber: number) => void;
+    readonly toIsland: number;
+    readonly setToIsland: (islandNumber: number) => void;
+    readonly character: CharacterSerialized;
+    readonly setCharacter: (character: CharacterSerialized) => void;
+}
+
+export const NormalMovementSelector = (props: NormalMovementSelectorProps) => {
+    return (
+        <>
+            {'Choose normal movement'}
+            <IslandSelector
+                islandNumber={props.fromIsland}
+                setIslandNumber={props.setFromIsland}
+            />
+            <IslandSelector
+                islandNumber={props.toIsland}
+                setIslandNumber={props.setToIsland}
+            />
+            <CharacterSelector
+                character={props.character}
+                setCharacter={props.setCharacter}
+            />
+        </>
+    );
+};
