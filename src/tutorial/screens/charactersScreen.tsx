@@ -12,6 +12,7 @@ const baseCharacterProps: CharacterProps = {
     },
     highlight: false,
     hoverHighlight: false,
+    id: '',
     onClick: undefined,
     setCharacterHover: () => {
         //

@@ -12,7 +12,6 @@ import { createBasicGame } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 
 const dummyIslandProps: IslandProps = {
-    skipCoordinateUpdates: true,
     highlight: false,
     highlightCharacter: undefined,
     hoverHighlight: false,
@@ -31,6 +30,7 @@ const dummyIslandProps: IslandProps = {
     setIslandHover: () => {
         //
     },
+    skipCoordinateUpdates: true,
     width: 200,
 };
 
