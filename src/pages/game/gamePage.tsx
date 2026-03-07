@@ -56,6 +56,7 @@ export const GamePageInner = () => {
                         alignItems: 'center',
                         display: 'flex',
                         justifyContent: 'space-between',
+                        paddingRight: '10px',
                         width: '100%',
                     }}
                 >

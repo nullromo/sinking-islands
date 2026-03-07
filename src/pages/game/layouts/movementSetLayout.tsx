@@ -109,89 +109,113 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                     });
                 },
                 onIslandClicked: (island) => {
-                    if (activeCharacter !== null) {
-                        setMovementSet((previous) => {
-                            return [
-                                ...previous.filter((movement) => {
-                                    return (
-                                        movement.fromIslandNumber !==
-                                            activeCharacter.fromIsland
-                                                .islandNumber ||
-                                        movement.playerIndex !==
-                                            activeCharacter.playerIndex
-                                    );
-                                }),
-                                {
-                                    character: activeCharacter.character,
-                                    fromIslandNumber:
-                                        activeCharacter.fromIsland.islandNumber,
-                                    playerIndex: activeCharacter.playerIndex,
-                                    toIslandNumber: island.islandNumber,
-                                },
-                            ];
-                        });
-                        setActiveCharacter(null);
+                    if (activeCharacter === null) {
+                        return;
                     }
+                    if (
+                        activeCharacter.fromIsland.islandNumber ===
+                        island.islandNumber
+                    ) {
+                        setActiveCharacter(null);
+                        return;
+                    }
+                    setMovementSet((previous) => {
+                        return [
+                            ...previous.filter((movement) => {
+                                return (
+                                    movement.fromIslandNumber !==
+                                        activeCharacter.fromIsland
+                                            .islandNumber ||
+                                    movement.playerIndex !==
+                                        activeCharacter.playerIndex
+                                );
+                            }),
+                            {
+                                character: activeCharacter.character,
+                                fromIslandNumber:
+                                    activeCharacter.fromIsland.islandNumber,
+                                playerIndex: activeCharacter.playerIndex,
+                                toIslandNumber: island.islandNumber,
+                            },
+                        ];
+                    });
+                    setActiveCharacter(null);
                 },
             }}
         >
             <div style={{ width: '600px' }}>
                 Click on a character, then click on an island to choose where to
-                move that character. Click Submit when finished, or click Reset
-                to start over.
+                move that character.
             </div>
-            {'Movement steps used:'} {movementStepsUsed} {'of 3'}
-            {movementSet.map((movement, index) => {
-                return (
-                    <React.Fragment key={index}>
-                        <br />
-                        {`Character: ${
-                            movement.character.tortoise ? '🐢' : '🧍'
-                        }${movement.character.strength}`}
-                        <br />
-                        {`from ${movement.fromIslandNumber}`}
-                        <br />
-                        {`to ${
-                            movement.toIslandNumber === 0
-                                ? '?'
-                                : movement.toIslandNumber
-                        }`}
-                        <br />
-                    </React.Fragment>
-                );
-            })}
-            <div>
-                <button
-                    type='button'
-                    onClick={() => {
-                        setActiveCharacter(null);
-                        setMovementSet([]);
-                    }}
-                >
-                    Reset
-                </button>
-                <button
-                    type='button'
-                    onClick={() => {
-                        props.serverCalls
-                            .takeGameAction(gameContext.game.id, {
-                                action: GameActionType.MOVEMENT_SET,
-                                data: movementSet.map((movement) => {
-                                    return {
-                                        character: movement.character,
-                                        fromIslandNumber:
-                                            movement.fromIslandNumber,
-                                        toIslandNumber: movement.toIslandNumber,
-                                    };
-                                }),
-                            })
-                            .catch((error: unknown) => {
-                                props.setResult(false, error);
-                            });
-                    }}
-                >
-                    Submit
-                </button>
+            <br />
+            <div style={{ border: '1px solid', width: '100%' }}>
+                Summary
+                <ul>
+                    {movementSet.length === 0 ? 'No movements' : null}
+                    {movementSet.map((movement, index) => {
+                        return (
+                            <li key={index}>
+                                {`Move ${movement.character.strength}-strength ${movement.character.tortoise ? 'tortoise' : 'character'} from island ${movement.fromIslandNumber} to island ${movement.toIslandNumber}`}
+                            </li>
+                        );
+                    })}
+                </ul>
+                <div>
+                    {'Movement steps used:'} {movementStepsUsed} {'of 3'}
+                </div>
+            </div>
+            <div
+                style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <div style={{ color: movementSetLegal ? 'green' : 'red' }}>
+                    {'Movement is'} {movementSetLegal ? '' : 'not'} {'legal'}
+                </div>
+                {movementSet.some((movement) => {
+                    return movement.character.tortoise;
+                }) ? (
+                    <div style={{ color: 'red' }}>
+                        WARNING: a tortoise that moves stops being a tortoise.
+                    </div>
+                ) : null}
+                <div>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setActiveCharacter(null);
+                            setMovementSet([]);
+                        }}
+                    >
+                        Start Over
+                    </button>
+                    <button
+                        disabled={!movementSetLegal}
+                        type='button'
+                        onClick={() => {
+                            props.serverCalls
+                                .takeGameAction(gameContext.game.id, {
+                                    action: GameActionType.MOVEMENT_SET,
+                                    data: movementSet.map((movement) => {
+                                        return {
+                                            character: movement.character,
+                                            fromIslandNumber:
+                                                movement.fromIslandNumber,
+                                            toIslandNumber:
+                                                movement.toIslandNumber,
+                                        };
+                                    }),
+                                })
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                });
+                        }}
+                    >
+                        Submit
+                    </button>
+                </div>
             </div>
             {activeCharacter === null ? null : (
                 <MovementArrow
