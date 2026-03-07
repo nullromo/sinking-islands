@@ -45,7 +45,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
         }),
     );
 
-    const movementSetLegal = (() => {
+    const movementSetIsLegal = (() => {
         try {
             checkMovementSetLegal(
                 gameContext.game,
@@ -148,7 +148,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                 move that character.
             </div>
             <br />
-            <div style={{ border: '1px solid', width: '100%' }}>
+            <div style={{ border: '1px solid', padding: '4px', width: '100%' }}>
                 Summary
                 <ul>
                     {movementSet.length === 0 ? 'No movements' : null}
@@ -171,8 +171,8 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                     flexDirection: 'column',
                 }}
             >
-                <div style={{ color: movementSetLegal ? 'green' : 'red' }}>
-                    {'Movement is'} {movementSetLegal ? '' : 'not'} {'legal'}
+                <div style={{ color: movementSetIsLegal ? 'green' : 'red' }}>
+                    {'Movement is'} {movementSetIsLegal ? '' : 'not'} {'legal'}
                 </div>
                 {movementSet.some((movement) => {
                     return movement.character.tortoise;
@@ -192,7 +192,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                         Start Over
                     </button>
                     <button
-                        disabled={!movementSetLegal}
+                        disabled={!movementSetIsLegal}
                         type='button'
                         onClick={() => {
                             props.serverCalls
@@ -237,7 +237,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                             movement.character.playerDesignator,
                             movement.playerIndex,
                         )}
-                        color={movementSetLegal ? 'limegreen' : 'orange'}
+                        color={movementSetIsLegal ? 'limegreen' : 'orange'}
                         islandElementID={buildIslandElementID(
                             movement.toIslandNumber,
                         )}

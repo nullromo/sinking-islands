@@ -1,20 +1,21 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { CoordinatesContext } from '../../contexts/coordinatesContext';
+import { GameContext } from '../../contexts/gameContext';
 import { MousePositionContext } from '../../contexts/mousePositionContext';
+import type { CardType } from '../../info/commonTypes';
 import { boardElementID } from '../../tutorial/elementIDs';
+import { OnScreenCard } from './onScreenCard';
 
-export const MovementArrow = (props: {
-    readonly characterElementID: string;
+export const IslandSelectArrow = (props: {
     readonly islandElementID: string | null;
     readonly color: string;
+    readonly cardType: CardType;
 }) => {
+    const gameContext = React.use(GameContext);
     const coordinatesContext = React.use(CoordinatesContext);
     const { mousePosition } = React.use(MousePositionContext);
 
-    const characterBox = coordinatesContext.getCoordinates(
-        props.characterElementID,
-    );
     const boardBox = coordinatesContext.getCoordinates(boardElementID);
     const islandBox =
         props.islandElementID === null
@@ -31,6 +32,23 @@ export const MovementArrow = (props: {
                 zIndex: 1000,
             }}
         >
+            <div
+                style={{
+                    position: 'absolute',
+                    textAlign: 'center',
+                    transform: `translate(${boardBox.width / 2 - 50}px, ${boardBox.height / 2 - 67}px)`,
+                    width: 'fit-content',
+                }}
+            >
+                <OnScreenCard
+                    card={{
+                        cardType: props.cardType,
+                        playerDesignator: gameContext.you,
+                    }}
+                    highlight={false}
+                    onClick={undefined}
+                />
+            </div>
             <svg style={{ height: '100vw', width: '100vw' }}>
                 <defs>
                     <marker
@@ -48,7 +66,7 @@ export const MovementArrow = (props: {
                     </marker>
                 </defs>
                 <path
-                    d={`M ${characterBox.x + characterBox.width / 2} ${characterBox.y + characterBox.height / 2} S ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} ${islandBox ? islandBox.x + islandBox.width / 2 : mousePosition.x} ${islandBox ? islandBox.y + islandBox.height / 2 : mousePosition.y}`}
+                    d={`M ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} L ${islandBox ? islandBox.x + islandBox.width / 2 : mousePosition.x} ${islandBox ? islandBox.y + islandBox.height / 2 : mousePosition.y}`}
                     markerEnd='url(#head)'
                     style={{
                         fill: 'none',

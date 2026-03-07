@@ -2,7 +2,7 @@ import type { GameSerialized, PlayerDesignator } from '../../info/commonTypes';
 import { otherPlayerDesignator } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
-const checkPilingsTargetLegal = (
+export const checkPilingsTargetLegal = (
     game: GameSerialized,
     playerDesignator: PlayerDesignator,
     pilingsTarget: number,

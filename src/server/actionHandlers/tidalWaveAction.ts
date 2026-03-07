@@ -1,7 +1,7 @@
 import type { GameSerialized } from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
-const checkTidalWaveTargetLegal = (
+export const checkTidalWaveTargetLegal = (
     game: GameSerialized,
     tidalWaveTarget: number,
 ) => {

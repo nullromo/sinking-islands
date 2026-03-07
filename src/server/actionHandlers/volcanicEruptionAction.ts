@@ -8,7 +8,7 @@ import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
 
-const checkVolcanicEruptionTargetLegal = (
+export const checkVolcanicEruptionTargetLegal = (
     game: GameSerialized,
     volcanicEruptionTarget: number,
 ) => {
