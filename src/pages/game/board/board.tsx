@@ -16,6 +16,7 @@ interface BoardProps {
     readonly onCharacterClicked?: (
         island: IslandSerialized,
         character: CharacterSerialized,
+        playerIndex: number,
     ) => void;
     readonly onIslandClicked?: (island: IslandSerialized) => void;
     readonly highlightCharacter?: TargetCharacter;
@@ -73,11 +74,12 @@ export const Board = (props: BoardProps) => {
                             width={itemWidth}
                             onCharacterClicked={
                                 props.onCharacterClicked
-                                    ? (character: CharacterSerialized) => {
+                                    ? (character, playerIndex) => {
                                           if (props.onCharacterClicked) {
                                               props.onCharacterClicked(
                                                   island,
                                                   character,
+                                                  playerIndex,
                                               );
                                           }
                                       }

@@ -7,7 +7,7 @@ import type { IslandProps } from '../../pages/game/board/island';
 import { Island } from '../../pages/game/board/island';
 import { Emoji } from '../../util/emoji';
 import { buildCutout } from '../buildCutout';
-import { island3ElementID } from '../elementIDs';
+import { buildIslandElementID } from '../elementIDs';
 import { createBasicGame } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
 
@@ -69,7 +69,9 @@ const IslandTypeBox = (props: {
 
 const IslandsScreen = () => {
     const coordinatesContext = React.use(CoordinatesContext);
-    const islandBox = coordinatesContext.getCoordinates(island3ElementID);
+    const islandBox = coordinatesContext.getCoordinates(
+        buildIslandElementID(3),
+    );
 
     return (
         <div style={{ height: '100vh', width: '100vw' }}>

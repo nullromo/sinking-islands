@@ -1,41 +1,84 @@
-import _ from 'lodash';
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { withServerCalls } from '../../../communication/withServerCalls';
 import { CoordinatesContext } from '../../../contexts/coordinatesContext';
 import { GameContext } from '../../../contexts/gameContext';
 import { MousePositionContext } from '../../../contexts/mousePositionContext';
-import { PlayerDesignator, type MovementSet } from '../../../info/commonTypes';
+import type {
+    CharacterSerialized,
+    IslandSerialized,
+    MovementSet,
+} from '../../../info/commonTypes';
 import { computeMovementSteps } from '../../../info/computeMovementSteps';
 import { convertMovementToIslands } from '../../../info/convertActionData';
 import { GameActionType } from '../../../info/gameActionTypes';
-import { buildCharacterElementID } from '../../../tutorial/elementIDs';
+import {
+    boardElementID,
+    buildCharacterElementID,
+    buildIslandElementID,
+} from '../../../tutorial/elementIDs';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
 
-const Arrow = () => {
+const Arrow = (props: {
+    characterElementID: string;
+    islandElementID: string | null;
+}) => {
     const coordinatesContext = React.use(CoordinatesContext);
-
-    const characterBox = coordinatesContext.getCoordinates(
-        buildCharacterElementID(10, PlayerDesignator.PLAYER_A, 0),
-    );
     const { mousePosition } = React.use(MousePositionContext);
 
-    return (
+    const characterBox = coordinatesContext.getCoordinates(
+        props.characterElementID,
+    );
+    const boardBox = coordinatesContext.getCoordinates(boardElementID);
+    const islandBox =
+        props.islandElementID === null
+            ? null
+            : coordinatesContext.getCoordinates(props.islandElementID);
+
+    return createPortal(
         <div
             style={{
-                left: characterBox.left,
+                left: 0,
+                pointerEvents: 'none',
                 position: 'fixed',
-                top: characterBox.top,
+                top: 0,
                 zIndex: 1000,
             }}
         >
-            <svg>
+            <svg style={{ height: '100vw', width: '100vw' }}>
+                <defs>
+                    <marker
+                        id='head'
+                        markerHeight='10'
+                        markerWidth='5'
+                        orient='auto'
+                        refX='4'
+                        refY='5'
+                    >
+                        <path
+                            d='M 1 1 L 5 5 L 1 9 L 0 8 L 3 5 L 0 2 Z'
+                            fill='magenta'
+                        />
+                    </marker>
+                </defs>
                 <path
-                    d={`M 0 0 L ${mousePosition.x - characterBox.left} ${mousePosition.y - characterBox.top}`}
-                    style={{ fill: 'none', stroke: 'red', strokeWidth: 3 }}
+                    d={`M ${characterBox.x + characterBox.width / 2} ${characterBox.y + characterBox.height / 2} S ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} ${islandBox ? islandBox.x + islandBox.width / 2 : mousePosition.x} ${islandBox ? islandBox.y + islandBox.height / 2 : mousePosition.y}`}
+                    markerEnd='url(#head)'
+                    style={{ fill: 'none', stroke: 'magenta', strokeWidth: 3 }}
                 />
             </svg>
-        </div>
+            <svg>
+                <path
+                    d='M 0 0 80 100 120'
+                    fill='none'
+                    id='arrow-line'
+                    stroke='black'
+                    strokeWidth='4'
+                />
+            </svg>
+        </div>,
+        document.body,
     );
 };
 
@@ -44,44 +87,40 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
 
     const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
 
+    const [activeCharacter, setActiveCharacter] = React.useState<{
+        character: CharacterSerialized;
+        fromIsland: IslandSerialized;
+        playerIndex: number;
+    } | null>(null);
+
     return (
         <GamePageLayout
             boardProps={{
-                onCharacterClicked: (island, character) => {
+                onCharacterClicked: (island, character, playerIndex) => {
                     if (character.playerDesignator !== gameContext.you) {
                         return;
                     }
-                    const newMovement = {
+
+                    setActiveCharacter({
                         character,
-                        fromIslandNumber: island.islandNumber,
-                        toIslandNumber: island.islandNumber,
-                    };
-                    if (movementSet.length <= 0) {
-                        setMovementSet([newMovement]);
-                    } else if (
-                        movementSet[movementSet.length - 1].fromIslandNumber ===
-                        movementSet[movementSet.length - 1].toIslandNumber
-                    ) {
-                        setMovementSet([
-                            ...movementSet.slice(0, movementSet.length - 2),
-                            newMovement,
-                        ]);
-                    } else {
-                        setMovementSet([...movementSet, newMovement]);
-                    }
+                        fromIsland: island,
+                        playerIndex,
+                    });
                 },
                 onIslandClicked: (island) => {
-                    if (
-                        movementSet.length > 0 &&
-                        movementSet[movementSet.length - 1].fromIslandNumber ===
-                            movementSet[movementSet.length - 1].toIslandNumber
-                    ) {
-                        setMovementSet((oldSet) => {
-                            const newSet = _.cloneDeep(oldSet);
-                            newSet[newSet.length - 1].toIslandNumber =
-                                island.islandNumber;
-                            return newSet;
+                    if (activeCharacter !== null) {
+                        setMovementSet((previous) => {
+                            return [
+                                ...previous,
+                                {
+                                    character: activeCharacter.character,
+                                    fromIslandNumber:
+                                        activeCharacter.fromIsland.islandNumber,
+                                    toIslandNumber: island.islandNumber,
+                                },
+                            ];
                         });
+                        setActiveCharacter(null);
                     }
                 },
             }}
@@ -143,16 +182,31 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                     Submit
                 </button>
             </div>
-            <div
-                style={{
-                    fontFamily: 'consolas',
-                    height: '200px',
-                    width: '600px',
-                }}
-            >
-                {JSON.stringify(movementSet, null, 4)}
-            </div>
-            <Arrow />
+            {activeCharacter === null ? null : (
+                <Arrow
+                    characterElementID={buildCharacterElementID(
+                        activeCharacter.fromIsland.islandNumber,
+                        activeCharacter.character.playerDesignator,
+                        activeCharacter.playerIndex,
+                    )}
+                    islandElementID={null}
+                />
+            )}
+            {movementSet.map((movement, index) => {
+                return (
+                    <Arrow
+                        key={index}
+                        characterElementID={buildCharacterElementID(
+                            movement.fromIslandNumber,
+                            movement.character.playerDesignator,
+                            0,
+                        )}
+                        islandElementID={buildIslandElementID(
+                            movement.toIslandNumber,
+                        )}
+                    />
+                );
+            })}
         </GamePageLayout>
     );
 }, 'MovementSetLayout');

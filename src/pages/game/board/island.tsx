@@ -12,8 +12,7 @@ import { getIslandColors } from '../../../info/islandColors';
 import { CharacterOperations } from '../../../server/gameObjects/characterOperations';
 import {
     buildCharacterElementID,
-    island1ElementID,
-    island3ElementID,
+    buildIslandElementID,
 } from '../../../tutorial/elementIDs';
 import { hoverHighlightStyle } from '../hoverHighlightStyle';
 import { NetOverlay } from '../netOverlay';
@@ -30,7 +29,7 @@ export interface IslandProps {
     readonly highlightCharacter: TargetCharacter | undefined;
     readonly onClick: (() => void) | undefined;
     readonly onCharacterClicked:
-        | ((character: CharacterSerialized) => void)
+        | ((character: CharacterSerialized, playerIndex: number) => void)
         | undefined;
     readonly setIslandHover: (hover: boolean) => void;
     readonly setHoveredCharacter: (
@@ -107,7 +106,10 @@ export const Island = (props: IslandProps) => {
                             props.onCharacterClicked
                                 ? () => {
                                       if (props.onCharacterClicked) {
-                                          props.onCharacterClicked(character);
+                                          props.onCharacterClicked(
+                                              character,
+                                              index,
+                                          );
                                       }
                                   }
                                 : undefined
@@ -120,11 +122,7 @@ export const Island = (props: IslandProps) => {
     const islandRef = useCoordinatesRef(
         props.skipCoordinateUpdates
             ? null
-            : props.island.islandNumber === 1
-              ? island1ElementID
-              : props.island.islandNumber === 3
-                ? island3ElementID
-                : null,
+            : buildIslandElementID(props.island.islandNumber),
     );
 
     return (
