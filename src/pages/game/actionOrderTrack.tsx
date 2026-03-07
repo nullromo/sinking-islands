@@ -4,6 +4,7 @@ import type { CardSerialized } from '../../info/commonTypes';
 import { getPlayerColor } from '../../info/playerColors';
 import { actionOrderTrackElementID } from '../../tutorial/elementIDs';
 import { OnScreenCard } from './onScreenCard';
+import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
 
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;
@@ -100,9 +101,11 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
         },
     );
 
+    const actionOrderTrackRef = useCoordinatesRef(actionOrderTrackElementID);
+
     return (
         <div
-            id={actionOrderTrackElementID}
+            ref={actionOrderTrackRef}
             style={{
                 display: 'flex',
                 marginBottom: '20px',

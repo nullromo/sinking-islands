@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { GameContext } from '../../../contexts/gameContext';
+import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 import { getCharacterImage } from '../../../images/characterImages';
 import type { CharacterSerialized } from '../../../info/commonTypes';
 import { getPlayerColor } from '../../../info/playerColors';
@@ -24,9 +25,11 @@ export const Character = (props: CharacterProps) => {
         gameContext.you,
     );
 
+    const characterRef = useCoordinatesRef(props.id);
+
     return (
         <div
-            id={props.id}
+            ref={characterRef}
             style={{
                 alignItems: 'center',
                 border: `${0.05 * props.width}px solid ${characterColor.bright}`,

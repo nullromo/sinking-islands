@@ -1,11 +1,14 @@
+import * as React from 'react';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
 import { buildCutout } from '../buildCutout';
 import { gameInfoElementID } from '../elementIDs';
 import { createBasicGameWithCharacters } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
-import { useBoundingBox } from '../useBoundingBox';
 
 const CardsScreen = () => {
-    const gameInfoBox = useBoundingBox(gameInfoElementID);
+    const coordinatesContext = React.use(CoordinatesContext);
+    const gameInfoBox = coordinatesContext.getCoordinates(gameInfoElementID);
+
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(gameInfoBox, 10)} />

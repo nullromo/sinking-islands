@@ -1,19 +1,21 @@
 import _ from 'lodash';
 import * as React from 'react';
 import { withServerCalls } from '../../../communication/withServerCalls';
+import { CoordinatesContext } from '../../../contexts/coordinatesContext';
 import { GameContext } from '../../../contexts/gameContext';
+import { MousePositionContext } from '../../../contexts/mousePositionContext';
 import { PlayerDesignator, type MovementSet } from '../../../info/commonTypes';
 import { computeMovementSteps } from '../../../info/computeMovementSteps';
 import { convertMovementToIslands } from '../../../info/convertActionData';
 import { GameActionType } from '../../../info/gameActionTypes';
-import { useBoundingBox } from '../../../tutorial/useBoundingBox';
-import { buildCharacterElementID } from '../buildCharacterElementID';
+import { buildCharacterElementID } from '../../../tutorial/elementIDs';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
-import { MousePositionContext } from '../../../contexts/mousePositionContext';
 
 const Arrow = () => {
-    const characterBox = useBoundingBox(
+    const coordinatesContext = React.use(CoordinatesContext);
+
+    const characterBox = coordinatesContext.getCoordinates(
         buildCharacterElementID(10, PlayerDesignator.PLAYER_A, 0),
     );
     const { mousePosition } = React.use(MousePositionContext);

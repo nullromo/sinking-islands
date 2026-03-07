@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { GameContext } from '../../../contexts/gameContext';
+import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 import { getIslandImage } from '../../../images/islandImages';
 import type {
     CharacterSerialized,
@@ -10,6 +11,7 @@ import { PlayerDesignator } from '../../../info/commonTypes';
 import { getIslandColors } from '../../../info/islandColors';
 import { CharacterOperations } from '../../../server/gameObjects/characterOperations';
 import {
+    buildCharacterElementID,
     island1ElementID,
     island3ElementID,
 } from '../../../tutorial/elementIDs';
@@ -19,9 +21,9 @@ import { RisingWaterSpinner } from '../risingWaterSpinner';
 import { Character } from './character';
 import { IslandCapacityChip } from './islandCapacityChip';
 import { IslandNumberChip } from './islandNumberChip';
-import { buildCharacterElementID } from '../buildCharacterElementID';
 
 export interface IslandProps {
+    readonly skipCoordinateUpdates?: boolean;
     readonly width: number;
     readonly island: IslandSerialized;
     readonly highlight: boolean;
@@ -115,16 +117,20 @@ export const Island = (props: IslandProps) => {
             });
     };
 
+    const islandRef = useCoordinatesRef(
+        props.skipCoordinateUpdates
+            ? null
+            : props.island.islandNumber === 1
+              ? island1ElementID
+              : props.island.islandNumber === 3
+                ? island3ElementID
+                : null,
+    );
+
     return (
         <div
             key={props.island.islandNumber}
-            id={
-                props.island.islandNumber === 1
-                    ? island1ElementID
-                    : props.island.islandNumber === 3
-                      ? island3ElementID
-                      : ''
-            }
+            ref={islandRef}
             style={{ height: '100%', width: '100%' }}
             onMouseEnter={() => {
                 props.setIslandHover(true);

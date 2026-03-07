@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { CoordinatesContextProvider } from './contexts/coordinatesContext';
 import { LoggedInUserContextProvider } from './contexts/loggedInUserContext';
 import { DashboardPage } from './pages/dashboard/dashboardPage';
 import { GamePage } from './pages/game/gamePage';
@@ -35,21 +36,26 @@ export const SinkingIslandsApp = () => {
                         </Routes>
                     }
                 >
-                    <Routes>
-                        <Route
-                            element={<DashboardPage />}
-                            path={PageRoutes.DASHBOARD}
-                        />
-                        <Route element={<GamePage />} path={PageRoutes.PLAY} />
-                        <Route
-                            element={<TutorialPage />}
-                            path={PageRoutes.TUTORIAL}
-                        />
-                        <Route
-                            element={<Navigate to={PageRoutes.DASHBOARD} />}
-                            path='/*'
-                        />
-                    </Routes>
+                    <CoordinatesContextProvider>
+                        <Routes>
+                            <Route
+                                element={<DashboardPage />}
+                                path={PageRoutes.DASHBOARD}
+                            />
+                            <Route
+                                element={<GamePage />}
+                                path={PageRoutes.PLAY}
+                            />
+                            <Route
+                                element={<TutorialPage />}
+                                path={PageRoutes.TUTORIAL}
+                            />
+                            <Route
+                                element={<Navigate to={PageRoutes.DASHBOARD} />}
+                                path='/*'
+                            />
+                        </Routes>
+                    </CoordinatesContextProvider>
                 </LogInGuard>
             </LoggedInUserContextProvider>
         </BrowserRouter>

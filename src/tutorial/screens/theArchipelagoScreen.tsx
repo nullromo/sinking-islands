@@ -1,11 +1,14 @@
+import * as React from 'react';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
 import { buildCutout } from '../buildCutout';
 import { boardElementID } from '../elementIDs';
 import { createBasicGame } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
-import { useBoundingBox } from '../useBoundingBox';
 
 const TheArchipelagoScreen = () => {
-    const boardBox = useBoundingBox(boardElementID);
+    const coordinatesContext = React.use(CoordinatesContext);
+    const boardBox = coordinatesContext.getCoordinates(boardElementID);
+
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(boardBox, 20)} />

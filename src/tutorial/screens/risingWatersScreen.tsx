@@ -1,11 +1,13 @@
+import * as React from 'react';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
 import { buildCutout } from '../buildCutout';
 import { island1ElementID } from '../elementIDs';
 import { createBasicGameWithCharacters } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
-import { useBoundingBox } from '../useBoundingBox';
 
 const RisingWatersScreen = () => {
-    const islandBox = useBoundingBox(island1ElementID);
+    const coordinatesContext = React.use(CoordinatesContext);
+    const islandBox = coordinatesContext.getCoordinates(island1ElementID);
 
     return (
         <div style={{ height: '100vh', width: '100vw' }}>

@@ -10,6 +10,7 @@ import { CircularContainer } from '../circularContainer';
 import { CharacterTooltip } from './characterTooltip';
 import { Island } from './island';
 import { IslandTooltip } from './islandTooltip';
+import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -29,9 +30,11 @@ export const Board = (props: BoardProps) => {
     const [hoveredCharacter, setHoveredCharacter] =
         React.useState<CharacterSerialized | null>(null);
 
+    const boardRef = useCoordinatesRef(boardElementID);
+
     return (
         <div
-            id={boardElementID}
+            ref={boardRef}
             style={{
                 alignItems: 'center',
                 display: 'flex',

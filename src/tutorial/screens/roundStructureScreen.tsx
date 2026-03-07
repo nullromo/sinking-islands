@@ -1,11 +1,16 @@
+import * as React from 'react';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
 import { buildCutout } from '../buildCutout';
 import { actionOrderTrackElementID } from '../elementIDs';
 import { createBasicGameWithCharacters } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
-import { useBoundingBox } from '../useBoundingBox';
 
 const RoundStructureScreen = () => {
-    const actionOrderTrackBox = useBoundingBox(actionOrderTrackElementID);
+    const coordinatesContext = React.use(CoordinatesContext);
+    const actionOrderTrackBox = coordinatesContext.getCoordinates(
+        actionOrderTrackElementID,
+    );
+
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay

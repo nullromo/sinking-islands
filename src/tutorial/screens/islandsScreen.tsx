@@ -1,3 +1,5 @@
+import * as React from 'react';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
 import type { IslandSerialized } from '../../info/commonTypes';
 import { IslandType } from '../../info/commonTypes';
 import { getIslandColors } from '../../info/islandColors';
@@ -8,9 +10,9 @@ import { buildCutout } from '../buildCutout';
 import { island3ElementID } from '../elementIDs';
 import { createBasicGame } from '../pageData';
 import { TutorialDimOverlay, TutorialTextBox } from '../styles';
-import { useBoundingBox } from '../useBoundingBox';
 
 const dummyIslandProps: IslandProps = {
+    skipCoordinateUpdates: true,
     highlight: false,
     highlightCharacter: undefined,
     hoverHighlight: false,
@@ -66,7 +68,9 @@ const IslandTypeBox = (props: {
 };
 
 const IslandsScreen = () => {
-    const islandBox = useBoundingBox(island3ElementID);
+    const coordinatesContext = React.use(CoordinatesContext);
+    const islandBox = coordinatesContext.getCoordinates(island3ElementID);
+
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <TutorialDimOverlay clipPath={buildCutout(islandBox, 20)} />

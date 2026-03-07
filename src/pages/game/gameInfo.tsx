@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router';
 import { GameContext } from '../../contexts/gameContext';
+import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
 import { otherPlayerDesignator } from '../../info/commonTypes';
 import { getPlayerColor } from '../../info/playerColors';
 import { PageRoutes } from '../../router/pageRoutes';
@@ -13,9 +14,11 @@ export const GameInfo = () => {
     const you = gameContext.you;
     const opponent = otherPlayerDesignator(gameContext.you);
 
+    const gameInfoRef = useCoordinatesRef(gameInfoElementID);
+
     return (
         <div
-            id={gameInfoElementID}
+            ref={gameInfoRef}
             style={{
                 boxSizing: 'border-box',
                 display: 'flex',
