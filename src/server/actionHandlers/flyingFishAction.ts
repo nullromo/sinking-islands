@@ -8,7 +8,7 @@ import { convertMovementToIslands } from '../../info/convertActionData';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 
-const checkFlyingFishLegal = (
+export const checkFlyingFishLegal = (
     game: GameSerialized,
     playerDesignator: PlayerDesignator,
     convertedMovement: ConvertedMovement,

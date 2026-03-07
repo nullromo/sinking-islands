@@ -36,7 +36,7 @@ export const IslandSelectArrow = (props: {
                 style={{
                     position: 'absolute',
                     textAlign: 'center',
-                    transform: `translate(${boardBox.width / 2 - 50}px, ${boardBox.height / 2 - 67}px)`,
+                    transform: `translate(${boardBox.x + boardBox.width / 2 - 50}px, ${boardBox.y + boardBox.height / 2 - 67}px)`,
                     width: 'fit-content',
                 }}
             >

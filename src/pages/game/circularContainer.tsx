@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { useDynamicSize } from '../../hooks/useDynamicSize';
+import { CoordinatesContext } from '../../contexts/coordinatesContext';
+import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
 import type { IslandSerialized } from '../../info/commonTypes';
+import { boardElementID } from '../../tutorial/elementIDs';
 import './gamePage.css';
 
 type CSSWithVariables = React.CSSProperties & Record<string, number | string>;
@@ -26,12 +28,11 @@ interface CircularContainerProps {
  *   itemWidth     = W
  */
 export const CircularContainer = (props: CircularContainerProps) => {
+    const coordinatesContext = React.use(CoordinatesContext);
+    const boardRef = useCoordinatesRef(boardElementID);
+
     // overall width of the container (diameter of the island circle)
-    const { ref: containerRef, size: outerWidth } = useDynamicSize(
-        (element) => {
-            return element.getBoundingClientRect().width;
-        },
-    );
+    const outerWidth = coordinatesContext.getCoordinates(boardElementID).width;
 
     // After doing all the calculations, there is still just kind of a gap
     // between the islands. This is because the circumscribed buffer zone
@@ -63,7 +64,7 @@ export const CircularContainer = (props: CircularContainerProps) => {
     };
 
     return (
-        <div ref={containerRef} style={containerStyle}>
+        <div ref={boardRef} style={containerStyle}>
             {props.items.map((item, i) => {
                 const rotationAmount = i * angle;
                 const itemContainerStyle: CSSWithVariables = {

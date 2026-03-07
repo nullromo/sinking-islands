@@ -21,12 +21,17 @@ import { MovementArrow } from '../movementArrow';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
 import { checkMovementSetLegal } from '../../../server/actionHandlers/movementAction';
+import { GameState } from '../../../info/gameState';
+import { checkFlyingFishLegal } from '../../../server/actionHandlers/flyingFishAction';
 
 type IndexedMovement = NormalMovement & { playerIndex: number };
 type IndexedMovementSet = IndexedMovement[];
 
 export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
     const gameContext = React.use(GameContext);
+
+    const flyingFish =
+        gameContext.game.gameState === GameState.AWAIT_FLYING_FISH_MOVEMENT;
 
     const [movementSet, setMovementSet] = React.useState<IndexedMovementSet>(
         [],
@@ -47,13 +52,27 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
 
     const movementSetIsLegal = (() => {
         try {
-            checkMovementSetLegal(
-                gameContext.game,
-                gameContext.you,
-                movementSet.map((movement) => {
-                    return convertMovementToIslands(gameContext.game, movement);
-                }),
-            );
+            if (flyingFish) {
+                if (movementSet.length !== 1) {
+                    return false;
+                }
+                checkFlyingFishLegal(
+                    gameContext.game,
+                    gameContext.you,
+                    convertMovementToIslands(gameContext.game, movementSet[0]),
+                );
+            } else {
+                checkMovementSetLegal(
+                    gameContext.game,
+                    gameContext.you,
+                    movementSet.map((movement) => {
+                        return convertMovementToIslands(
+                            gameContext.game,
+                            movement,
+                        );
+                    }),
+                );
+            }
             return true;
         } catch {
             return false;
@@ -65,7 +84,17 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
             boardProps={{
                 highlightCharacter: (islandNumber, character, playerIndex) => {
                     if (activeCharacter === null) {
-                        return character.playerDesignator === gameContext.you;
+                        if (flyingFish) {
+                            return (
+                                character.playerDesignator === gameContext.you
+                            );
+                        }
+                        return (
+                            !GameOperations.islandIsNetted(
+                                gameContext.game,
+                                islandNumber,
+                            ) && character.playerDesignator === gameContext.you
+                        );
                     }
                     return (
                         islandNumber ===
@@ -78,13 +107,23 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                     if (activeCharacter === null) {
                         return false;
                     }
-                    const stepsNeeded = countSpacesBetweenIslands(
-                        gameContext.game.islands,
-                        activeCharacter.fromIsland.islandNumber,
-                        island.islandNumber,
-                    );
+                    if (flyingFish) {
+                        return (
+                            !island.smallCapacity ||
+                            GameOperations.islandHasPilings(
+                                gameContext.game,
+                                island.islandNumber,
+                            ) ||
+                            island.characters.length <= 0
+                        );
+                    }
                     return (
-                        stepsNeeded <= 3 - movementStepsUsed &&
+                        countSpacesBetweenIslands(
+                            gameContext.game.islands,
+                            activeCharacter.fromIsland.islandNumber,
+                            island.islandNumber,
+                        ) <=
+                            3 - movementStepsUsed &&
                         !GameOperations.islandIsFull(gameContext.game, island)
                     );
                 },
@@ -160,9 +199,11 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                         );
                     })}
                 </ul>
-                <div>
-                    {'Movement steps used:'} {movementStepsUsed} {'of 3'}
-                </div>
+                {flyingFish ? null : (
+                    <div>
+                        {'Movement steps used:'} {movementStepsUsed} {'of 3'}
+                    </div>
+                )}
             </div>
             <div
                 style={{
@@ -195,22 +236,32 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                         disabled={!movementSetIsLegal}
                         type='button'
                         onClick={() => {
-                            props.serverCalls
-                                .takeGameAction(gameContext.game.id, {
-                                    action: GameActionType.MOVEMENT_SET,
-                                    data: movementSet.map((movement) => {
-                                        return {
-                                            character: movement.character,
-                                            fromIslandNumber:
-                                                movement.fromIslandNumber,
-                                            toIslandNumber:
-                                                movement.toIslandNumber,
-                                        };
-                                    }),
-                                })
-                                .catch((error: unknown) => {
-                                    props.setResult(false, error);
-                                });
+                            (flyingFish
+                                ? props.serverCalls.takeGameAction(
+                                      gameContext.game.id,
+                                      {
+                                          action: GameActionType.FLYING_FISH_MOVEMENT,
+                                          data: movementSet[0],
+                                      },
+                                  )
+                                : props.serverCalls.takeGameAction(
+                                      gameContext.game.id,
+                                      {
+                                          action: GameActionType.MOVEMENT_SET,
+                                          data: movementSet.map((movement) => {
+                                              return {
+                                                  character: movement.character,
+                                                  fromIslandNumber:
+                                                      movement.fromIslandNumber,
+                                                  toIslandNumber:
+                                                      movement.toIslandNumber,
+                                              };
+                                          }),
+                                      },
+                                  )
+                            ).catch((error: unknown) => {
+                                props.setResult(false, error);
+                            });
                         }}
                     >
                         Submit

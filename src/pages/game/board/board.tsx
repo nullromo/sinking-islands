@@ -34,11 +34,8 @@ export const Board = (props: BoardProps) => {
     const [hoveredCharacter, setHoveredCharacter] =
         React.useState<CharacterSerialized | null>(null);
 
-    const boardRef = useCoordinatesRef(boardElementID);
-
     return (
         <div
-            ref={boardRef}
             style={{
                 alignItems: 'center',
                 display: 'flex',

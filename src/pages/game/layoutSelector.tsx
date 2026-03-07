@@ -5,7 +5,6 @@ import { GameState } from '../../info/gameState';
 import { assertUnreachable } from '../../util/util';
 import { CardPlacementLayout } from './layouts/cardPlacementLayout';
 import { CharacterTargetLayout } from './layouts/characterTargetLayout';
-import { FlyingFishMovementLayout } from './layouts/flyingFishMovementLayout';
 import { FogTargetLayout } from './layouts/fogTargetLayout';
 import { IslandSelectorLayout } from './layouts/islandSelectorLayout';
 import { MovementSetLayout } from './layouts/movementSetLayout';
@@ -31,8 +30,6 @@ export const LayoutSelector = (props: SetResultProps) => {
     switch (gameContext.game.gameState) {
         case GameState.AWAIT_CARD_PLACEMENT:
             return <CardPlacementLayout setResult={props.setResult} />;
-        case GameState.AWAIT_FLYING_FISH_MOVEMENT:
-            return <FlyingFishMovementLayout setResult={props.setResult} />;
         case GameState.AWAIT_FOG_TARGET:
             return <FogTargetLayout setResult={props.setResult} />;
         case GameState.AWAIT_HARPOON_TARGET:
@@ -44,6 +41,7 @@ export const LayoutSelector = (props: SetResultProps) => {
         case GameState.AWAIT_TIDAL_WAVE_TARGET:
         case GameState.AWAIT_VOLCANIC_ERUPTION_TARGET:
             return <IslandSelectorLayout setResult={props.setResult} />;
+        case GameState.AWAIT_FLYING_FISH_MOVEMENT:
         case GameState.AWAIT_MOVEMENT_SET:
             return <MovementSetLayout setResult={props.setResult} />;
         default:
