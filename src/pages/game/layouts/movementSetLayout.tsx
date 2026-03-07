@@ -1,91 +1,36 @@
 import * as React from 'react';
-import { createPortal } from 'react-dom';
 import { withServerCalls } from '../../../communication/withServerCalls';
-import { CoordinatesContext } from '../../../contexts/coordinatesContext';
 import { GameContext } from '../../../contexts/gameContext';
-import { MousePositionContext } from '../../../contexts/mousePositionContext';
 import type {
     CharacterSerialized,
     IslandSerialized,
-    MovementSet,
+    NormalMovement,
 } from '../../../info/commonTypes';
-import { computeMovementSteps } from '../../../info/computeMovementSteps';
+import {
+    computeMovementSteps,
+    countSpacesBetweenIslands,
+} from '../../../info/computeMovementSteps';
 import { convertMovementToIslands } from '../../../info/convertActionData';
 import { GameActionType } from '../../../info/gameActionTypes';
+import { GameOperations } from '../../../server/gameObjects/gameOperations';
 import {
-    boardElementID,
     buildCharacterElementID,
     buildIslandElementID,
 } from '../../../tutorial/elementIDs';
+import { MovementArrow } from '../movementArrow';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
+import { checkMovementSetLegal } from '../../../server/actionHandlers/movementAction';
 
-const Arrow = (props: {
-    characterElementID: string;
-    islandElementID: string | null;
-}) => {
-    const coordinatesContext = React.use(CoordinatesContext);
-    const { mousePosition } = React.use(MousePositionContext);
-
-    const characterBox = coordinatesContext.getCoordinates(
-        props.characterElementID,
-    );
-    const boardBox = coordinatesContext.getCoordinates(boardElementID);
-    const islandBox =
-        props.islandElementID === null
-            ? null
-            : coordinatesContext.getCoordinates(props.islandElementID);
-
-    return createPortal(
-        <div
-            style={{
-                left: 0,
-                pointerEvents: 'none',
-                position: 'fixed',
-                top: 0,
-                zIndex: 1000,
-            }}
-        >
-            <svg style={{ height: '100vw', width: '100vw' }}>
-                <defs>
-                    <marker
-                        id='head'
-                        markerHeight='10'
-                        markerWidth='5'
-                        orient='auto'
-                        refX='4'
-                        refY='5'
-                    >
-                        <path
-                            d='M 1 1 L 5 5 L 1 9 L 0 8 L 3 5 L 0 2 Z'
-                            fill='magenta'
-                        />
-                    </marker>
-                </defs>
-                <path
-                    d={`M ${characterBox.x + characterBox.width / 2} ${characterBox.y + characterBox.height / 2} S ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} ${islandBox ? islandBox.x + islandBox.width / 2 : mousePosition.x} ${islandBox ? islandBox.y + islandBox.height / 2 : mousePosition.y}`}
-                    markerEnd='url(#head)'
-                    style={{ fill: 'none', stroke: 'magenta', strokeWidth: 3 }}
-                />
-            </svg>
-            <svg>
-                <path
-                    d='M 0 0 80 100 120'
-                    fill='none'
-                    id='arrow-line'
-                    stroke='black'
-                    strokeWidth='4'
-                />
-            </svg>
-        </div>,
-        document.body,
-    );
-};
+type IndexedMovement = NormalMovement & { playerIndex: number };
+type IndexedMovementSet = IndexedMovement[];
 
 export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
     const gameContext = React.use(GameContext);
 
-    const [movementSet, setMovementSet] = React.useState<MovementSet>([]);
+    const [movementSet, setMovementSet] = React.useState<IndexedMovementSet>(
+        [],
+    );
 
     const [activeCharacter, setActiveCharacter] = React.useState<{
         character: CharacterSerialized;
@@ -93,9 +38,56 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
         playerIndex: number;
     } | null>(null);
 
+    const movementStepsUsed = computeMovementSteps(
+        gameContext.game.islands,
+        movementSet.map((movement) => {
+            return convertMovementToIslands(gameContext.game, movement);
+        }),
+    );
+
+    const movementSetLegal = (() => {
+        try {
+            checkMovementSetLegal(
+                gameContext.game,
+                gameContext.you,
+                movementSet.map((movement) => {
+                    return convertMovementToIslands(gameContext.game, movement);
+                }),
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    })();
+
     return (
         <GamePageLayout
             boardProps={{
+                highlightCharacter: (islandNumber, character, playerIndex) => {
+                    if (activeCharacter === null) {
+                        return character.playerDesignator === gameContext.you;
+                    }
+                    return (
+                        islandNumber ===
+                            activeCharacter.fromIsland.islandNumber &&
+                        character.playerDesignator === gameContext.you &&
+                        playerIndex === activeCharacter.playerIndex
+                    );
+                },
+                highlightIsland: (island) => {
+                    if (activeCharacter === null) {
+                        return false;
+                    }
+                    const stepsNeeded = countSpacesBetweenIslands(
+                        gameContext.game.islands,
+                        activeCharacter.fromIsland.islandNumber,
+                        island.islandNumber,
+                    );
+                    return (
+                        stepsNeeded <= 3 - movementStepsUsed &&
+                        !GameOperations.islandIsFull(gameContext.game, island)
+                    );
+                },
                 onCharacterClicked: (island, character, playerIndex) => {
                     if (character.playerDesignator !== gameContext.you) {
                         return;
@@ -106,16 +98,34 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                         fromIsland: island,
                         playerIndex,
                     });
+                    setMovementSet((previous) => {
+                        return previous.filter((movement) => {
+                            return (
+                                movement.fromIslandNumber !==
+                                    island.islandNumber ||
+                                movement.playerIndex !== playerIndex
+                            );
+                        });
+                    });
                 },
                 onIslandClicked: (island) => {
                     if (activeCharacter !== null) {
                         setMovementSet((previous) => {
                             return [
-                                ...previous,
+                                ...previous.filter((movement) => {
+                                    return (
+                                        movement.fromIslandNumber !==
+                                            activeCharacter.fromIsland
+                                                .islandNumber ||
+                                        movement.playerIndex !==
+                                            activeCharacter.playerIndex
+                                    );
+                                }),
                                 {
                                     character: activeCharacter.character,
                                     fromIslandNumber:
                                         activeCharacter.fromIsland.islandNumber,
+                                    playerIndex: activeCharacter.playerIndex,
                                     toIslandNumber: island.islandNumber,
                                 },
                             ];
@@ -130,14 +140,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                 move that character. Click Submit when finished, or click Reset
                 to start over.
             </div>
-            {'Movement steps used:'}{' '}
-            {computeMovementSteps(
-                gameContext.game.islands,
-                movementSet.map((movement) => {
-                    return convertMovementToIslands(gameContext.game, movement);
-                }),
-            )}{' '}
-            {'of 3'}
+            {'Movement steps used:'} {movementStepsUsed} {'of 3'}
             {movementSet.map((movement, index) => {
                 return (
                     <React.Fragment key={index}>
@@ -161,6 +164,7 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                 <button
                     type='button'
                     onClick={() => {
+                        setActiveCharacter(null);
                         setMovementSet([]);
                     }}
                 >
@@ -172,7 +176,14 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                         props.serverCalls
                             .takeGameAction(gameContext.game.id, {
                                 action: GameActionType.MOVEMENT_SET,
-                                data: movementSet,
+                                data: movementSet.map((movement) => {
+                                    return {
+                                        character: movement.character,
+                                        fromIslandNumber:
+                                            movement.fromIslandNumber,
+                                        toIslandNumber: movement.toIslandNumber,
+                                    };
+                                }),
                             })
                             .catch((error: unknown) => {
                                 props.setResult(false, error);
@@ -183,24 +194,26 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                 </button>
             </div>
             {activeCharacter === null ? null : (
-                <Arrow
+                <MovementArrow
                     characterElementID={buildCharacterElementID(
                         activeCharacter.fromIsland.islandNumber,
                         activeCharacter.character.playerDesignator,
                         activeCharacter.playerIndex,
                     )}
+                    color='magenta'
                     islandElementID={null}
                 />
             )}
             {movementSet.map((movement, index) => {
                 return (
-                    <Arrow
+                    <MovementArrow
                         key={index}
                         characterElementID={buildCharacterElementID(
                             movement.fromIslandNumber,
                             movement.character.playerDesignator,
-                            0,
+                            movement.playerIndex,
                         )}
+                        color={movementSetLegal ? 'limegreen' : 'orange'}
                         islandElementID={buildIslandElementID(
                             movement.toIslandNumber,
                         )}

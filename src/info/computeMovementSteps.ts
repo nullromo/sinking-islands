@@ -5,7 +5,7 @@ import type { ConvertedMovementSet } from './convertActionData';
  * Returns the number of movement points that it takes to get from one
  * island to another.
  */
-const countSpacesBetweenIslands = (
+export const countSpacesBetweenIslands = (
     islands: IslandSerialized[],
     fromIslandNumber: number,
     toIslandNumber: number,

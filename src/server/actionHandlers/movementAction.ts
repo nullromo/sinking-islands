@@ -10,7 +10,7 @@ import { CharacterOperations } from '../gameObjects/characterOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 
-const checkMovementSetLegal = (
+export const checkMovementSetLegal = (
     game: GameSerialized,
     playerDesignator: PlayerDesignator,
     convertedMovementSet: ConvertedMovementSet,

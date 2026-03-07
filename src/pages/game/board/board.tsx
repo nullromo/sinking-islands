@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { GameContext } from '../../../contexts/gameContext';
+import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 import type {
     CharacterSerialized,
     IslandSerialized,
-    TargetCharacter,
 } from '../../../info/commonTypes';
 import { boardElementID } from '../../../tutorial/elementIDs';
 import { CircularContainer } from '../circularContainer';
 import { CharacterTooltip } from './characterTooltip';
 import { Island } from './island';
 import { IslandTooltip } from './islandTooltip';
-import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 
 interface BoardProps {
     readonly onCharacterClicked?: (
@@ -19,8 +18,12 @@ interface BoardProps {
         playerIndex: number,
     ) => void;
     readonly onIslandClicked?: (island: IslandSerialized) => void;
-    readonly highlightCharacter?: TargetCharacter;
-    readonly highlightIslandNumber?: number;
+    readonly highlightCharacter?: (
+        islandNumber: number,
+        character: CharacterSerialized,
+        playerIndex: number,
+    ) => boolean;
+    readonly highlightIsland?: (island: IslandSerialized) => boolean;
 }
 
 export const Board = (props: BoardProps) => {
@@ -53,8 +56,9 @@ export const Board = (props: BoardProps) => {
                         <Island
                             key={island.islandNumber}
                             highlight={
-                                props.highlightIslandNumber ===
-                                island.islandNumber
+                                props.highlightIsland
+                                    ? props.highlightIsland(island)
+                                    : false
                             }
                             highlightCharacter={props.highlightCharacter}
                             hoverHighlight={

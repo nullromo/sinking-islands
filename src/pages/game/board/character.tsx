@@ -4,7 +4,7 @@ import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 import { getCharacterImage } from '../../../images/characterImages';
 import type { CharacterSerialized } from '../../../info/commonTypes';
 import { getPlayerColor } from '../../../info/playerColors';
-import { hoverHighlightStyle } from '../hoverHighlightStyle';
+import { highlightStyle, hoverHighlightStyle } from '../hoverHighlightStyle';
 
 export interface CharacterProps {
     readonly width: number;
@@ -36,7 +36,9 @@ export const Character = (props: CharacterProps) => {
                 borderRadius: '50%',
                 boxShadow: props.hoverHighlight
                     ? hoverHighlightStyle
-                    : `${props.width * 0.04}px ${props.width * 0.04}px black`,
+                    : props.highlight
+                      ? highlightStyle
+                      : `${props.width * 0.04}px ${props.width * 0.04}px black`,
                 display: 'flex',
                 flexDirection: 'column',
                 height: props.width,

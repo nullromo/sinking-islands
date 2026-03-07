@@ -5,7 +5,6 @@ import { getIslandImage } from '../../../images/islandImages';
 import type {
     CharacterSerialized,
     IslandSerialized,
-    TargetCharacter,
 } from '../../../info/commonTypes';
 import { PlayerDesignator } from '../../../info/commonTypes';
 import { getIslandColors } from '../../../info/islandColors';
@@ -14,7 +13,7 @@ import {
     buildCharacterElementID,
     buildIslandElementID,
 } from '../../../tutorial/elementIDs';
-import { hoverHighlightStyle } from '../hoverHighlightStyle';
+import { highlightStyle, hoverHighlightStyle } from '../hoverHighlightStyle';
 import { NetOverlay } from '../netOverlay';
 import { RisingWaterSpinner } from '../risingWaterSpinner';
 import { Character } from './character';
@@ -26,7 +25,13 @@ export interface IslandProps {
     readonly width: number;
     readonly island: IslandSerialized;
     readonly highlight: boolean;
-    readonly highlightCharacter: TargetCharacter | undefined;
+    readonly highlightCharacter:
+        | ((
+              islandNumber: number,
+              character: CharacterSerialized,
+              playerIndex: number,
+          ) => boolean)
+        | undefined;
     readonly onClick: (() => void) | undefined;
     readonly onCharacterClicked:
         | ((character: CharacterSerialized, playerIndex: number) => void)
@@ -43,19 +48,6 @@ export const Island = (props: IslandProps) => {
     const gameContext = React.use(GameContext);
 
     const colors = getIslandColors(props.island);
-
-    const highlightCharacterIndex = props.island.characters.findIndex(
-        (character) => {
-            return (
-                props.island.islandNumber ===
-                    props.highlightCharacter?.islandNumber &&
-                CharacterOperations.equals(
-                    character,
-                    props.highlightCharacter.character,
-                )
-            );
-        },
-    );
 
     const characterRowStyle: React.CSSProperties = {
         alignContent: 'flex-start',
@@ -90,7 +82,15 @@ export const Island = (props: IslandProps) => {
                     <Character
                         key={index}
                         character={character}
-                        highlight={index === highlightCharacterIndex}
+                        highlight={
+                            props.highlightCharacter
+                                ? props.highlightCharacter(
+                                      props.island.islandNumber,
+                                      character,
+                                      index,
+                                  )
+                                : false
+                        }
                         hoverHighlight={hoverHighlight}
                         id={id}
                         setCharacterHover={(hover) => {
@@ -148,7 +148,9 @@ export const Island = (props: IslandProps) => {
                     boxShadow:
                         props.hoverHighlight && !props.hoveredCharacter
                             ? hoverHighlightStyle
-                            : '',
+                            : props.highlight
+                              ? highlightStyle
+                              : '',
                     cursor: props.onClick ? 'pointer' : '',
                     display: 'flex',
                     fontSize: '18px',
