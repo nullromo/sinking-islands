@@ -41,3 +41,40 @@ export const Tooltip = (props: TooltipProps) => {
         </div>
     );
 };
+
+interface TooltipDivProps extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+> {
+    readonly tooltipChild: React.JSX.Element;
+    readonly tooltipStyle?: React.CSSProperties;
+}
+
+export const TooltipDiv = (props: TooltipDivProps) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    const {
+        tooltipChild: tooltipChildren,
+        tooltipStyle,
+        children,
+        ...rest
+    } = props;
+
+    const [hover, setHover] = React.useState(false);
+
+    return (
+        <div
+            {...rest}
+            onMouseEnter={() => {
+                setHover(true);
+            }}
+            onMouseLeave={() => {
+                setHover(false);
+            }}
+        >
+            {children}
+            <Tooltip hover={hover} style={tooltipStyle}>
+                {tooltipChildren}
+            </Tooltip>
+        </div>
+    );
+};

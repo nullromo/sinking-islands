@@ -89,18 +89,8 @@ export const GameInfo = () => {
                                             .length
                                     }
                                 />
-                                <HandIcon
-                                    label={
-                                        gameContext.game.players[you].hand
-                                            .length
-                                    }
-                                />
-                                <DiscardPileIcon
-                                    label={
-                                        gameContext.game.players[you]
-                                            .discardPile.length
-                                    }
-                                />
+                                <HandIcon playerDesignator={you} />
+                                <DiscardPileIcon playerDesignator={you} />
                                 <SetAsideCardsIcon
                                     label={
                                         gameContext.game.players[you]
@@ -114,25 +104,15 @@ export const GameInfo = () => {
                             <div style={{ columnGap: '10px', display: 'flex' }}>
                                 <DeckIcon
                                     label={
-                                        gameContext.game.players[you].deck
+                                        gameContext.game.players[opponent].deck
                                             .length
                                     }
                                 />
-                                <HandIcon
-                                    label={
-                                        gameContext.game.players[you].hand
-                                            .length
-                                    }
-                                />
-                                <DiscardPileIcon
-                                    label={
-                                        gameContext.game.players[you]
-                                            .discardPile.length
-                                    }
-                                />
+                                <HandIcon playerDesignator={opponent} />
+                                <DiscardPileIcon playerDesignator={opponent} />
                                 <SetAsideCardsIcon
                                     label={
-                                        gameContext.game.players[you]
+                                        gameContext.game.players[opponent]
                                             .setAsideCards.length
                                     }
                                 />

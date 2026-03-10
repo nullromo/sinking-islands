@@ -1,6 +1,13 @@
 export const DeckIcon = (props: { readonly label: number }) => {
     return (
-        <div style={{ position: 'relative', width: '50px' }}>
+        <div
+            style={{
+                cursor: 'help',
+                position: 'relative',
+                userSelect: 'none',
+                width: '50px',
+            }}
+        >
             <span
                 style={{
                     color: 'red',
