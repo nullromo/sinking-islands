@@ -2,7 +2,6 @@
 
 ## Main stuff
 
-1. Character selection more clear
 1. Clean up top-right corner visual stuff. Icons for card piles. Ability to see
    the cards in the piles as a pop-up with OnScreenCard items and hoverable.
 1. Ability to read rules manual any time as a pop-up.

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { CoordinatesContext } from '../../contexts/coordinatesContext';
-import { MousePositionContext } from '../../contexts/mousePositionContext';
-import { boardElementID } from '../../tutorial/elementIDs';
+import { CoordinatesContext } from '../../../contexts/coordinatesContext';
+import { MousePositionContext } from '../../../contexts/mousePositionContext';
+import { boardElementID } from '../../../tutorial/elementIDs';
 
 export const MovementArrow = (props: {
     readonly characterElementID: string;

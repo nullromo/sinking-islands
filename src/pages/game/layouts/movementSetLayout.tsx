@@ -12,17 +12,17 @@ import {
 } from '../../../info/computeMovementSteps';
 import { convertMovementToIslands } from '../../../info/convertActionData';
 import { GameActionType } from '../../../info/gameActionTypes';
+import { GameState } from '../../../info/gameState';
+import { checkFlyingFishLegal } from '../../../server/actionHandlers/flyingFishAction';
+import { checkMovementSetLegal } from '../../../server/actionHandlers/movementAction';
 import { GameOperations } from '../../../server/gameObjects/gameOperations';
 import {
     buildCharacterElementID,
     buildIslandElementID,
 } from '../../../tutorial/elementIDs';
-import { MovementArrow } from '../movementArrow';
+import { MovementArrow } from '../arrows/movementArrow';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
-import { checkMovementSetLegal } from '../../../server/actionHandlers/movementAction';
-import { GameState } from '../../../info/gameState';
-import { checkFlyingFishLegal } from '../../../server/actionHandlers/flyingFishAction';
 
 type IndexedMovement = NormalMovement & { playerIndex: number };
 type IndexedMovementSet = IndexedMovement[];

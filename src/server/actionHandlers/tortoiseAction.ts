@@ -10,7 +10,7 @@ import { CharacterOperations } from '../gameObjects/characterOperations';
 import { GameOperations } from '../gameObjects/gameOperations';
 import { IslandOperations } from '../gameObjects/islandOperations';
 
-const checkTortoiseTargetLegal = (
+export const checkTortoiseTargetLegal = (
     playerDesignator: PlayerDesignator,
     convertedTarget: {
         targetIsland: IslandSerialized;

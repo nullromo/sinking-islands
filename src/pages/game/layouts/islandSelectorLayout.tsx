@@ -14,7 +14,7 @@ import { checkTidalSurgeTargetLegal } from '../../../server/actionHandlers/tidal
 import { checkTidalWaveTargetLegal } from '../../../server/actionHandlers/tidalWaveAction';
 import { checkVolcanicEruptionTargetLegal } from '../../../server/actionHandlers/volcanicEruptionAction';
 import { buildIslandElementID } from '../../../tutorial/elementIDs';
-import { IslandSelectArrow } from '../islandSelectArrow';
+import { SelectionArrow } from '../arrows/selectionArrow';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
 
@@ -163,7 +163,7 @@ export const IslandSelectorLayout = withServerCalls((props: LayoutProps) => {
                     Submit
                 </button>
             </div>
-            <IslandSelectArrow
+            <SelectionArrow
                 cardType={cardType}
                 color={
                     islandChoice === null
@@ -172,7 +172,7 @@ export const IslandSelectorLayout = withServerCalls((props: LayoutProps) => {
                           ? 'limegreen'
                           : 'orange'
                 }
-                islandElementID={
+                targetElementID={
                     islandChoice === null
                         ? null
                         : buildIslandElementID(islandChoice)

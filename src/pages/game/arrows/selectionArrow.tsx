@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { CoordinatesContext } from '../../contexts/coordinatesContext';
-import { GameContext } from '../../contexts/gameContext';
-import { MousePositionContext } from '../../contexts/mousePositionContext';
-import type { CardType } from '../../info/commonTypes';
-import { boardElementID } from '../../tutorial/elementIDs';
-import { OnScreenCard } from './onScreenCard';
+import { CoordinatesContext } from '../../../contexts/coordinatesContext';
+import { GameContext } from '../../../contexts/gameContext';
+import { MousePositionContext } from '../../../contexts/mousePositionContext';
+import type { CardType } from '../../../info/commonTypes';
+import { boardElementID } from '../../../tutorial/elementIDs';
+import { OnScreenCard } from '../onScreenCard';
 
-export const IslandSelectArrow = (props: {
-    readonly islandElementID: string | null;
+export const SelectionArrow = (props: {
+    readonly targetElementID: string | null;
     readonly color: string;
     readonly cardType: CardType;
 }) => {
@@ -17,10 +17,10 @@ export const IslandSelectArrow = (props: {
     const { mousePosition } = React.use(MousePositionContext);
 
     const boardBox = coordinatesContext.getCoordinates(boardElementID);
-    const islandBox =
-        props.islandElementID === null
+    const targetBox =
+        props.targetElementID === null
             ? null
-            : coordinatesContext.getCoordinates(props.islandElementID);
+            : coordinatesContext.getCoordinates(props.targetElementID);
 
     return createPortal(
         <div
@@ -66,7 +66,7 @@ export const IslandSelectArrow = (props: {
                     </marker>
                 </defs>
                 <path
-                    d={`M ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} L ${islandBox ? islandBox.x + islandBox.width / 2 : mousePosition.x} ${islandBox ? islandBox.y + islandBox.height / 2 : mousePosition.y}`}
+                    d={`M ${boardBox.x + boardBox.width / 2} ${boardBox.y + boardBox.height / 2} L ${targetBox ? targetBox.x + targetBox.width / 2 : mousePosition.x} ${targetBox ? targetBox.y + targetBox.height / 2 : mousePosition.y}`}
                     markerEnd='url(#head)'
                     style={{
                         fill: 'none',
