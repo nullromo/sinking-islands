@@ -7,6 +7,7 @@ import { getPlayerColor } from '../../info/playerColors';
 import { PageRoutes } from '../../router/pageRoutes';
 import { gameInfoElementID } from '../../tutorial/elementIDs';
 import { CardPileWindow } from './discardPileWindow';
+import { DeckIcon } from './gameInfoIcons/deckIcon';
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -78,6 +79,37 @@ export const GameInfo = () => {
                 <tbody>
                     <tr>
                         <td>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-evenly',
+                                }}
+                            >
+                                <DeckIcon
+                                    label={
+                                        gameContext.game.players[you].deck
+                                            .length
+                                    }
+                                />
+                                <DeckIcon
+                                    label={
+                                        gameContext.game.players[you].hand
+                                            .length
+                                    }
+                                />
+                                <DeckIcon
+                                    label={
+                                        gameContext.game.players[you]
+                                            .discardPile.length
+                                    }
+                                />
+                                <DeckIcon
+                                    label={
+                                        gameContext.game.players[you]
+                                            .setAsideCards.length
+                                    }
+                                />
+                            </div>
                             <div>{`Cards in deck: ${gameContext.game.players[you].deck.length}`}</div>
                         </td>
                         <td>
