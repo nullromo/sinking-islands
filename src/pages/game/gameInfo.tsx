@@ -8,6 +8,9 @@ import { PageRoutes } from '../../router/pageRoutes';
 import { gameInfoElementID } from '../../tutorial/elementIDs';
 import { CardPileWindow } from './discardPileWindow';
 import { DeckIcon } from './gameInfoIcons/deckIcon';
+import { HandIcon } from './gameInfoIcons/handIcon';
+import { SetAsideCardsIcon } from './gameInfoIcons/setAsideCardsIcon';
+import { DiscardPileIcon } from './gameInfoIcons/discardPileIcon';
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -79,31 +82,26 @@ export const GameInfo = () => {
                 <tbody>
                     <tr>
                         <td>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-evenly',
-                                }}
-                            >
+                            <div style={{ columnGap: '10px', display: 'flex' }}>
                                 <DeckIcon
                                     label={
                                         gameContext.game.players[you].deck
                                             .length
                                     }
                                 />
-                                <DeckIcon
+                                <HandIcon
                                     label={
                                         gameContext.game.players[you].hand
                                             .length
                                     }
                                 />
-                                <DeckIcon
+                                <DiscardPileIcon
                                     label={
                                         gameContext.game.players[you]
                                             .discardPile.length
                                     }
                                 />
-                                <DeckIcon
+                                <SetAsideCardsIcon
                                     label={
                                         gameContext.game.players[you]
                                             .setAsideCards.length
@@ -113,6 +111,32 @@ export const GameInfo = () => {
                             <div>{`Cards in deck: ${gameContext.game.players[you].deck.length}`}</div>
                         </td>
                         <td>
+                            <div style={{ columnGap: '10px', display: 'flex' }}>
+                                <DeckIcon
+                                    label={
+                                        gameContext.game.players[you].deck
+                                            .length
+                                    }
+                                />
+                                <HandIcon
+                                    label={
+                                        gameContext.game.players[you].hand
+                                            .length
+                                    }
+                                />
+                                <DiscardPileIcon
+                                    label={
+                                        gameContext.game.players[you]
+                                            .discardPile.length
+                                    }
+                                />
+                                <SetAsideCardsIcon
+                                    label={
+                                        gameContext.game.players[you]
+                                            .setAsideCards.length
+                                    }
+                                />
+                            </div>
                             <div>{`Cards in deck: ${gameContext.game.players[opponent].deck.length}`}</div>
                         </td>
                     </tr>
