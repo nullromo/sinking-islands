@@ -2,15 +2,28 @@ import * as React from 'react';
 import { Link } from 'react-router';
 import { GameContext } from '../../contexts/gameContext';
 import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
+import type { PlayerDesignator } from '../../info/commonTypes';
 import { otherPlayerDesignator } from '../../info/commonTypes';
 import { getPlayerColor } from '../../info/playerColors';
 import { PageRoutes } from '../../router/pageRoutes';
 import { gameInfoElementID } from '../../tutorial/elementIDs';
-import { CardPileWindow } from './discardPileWindow';
 import { DeckIcon } from './gameInfoIcons/deckIcon';
+import { DiscardPileIcon } from './gameInfoIcons/discardPileIcon';
 import { HandIcon } from './gameInfoIcons/handIcon';
 import { SetAsideCardsIcon } from './gameInfoIcons/setAsideCardsIcon';
-import { DiscardPileIcon } from './gameInfoIcons/discardPileIcon';
+
+const PlayerDetails = (props: {
+    readonly playerDesignator: PlayerDesignator;
+}) => {
+    return (
+        <div style={{ columnGap: '10px', display: 'flex', paddingTop: '6px' }}>
+            <DeckIcon playerDesignator={props.playerDesignator} />
+            <HandIcon playerDesignator={props.playerDesignator} />
+            <DiscardPileIcon playerDesignator={props.playerDesignator} />
+            <SetAsideCardsIcon playerDesignator={props.playerDesignator} />
+        </div>
+    );
+};
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
@@ -82,72 +95,10 @@ export const GameInfo = () => {
                 <tbody>
                     <tr>
                         <td>
-                            <div style={{ columnGap: '10px', display: 'flex' }}>
-                                <DeckIcon playerDesignator={you} />
-                                <HandIcon playerDesignator={you} />
-                                <DiscardPileIcon playerDesignator={you} />
-                                <SetAsideCardsIcon playerDesignator={you} />
-                            </div>
-                            <div>{`Cards in deck: ${gameContext.game.players[you].deck.length}`}</div>
+                            <PlayerDetails playerDesignator={you} />
                         </td>
                         <td>
-                            <div style={{ columnGap: '10px', display: 'flex' }}>
-                                <DeckIcon playerDesignator={opponent} />
-                                <HandIcon playerDesignator={opponent} />
-                                <DiscardPileIcon playerDesignator={opponent} />
-                                <SetAsideCardsIcon
-                                    playerDesignator={opponent}
-                                />
-                            </div>
-                            <div>{`Cards in deck: ${gameContext.game.players[opponent].deck.length}`}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div>{`Cards in hand: ${gameContext.game.players[you].hand.length}`}</div>
-                        </td>
-                        <td>
-                            <div>{`Cards in hand: ${gameContext.game.players[opponent].hand.length}`}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div>
-                                <CardPileWindow
-                                    cardPile='discardPile'
-                                    gameState={gameContext.game}
-                                    opponent={false}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <CardPileWindow
-                                    cardPile='discardPile'
-                                    gameState={gameContext.game}
-                                    opponent={true}
-                                />
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div>
-                                <CardPileWindow
-                                    cardPile='setAsideCards'
-                                    gameState={gameContext.game}
-                                    opponent={false}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <CardPileWindow
-                                    cardPile='setAsideCards'
-                                    gameState={gameContext.game}
-                                    opponent={true}
-                                />
-                            </div>
+                            <PlayerDetails playerDesignator={opponent} />
                         </td>
                     </tr>
                 </tbody>
