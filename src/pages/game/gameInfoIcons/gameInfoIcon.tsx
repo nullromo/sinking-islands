@@ -6,7 +6,9 @@ import { TooltipDiv } from '../tooltip';
 
 export const GameInfoIcon = (props: {
     readonly playerDesignator: PlayerDesignator;
-    readonly tooltipChild: React.JSX.Element;
+    readonly clickable: boolean;
+    readonly tooltipTitle: string;
+    readonly tooltipBody: React.JSX.Element;
     readonly iconLabel: number | string;
     readonly viewBox: string;
     readonly shape: Array<{ points: string; transform?: string }>;
@@ -22,7 +24,24 @@ export const GameInfoIcon = (props: {
                 userSelect: 'none',
                 width: '50px',
             }}
-            tooltipChild={props.tooltipChild}
+            tooltipChild={
+                <>
+                    <div
+                        style={{
+                            borderBottom: '2px solid',
+                            textAlign: 'center',
+                        }}
+                    >
+                        {props.tooltipTitle}
+                        {props.clickable ? (
+                            <>
+                                <br /> <em>Click to view</em>
+                            </>
+                        ) : null}{' '}
+                    </div>
+                    {props.tooltipBody}
+                </>
+            }
             tooltipStyle={{
                 background: getPlayerColor(
                     props.playerDesignator,

@@ -8,10 +8,11 @@ export const HandIcon = (props: {
 }) => {
     const gameContext = React.use(GameContext);
 
-    const cards = gameContext.game.players[props.playerDesignator].discardPile;
+    const cards = gameContext.game.players[props.playerDesignator].hand;
 
     return (
         <GameInfoIcon
+            clickable={false}
             iconLabel={cards.length}
             labelPosition={{ left: 1, top: 11 }}
             playerDesignator={props.playerDesignator}
@@ -29,21 +30,12 @@ export const HandIcon = (props: {
                     transform: 'translate(3)',
                 },
             ]}
-            tooltipChild={
-                <>
-                    <div
-                        style={{
-                            borderBottom: '2px solid',
-                            textAlign: 'center',
-                        }}
-                    >
-                        Hand
-                    </div>
-                    <div
-                        style={{ padding: '10px', textAlign: 'center' }}
-                    >{`${cards.length} cards`}</div>
-                </>
+            tooltipBody={
+                <div
+                    style={{ padding: '10px', textAlign: 'center' }}
+                >{`${cards.length} cards`}</div>
             }
+            tooltipTitle='Hand'
             viewBox='1 0 19 20'
         />
     );

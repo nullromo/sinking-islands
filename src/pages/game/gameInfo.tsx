@@ -83,38 +83,20 @@ export const GameInfo = () => {
                     <tr>
                         <td>
                             <div style={{ columnGap: '10px', display: 'flex' }}>
-                                <DeckIcon
-                                    label={
-                                        gameContext.game.players[you].deck
-                                            .length
-                                    }
-                                />
+                                <DeckIcon playerDesignator={you} />
                                 <HandIcon playerDesignator={you} />
                                 <DiscardPileIcon playerDesignator={you} />
-                                <SetAsideCardsIcon
-                                    label={
-                                        gameContext.game.players[you]
-                                            .setAsideCards.length
-                                    }
-                                />
+                                <SetAsideCardsIcon playerDesignator={you} />
                             </div>
                             <div>{`Cards in deck: ${gameContext.game.players[you].deck.length}`}</div>
                         </td>
                         <td>
                             <div style={{ columnGap: '10px', display: 'flex' }}>
-                                <DeckIcon
-                                    label={
-                                        gameContext.game.players[opponent].deck
-                                            .length
-                                    }
-                                />
+                                <DeckIcon playerDesignator={opponent} />
                                 <HandIcon playerDesignator={opponent} />
                                 <DiscardPileIcon playerDesignator={opponent} />
                                 <SetAsideCardsIcon
-                                    label={
-                                        gameContext.game.players[opponent]
-                                            .setAsideCards.length
-                                    }
+                                    playerDesignator={opponent}
                                 />
                             </div>
                             <div>{`Cards in deck: ${gameContext.game.players[opponent].deck.length}`}</div>
