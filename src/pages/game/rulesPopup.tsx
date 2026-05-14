@@ -103,7 +103,90 @@ export const RulesPopup = (props: PopupProps) => {
                 <h3>
                     <b>Card Notes and Clarifications</b>
                 </h3>
-                <p>a</p>
+                <p>
+                    The card tooltips explain the cards, but the information
+                    below answers some frequently asked questions.
+                </p>
+                <ul>
+                    <li>
+                        <b>Movement</b>: At least one character must move at
+                        least one space. Characters may sail past islands that
+                        they would not be able to stop on due to capacity
+                        restrictions. Moving a tortoise returns the character to
+                        human form and returns the set aside Tortoise card to
+                        your discard pile. You cannot move onto a netted island.
+                    </li>
+                    <li>
+                        <b>Flying Fish</b>: This card ignores nets, allowing a
+                        character to enter or leave a netted island.
+                    </li>
+                    <li>
+                        <b>Net</b>: The net is only removed and the card
+                        returned to its {"owner's"} discard pile when the netted
+                        island sinks. Characters fleeing from lava flows cannot
+                        escape a netted island, nor can they flee to it. The
+                        only escape from a netted island is death or Flying
+                        Fish.
+                    </li>
+                    <li>
+                        <b>Pilings</b>: The Pilings card returns to its{' '}
+                        {"owner's"} discard pile when the target island sinks.
+                    </li>
+                    <li>
+                        <b>Tortoise</b>: The tortoise cannot be targeted by
+                        harpoons. Crab effects still work normally. The tortoise
+                        ceases to be a tortoise when it moves for any reason
+                        (Movement, Flying Fish, or lava flow). The Tortoise card
+                        is returned to its {"owner's"} discard pile when the
+                        tortoise moves or dies.
+                    </li>
+                    <li>
+                        <b>Crab</b>: Only your characters turn into crabs. You
+                        cannot lose your own characters to an ill-timed Crab
+                        play.
+                    </li>
+                    <li>
+                        <b>Weakness</b>: Characters that already died this round
+                        due to a Crab card remain dead.
+                    </li>
+                    <li>
+                        <b>Harpoon</b>: You cannot harpoon a character from the
+                        same island. Harpoons can go through nets.
+                    </li>
+                    <li>
+                        <b>Prayer</b>: Your hand size will permanently increase,
+                        since you always play 3 cards each round and you always
+                        draw 3 cards each round.
+                    </li>
+                    <li>
+                        <b>Meditation</b>: The Meditation card is not shuffled
+                        into the deck.
+                    </li>
+                    <li>
+                        <b>Indiscretion</b>: Playing this while your opponent
+                        has the initiative will be less effective, since you
+                        will place your cards first in the next round.
+                    </li>
+                    <li>
+                        <b>Fog</b>: If this is the last card played, it has no
+                        effect.
+                    </li>
+                    <li>
+                        <b>Volcanic Eruption</b>: If the erupting volcano had
+                        the Rising Waters on it, the Rising Waters immediately
+                        move to the next island in number order as if the
+                        volcano sank normally. Only the two adjacent islands are
+                        affected by lava flows. Any characters on these adjacent
+                        islands are automatically pushed to the next adjacent
+                        island. If that island is also affected by lava flows
+                        (because there are only a few islands left), then
+                        fleeing is impossible. If there is only one available
+                        slot for a group of fleeing characters to go, the player
+                        who played the Volcanic Eruption gets to choose which of
+                        their characters takes the slot; the rest of the fleeing
+                        characters are killed.
+                    </li>
+                </ul>
             </div>
         </div>
     );
