@@ -6,8 +6,8 @@
    the cards in the piles as a pop-up with OnScreenCard items and hoverable.
 1. Ability to read rules manual any time as a pop-up.
 1. Implement game end, cleanup, abandon, etc.
-1. Preload images so that it doesn't look bad when loading.
-1. Do not skip ahead. Do some kind of animations one at a time of game events.
+1. The tutorial needs a higher z index to not be underneath the red letters at
+   the top right.
 
 ## Setup stuff
 
@@ -57,8 +57,6 @@
               HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
     ```
 
-1. Do I need to use tailscale for DNS?
-
 ## Later Features
 
 - Users want to see their game history. They should be able to have some number
@@ -66,11 +64,12 @@
   be nice. Also win/loss ratio and such. Analytics.
 - Spectate games implementation.
 - Run code coverage and tests with CI
-- Figure out why the deployment crashes
+- Figure out why the deployment crashes sometimes
 - Control deployment process more strictly once things get up and running for
   real
 - Add code coverage report to README
-- Actually use `roundsCompleted`
+- Do not skip ahead. Do some kind of animations one at a time of game events.
+- Actually use `roundsCompleted` somehow
 - Need some way to limit people from creating 1000 accounts or 1000 games
 - Make some kind of bug reporting form and also a donation link. Provide my
   e-mail address.
