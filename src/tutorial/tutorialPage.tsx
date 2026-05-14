@@ -92,6 +92,7 @@ export const TutorialPage = () => {
                 justifyContent: 'space-between',
                 position: 'absolute',
                 width: '100vw',
+                zIndex: 100,
             }}
         >
             <button
@@ -185,6 +186,7 @@ export const TutorialPage = () => {
                     position: 'fixed',
                     top: 0,
                     width: '100vw',
+                    zIndex: 50,
                 }}
             >
                 {screenData.overlay}
