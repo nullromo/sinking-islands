@@ -86,6 +86,80 @@ const GroupBox = (
     );
 };
 
+export const AllCardsDisplay = () => {
+    return (
+        <div
+            style={{
+                columnGap: '30px',
+                display: 'flex',
+                justifyContent: 'space-around',
+                width: '100%',
+            }}
+        >
+            <CardBoxContainer>
+                <GroupBox color='limegreen' label='Move your characters'>
+                    <CardBox cardType={CardType.MOVEMENT} count={6} />
+                    <CardBox cardType={CardType.FLYING_FISH} count={1} />
+                </GroupBox>
+                <GroupBox
+                    color='cyan'
+                    label={
+                        <div
+                            style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            Modify characters or islands.
+                            <div
+                                style={{
+                                    fontSize: '12pt',
+                                    fontStyle: 'italic',
+                                    fontWeight: 'bold',
+                                    paddingTop: '4px',
+                                    width: '75%',
+                                }}
+                            >
+                                These cards are set aside after use and are put
+                                into the discard pile later
+                            </div>
+                        </div>
+                    }
+                >
+                    <CardBox cardType={CardType.NET} count={1} />
+                    <CardBox cardType={CardType.PILINGS} count={1} />
+                    <CardBox cardType={CardType.TORTOISE} count={1} />
+                </GroupBox>
+            </CardBoxContainer>
+            <CardBoxContainer>
+                <GroupBox color='red' label='Attack enemy characters'>
+                    <CardBox cardType={CardType.CRAB} count={3} />
+                    <CardBox cardType={CardType.WEAKNESS} count={1} />
+                    <CardBox cardType={CardType.HARPOON} count={2} />
+                </GroupBox>
+                <GroupBox color='limegreen' label='Improve your hand or deck'>
+                    <CardBox cardType={CardType.PRAYER} count={1} />
+                    <CardBox cardType={CardType.MEDITATION} count={1} />
+                </GroupBox>
+            </CardBoxContainer>
+            <CardBoxContainer>
+                <GroupBox color='limegreen' label='Move the Rising Waters'>
+                    <CardBox cardType={CardType.TIDAL_SURGE} count={2} />
+                    <CardBox cardType={CardType.TIDAL_WAVE} count={1} />
+                </GroupBox>
+                <GroupBox color='orange' label="Disrupt your opponent's plans">
+                    <CardBox cardType={CardType.INDISCRETION} count={1} />
+                    <CardBox cardType={CardType.FOG} count={2} />
+                </GroupBox>
+                <GroupBox color='red' label='Destroy an island'>
+                    <CardBox cardType={CardType.VOLCANIC_ERUPTION} count={1} />
+                </GroupBox>
+            </CardBoxContainer>
+        </div>
+    );
+};
+
 const DeckCompositionScreen = () => {
     return (
         <div
@@ -130,99 +204,7 @@ const DeckCompositionScreen = () => {
                     width: '1200px',
                 }}
             >
-                <div
-                    style={{
-                        columnGap: '30px',
-                        display: 'flex',
-                        justifyContent: 'space-around',
-                        width: '100%',
-                    }}
-                >
-                    <CardBoxContainer>
-                        <GroupBox
-                            color='limegreen'
-                            label='Move your characters'
-                        >
-                            <CardBox cardType={CardType.MOVEMENT} count={6} />
-                            <CardBox
-                                cardType={CardType.FLYING_FISH}
-                                count={1}
-                            />
-                        </GroupBox>
-                        <GroupBox
-                            color='cyan'
-                            label={
-                                <div
-                                    style={{
-                                        alignItems: 'center',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                    }}
-                                >
-                                    Modify characters or islands.
-                                    <div
-                                        style={{
-                                            fontSize: '12pt',
-                                            fontStyle: 'italic',
-                                            fontWeight: 'bold',
-                                            paddingTop: '4px',
-                                            width: '75%',
-                                        }}
-                                    >
-                                        These cards are set aside after use and
-                                        are put into the discard pile later
-                                    </div>
-                                </div>
-                            }
-                        >
-                            <CardBox cardType={CardType.NET} count={1} />
-                            <CardBox cardType={CardType.PILINGS} count={1} />
-                            <CardBox cardType={CardType.TORTOISE} count={1} />
-                        </GroupBox>
-                    </CardBoxContainer>
-                    <CardBoxContainer>
-                        <GroupBox color='red' label='Attack enemy characters'>
-                            <CardBox cardType={CardType.CRAB} count={3} />
-                            <CardBox cardType={CardType.WEAKNESS} count={1} />
-                            <CardBox cardType={CardType.HARPOON} count={2} />
-                        </GroupBox>
-                        <GroupBox
-                            color='limegreen'
-                            label='Improve your hand or deck'
-                        >
-                            <CardBox cardType={CardType.PRAYER} count={1} />
-                            <CardBox cardType={CardType.MEDITATION} count={1} />
-                        </GroupBox>
-                    </CardBoxContainer>
-                    <CardBoxContainer>
-                        <GroupBox
-                            color='limegreen'
-                            label='Move the Rising Waters'
-                        >
-                            <CardBox
-                                cardType={CardType.TIDAL_SURGE}
-                                count={2}
-                            />
-                            <CardBox cardType={CardType.TIDAL_WAVE} count={1} />
-                        </GroupBox>
-                        <GroupBox
-                            color='orange'
-                            label="Disrupt your opponent's plans"
-                        >
-                            <CardBox
-                                cardType={CardType.INDISCRETION}
-                                count={1}
-                            />
-                            <CardBox cardType={CardType.FOG} count={2} />
-                        </GroupBox>
-                        <GroupBox color='red' label='Destroy an island'>
-                            <CardBox
-                                cardType={CardType.VOLCANIC_ERUPTION}
-                                count={1}
-                            />
-                        </GroupBox>
-                    </CardBoxContainer>
-                </div>
+                <AllCardsDisplay />
                 <hr style={{ width: '100%' }} />
                 <em style={{ fontSize: '14pt' }}>
                     You can view this information at any time during a game.
