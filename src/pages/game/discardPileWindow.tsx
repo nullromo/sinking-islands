@@ -49,15 +49,17 @@ export const CardPileWindow = (props: {
                     visibility: hover ? 'visible' : 'hidden',
                 }}
             >
-                {cards.length <= 0
-                    ? '<Empty>'
-                    : cards.map((card, index) => {
-                          return (
-                              <div key={index}>
-                                  {cardTypeToString(card.cardType)}
-                              </div>
-                          );
-                      })}
+                {cards.length <= 0 ? (
+                    <em>Empty</em>
+                ) : (
+                    cards.map((card, index) => {
+                        return (
+                            <div key={index}>
+                                {cardTypeToString(card.cardType)}
+                            </div>
+                        );
+                    })
+                )}
             </span>
             {` (${cards.length} cards)`}
         </span>

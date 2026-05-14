@@ -6,7 +6,6 @@ import { TooltipDiv } from '../tooltip';
 
 export const GameInfoIcon = (props: {
     readonly playerDesignator: PlayerDesignator;
-    readonly clickable: boolean;
     readonly tooltipTitle: string;
     readonly tooltipBody: React.JSX.Element;
     readonly iconLabel: number | string;
@@ -33,11 +32,6 @@ export const GameInfoIcon = (props: {
                         }}
                     >
                         {props.tooltipTitle}
-                        {props.clickable ? (
-                            <>
-                                <br /> <em>Click to view</em>
-                            </>
-                        ) : null}{' '}
                     </div>
                     {props.tooltipBody}
                 </>

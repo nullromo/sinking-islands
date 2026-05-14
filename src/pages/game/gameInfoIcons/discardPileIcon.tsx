@@ -12,7 +12,6 @@ export const DiscardPileIcon = (props: {
 
     return (
         <GameInfoIcon
-            clickable={true}
             iconLabel={cards.length}
             labelPosition={{ left: -3, top: 12 }}
             playerDesignator={props.playerDesignator}

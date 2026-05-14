@@ -13,7 +13,6 @@ export const SetAsideCardsIcon = (props: {
 
     return (
         <GameInfoIcon
-            clickable={true}
             iconLabel={cards.length}
             labelPosition={{ left: -9, top: 9 }}
             playerDesignator={props.playerDesignator}

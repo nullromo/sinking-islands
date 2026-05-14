@@ -12,7 +12,6 @@ export const HandIcon = (props: {
 
     return (
         <GameInfoIcon
-            clickable={false}
             iconLabel={cards.length}
             labelPosition={{ left: 1, top: 11 }}
             playerDesignator={props.playerDesignator}

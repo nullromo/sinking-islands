@@ -12,7 +12,6 @@ export const DeckIcon = (props: {
 
     return (
         <GameInfoIcon
-            clickable={false}
             iconLabel={cards.length}
             labelPosition={{ left: -5, top: 10 }}
             playerDesignator={props.playerDesignator}
