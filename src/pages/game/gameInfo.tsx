@@ -11,7 +11,7 @@ import { DeckIcon } from './gameInfoIcons/deckIcon';
 import { DiscardPileIcon } from './gameInfoIcons/discardPileIcon';
 import { HandIcon } from './gameInfoIcons/handIcon';
 import { SetAsideCardsIcon } from './gameInfoIcons/setAsideCardsIcon';
-import { RulesPopup } from './rulesPopup';
+import { CardReferencePopup, RulesPopup } from './rulesPopup';
 
 const PlayerDetails = (props: {
     readonly playerDesignator: PlayerDesignator;
@@ -29,7 +29,9 @@ const PlayerDetails = (props: {
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
 
-    const [showRules, setShowRules] = React.useState(false);
+    const [showPopup, setShowPopup] = React.useState<
+        'rules' | 'cardReference' | null
+    >(null);
 
     const you = gameContext.you;
     const opponent = otherPlayerDesignator(gameContext.you);
@@ -65,10 +67,18 @@ export const GameInfo = () => {
                     <button
                         type='button'
                         onClick={() => {
-                            setShowRules(true);
+                            setShowPopup('rules');
                         }}
                     >
-                        Show game rules
+                        Show Rules Reference
+                    </button>
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setShowPopup('cardReference');
+                        }}
+                    >
+                        Show Card Reference
                     </button>
                     <Link to={PageRoutes.DASHBOARD}>
                         <button type='button'>Exit to Dashboard</button>
@@ -122,10 +132,16 @@ export const GameInfo = () => {
                     </tr>
                 </tbody>
             </table>
-            {showRules ? (
+            {showPopup === 'rules' ? (
                 <RulesPopup
                     hide={() => {
-                        setShowRules(false);
+                        setShowPopup(null);
+                    }}
+                />
+            ) : showPopup === 'cardReference' ? (
+                <CardReferencePopup
+                    hide={() => {
+                        setShowPopup(null);
                     }}
                 />
             ) : null}
