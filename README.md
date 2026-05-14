@@ -6,8 +6,6 @@
    the cards in the piles as a pop-up with OnScreenCard items and hoverable.
 1. Ability to read rules manual any time as a pop-up.
 1. Implement game end, cleanup, abandon, etc.
-1. The tutorial needs a higher z index to not be underneath the red letters at
-   the top right.
 
 ## Setup stuff
 
