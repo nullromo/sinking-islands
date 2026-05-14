@@ -11,6 +11,7 @@ import { DeckIcon } from './gameInfoIcons/deckIcon';
 import { DiscardPileIcon } from './gameInfoIcons/discardPileIcon';
 import { HandIcon } from './gameInfoIcons/handIcon';
 import { SetAsideCardsIcon } from './gameInfoIcons/setAsideCardsIcon';
+import { RulesPopup } from './rulesPopup';
 
 const PlayerDetails = (props: {
     readonly playerDesignator: PlayerDesignator;
@@ -27,6 +28,8 @@ const PlayerDetails = (props: {
 
 export const GameInfo = () => {
     const gameContext = React.use(GameContext);
+
+    const [showRules, setShowRules] = React.useState(false);
 
     const you = gameContext.you;
     const opponent = otherPlayerDesignator(gameContext.you);
@@ -52,9 +55,25 @@ export const GameInfo = () => {
                     flexDirection: 'column-reverse',
                 }}
             >
-                <Link to={PageRoutes.DASHBOARD}>
-                    <button type='button'>Exit to Dashboard</button>
-                </Link>
+                <div
+                    style={{
+                        columnGap: '10px',
+                        display: 'flex',
+                        paddingBottom: '6px',
+                    }}
+                >
+                    <button
+                        type='button'
+                        onClick={() => {
+                            setShowRules(true);
+                        }}
+                    >
+                        Show game rules
+                    </button>
+                    <Link to={PageRoutes.DASHBOARD}>
+                        <button type='button'>Exit to Dashboard</button>
+                    </Link>
+                </div>
                 <div
                     style={{
                         fontSize: '10px',
@@ -103,6 +122,13 @@ export const GameInfo = () => {
                     </tr>
                 </tbody>
             </table>
+            {showRules ? (
+                <RulesPopup
+                    hide={() => {
+                        setShowRules(false);
+                    }}
+                />
+            ) : null}
         </div>
     );
 };
