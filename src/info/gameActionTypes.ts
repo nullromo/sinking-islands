@@ -24,43 +24,37 @@ export type CardPlacementAction = {
     data: CardPlacement;
 };
 
-export type FlyingFishMovementAction = {
+type FlyingFishMovementAction = {
     action: GameActionType.FLYING_FISH_MOVEMENT;
     data: FlyingFishMovement;
 };
-export type FogTargetAction = {
-    action: GameActionType.FOG_TARGET;
-    data: number;
-};
-export type HarpoonTargetAction = {
+type FogTargetAction = { action: GameActionType.FOG_TARGET; data: number };
+type HarpoonTargetAction = {
     action: GameActionType.HARPOON_TARGET;
     data: TargetCharacter;
 };
-export type MovementSetAction = {
+type MovementSetAction = {
     action: GameActionType.MOVEMENT_SET;
     data: MovementSet;
 };
-export type NetTargetAction = {
-    action: GameActionType.NET_TARGET;
-    data: number;
-};
-export type PilingsTargetAction = {
+type NetTargetAction = { action: GameActionType.NET_TARGET; data: number };
+type PilingsTargetAction = {
     action: GameActionType.PILINGS_TARGET;
     data: number;
 };
-export type TidalSurgeTargetAction = {
+type TidalSurgeTargetAction = {
     action: GameActionType.TIDAL_SURGE_TARGET;
     data: number;
 };
-export type TidalWaveTargetAction = {
+type TidalWaveTargetAction = {
     action: GameActionType.TIDAL_WAVE_TARGET;
     data: number;
 };
-export type TortoiseTargetAction = {
+type TortoiseTargetAction = {
     action: GameActionType.TORTOISE_TARGET;
     data: TargetCharacter;
 };
-export type VolcanicEruptionTargetAction = {
+type VolcanicEruptionTargetAction = {
     action: GameActionType.VOLCANIC_ERUPTION_TARGET;
     data: number;
 };

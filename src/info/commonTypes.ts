@@ -30,7 +30,7 @@ export const otherPlayerDesignator = (playerDesignator: PlayerDesignator) => {
 /**
  * Represents a game piece owned by a player.
  */
-export type PlayerGamePieceSerialized = {
+type PlayerGamePieceSerialized = {
     // the identifier of the player
     playerDesignator: PlayerDesignator;
 };

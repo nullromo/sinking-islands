@@ -11,8 +11,7 @@
         "eslint-plugin-react-hooks": "^7.0.1",
         "express": "^5.2.1",
         "express-session": "^1.19.0",
-        "lodash": "^4.17.23",
-        "node": "24.13.0",
+        "knip": "^6.13.1",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-router": "^7.13.0",
@@ -34,7 +33,6 @@
         "@jest/globals": "^30.2.0",
         "@nabla/vite-plugin-eslint": "^2.0.6",
         "@types/express-session": "^1.18.2",
-        "@types/lodash": "^4.17.23",
         "@types/node": "^25.0.10",
         "@types/react": "^19.2.9",
         "@types/react-dom": "^19.2.3",
@@ -67,15 +65,11 @@
         "server": "cd ./src/server && FRONTEND_PORT=3333 BACKEND_PORT=5150 npx ts-node-dev --debug --poll --rs --exit-child --respawn --transpile-only ./serverLauncher.ts",
         "lint": "eslint src/",
         "typecheck": "tsc --noemit || true",
-        "check": "run-p typecheck lint",
+        "knip": "knip",
+        "check": "run-p --continue-on-error typecheck lint knip",
         "print-node-version": "node --version",
         "test": "jest --silent=true",
         "test-verbose": "jest --silent=false"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app"
-        ]
     },
     "browserslist": {
         "production": [

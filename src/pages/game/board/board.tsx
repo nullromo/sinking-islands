@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { GameContext } from '../../../contexts/gameContext';
-import { useCoordinatesRef } from '../../../hooks/useCoordinatesRef';
 import type {
     CharacterSerialized,
     IslandSerialized,
 } from '../../../info/commonTypes';
-import { boardElementID } from '../../../tutorial/elementIDs';
 import { CircularContainer } from '../circularContainer';
 import { CharacterTooltip } from './characterTooltip';
 import { Island } from './island';

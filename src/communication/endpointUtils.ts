@@ -43,7 +43,7 @@ export namespace EndpointUtils {
 
     export type EndpointConstructor<T extends EndpointInfo> = { instance: T };
 
-    export type HandlerImplementation<T extends EndpointInfo> = (
+    type HandlerImplementation<T extends EndpointInfo> = (
         request: EndpointRequest<T>,
     ) => EndpointResponse<T> | Promise<EndpointResponse<T>>;
 

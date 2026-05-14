@@ -39,6 +39,7 @@ const useGameStateSocket = (gameID: string) => {
 };
 
 export const GamePageInner = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [result, setResult] = useResultMessage();
 
     return (
