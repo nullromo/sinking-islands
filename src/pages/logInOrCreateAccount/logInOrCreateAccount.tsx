@@ -72,12 +72,23 @@ export const LogInOrCreateAccountWidget = withServerCalls(
                         </button>
                     </Link>
                 </div>
-                {result.success ? null : inputBoxes}
-                {result.success === null ? null : (
-                    <div style={{ color: result.success ? 'green' : 'red' }}>
-                        {result.message}
-                    </div>
-                )}
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        minWidth: '220px',
+                        rowGap: '10px',
+                    }}
+                >
+                    {result.success ? null : inputBoxes}
+                    {result.success === null ? null : (
+                        <div
+                            style={{ color: result.success ? 'green' : 'red' }}
+                        >
+                            {result.message}
+                        </div>
+                    )}
+                </div>
                 {result.success ? (
                     <Link
                         to={
