@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { GameContext } from '../../../contexts/gameContext';
 import type { PlayerDesignator } from '../../../info/commonTypes';
 import { GameInfoIcon } from './gameInfoIcon';
-import { GameContext } from '../../../contexts/gameContext';
+import { makeCardTooltipList } from './util';
 
 export const HandIcon = (props: {
     readonly playerDesignator: PlayerDesignator;
@@ -30,9 +31,16 @@ export const HandIcon = (props: {
                 },
             ]}
             tooltipBody={
-                <div
-                    style={{ padding: '10px', textAlign: 'center' }}
-                >{`${cards.length} cards`}</div>
+                gameContext.you === props.playerDesignator &&
+                !gameContext.spectator ? (
+                    <div style={{ padding: '4px' }}>
+                        {makeCardTooltipList(cards)}
+                    </div>
+                ) : (
+                    <div
+                        style={{ padding: '10px', textAlign: 'center' }}
+                    >{`${cards.length} cards`}</div>
+                )
             }
             tooltipTitle='Hand'
             viewBox='1 0 19 20'
