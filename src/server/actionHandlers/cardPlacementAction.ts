@@ -99,5 +99,7 @@ export const handleCardPlacement = (
     });
 
     // mark the indiscretion as having taken effect
-    player.indiscretion = IndiscretionStatus.PLAYED;
+    if (player.indiscretion === IndiscretionStatus.ASSIGNED) {
+        player.indiscretion = IndiscretionStatus.PLAYED;
+    }
 };
