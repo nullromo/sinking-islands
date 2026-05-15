@@ -101,6 +101,13 @@ export namespace GameFlowOperations {
             return island.islandNumber !== game.nextIslandToSink;
         });
 
+        // check if a player has won
+        const winner = getGameWinner(game);
+        if (winner) {
+            game.gameState = GameState.FINISHED;
+            return;
+        }
+
         // if there are no islands left, then the game is a draw
         if (game.islands.length < 1) {
             // TODO

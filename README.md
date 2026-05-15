@@ -1,9 +1,5 @@
 # Sinking Islands
 
-## Main stuff
-
-1. Implement game end, cleanup, abandon, etc.
-
 ## Setup stuff
 
 1. Make a github action that spins up the build server, runs the build, then
