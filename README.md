@@ -53,7 +53,6 @@
 - Users want to see their game history. They should be able to have some number
   of active games (5?) and they should see their previous games. Replays would
   be nice. Also win/loss ratio and such. Analytics.
-- Spectate games implementation.
 - Run code coverage and tests with CI
 - Figure out why the deployment crashes sometimes
 - Control deployment process more strictly once things get up and running for
