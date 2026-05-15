@@ -37,6 +37,11 @@ export const Credits = () => {
             >
                 <div>Support on Venmo</div>
             </LogoLink>
+            <div
+                style={{ color: 'darkgray', textAlign: 'right', width: '100%' }}
+            >
+                {import.meta.env.VITE_COMMIT_HASH}
+            </div>
         </div>
     );
 };

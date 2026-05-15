@@ -9,6 +9,7 @@ interface ViteTypeOptions {
 interface ImportMetaEnv {
     readonly VITE_FRONTEND_PORT?: string;
     readonly VITE_BACKEND_PORT?: string;
+    readonly VITE_COMMIT_HASH?: string;
 }
 
 interface ImportMeta {
