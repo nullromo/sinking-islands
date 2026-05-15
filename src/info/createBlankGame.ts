@@ -1,5 +1,5 @@
 import type { GameSerialized } from './commonTypes';
-import { PlayerDesignator } from './commonTypes';
+import { IndiscretionStatus, PlayerDesignator } from './commonTypes';
 import { GameState } from './gameState';
 
 export const createBlankGame = (): GameSerialized => {
@@ -17,7 +17,7 @@ export const createBlankGame = (): GameSerialized => {
                 deck: [],
                 discardPile: [],
                 hand: [],
-                indiscretion: false,
+                indiscretion: IndiscretionStatus.NONE,
                 netIsland: 0,
                 pilingsIsland: 0,
                 playerDesignator: PlayerDesignator.PLAYER_A,
@@ -29,7 +29,7 @@ export const createBlankGame = (): GameSerialized => {
                 deck: [],
                 discardPile: [],
                 hand: [],
-                indiscretion: false,
+                indiscretion: IndiscretionStatus.NONE,
                 netIsland: 0,
                 pilingsIsland: 0,
                 playerDesignator: PlayerDesignator.PLAYER_A,

@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { GameContext } from '../../contexts/gameContext';
-import type { CardSerialized } from '../../info/commonTypes';
+import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
+import {
+    IndiscretionStatus,
+    type CardSerialized,
+} from '../../info/commonTypes';
 import { getPlayerColor } from '../../info/playerColors';
 import { actionOrderTrackElementID } from '../../tutorial/elementIDs';
 import { OnScreenCard } from './onScreenCard';
-import { useCoordinatesRef } from '../../hooks/useCoordinatesRef';
 
 interface ActionOrderTrackProps {
     readonly onSlotClicked?: (slotIndex: number) => void;
@@ -52,7 +55,8 @@ export const ActionOrderTrack = (props: ActionOrderTrackProps) => {
                         slotIndex,
                     ) &&
                         gameStateCard) ||
-                    (gameContext.game.players[gameContext.you].indiscretion &&
+                    (gameContext.game.players[gameContext.you].indiscretion ===
+                        IndiscretionStatus.PLAYED &&
                         overrideCard) ? (
                         <div>(Face Up)</div>
                     ) : null}

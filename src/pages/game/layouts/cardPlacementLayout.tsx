@@ -2,6 +2,7 @@ import * as React from 'react';
 import { withServerCalls } from '../../../communication/withServerCalls';
 import { GameContext } from '../../../contexts/gameContext';
 import type { CardSerialized, CardType } from '../../../info/commonTypes';
+import { IndiscretionStatus } from '../../../info/commonTypes';
 import { GameActionType } from '../../../info/gameActionTypes';
 import type { LayoutProps } from './gameLayoutContainers';
 import { GamePageLayout } from './gameLayoutContainers';
@@ -64,7 +65,8 @@ export const CardPlacementLayout = withServerCalls((props: LayoutProps) => {
                 on a slot in the Action Order Track to place the card. Click
                 Submit when finished, or click Reset to start over.
             </div>
-            {gameContext.game.players[gameContext.you].indiscretion ? (
+            {gameContext.game.players[gameContext.you].indiscretion ===
+            IndiscretionStatus.ASSIGNED ? (
                 <>
                     <br />
                     <div style={{ color: 'darkred', width: '600px' }}>

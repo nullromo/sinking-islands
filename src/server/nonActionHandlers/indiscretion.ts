@@ -1,5 +1,8 @@
 import type { GameSerialized } from '../../info/commonTypes';
-import { otherPlayerDesignator } from '../../info/commonTypes';
+import {
+    IndiscretionStatus,
+    otherPlayerDesignator,
+} from '../../info/commonTypes';
 import { GameOperations } from '../gameObjects/gameOperations';
 
 export const handleIndiscretion = (game: GameSerialized) => {
@@ -11,5 +14,5 @@ export const handleIndiscretion = (game: GameSerialized) => {
         game,
         `Player ${opponent} is put under the effects of indiscretion.`,
     );
-    game.players[opponent].indiscretion = true;
+    game.players[opponent].indiscretion = IndiscretionStatus.ASSIGNED;
 };

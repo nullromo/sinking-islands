@@ -76,6 +76,12 @@ export type ActionOrderTrackSerialized = {
     faceUpCards: number[];
 };
 
+export enum IndiscretionStatus {
+    ASSIGNED = 'assigned',
+    PLAYED = 'played',
+    NONE = 'none',
+}
+
 export type PlayerSerialized = {
     playerDesignator: PlayerDesignator;
     deck: Array<CardSerialized | FaceDownCard>;
@@ -84,7 +90,7 @@ export type PlayerSerialized = {
     setAsideCards: CardSerialized[];
     netIsland: number;
     pilingsIsland: number;
-    indiscretion: boolean;
+    indiscretion: IndiscretionStatus;
     weakness: boolean;
     username: string | null;
 };

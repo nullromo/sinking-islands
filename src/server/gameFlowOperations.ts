@@ -1,6 +1,7 @@
 import type { GameSerialized, TargetCharacter } from '../info/commonTypes';
 import {
     CardType,
+    IndiscretionStatus,
     IslandType,
     PlayerDesignator,
     otherPlayerDesignator,
@@ -127,6 +128,20 @@ export namespace GameFlowOperations {
         mapToValues(game.players).forEach((player) => {
             PlayerOperations.draw(game, player, 3);
         });
+
+        // remove indiscretion's effect from the players if they have already
+        // played face up
+        [PlayerDesignator.PLAYER_A, PlayerDesignator.PLAYER_B].forEach(
+            (playerDesignator) => {
+                if (
+                    game.players[playerDesignator].indiscretion ===
+                    IndiscretionStatus.PLAYED
+                ) {
+                    game.players[playerDesignator].indiscretion =
+                        IndiscretionStatus.NONE;
+                }
+            },
+        );
 
         // update the active card index
         game.activeCardIndex = null;

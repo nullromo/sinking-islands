@@ -1,7 +1,8 @@
-import type {
-    CardPlacement,
-    GameSerialized,
-    PlayerDesignator,
+import {
+    IndiscretionStatus,
+    type CardPlacement,
+    type GameSerialized,
+    type PlayerDesignator,
 } from '../../info/commonTypes';
 import { ActionOrderTrackOperations } from '../gameObjects/actionOrderTrackOperations';
 import { PlayerOperations } from '../gameObjects/playerOperations';
@@ -97,6 +98,6 @@ export const handleCardPlacement = (
         PlayerOperations.removeCardFromHand(player, card);
     });
 
-    // remove indiscretion's effect from the player
-    player.indiscretion = false;
+    // mark the indiscretion as having taken effect
+    player.indiscretion = IndiscretionStatus.PLAYED;
 };

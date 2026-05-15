@@ -5,7 +5,7 @@ import type {
     PlayerDesignator,
     PlayerSerialized,
 } from '../../info/commonTypes';
-import { CardType } from '../../info/commonTypes';
+import { CardType, IndiscretionStatus } from '../../info/commonTypes';
 import { shuffleArray } from '../../util/util';
 import { fullObject } from '../util';
 import { CardOperations } from './cardOperations';
@@ -52,7 +52,7 @@ export namespace PlayerOperations {
             deck,
             discardPile: [],
             hand: deck.splice(0, 6),
-            indiscretion: false,
+            indiscretion: IndiscretionStatus.NONE,
             netIsland: NaN,
             pilingsIsland: NaN,
             playerDesignator,

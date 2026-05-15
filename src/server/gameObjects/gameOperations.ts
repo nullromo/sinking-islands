@@ -5,7 +5,12 @@ import type {
     IslandSerialized,
     PlayerSerialized,
 } from '../../info/commonTypes';
-import { CardType, IslandType, PlayerDesignator } from '../../info/commonTypes';
+import {
+    CardType,
+    IndiscretionStatus,
+    IslandType,
+    PlayerDesignator,
+} from '../../info/commonTypes';
 import { createBlankGame } from '../../info/createBlankGame';
 import { GameState } from '../../info/gameState';
 import { randomUUID } from '../../util/random';
@@ -318,7 +323,9 @@ export namespace GameOperations {
                     game.activeCardIndex !== null &&
                     index > game.activeCardIndex &&
                     card &&
-                    card.playerDesignator !== playerToShow
+                    card.playerDesignator !== playerToShow &&
+                    game.players[card.playerDesignator].indiscretion !==
+                        IndiscretionStatus.PLAYED
                 ) {
                     return { ...card, cardType: null };
                 }

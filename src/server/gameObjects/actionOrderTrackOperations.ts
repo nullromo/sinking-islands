@@ -4,6 +4,7 @@ import type {
     CardSerialized,
     PlayerDesignator,
 } from '../../info/commonTypes';
+import { IndiscretionStatus } from '../../info/commonTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ActionOrderTrackOperations {
@@ -78,11 +79,11 @@ export namespace ActionOrderTrackOperations {
     export const assignPlacement = (
         actionOrderTrack: ActionOrderTrackSerialized,
         cardPlacement: CardPlacement,
-        indiscretion: boolean,
+        indiscretion: IndiscretionStatus,
     ) => {
         Object.entries(cardPlacement).forEach(([slot, card]) => {
             placeCard(actionOrderTrack, Number(slot), card);
-            if (indiscretion) {
+            if (indiscretion === IndiscretionStatus.ASSIGNED) {
                 actionOrderTrack.faceUpCards.push(Number(slot));
             }
         });
