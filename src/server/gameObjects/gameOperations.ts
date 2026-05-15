@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import type {
     CharacterSerialized,
     GameSerialized,
@@ -307,9 +308,10 @@ export namespace GameOperations {
     };
 
     export const obscureCards = (
-        game: GameSerialized,
+        originalGame: GameSerialized,
         playerToShow: PlayerDesignator | null,
     ) => {
+        const game = _.cloneDeep(originalGame);
         game.actionOrderTrack.cardSlots = game.actionOrderTrack.cardSlots.map(
             (card, index) => {
                 if (
