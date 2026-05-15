@@ -9,18 +9,26 @@ import { FogTargetLayout } from './layouts/fogTargetLayout';
 import { IslandSelectorLayout } from './layouts/islandSelectorLayout';
 import { MovementSetLayout } from './layouts/movementSetLayout';
 import { WaitingForPlayerLayout } from './layouts/waitingForPlayerLayout';
+import { GameNotStarted } from './gameNotStarted';
 
 export const LayoutSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
 
     if (gameContext.game.gameState === GameState.FINISHED) {
         return (
-            <>{`The game is over. ${gameContext.game.players[gameContext.game.waitingForPlayer].username} wins!`}</>
+            <>
+                The game is over.{' '}
+                {
+                    gameContext.game.players[gameContext.game.waitingForPlayer]
+                        .username
+                }{' '}
+                wins!
+            </>
         );
     }
 
     if (gameContext.game.gameState === GameState.INITIAL_STATE) {
-        return <>{'The game has not started yet.'}</>;
+        return <GameNotStarted />;
     }
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {
