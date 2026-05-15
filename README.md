@@ -61,8 +61,6 @@
 - Do not skip ahead. Do some kind of animations one at a time of game events.
 - Actually use `roundsCompleted` somehow
 - Need some way to limit people from creating 1000 accounts or 1000 games
-- Make some kind of bug reporting form and also a donation link. Provide my
-  e-mail address.
 
 ## things to add tests for
 

@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import titleBackground from '../images/backgrounds/titleBackground.png';
 import { PageRoutes } from '../router/pageRoutes';
 import { CenteredPage } from './centeredPage';
+import { Credits } from './credits';
 
 export const TitlePage = () => {
     return (
@@ -32,6 +33,7 @@ export const TitlePage = () => {
                     </div>
                 </CenteredPage>
             </div>
+            <Credits />
         </div>
     );
 };

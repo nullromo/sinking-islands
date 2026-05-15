@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { LoggedInUserContext } from '../../contexts/loggedInUserContext';
+import { Credits } from '../credits';
 import { GameListWidget } from './gameList';
 import { TopBanner } from './topBanner';
 
@@ -19,6 +20,7 @@ export const DashboardPage = () => {
             <TopBanner />
             <h1>Hello, {loggedInUserContext.loggedInUser}!</h1>
             <GameListWidget />
+            <Credits />
         </div>
     );
 };
