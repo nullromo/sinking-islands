@@ -57,6 +57,7 @@ export const TutorialPage = () => {
             setGameLoaded: () => {
                 //
             },
+            spectator: false,
             you: PlayerDesignator.PLAYER_A,
         };
         return { gameContextData, overlay: item.overlay };

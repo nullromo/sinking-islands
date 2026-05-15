@@ -105,8 +105,8 @@ export const GameInfo = () => {
                                 width: '50%',
                             }}
                         >
-                            You — {gameContext.game.players[you].username} (
-                            {you})
+                            {gameContext.spectator ? '' : 'You — '}
+                            {gameContext.game.players[you].username} ({you})
                         </th>
                         <th
                             style={{
@@ -115,7 +115,7 @@ export const GameInfo = () => {
                                 width: '50%',
                             }}
                         >
-                            Opponent —{' '}
+                            {gameContext.spectator ? '' : 'Opponent — '}
                             {gameContext.game.players[opponent].username} (
                             {opponent})
                         </th>

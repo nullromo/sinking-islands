@@ -10,6 +10,7 @@ import { CharacterTargetLayout } from './layouts/characterTargetLayout';
 import { FogTargetLayout } from './layouts/fogTargetLayout';
 import { IslandSelectorLayout } from './layouts/islandSelectorLayout';
 import { MovementSetLayout } from './layouts/movementSetLayout';
+import { SpectatorLayout } from './layouts/spectatorLayout';
 import { WaitingForPlayerLayout } from './layouts/waitingForPlayerLayout';
 
 export const LayoutSelector = (props: SetResultProps) => {
@@ -21,6 +22,10 @@ export const LayoutSelector = (props: SetResultProps) => {
 
     if (gameContext.game.gameState === GameState.INITIAL_STATE) {
         return <GameNotStarted />;
+    }
+
+    if (gameContext.spectator) {
+        return <SpectatorLayout />;
     }
 
     if (gameContext.game.waitingForPlayer !== gameContext.you) {

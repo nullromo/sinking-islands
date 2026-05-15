@@ -308,7 +308,7 @@ export namespace GameOperations {
 
     export const obscureCards = (
         game: GameSerialized,
-        playerToShow: PlayerDesignator,
+        playerToShow: PlayerDesignator | null,
     ) => {
         game.actionOrderTrack.cardSlots = game.actionOrderTrack.cardSlots.map(
             (card, index) => {

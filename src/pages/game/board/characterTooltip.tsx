@@ -20,10 +20,18 @@ export const CharacterTooltip = (props: {
                 width: 'fit-content',
             }}
         >
-            <div style={{ borderBottom: '2px solid', textAlign: 'center' }}>
-                {props.character.playerDesignator === gameContext.you
-                    ? 'Your'
-                    : 'Enemy'}{' '}
+            <div
+                style={{
+                    borderBottom: '2px solid',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                }}
+            >
+                {gameContext.spectator
+                    ? `${props.character.playerDesignator}'s`
+                    : props.character.playerDesignator === gameContext.you
+                      ? 'Your'
+                      : 'Enemy'}{' '}
                 Character
             </div>
             <div style={{ background: 'lightgray', padding: '4px' }}>

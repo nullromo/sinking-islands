@@ -193,7 +193,7 @@ class SinkingIslandsBackend {
                         return null;
                     })();
                     if (playerDesignator === null) {
-                        throw new Error(
+                        console.log(
                             `User ${username} is not a part of game ${gameID}.`,
                         );
                     }

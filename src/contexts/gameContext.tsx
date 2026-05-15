@@ -10,6 +10,7 @@ export type GameContextData = {
     setGame: (value: GameSerialized) => void;
     setGameLoaded: (value: boolean) => void;
     you: PlayerDesignator;
+    spectator: boolean;
 };
 
 export const GameContext = React.createContext<GameContextData>({
@@ -21,6 +22,7 @@ export const GameContext = React.createContext<GameContextData>({
     setGameLoaded: () => {
         throw new Error('Unmounted context');
     },
+    spectator: false,
     you: PlayerDesignator.PLAYER_A,
 });
 GameContext.displayName = 'GameContext';
@@ -33,7 +35,7 @@ export const GameContextProvider = (props: React.PropsWithChildren) => {
     });
     const [gameLoaded, setGameLoaded] = React.useState(false);
 
-    const you = (() => {
+    const realYou: PlayerDesignator | null = (() => {
         // if the game is not loaded yet, then just choose player A
         if (!gameLoaded) {
             return PlayerDesignator.PLAYER_A;
@@ -50,8 +52,8 @@ export const GameContextProvider = (props: React.PropsWithChildren) => {
         ) {
             return PlayerDesignator.PLAYER_B;
         }
-        // TODO: do not throw here. Should redirect or something instead
-        throw new Error('You are not a player in this game.');
+        // the player is spectating
+        return null;
     })();
 
     const value = React.useMemo(() => {
@@ -62,9 +64,10 @@ export const GameContextProvider = (props: React.PropsWithChildren) => {
                 setGame(value);
             },
             setGameLoaded,
-            you,
+            spectator: realYou === null,
+            you: realYou ?? PlayerDesignator.PLAYER_A,
         };
-    }, [gameLoaded, game, you]);
+    }, [gameLoaded, game, realYou]);
 
     return <GameContext value={value}>{props.children}</GameContext>;
 };

@@ -47,7 +47,12 @@ export const GameActionsCell = withServerCalls(
         };
 
         const spectateGame = () => {
-            // TODO
+            const result = navigate(buildPlayRoute(props.game.id));
+            if (result instanceof Promise) {
+                result.catch((error: unknown) => {
+                    props.setResult(false, error);
+                });
+            }
         };
 
         return (

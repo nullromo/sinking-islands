@@ -7,11 +7,11 @@ import { GameInfo } from '../gameInfo';
 import { Hand } from '../hand';
 import { MessageLog } from '../messageLog';
 
-const GamePageLayoutWrapper = (props: React.PropsWithChildren) => {
+export const GamePageLayoutWrapper = (props: React.PropsWithChildren) => {
     return <>{props.children}</>;
 };
 
-const RightSidePanelLayout = (props: React.PropsWithChildren) => {
+export const RightSidePanelLayout = (props: React.PropsWithChildren) => {
     return (
         <div
             style={{
@@ -27,7 +27,7 @@ const RightSidePanelLayout = (props: React.PropsWithChildren) => {
     );
 };
 
-interface GenericWidgetProps extends React.PropsWithChildren {
+export interface GenericWidgetProps extends React.PropsWithChildren {
     readonly boardProps?: React.ComponentProps<typeof Board>;
     readonly actionOrderTrackProps?: React.ComponentProps<
         typeof ActionOrderTrack
