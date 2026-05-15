@@ -5,7 +5,7 @@ export interface LogoButtonProps {
     readonly href: string;
 }
 
-export const LogoButton = (
+const LogoButton = (
     props: LogoButtonProps & { readonly borderColor?: string },
 ) => {
     return (
