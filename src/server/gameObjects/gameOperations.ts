@@ -323,6 +323,31 @@ export namespace GameOperations {
                 return card;
             },
         );
+        [PlayerDesignator.PLAYER_A, PlayerDesignator.PLAYER_B].forEach(
+            (playerDesignator) => {
+                const player = game.players[playerDesignator];
+
+                // sort the player's deck so that nobody knows the order
+                player.deck = player.deck.toSorted((a, b) => {
+                    return String(a.cardType).localeCompare(String(b.cardType));
+                });
+
+                // if this player's information should be shown, do not hide
+                // anything else
+                if (playerDesignator === playerToShow) {
+                    return;
+                }
+
+                // if this player's information should be hidden, obscure the
+                // cards in their hand and deck
+                player.deck = player.deck.map((card) => {
+                    return { ...card, cardType: null };
+                });
+                player.hand = player.hand.map((card) => {
+                    return { ...card, cardType: null };
+                });
+            },
+        );
         return game;
     };
 }

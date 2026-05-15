@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { GameContext } from '../../contexts/gameContext';
-import type { CardSerialized } from '../../info/commonTypes';
+import type { CardSerialized, FaceDownCard } from '../../info/commonTypes';
 import { OnScreenCard } from './onScreenCard';
 
 interface HandProps {
-    readonly onCardClicked?: (card: CardSerialized, index: number) => void;
+    readonly onCardClicked?: (
+        card: CardSerialized | FaceDownCard,
+        index: number,
+    ) => void;
     readonly highlightIndex?: number;
     readonly ghostSlots?: number[];
 }

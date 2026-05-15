@@ -78,8 +78,8 @@ export type ActionOrderTrackSerialized = {
 
 export type PlayerSerialized = {
     playerDesignator: PlayerDesignator;
-    deck: CardSerialized[];
-    hand: CardSerialized[];
+    deck: Array<CardSerialized | FaceDownCard>;
+    hand: Array<CardSerialized | FaceDownCard>;
     discardPile: CardSerialized[];
     setAsideCards: CardSerialized[];
     netIsland: number;
