@@ -259,9 +259,14 @@ export const MovementSetLayout = withServerCalls((props: LayoutProps) => {
                                           }),
                                       },
                                   )
-                            ).catch((error: unknown) => {
-                                props.setResult(false, error);
-                            });
+                            )
+                                .catch((error: unknown) => {
+                                    props.setResult(false, error);
+                                })
+                                .finally(() => {
+                                    setMovementSet([]);
+                                    setActiveCharacter(null);
+                                });
                         }}
                     >
                         Submit

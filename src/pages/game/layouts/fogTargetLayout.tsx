@@ -33,6 +33,9 @@ export const FogTargetLayout = withServerCalls((props: LayoutProps) => {
                         })
                         .catch((error: unknown) => {
                             props.setResult(false, error);
+                        })
+                        .finally(() => {
+                            setSlotChoice(0);
                         });
                 }}
             >

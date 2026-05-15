@@ -157,6 +157,9 @@ export const IslandSelectorLayout = withServerCalls((props: LayoutProps) => {
                             })
                             .catch((error: unknown) => {
                                 props.setResult(false, error);
+                            })
+                            .finally(() => {
+                                setIslandChoice(null);
                             });
                     }}
                 >

@@ -154,6 +154,9 @@ export const CharacterTargetLayout = withServerCalls((props: LayoutProps) => {
                             })
                             .catch((error: unknown) => {
                                 props.setResult(false, error);
+                            })
+                            .finally(() => {
+                                setCharacterChoice(null);
                             });
                     }}
                 >
