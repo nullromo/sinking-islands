@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import type {
+    CardSerialized,
     CharacterSerialized,
     GameSerialized,
     IslandSerialized,
@@ -320,8 +321,7 @@ export namespace GameOperations {
         game.actionOrderTrack.cardSlots = game.actionOrderTrack.cardSlots.map(
             (card, index) => {
                 if (
-                    game.activeCardIndex !== null &&
-                    index > game.activeCardIndex &&
+                    index > (game.activeCardIndex ?? -1) &&
                     card &&
                     card.playerDesignator !== playerToShow &&
                     game.players[card.playerDesignator].indiscretion !==
