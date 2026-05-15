@@ -3,28 +3,20 @@ import { GameContext } from '../../contexts/gameContext';
 import type { SetResultProps } from '../../hooks/useResultMessage';
 import { GameState } from '../../info/gameState';
 import { assertUnreachable } from '../../util/util';
+import { GameFinished } from './gameFinished';
+import { GameNotStarted } from './gameNotStarted';
 import { CardPlacementLayout } from './layouts/cardPlacementLayout';
 import { CharacterTargetLayout } from './layouts/characterTargetLayout';
 import { FogTargetLayout } from './layouts/fogTargetLayout';
 import { IslandSelectorLayout } from './layouts/islandSelectorLayout';
 import { MovementSetLayout } from './layouts/movementSetLayout';
 import { WaitingForPlayerLayout } from './layouts/waitingForPlayerLayout';
-import { GameNotStarted } from './gameNotStarted';
 
 export const LayoutSelector = (props: SetResultProps) => {
     const gameContext = React.use(GameContext);
 
     if (gameContext.game.gameState === GameState.FINISHED) {
-        return (
-            <>
-                The game is over.{' '}
-                {
-                    gameContext.game.players[gameContext.game.waitingForPlayer]
-                        .username
-                }{' '}
-                wins!
-            </>
-        );
+        return <GameFinished />;
     }
 
     if (gameContext.game.gameState === GameState.INITIAL_STATE) {
