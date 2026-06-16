@@ -25,6 +25,9 @@ export const Character = (props: CharacterProps) => {
         gameContext.you,
     );
 
+    const weakness =
+        gameContext.game.players[props.character.playerDesignator].weakness;
+
     const characterRef = useCoordinatesRef(props.id);
 
     return (
@@ -80,7 +83,11 @@ export const Character = (props: CharacterProps) => {
             <div
                 style={{
                     alignItems: 'center',
-                    background: props.character.tortoise ? 'green' : 'black',
+                    background: props.character.tortoise
+                        ? 'green'
+                        : weakness
+                          ? 'purple'
+                          : 'black',
                     border: props.character.tortoise
                         ? '3px solid darkgreen'
                         : '',
@@ -97,7 +104,7 @@ export const Character = (props: CharacterProps) => {
                     width: `${props.width / 2.4}px`,
                 }}
             >
-                {props.character.strength}
+                {weakness ? 1 : props.character.strength}
             </div>
         </div>
     );

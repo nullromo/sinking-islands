@@ -10,6 +10,9 @@ export const CharacterTooltip = (props: {
 }) => {
     const gameContext = React.use(GameContext);
 
+    const weakness =
+        gameContext.game.players[props.character.playerDesignator].weakness;
+
     return (
         <Tooltip
             style={{
@@ -49,6 +52,22 @@ export const CharacterTooltip = (props: {
                                     : 'Human'}
                             </td>
                         </tr>
+                        {weakness ? (
+                            <tr>
+                                <td
+                                    colSpan={2}
+                                    style={{
+                                        color: '#c72727',
+                                        fontStyle: 'italic',
+                                        fontWeight: 'bold',
+                                        minWidth: '180px',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    This character is afflicted with weakness!
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
