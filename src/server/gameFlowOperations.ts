@@ -123,6 +123,7 @@ export namespace GameFlowOperations {
 
         // swap the initiative
         game.initiative = otherPlayerDesignator(game.initiative);
+        game.waitingForPlayer = game.initiative;
 
         // players draw new cards
         mapToValues(game.players).forEach((player) => {
