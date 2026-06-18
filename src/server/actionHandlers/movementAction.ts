@@ -1,9 +1,14 @@
 import type {
+    CharacterSerialized,
     GameSerialized,
+    IslandSerialized,
     MovementSet,
     PlayerDesignator,
 } from '../../info/commonTypes';
-import { computeMovementSteps } from '../../info/computeMovementSteps';
+import {
+    computeMovementSteps,
+    countSpacesBetweenIslands,
+} from '../../info/computeMovementSteps';
 import type { ConvertedMovementSet } from '../../info/convertActionData';
 import { convertMovementToIslands } from '../../info/convertActionData';
 import { CharacterOperations } from '../gameObjects/characterOperations';
@@ -192,4 +197,127 @@ export const handleMovement = (
             'sails',
         );
     });
+};
+
+export const legalMovementExists = (
+    game: GameSerialized,
+    playerDesignator: PlayerDesignator,
+): boolean => {
+    // Generate all player characters on non-netted islands
+    const playerCharacters: Array<{
+        character: CharacterSerialized;
+        fromIsland: IslandSerialized;
+    }> = [];
+    for (const island of game.islands) {
+        if (GameOperations.islandIsNetted(game, island.islandNumber)) {
+            continue;
+        }
+        for (const character of island.characters) {
+            if (character.playerDesignator === playerDesignator) {
+                playerCharacters.push({ character, fromIsland: island });
+            }
+        }
+    }
+
+    // Generate all possible single moves (movement from fromIsland to toIsland)
+    const singleMoves: Array<{
+        character: CharacterSerialized;
+        fromIsland: IslandSerialized;
+        toIsland: IslandSerialized;
+    }> = [];
+    for (const playerCharacter of playerCharacters) {
+        const targetIslands = GameOperations.getIslandsWithinMovementRange(
+            game,
+            playerCharacter.fromIsland,
+        );
+        for (const toIsland of targetIslands) {
+            if (GameOperations.islandIsNetted(game, toIsland.islandNumber)) {
+                continue;
+            }
+            singleMoves.push({
+                character: playerCharacter.character,
+                fromIsland: playerCharacter.fromIsland,
+                toIsland,
+            });
+        }
+    }
+
+    // Now test if any subset of singleMoves of size 1, 2, or 3 is legal.
+    // To be efficient, we check size 1 first. If we find one, we return true.
+    for (const move of singleMoves) {
+        try {
+            checkMovementSetLegal(game, playerDesignator, [move]);
+            return true;
+        } catch {
+            // not legal, try next
+        }
+    }
+
+    // Check size 2
+    for (let i = 0; i < singleMoves.length; i += 1) {
+        for (let j = i + 1; j < singleMoves.length; j += 1) {
+            const move1 = singleMoves[i];
+            const move2 = singleMoves[j];
+            const dist1 = countSpacesBetweenIslands(
+                game.islands,
+                move1.fromIsland.islandNumber,
+                move1.toIsland.islandNumber,
+            );
+            const dist2 = countSpacesBetweenIslands(
+                game.islands,
+                move2.fromIsland.islandNumber,
+                move2.toIsland.islandNumber,
+            );
+            if (dist1 + dist2 > 3) {
+                continue;
+            }
+            try {
+                checkMovementSetLegal(game, playerDesignator, [move1, move2]);
+                return true;
+            } catch {
+                // not legal
+            }
+        }
+    }
+
+    // Check size 3
+    for (let i = 0; i < singleMoves.length; i += 1) {
+        for (let j = i + 1; j < singleMoves.length; j += 1) {
+            for (let k = j + 1; k < singleMoves.length; k += 1) {
+                const move1 = singleMoves[i];
+                const move2 = singleMoves[j];
+                const move3 = singleMoves[k];
+                const dist1 = countSpacesBetweenIslands(
+                    game.islands,
+                    move1.fromIsland.islandNumber,
+                    move1.toIsland.islandNumber,
+                );
+                const dist2 = countSpacesBetweenIslands(
+                    game.islands,
+                    move2.fromIsland.islandNumber,
+                    move2.toIsland.islandNumber,
+                );
+                const dist3 = countSpacesBetweenIslands(
+                    game.islands,
+                    move3.fromIsland.islandNumber,
+                    move3.toIsland.islandNumber,
+                );
+                if (dist1 + dist2 + dist3 > 3) {
+                    continue;
+                }
+                try {
+                    checkMovementSetLegal(game, playerDesignator, [
+                        move1,
+                        move2,
+                        move3,
+                    ]);
+                    return true;
+                } catch {
+                    // not legal
+                }
+            }
+        }
+    }
+
+    return false;
 };

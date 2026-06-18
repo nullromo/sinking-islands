@@ -19,7 +19,10 @@ import {
     checkHarpoonTargetLegal,
     handleHarpoon,
 } from './actionHandlers/harpoonAction';
-import { handleMovement } from './actionHandlers/movementAction';
+import {
+    handleMovement,
+    legalMovementExists,
+} from './actionHandlers/movementAction';
 import { handleNet } from './actionHandlers/netAction';
 import { handlePilings } from './actionHandlers/pilingsAction';
 import { handleTidalSurge } from './actionHandlers/tidalSurgeAction';
@@ -352,25 +355,10 @@ export namespace GameFlowOperations {
                 // if there are no valid moves to make, then the movement does
                 // nothing
                 if (
-                    !game.islands.some((island) => {
-                        return (
-                            island.characters.some((character) => {
-                                return (
-                                    character.playerDesignator ===
-                                    nextCardToResolve.playerDesignator
-                                );
-                            }) &&
-                            GameOperations.getIslandsWithinMovementRange(
-                                game,
-                                island,
-                            ).some((otherIsland) => {
-                                return !GameOperations.islandIsFull(
-                                    game,
-                                    otherIsland,
-                                );
-                            })
-                        );
-                    })
+                    !legalMovementExists(
+                        game,
+                        nextCardToResolve.playerDesignator,
+                    )
                 ) {
                     GameOperations.log(
                         game,
