@@ -140,3 +140,33 @@ test('Players cannot move a character that is not present', () => {
         });
     }).toThrow();
 });
+
+test('Players can flying fish onto netted islands', () => {
+    // Net the target island (island 5)
+    game.players[PlayerDesignator.PLAYER_B].netIsland = 5;
+
+    // take flying fish action to island 5
+    const data = basicFlyingFishData();
+    data.toIslandNumber = 5;
+
+    // should succeed and not throw
+    expect(() => {
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_A, {
+            action: GameActionType.FLYING_FISH_MOVEMENT,
+            data,
+        });
+    }).not.toThrow();
+
+    // check that character moved to island 5
+    const island5 = game.islands.find((island) => {
+        return island.islandNumber === 5;
+    });
+    expect(
+        island5?.characters.some((character) => {
+            return (
+                character.playerDesignator === PlayerDesignator.PLAYER_A &&
+                character.strength === 2
+            );
+        }),
+    ).toBe(true);
+});
