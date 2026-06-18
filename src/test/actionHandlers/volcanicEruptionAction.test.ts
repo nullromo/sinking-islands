@@ -176,3 +176,60 @@ test('Characters flee from lava flows to adjacent safe islands', () => {
         expect(rightIsland.characters.length).toBe(0);
     }
 });
+
+test('Multiple characters on a lava flow island all flee to safe island when capacity allows', () => {
+    // Target volcano island 6 for eruption
+    const volcanoNumber = 6;
+    const lavaFlowIslands = GameOperations.getAdjacentIslands(
+        game,
+        volcanoNumber,
+    );
+    expect(lavaFlowIslands.length).toBe(2);
+
+    const [leftIsland] = lavaFlowIslands;
+
+    // Find the safe island adjacent to leftIsland (not volcano 6 itself)
+    const leftSafeIsland = GameOperations.getAdjacentIslands(
+        game,
+        leftIsland.islandNumber,
+    ).find((island) => {
+        return island.islandNumber !== volcanoNumber;
+    });
+
+    expect(leftSafeIsland).toBeDefined();
+
+    if (leftSafeIsland) {
+        // Ensure safe island has large capacity so all characters can flee
+        leftSafeIsland.smallCapacity = false;
+
+        // Clear existing characters for clean tracking
+        leftIsland.characters = [];
+        leftSafeIsland.characters = [];
+
+        // Put two characters on the left lava flow island
+        const char1 = {
+            playerDesignator: PlayerDesignator.PLAYER_A,
+            strength: 2,
+            tortoise: false,
+        };
+        const char2 = {
+            playerDesignator: PlayerDesignator.PLAYER_B,
+            strength: 3,
+            tortoise: false,
+        };
+        leftIsland.characters.push(char1, char2);
+
+        // Execute volcanic eruption
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+            action: GameActionType.VOLCANIC_ERUPTION_TARGET,
+            data: volcanoNumber,
+        });
+
+        // Verify that both characters successfully fled to the safe island
+        expect(leftSafeIsland.characters).toContainEqual(char1);
+        expect(leftSafeIsland.characters).toContainEqual(char2);
+
+        // Verify that the lava flow island is now empty
+        expect(leftIsland.characters.length).toBe(0);
+    }
+});
