@@ -211,10 +211,9 @@ export namespace GameOperations {
         island: IslandSerialized,
     ) => {
         return (
-            islandIsNetted(game, island.islandNumber) ||
-            (island.smallCapacity &&
-                !islandHasPilings(game, island.islandNumber) &&
-                island.characters.length > 0)
+            island.smallCapacity &&
+            !islandHasPilings(game, island.islandNumber) &&
+            island.characters.length > 0
         );
     };
 

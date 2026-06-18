@@ -68,10 +68,11 @@ export const handleVolcanicEruption = (
             continue;
         }
 
-        // if the safe island is full or if the lava flow island is netted,
-        // then fleeing is not possible
+        // if the safe island is full, the safe island is netted, or if the
+        // lava flow island is netted, then fleeing is not possible
         if (
             GameOperations.islandIsFull(game, safeIsland) ||
+            GameOperations.islandIsNetted(game, safeIsland.islandNumber) ||
             GameOperations.islandIsNetted(game, lavaFlowIsland.islandNumber)
         ) {
             continue;
