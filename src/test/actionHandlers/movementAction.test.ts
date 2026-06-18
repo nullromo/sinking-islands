@@ -378,3 +378,162 @@ test('Only three movement points can be used', () => {
         });
     }).toThrow();
 });
+
+test('Skipping movement action when no legal movements are possible (e.g. netted)', () => {
+    setUpRandom();
+    const testGame = GameOperations.create();
+    testGame.initiative = PlayerDesignator.PLAYER_B;
+
+    GameOperations.assignUserToGame(testGame, 'testuser');
+    GameOperations.assignUserToGame(testGame, 'otheruser');
+
+    // Remove all Player B characters from all islands
+    testGame.islands.forEach((island) => {
+        island.characters = island.characters.filter((char) => {
+            return char.playerDesignator !== PlayerDesignator.PLAYER_B;
+        });
+    });
+
+    // Put one Player B character on island 2
+    const targetIsland = testGame.islands.find((isl) => {
+        return isl.islandNumber === 2;
+    });
+    if (!targetIsland) {
+        throw new Error('Island 2 not found');
+    }
+    targetIsland.characters.push({
+        playerDesignator: PlayerDesignator.PLAYER_B,
+        strength: 2,
+        tortoise: false,
+    });
+
+    // Player A has island 2 netted
+    testGame.players[PlayerDesignator.PLAYER_A].netIsland = 2;
+
+    // Player B places cards
+    GameFlowOperations.takeGameAction(testGame, PlayerDesignator.PLAYER_B, {
+        action: GameActionType.CARD_PLACEMENT,
+        data: {
+            0: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+            3: {
+                cardType: CardType.HARPOON,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+            5: {
+                cardType: CardType.CRAB,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+        },
+    });
+
+    // Player A places cards. This will trigger resolveNextCard.
+    GameFlowOperations.takeGameAction(testGame, PlayerDesignator.PLAYER_A, {
+        action: GameActionType.CARD_PLACEMENT,
+        data: {
+            1: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+            2: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+            4: {
+                cardType: CardType.CRAB,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+        },
+    });
+
+    // Since Player B has no legal movements, Player B's movement card (index 0)
+    // should have been skipped, advancing activeCardIndex to 1 (Player A's movement card).
+    expect(testGame.activeCardIndex).toEqual(1);
+    expect(testGame.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);
+    expect(testGame.waitingForPlayer).toEqual(PlayerDesignator.PLAYER_A);
+});
+
+test('Skipping movement action when all islands are small capacity and occupied', () => {
+    setUpRandom();
+    const testGame = GameOperations.create();
+    testGame.initiative = PlayerDesignator.PLAYER_B;
+
+    GameOperations.assignUserToGame(testGame, 'testuser');
+    GameOperations.assignUserToGame(testGame, 'otheruser');
+
+    // Make all islands small capacity, and occupy them
+    testGame.islands.forEach((island, index) => {
+        island.smallCapacity = true;
+
+        // Clear existing characters
+        island.characters = [];
+
+        // Put exactly 1 character on each island
+        if (index === 0) {
+            // Player B has exactly 1 character on the first island
+            island.characters.push({
+                playerDesignator: PlayerDesignator.PLAYER_B,
+                strength: 2,
+                tortoise: false,
+            });
+        } else {
+            // Player A has 1 character on all other islands
+            island.characters.push({
+                playerDesignator: PlayerDesignator.PLAYER_A,
+                strength: 2,
+                tortoise: false,
+            });
+        }
+    });
+
+    // Make sure Player A has no pilings island to avoid changing capacity
+    testGame.players[PlayerDesignator.PLAYER_A].pilingsIsland = NaN;
+    testGame.players[PlayerDesignator.PLAYER_B].pilingsIsland = NaN;
+
+    // Player B places cards
+    GameFlowOperations.takeGameAction(testGame, PlayerDesignator.PLAYER_B, {
+        action: GameActionType.CARD_PLACEMENT,
+        data: {
+            0: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+            3: {
+                cardType: CardType.HARPOON,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+            5: {
+                cardType: CardType.CRAB,
+                playerDesignator: PlayerDesignator.PLAYER_B,
+            },
+        },
+    });
+
+    // Player A places cards. This will trigger resolveNextCard.
+    GameFlowOperations.takeGameAction(testGame, PlayerDesignator.PLAYER_A, {
+        action: GameActionType.CARD_PLACEMENT,
+        data: {
+            1: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+            2: {
+                cardType: CardType.MOVEMENT,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+            4: {
+                cardType: CardType.CRAB,
+                playerDesignator: PlayerDesignator.PLAYER_A,
+            },
+        },
+    });
+
+    // Player B has no legal movements since all islands are full small capacity islands
+    // and Player B only has 1 character (so B cannot swap/rotate with B's own characters).
+    // The activeCardIndex should advance to 1 (Player A's movement card).
+    expect(testGame.activeCardIndex).toEqual(1);
+    expect(testGame.gameState).toEqual(GameState.AWAIT_MOVEMENT_SET);
+    expect(testGame.waitingForPlayer).toEqual(PlayerDesignator.PLAYER_A);
+});
