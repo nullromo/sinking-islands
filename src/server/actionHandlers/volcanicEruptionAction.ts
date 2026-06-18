@@ -137,7 +137,7 @@ export const handleVolcanicEruption = (
             // the island is not small or has pilings, so everyone flees
 
             // move all characters
-            lavaFlowIsland.characters.forEach((character) => {
+            [...lavaFlowIsland.characters].forEach((character) => {
                 GameOperations.moveCharacter(
                     game,
                     character,
@@ -151,7 +151,7 @@ export const handleVolcanicEruption = (
 
     // now that everyone has fled, burn anyone who didn't flee
     lavaFlowIslands.forEach((lavaFlowIsland) => {
-        lavaFlowIsland.characters.forEach((character) => {
+        [...lavaFlowIsland.characters].forEach((character) => {
             // remove the character
             GameOperations.log(
                 game,
