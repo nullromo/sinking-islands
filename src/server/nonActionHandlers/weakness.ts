@@ -9,7 +9,7 @@ export const handleWeakness = (game: GameSerialized) => {
 
     GameOperations.log(
         game,
-        `Player ${player}'s characters are afflicted with weakness.`,
+        `Player ${opponent}'s characters are afflicted with weakness.`,
     );
     game.players[opponent].weakness = true;
 };
