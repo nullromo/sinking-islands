@@ -389,14 +389,14 @@ test('Skipping movement action when no legal movements are possible (e.g. netted
 
     // Remove all Player B characters from all islands
     testGame.islands.forEach((island) => {
-        island.characters = island.characters.filter((char) => {
-            return char.playerDesignator !== PlayerDesignator.PLAYER_B;
+        island.characters = island.characters.filter((character) => {
+            return character.playerDesignator !== PlayerDesignator.PLAYER_B;
         });
     });
 
     // Put one Player B character on island 2
-    const targetIsland = testGame.islands.find((isl) => {
-        return isl.islandNumber === 2;
+    const targetIsland = testGame.islands.find((island) => {
+        return island.islandNumber === 2;
     });
     if (!targetIsland) {
         throw new Error('Island 2 not found');
