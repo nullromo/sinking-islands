@@ -20,13 +20,13 @@ export const handleCrab = (game: GameSerialized) => {
                         (character.playerDesignator === player
                             ? 0
                             : game.players[opponent].weakness
-                              ? 10
+                              ? 1
                               : character.strength),
                     playerStrength:
                         totals.playerStrength +
                         (character.playerDesignator === player
                             ? game.players[player].weakness
-                                ? 10
+                                ? 1
                                 : character.strength
                             : 0),
                 };

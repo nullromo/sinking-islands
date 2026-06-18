@@ -123,7 +123,7 @@ test('Players cannot select illegal fog slots', () => {
         data: {
             character: {
                 playerDesignator: PlayerDesignator.PLAYER_A,
-                strength: 20,
+                strength: 2,
                 tortoise: false,
             },
             fromIslandNumber: 7,

@@ -59,7 +59,7 @@ const basicFlyingFishData = () => {
     return {
         character: {
             playerDesignator: PlayerDesignator.PLAYER_A,
-            strength: 20,
+            strength: 2,
             tortoise: false,
         },
         fromIslandNumber: 7,
@@ -130,7 +130,7 @@ test('Players cannot move to full islands', () => {
 test('Players cannot move a character that is not present', () => {
     // modify data
     const data = basicFlyingFishData();
-    data.character.strength = 40;
+    data.character.strength = 4;
 
     // cannot perform movement
     expect(() => {

@@ -66,7 +66,7 @@ test('Tortoise actions can be taken', () => {
         data: {
             character: {
                 playerDesignator: PlayerDesignator.PLAYER_B,
-                strength: 40,
+                strength: 4,
                 tortoise: false,
             },
             islandNumber: 2,
@@ -100,7 +100,7 @@ test('Players can only tortoise their own characters', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_A,
-                    strength: 20,
+                    strength: 2,
                     tortoise: false,
                 },
                 islandNumber: 8,
@@ -117,7 +117,7 @@ test('Cannot tortoise a non-existent character', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_B,
-                    strength: 30,
+                    strength: 3,
                     tortoise: false,
                 },
                 islandNumber: 8,

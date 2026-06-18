@@ -66,7 +66,7 @@ test('Harpoon actions can be taken', () => {
         data: {
             character: {
                 playerDesignator: PlayerDesignator.PLAYER_A,
-                strength: 20,
+                strength: 2,
                 tortoise: false,
             },
             islandNumber: 8,
@@ -99,7 +99,7 @@ test('Players cannot harpoon their own characters', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_B,
-                    strength: 40,
+                    strength: 4,
                     tortoise: false,
                 },
                 islandNumber: 2,
@@ -116,7 +116,7 @@ test('Players cannot harpoon characters that do not exist', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_A,
-                    strength: 30,
+                    strength: 3,
                     tortoise: false,
                 },
                 islandNumber: 8,
@@ -133,7 +133,7 @@ test('Players cannot harpoon characters that are out of range', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_A,
-                    strength: 30,
+                    strength: 3,
                     tortoise: false,
                 },
                 islandNumber: 14,
@@ -153,7 +153,7 @@ test('Players cannot harpoon a tortoise', () => {
             data: {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_A,
-                    strength: 20,
+                    strength: 2,
                     tortoise: true,
                 },
                 islandNumber: 8,

@@ -64,7 +64,7 @@ test('Movement actions can be taken', () => {
             {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_B,
-                    strength: 40,
+                    strength: 4,
                     tortoise: false,
                 },
                 fromIslandNumber: 2,
@@ -73,7 +73,7 @@ test('Movement actions can be taken', () => {
             {
                 character: {
                     playerDesignator: PlayerDesignator.PLAYER_B,
-                    strength: 20,
+                    strength: 2,
                     tortoise: false,
                 },
                 fromIslandNumber: 16,
@@ -122,7 +122,7 @@ test('Players cannot move the wrong characters', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_A,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 8,
@@ -142,7 +142,7 @@ test('Players cannot move characters that are not present', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 30,
+                        strength: 3,
                         tortoise: false,
                     },
                     fromIslandNumber: 8,
@@ -165,7 +165,7 @@ test('Players cannot move to or from a netted island', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -186,7 +186,7 @@ test('Players cannot move to or from a netted island', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -206,7 +206,7 @@ test('Movements cannot be made to the same island', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -226,7 +226,7 @@ test('Cannot overfill an island', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 16,
@@ -247,7 +247,7 @@ test('Cannot overfill an island', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 16,
@@ -267,7 +267,7 @@ test('Cannot submit two movements for the same character', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -276,7 +276,7 @@ test('Cannot submit two movements for the same character', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -296,7 +296,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -305,7 +305,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 16,
@@ -314,7 +314,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 30,
+                        strength: 3,
                         tortoise: false,
                     },
                     fromIslandNumber: 1,
@@ -323,7 +323,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 15,
@@ -341,7 +341,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -359,7 +359,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 40,
+                        strength: 4,
                         tortoise: false,
                     },
                     fromIslandNumber: 2,
@@ -368,7 +368,7 @@ test('Only three movement points can be used', () => {
                 {
                     character: {
                         playerDesignator: PlayerDesignator.PLAYER_B,
-                        strength: 20,
+                        strength: 2,
                         tortoise: false,
                     },
                     fromIslandNumber: 16,
