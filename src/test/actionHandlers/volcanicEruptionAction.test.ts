@@ -105,3 +105,74 @@ test('Cannot erupt a non-volcano', () => {
         });
     }).toThrow();
 });
+
+test('Characters flee from lava flows to adjacent safe islands', () => {
+    // Target volcano island 6 for eruption
+    const volcanoNumber = 6;
+    const lavaFlowIslands = GameOperations.getAdjacentIslands(
+        game,
+        volcanoNumber,
+    );
+    expect(lavaFlowIslands.length).toBe(2);
+
+    const [leftIsland, rightIsland] = lavaFlowIslands;
+
+    // Find safe islands (adjacent to lava flow islands, but not the volcano itself)
+    const leftSafeIsland = GameOperations.getAdjacentIslands(
+        game,
+        leftIsland.islandNumber,
+    ).find((island) => {
+        return island.islandNumber !== volcanoNumber;
+    });
+    const rightSafeIsland = GameOperations.getAdjacentIslands(
+        game,
+        rightIsland.islandNumber,
+    ).find((island) => {
+        return island.islandNumber !== volcanoNumber;
+    });
+
+    expect(leftSafeIsland).toBeDefined();
+    expect(rightSafeIsland).toBeDefined();
+
+    if (leftSafeIsland && rightSafeIsland) {
+        // Ensure safe islands have large capacity so fleeing is successful
+        leftSafeIsland.smallCapacity = false;
+        rightSafeIsland.smallCapacity = false;
+
+        // Clear existing characters on all affected/safe islands for clean tracking
+        leftIsland.characters = [];
+        rightIsland.characters = [];
+        leftSafeIsland.characters = [];
+        rightSafeIsland.characters = [];
+
+        // Put a character on the left lava flow island
+        const charA = {
+            playerDesignator: PlayerDesignator.PLAYER_A,
+            strength: 2,
+            tortoise: false,
+        };
+        leftIsland.characters.push(charA);
+
+        // Put a character on the right lava flow island
+        const charB = {
+            playerDesignator: PlayerDesignator.PLAYER_B,
+            strength: 3,
+            tortoise: false,
+        };
+        rightIsland.characters.push(charB);
+
+        // Execute volcanic eruption
+        GameFlowOperations.takeGameAction(game, PlayerDesignator.PLAYER_B, {
+            action: GameActionType.VOLCANIC_ERUPTION_TARGET,
+            data: volcanoNumber,
+        });
+
+        // Verify that the characters fled to their respective safe islands
+        expect(leftSafeIsland.characters).toContainEqual(charA);
+        expect(rightSafeIsland.characters).toContainEqual(charB);
+
+        // Verify that the lava flow islands no longer contain these characters
+        expect(leftIsland.characters.length).toBe(0);
+        expect(rightIsland.characters.length).toBe(0);
+    }
+});
